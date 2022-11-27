@@ -53,7 +53,12 @@ World::World(uint64_t s, glm::mat4 p)
     offsets = std::make_unique<float[]>(REGION_SIZE*REGION_SIZE*3);
     ids = std::make_unique<float[]>(REGION_SIZE*REGION_SIZE);
 
-    perlin.getRegion(posX,posY,THRESHOLD,REGION_BUFFER_SIZE,regionBuffer.get());
+    for (int i = 0; i < REGION_BUFFER_SIZE; i++){
+        for (int j = 0; j < REGION_BUFFER_SIZE; j++){
+            perlin.getAtCoordinate(i,j,THRESHOLD,REGION_BUFFER_SIZE,regionBuffer[i*REGION_BUFFER_SIZE+j]);
+        }
+    }
+
     processBufferToOffsets();
 
     shader = glCreateProgram();
@@ -137,10 +142,10 @@ void World::processBufferToOffsets(){
     float w = 1.0/REGION_SIZE;
     for (int i = 0; i < REGION_SIZE; i++){
         for (int j = 0; j < REGION_SIZE; j++){
-            uint8_t ul = regionBuffer[i*REGION_SIZE+j+1];
-            uint8_t ur = regionBuffer[(i+1)*REGION_SIZE+j+1];
-            uint8_t lr = regionBuffer[(i+1)*REGION_SIZE+j];
-            uint8_t ll = regionBuffer[i*REGION_SIZE+j];
+            uint8_t ul = regionBuffer[i*REGION_BUFFER_SIZE+j+1];
+            uint8_t ur = regionBuffer[(i+1)*REGION_BUFFER_SIZE+j+1];
+            uint8_t lr = regionBuffer[(i+1)*REGION_BUFFER_SIZE+j];
+            uint8_t ll = regionBuffer[i*REGION_BUFFER_SIZE+j];
             uint8_t hash = ll | (lr<<1) | (ur<<2) | (ul<<3);
             // store transposed
             offsets[k*3] = j*w;
@@ -158,33 +163,6 @@ void World::worldToCell(float x, float y, float & ix, float & iy){
 }
 
 void World::getWorldShell(int ox, int oy){
-    int w = std::floor(float(REGION_BUFFER_SIZE)/2.0);
-    //std::unique_ptr<bool[]> shell;
-    int dx = std::abs(ox);
-    int dy = std::abs(oy);
-    // if (dx != 0 && dy == 0){
-    //     shell = std:::make_unique<bool[]>(dx*REGION_BUFFER_SIZE);
-    // }
-    // else if (dx == 0 && dy != 0){
-    //     shell = std:::make_unique<bool[]>(dy*REGION_BUFFER_SIZE);
-    // }
-    // else if (dx != 0 && dy != 0){
-    //     shell = std:::make_unique<bool[]>(dx*REGION_BUFFER_SIZE+dy*REGION_BUFFER_SIZE+dx*dy);
-    // }
-    for (int i = 0; i < REGION_BUFFER_SIZE; i++){
-        for (int j = 0; j < REGION_BUFFER_SIZE; j++){
-            int newIx = i+ox;
-            int newIy = j+oy;
-            if (newIx > 0 && newIx < REGION_BUFFER_SIZE && newIy > 0 && newIy < REGION_BUFFER_SIZE){
-                // alread now the value, just shuffle it over!
-                regionBackBuffer[i*REGION_BUFFER_SIZE+j] = regionBuffer[newIx*REGION_BUFFER_SIZE+newIy];
-            }
-            else{
-                // need to sample new value
-                perlin.getAtCoordinate(newIx+posX,newIy+posY,THRESHOLD,REGION_BUFFER_SIZE,regionBackBuffer[i*REGION_BUFFER_SIZE+j]);
-            }
-        }
-    }
 }
 
 void World::updateRegion(float x, float y){
@@ -199,6 +177,10 @@ void World::updateRegion(float x, float y){
         posX = ix;
         posY = iy;
         return;
+    }
+
+    for (int i = 0; i < REGION_BUFFER_SIZE*REGION_BUFFER_SIZE; i++){
+        regionBackBuffer[i] = regionBuffer[i];
     }
 
     for (int i = 0; i < REGION_BUFFER_SIZE; i++){
@@ -221,7 +203,7 @@ void World::updateRegion(float x, float y){
     }
 
     
-    perlin.getRegion(ix,iy,THRESHOLD,REGION_BUFFER_SIZE,regionBuffer.get());
+    //perlin.getRegion(ix,iy,THRESHOLD,REGION_BUFFER_SIZE,regionBuffer.get());
     
     processBufferToOffsets();
 
