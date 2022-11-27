@@ -1,11 +1,35 @@
 #include <Perlin/perlin.h>
 
+std::vector<uint64_t> generateTable(
+    uint64_t length, 
+    std::default_random_engine gen
+){
+    std::vector<uint64_t> ret = std::vector<uint64_t>(length);
+    std::vector<uint64_t> table = std::vector<uint64_t>(length);
+
+    for (int i = 0; i < length; i++){
+        table[i] = i;
+    }
+
+    int i = 0;
+    while (table.size() > 0){
+        std::uniform_int_distribution<uint64_t> U(0,table.size()-1);
+        uint64_t idx = U(gen);
+        ret[i] = table[idx];
+        i++;
+        table.erase(table.begin()+idx);
+    }
+
+    return ret;
+}
+
 Perlin::Perlin(
     uint64_t seed,
     float turbulence,
     float xPeriod,
     float yPeriod,
-    uint64_t repeat
+    uint64_t repeat,
+    float detailThreshold
 ){
     this->seed = seed;
     generator.seed(seed);
@@ -13,24 +37,13 @@ Perlin::Perlin(
     this->yPeriod = yPeriod;
     this->repeat = repeat;
     this->turbulence = turbulence;
+    this->detailThreshold = detailThreshold;
 
-    std::vector<uint64_t> ptable = std::vector<uint64_t>(repeat);
-    std::vector<uint64_t> qtable = std::vector<uint64_t>(repeat);
+    tables = {
+        generateTable(repeat,generator),
+        generateTable(repeat,generator)
+    };
 
-    for (int i = 0; i < repeat; i++){
-        qtable[i] = i;
-    }
-
-    int i = 0;
-    while (qtable.size() > 0){
-        std::uniform_int_distribution<uint64_t> U(0,qtable.size()-1);
-        uint64_t idx = U(generator);
-        ptable[i] = qtable[idx];
-        i++;
-        qtable.erase(qtable.begin()+idx);
-    }
-
-    table = ptable;
 }
 
 void Perlin::gradient(uint64_t value, float & cx, float & cy){
@@ -47,7 +60,7 @@ void Perlin::gradient(uint64_t value, float & cx, float & cy){
     }
 }
 
-float Perlin::getValue(float x, float y){
+float Perlin::getValue(float x, float y, uint8_t t){
 
     float xf = std::floor(x);
     float yf = std::floor(y);
@@ -71,6 +84,8 @@ float Perlin::getValue(float x, float y){
 
     float blX = xf;
     float blY = yf;
+
+    std::vector<uint64_t> table = tables[t];
 
     uint64_t vtr = table[(table[(X+1)%repeat]+Y+1)%repeat];
     uint64_t vtl = table[(table[X%repeat]+(Y+1))%repeat];
@@ -98,11 +113,11 @@ float Perlin::getValue(float x, float y){
     )*0.5+0.5;
 }
 
-float Perlin::getTurbulence(float x, float y, uint64_t size){
+float Perlin::getTurbulence(float x, float y, uint64_t size, uint8_t table){
     float t = 0.0;
     float scale = size;
     while (scale > 1.0) {
-        t += std::abs(scale*getValue(x/scale,y/scale));
+        t += std::abs(scale*getValue(x/scale,y/scale,table));
         scale /= 2.0;
     }
     return t;
@@ -111,6 +126,10 @@ float Perlin::getTurbulence(float x, float y, uint64_t size){
 void Perlin::getAtCoordinate(int ix, int iy, float threshold, uint64_t size, bool & value){
     float u = ix*xPeriod / size;
     float v = iy*yPeriod / size;
-    float t = u+v+turbulence*getTurbulence(ix,iy,size);
-    value = std::sin(t) > threshold;
+    float t = u+v+turbulence*getTurbulence(ix,iy,size,0);
+    bool a = std::sin(t) > threshold;
+    if (!a){value = false; return;}
+    float s = u+v+4.0*turbulence*getTurbulence(ix,iy,size,1);
+    bool b = std::sin(s) > detailThreshold;
+    value = a & (!b);
 }

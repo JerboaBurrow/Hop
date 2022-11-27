@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_FLAGS = -g  
 
-C_DEFINES = -DBUILD_TYPE=\"Debug\" -DGLEW_STATIC -DTIMESTAMP=\"2022-11-27:10:19:50\"
+C_DEFINES = -DBUILD_TYPE=\"Debug\" -DGLEW_STATIC -DTIMESTAMP=\"2022-11-27:11:39:04\"
 
 C_INCLUDES = -I/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/include -I/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/include/vendored/glew/include 
 

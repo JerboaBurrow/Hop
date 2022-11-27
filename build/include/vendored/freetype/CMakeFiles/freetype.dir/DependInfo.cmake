@@ -51,7 +51,7 @@ set(CMAKE_C_COMPILER_ID "GNU")
 set(CMAKE_TARGET_DEFINITIONS_C
   "BUILD_TYPE=\"Debug\""
   "FT2_BUILD_LIBRARY"
-  "TIMESTAMP=\"2022-11-27:10:19:50\""
+  "TIMESTAMP=\"2022-11-27:11:39:04\""
   )
 
 # The include file search paths:
