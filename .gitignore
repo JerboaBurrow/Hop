@@ -1,0 +1,5 @@
+include/SFML-2.5.1/*
+cmake_install.cmake
+CMakeCache.txt
+Makefile
+CMakeFiles/*
