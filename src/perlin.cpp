@@ -108,23 +108,7 @@ float Perlin::getTurbulence(float x, float y, uint64_t size){
     return t;
 }
 
-
-void Perlin::getRegion(uint64_t ix, uint64_t iy, float threshold, uint64_t size, bool * buffer){
-    int w = size/2;
-    int s = size;
-    int k = 0;
-    for (int i = int(ix)-w; i < int(ix)+w; i++){
-        for (int j = int(iy)-w; j < int(iy)+w; j++){
-            float u = i*xPeriod / s;
-            float v = j*yPeriod / s;
-            float t = u+v+turbulence*getTurbulence(i,j,s);
-            buffer[k] = std::sin(t) > threshold;
-            k += 1;
-        }
-    }
-}
-
-void Perlin::getAtCoordinate(uint64_t ix, uint64_t iy, float threshold, uint64_t size, bool & value){
+void Perlin::getAtCoordinate(int ix, int iy, float threshold, uint64_t size, bool & value){
     float u = ix*xPeriod / size;
     float v = iy*yPeriod / size;
     float t = u+v+turbulence*getTurbulence(ix,iy,size);

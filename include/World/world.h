@@ -17,9 +17,13 @@
     
     Key is to avoid calculating noise samples
 
+    1024*1024 60 fps with online sampling limit is position delta
+
 */
 
+// cells rendered with marching squares
 const uint64_t REGION_SIZE = 128;
+// underlying map +1 to account for marching squares
 const uint64_t REGION_BUFFER_SIZE = REGION_SIZE+1;
 const uint64_t MAX_DELTA = 8;
 const uint64_t SHELL_SIZE = REGION_SIZE*4;

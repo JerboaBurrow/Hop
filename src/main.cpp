@@ -24,6 +24,7 @@
 
 const int resX = 1000;
 const int resY = 1000;
+const float MAX_SPEED = 1.0/60.0;
 
 // for smoothing delta numbers
 uint8_t frameId = 0;
@@ -95,16 +96,16 @@ int main(){
     }
 
     if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) ){
-      posY += 1.0/60.0;
+      posY += MAX_SPEED;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
-      posY -= 1.0/60.0;
+      posY -= MAX_SPEED;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
-      posX -= 1.0/60.0;
+      posX -= MAX_SPEED;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-      posX += 1.0/60.0;
+      posX += MAX_SPEED;
     }
 
 

@@ -12,7 +12,7 @@ set(CMAKE_C_COMPILER_ID "GNU")
 set(CMAKE_TARGET_DEFINITIONS_C
   "BUILD_TYPE=\"Debug\""
   "GLEW_STATIC"
-  "TIMESTAMP=\"2022-11-26:11:04:08\""
+  "TIMESTAMP=\"2022-11-27:10:19:50\""
   )
 
 # The include file search paths:

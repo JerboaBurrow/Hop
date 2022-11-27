@@ -14,9 +14,8 @@ public:
         float yPeriod,
         uint64_t repeat = 256
     );
-
-    void getRegion(uint64_t ix, uint64_t iy, float threshold, uint64_t size, bool * buffer);
-    void getAtCoordinate(uint64_t ix, uint64_t iy, float threshold, uint64_t size, bool & value);
+    
+    void getAtCoordinate(int ix, int iy, float threshold, uint64_t size, bool & value);
 
 private:
 
