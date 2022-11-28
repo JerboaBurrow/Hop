@@ -18,7 +18,6 @@
 #include <vector>
 
 #include <Text/typeUtils.h>
-#include <Perlin/perlin.h>
 #include <texturedQuad.h>
 #include <World/world.h>
 

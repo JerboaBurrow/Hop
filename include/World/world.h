@@ -2,7 +2,7 @@
 #define WORLD_H
 
 #include <gl.h>
-#include <Perlin/perlin.h>
+#include <Procedural/perlin.h>
 #include <texturedQuad.h>
 #include <random>
 #include <string>
