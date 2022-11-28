@@ -57,165 +57,174 @@ include CMakeFiles/Jerboa.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Jerboa.dir/flags.make
 
-CMakeFiles/Jerboa.dir/src/gl.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/gl.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/gl.cpp.obj: ../src/gl.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Jerboa.dir/src/gl.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/gl.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/gl.cpp
+CMakeFiles/Jerboa.dir/src/gl.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/gl.cpp.o: ../src/gl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Jerboa.dir/src/gl.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/gl.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/gl.cpp
 
 CMakeFiles/Jerboa.dir/src/gl.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/gl.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/gl.cpp > CMakeFiles/Jerboa.dir/src/gl.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/gl.cpp > CMakeFiles/Jerboa.dir/src/gl.cpp.i
 
 CMakeFiles/Jerboa.dir/src/gl.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/gl.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/gl.cpp -o CMakeFiles/Jerboa.dir/src/gl.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/gl.cpp -o CMakeFiles/Jerboa.dir/src/gl.cpp.s
 
-CMakeFiles/Jerboa.dir/src/main.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/main.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/main.cpp.obj: ../src/main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Jerboa.dir/src/main.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/main.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/main.cpp
+CMakeFiles/Jerboa.dir/src/main.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/main.cpp.o: ../src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Jerboa.dir/src/main.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/main.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/main.cpp
 
 CMakeFiles/Jerboa.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/main.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/main.cpp > CMakeFiles/Jerboa.dir/src/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/main.cpp > CMakeFiles/Jerboa.dir/src/main.cpp.i
 
 CMakeFiles/Jerboa.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/main.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/main.cpp -o CMakeFiles/Jerboa.dir/src/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/main.cpp -o CMakeFiles/Jerboa.dir/src/main.cpp.s
 
-CMakeFiles/Jerboa.dir/src/perlin.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/perlin.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/perlin.cpp.obj: ../src/perlin.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Jerboa.dir/src/perlin.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/perlin.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/perlin.cpp
+CMakeFiles/Jerboa.dir/src/perlin.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/perlin.cpp.o: ../src/perlin.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Jerboa.dir/src/perlin.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/perlin.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/perlin.cpp
 
 CMakeFiles/Jerboa.dir/src/perlin.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/perlin.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/perlin.cpp > CMakeFiles/Jerboa.dir/src/perlin.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/perlin.cpp > CMakeFiles/Jerboa.dir/src/perlin.cpp.i
 
 CMakeFiles/Jerboa.dir/src/perlin.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/perlin.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/perlin.cpp -o CMakeFiles/Jerboa.dir/src/perlin.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/perlin.cpp -o CMakeFiles/Jerboa.dir/src/perlin.cpp.s
 
-CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.obj: ../src/texturedQuad.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/texturedQuad.cpp
+CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.o: ../src/texturedQuad.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/texturedQuad.cpp
 
 CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/texturedQuad.cpp > CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/texturedQuad.cpp > CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.i
 
 CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/texturedQuad.cpp -o CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/texturedQuad.cpp -o CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.s
 
-CMakeFiles/Jerboa.dir/src/world.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/world.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/world.cpp.obj: ../src/world.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Jerboa.dir/src/world.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/world.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/world.cpp
+CMakeFiles/Jerboa.dir/src/world.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/world.cpp.o: ../src/world.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/Jerboa.dir/src/world.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/world.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/world.cpp
 
 CMakeFiles/Jerboa.dir/src/world.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/world.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/world.cpp > CMakeFiles/Jerboa.dir/src/world.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/world.cpp > CMakeFiles/Jerboa.dir/src/world.cpp.i
 
 CMakeFiles/Jerboa.dir/src/world.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/world.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/world.cpp -o CMakeFiles/Jerboa.dir/src/world.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/world.cpp -o CMakeFiles/Jerboa.dir/src/world.cpp.s
 
-CMakeFiles/Jerboa.dir/src/Text/popup.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Text/popup.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/Text/popup.cpp.obj: ../src/Text/popup.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/Jerboa.dir/src/Text/popup.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/Text/popup.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/popup.cpp
+CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o: ../src/Text/popup.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/popup.cpp
 
 CMakeFiles/Jerboa.dir/src/Text/popup.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Text/popup.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/popup.cpp > CMakeFiles/Jerboa.dir/src/Text/popup.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/popup.cpp > CMakeFiles/Jerboa.dir/src/Text/popup.cpp.i
 
 CMakeFiles/Jerboa.dir/src/Text/popup.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Text/popup.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/popup.cpp -o CMakeFiles/Jerboa.dir/src/Text/popup.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/popup.cpp -o CMakeFiles/Jerboa.dir/src/Text/popup.cpp.s
 
-CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.obj: ../src/Text/textRenderer.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/textRenderer.cpp
+CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o: ../src/Text/textRenderer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/textRenderer.cpp
 
 CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/textRenderer.cpp > CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/textRenderer.cpp > CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.i
 
 CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/textRenderer.cpp -o CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/textRenderer.cpp -o CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.s
 
-CMakeFiles/Jerboa.dir/src/Text/type.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Text/type.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/Text/type.cpp.obj: ../src/Text/type.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Jerboa.dir/src/Text/type.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/Text/type.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/type.cpp
+CMakeFiles/Jerboa.dir/src/Text/type.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Text/type.cpp.o: ../src/Text/type.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/Jerboa.dir/src/Text/type.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/Text/type.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/type.cpp
 
 CMakeFiles/Jerboa.dir/src/Text/type.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Text/type.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/type.cpp > CMakeFiles/Jerboa.dir/src/Text/type.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/type.cpp > CMakeFiles/Jerboa.dir/src/Text/type.cpp.i
 
 CMakeFiles/Jerboa.dir/src/Text/type.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Text/type.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/type.cpp -o CMakeFiles/Jerboa.dir/src/Text/type.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/type.cpp -o CMakeFiles/Jerboa.dir/src/Text/type.cpp.s
 
-CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.obj: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.obj: CMakeFiles/Jerboa.dir/includes_CXX.rsp
-CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.obj: ../src/Text/typeUtils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.obj"
-	/usr/bin/x86_64-w64-mingw32-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.obj -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/typeUtils.cpp
+CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o: ../src/Text/typeUtils.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/typeUtils.cpp
 
 CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.i"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/typeUtils.cpp > CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/typeUtils.cpp > CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.i
 
 CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.s"
-	/usr/bin/x86_64-w64-mingw32-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/typeUtils.cpp -o CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/typeUtils.cpp -o CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.s
 
 # Object files for target Jerboa
 Jerboa_OBJECTS = \
-"CMakeFiles/Jerboa.dir/src/gl.cpp.obj" \
-"CMakeFiles/Jerboa.dir/src/main.cpp.obj" \
-"CMakeFiles/Jerboa.dir/src/perlin.cpp.obj" \
-"CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.obj" \
-"CMakeFiles/Jerboa.dir/src/world.cpp.obj" \
-"CMakeFiles/Jerboa.dir/src/Text/popup.cpp.obj" \
-"CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.obj" \
-"CMakeFiles/Jerboa.dir/src/Text/type.cpp.obj" \
-"CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.obj"
+"CMakeFiles/Jerboa.dir/src/gl.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/main.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/perlin.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/world.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Text/type.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o"
 
 # External object files for target Jerboa
 Jerboa_EXTERNAL_OBJECTS =
 
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/gl.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/main.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/perlin.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/world.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/Text/popup.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/Text/type.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.obj
-Jerboa.exe: CMakeFiles/Jerboa.dir/build.make
-Jerboa.exe: CMakeFiles/Jerboa.dir/linklibs.rsp
-Jerboa.exe: CMakeFiles/Jerboa.dir/objects1.rsp
-Jerboa.exe: CMakeFiles/Jerboa.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable Jerboa.exe"
+Jerboa: CMakeFiles/Jerboa.dir/src/gl.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/main.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/perlin.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/world.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Text/type.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/build.make
+Jerboa: libglew.a
+Jerboa: libfreetyped.a
+Jerboa: /media/harvey/ExtraFiles/Jerboa/Games/Desktop/CellLists/include/SFML-2.5.1/build/lib/libsfml-graphics-s.a
+Jerboa: /usr/lib/x86_64-linux-gnu/libGL.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libGLU.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libz.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libpng.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libz.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libpng.so
+Jerboa: /media/harvey/ExtraFiles/Jerboa/Games/Desktop/CellLists/include/SFML-2.5.1/build/lib/libsfml-window-s.a
+Jerboa: /media/harvey/ExtraFiles/Jerboa/Games/Desktop/CellLists/include/SFML-2.5.1/build/lib/libsfml-system-s.a
+Jerboa: /lib/x86_64-linux-gnu/libudev.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libGL.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libGLU.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libOpenGL.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libX11.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libXrandr.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libX11.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libXrandr.so
+Jerboa: /usr/lib/x86_64-linux-gnu/libfreetype.so
+Jerboa: CMakeFiles/Jerboa.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable Jerboa"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Jerboa.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-CMakeFiles/Jerboa.dir/build: Jerboa.exe
+CMakeFiles/Jerboa.dir/build: Jerboa
 
 .PHONY : CMakeFiles/Jerboa.dir/build
 
