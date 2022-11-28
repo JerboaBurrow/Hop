@@ -1,16 +1,15 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Jerboa.dir/src/gl.cpp.obj"
-  "CMakeFiles/Jerboa.dir/src/main.cpp.obj"
-  "CMakeFiles/Jerboa.dir/src/perlin.cpp.obj"
-  "CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.obj"
-  "CMakeFiles/Jerboa.dir/src/world.cpp.obj"
-  "CMakeFiles/Jerboa.dir/src/Text/popup.cpp.obj"
-  "CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.obj"
-  "CMakeFiles/Jerboa.dir/src/Text/type.cpp.obj"
-  "CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.obj"
+  "CMakeFiles/Jerboa.dir/src/gl.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/main.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/perlin.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/world.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/Text/type.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o"
   "Jerboa.pdb"
-  "Jerboa.exe"
-  "libJerboa.dll.a"
+  "Jerboa"
 )
 
 # Per-language clean rules from dependency scanning.

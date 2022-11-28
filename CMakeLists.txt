@@ -6,7 +6,7 @@ option(TEST_SUITE "test" OFF)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 option(RELEASE On)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 if (RELEASE)
     set(CMAKE_BUILD_TYPE Release)
 else()
@@ -53,6 +53,7 @@ set(CMAKE_BUILD_RPATH ".")
 
 add_subdirectory(include/vendored/freetype)
 add_subdirectory(include/vendored/glm)
+add_subdirectory(include/vendored/stduuid)
 
 find_package(OpenGL REQUIRED)
 # let sources know glew is static
@@ -91,7 +92,7 @@ file(GLOB SOURCES "src/*.cpp")
 file(GLOB TEXT_SOURCES "src/Text/*.cpp")
 add_executable(Jerboa ${SOURCES} ${TEXT_SOURCES})
 
-target_link_libraries(Jerboa glew freetype glm sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 IF (TEST_SUITE)
 

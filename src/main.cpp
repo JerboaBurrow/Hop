@@ -20,6 +20,7 @@
 #include <Text/typeUtils.h>
 #include <texturedQuad.h>
 #include <World/world.h>
+#include <Object/object.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -30,6 +31,9 @@ uint8_t frameId = 0;
 double deltas[60];
 
 int main(){
+
+  Object o;
+  std::cout << o.id << "\n";
 
   sf::ContextSettings contextSettings;
   contextSettings.depthBits = 24;
@@ -73,8 +77,6 @@ int main(){
   timer.restart();
 
   World map(2,camera.getVP());
-  map.save("t");
-  TexturedQuad mapImage = map.getMap();
 
   float posX = 0.0;
   float posY = 0.0;
@@ -115,8 +117,6 @@ int main(){
     map.updateRegion(posX,posY);
     double udt = timer.getElapsedTime().asSeconds();
     map.draw();
-    mapImage.draw(0.33);
-    //localMapImage.draw(0.33/3.0,0.33+0.05,0.0);
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;
