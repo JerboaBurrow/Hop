@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(Jerboa)
 
+option(SYNTAX_ONLY "only check syntax" OFF)
 option(TEST_SUITE "test" OFF)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
@@ -11,6 +12,25 @@ if (RELEASE)
 else()
     set(CMAKE_BUILD_TYPE Debug)
 endif()
+
+if (SYNTAX_ONLY)
+    add_compile_options(-fsyntax-only)
+    # graphics for sf::RenderWindow (window is in sfml-window)
+    find_package(OpenGL REQUIRED)
+    set(GLEW_INCLUDE include/vendored/glew/include/)
+    include_directories(
+        include 
+        ${OPENGL_INCLUDE_DIRS} 
+        ${GLEW_INCLUDE} 
+        include/vendored/freetype/include 
+        include/vendored/glm
+        include/SFML-2.5.1/include
+    )
+    file(GLOB SOURCES "src/*.cpp")
+    file(GLOB TEXT_SOURCES "src/Text/*.cpp")
+    add_executable(Jerboa ${SOURCES} ${TEXT_SOURCES})
+
+else()
 
 string(TIMESTAMP TODAY "%Y-%m-%d:%H:%M:%S")
 add_compile_definitions(TIMESTAMP="${TODAY}")
@@ -83,3 +103,5 @@ IF (TEST_SUITE)
   target_link_libraries(testSuite sfml-system sfml-window sfml-graphics sfml-audio X11 ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 ENDIF(TEST_SUITE)
+
+endif()
