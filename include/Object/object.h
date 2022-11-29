@@ -30,7 +30,8 @@ public:
     Object(float x, float y, float w, float h, bool ghost = false)
     : boundingRectangle(x,y,w,h),
       state(x,y,0.0,ghost),
-      renderState(x,y,0.0,1.0)
+      renderState(x,y,0.0,1.0),
+      glInitialised(false)
     {}
     Id id;
 

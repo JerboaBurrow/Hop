@@ -50,8 +50,8 @@ World::World(uint64_t s, glm::mat4 p)
 
     renderRegionBuffer = std::make_unique<bool[]>(RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE);
     renderRegionBackBuffer = std::make_unique<bool[]>(RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE);
-    offsets = std::make_unique<float[]>(RENDER_REGION_SIZE*RENDER_REGION_SIZE*3);
-    ids = std::make_unique<float[]>(RENDER_REGION_SIZE*RENDER_REGION_SIZE);
+    renderOffsets = std::make_unique<float[]>(RENDER_REGION_SIZE*RENDER_REGION_SIZE*3);
+    renderIds = std::make_unique<float[]>(RENDER_REGION_SIZE*RENDER_REGION_SIZE);
 
     for (int i = 0; i < RENDER_REGION_BUFFER_SIZE; i++){
         for (int j = 0; j < RENDER_REGION_BUFFER_SIZE; j++){
@@ -100,7 +100,7 @@ World::World(uint64_t s, glm::mat4 p)
     glBufferData(
         GL_ARRAY_BUFFER,
         sizeof(float)*3*RENDER_REGION_SIZE*RENDER_REGION_SIZE,
-        offsets.get(),
+        renderOffsets.get(),
         GL_STATIC_DRAW
     );
     glEnableVertexAttribArray(1);
@@ -118,7 +118,7 @@ World::World(uint64_t s, glm::mat4 p)
     glBufferData(
         GL_ARRAY_BUFFER,
         sizeof(float)*RENDER_REGION_SIZE*RENDER_REGION_SIZE,
-        ids.get(),
+        renderIds.get(),
         GL_DYNAMIC_DRAW
     );
 
@@ -135,6 +135,9 @@ World::World(uint64_t s, glm::mat4 p)
 
     glBindBuffer(GL_ARRAY_BUFFER,0);
     glBindVertexArray(0);
+
+    glError("World constructor");
+    glBufferStatus("World constructor");
 }
 
 void World::processBufferToOffsets(){
@@ -148,10 +151,10 @@ void World::processBufferToOffsets(){
             uint8_t ll = renderRegionBuffer[i*RENDER_REGION_BUFFER_SIZE+j];
             uint8_t hash = ll | (lr<<1) | (ur<<2) | (ul<<3);
             // store transposed
-            offsets[k*3] = j*w;
-            offsets[k*3+1] = i*w;
-            offsets[k*3+2] = w;
-            ids[k] = float(hash);//renderRegionBuffer[k];
+            renderOffsets[k*3] = j*w;
+            renderOffsets[k*3+1] = i*w;
+            renderOffsets[k*3+2] = w;
+            renderIds[k] = float(hash);//renderRegionBuffer[k];
             k++;
         }
     }
@@ -209,7 +212,7 @@ void World::updateRegion(float x, float y){
         GL_ARRAY_BUFFER,
         0,
         sizeof(float)*RENDER_REGION_SIZE*RENDER_REGION_SIZE,
-        ids.get()
+        renderIds.get()
     );
     posX = ix;
     posY = iy;
@@ -227,7 +230,7 @@ TexturedQuad World::getMap(float r, float g, float b){
     g /= 255.0;
     std::unique_ptr<float[]> image = std::make_unique<float[]>(RENDER_REGION_SIZE*RENDER_REGION_SIZE*3);
     for (int i = 0; i < RENDER_REGION_SIZE*RENDER_REGION_SIZE; i++){
-        float val = ids[i] > 0 ? 1 : 0;
+        float val = renderIds[i] > 0 ? 1 : 0;
         image[i*3] = val*r;
         image[i*3+1] = val*g;
         image[i*3+2] = val*b;
@@ -269,9 +272,9 @@ void World::save(std::string filename){
     of << RENDER_REGION_SIZE << "\n";
     for (int i = 0; i < RENDER_REGION_SIZE; i++){
         for (int j = 0; j < RENDER_REGION_SIZE; j++){
-            of << offsets[k*3] << ", "
-               << offsets[k*3+1] << ", "
-               << offsets[k*3+2] << ", "
+            of << renderOffsets[k*3] << ", "
+               << renderOffsets[k*3+1] << ", "
+               << renderOffsets[k*3+2] << ", "
                << renderRegionBuffer[k] << "\n";
             k++;
         }

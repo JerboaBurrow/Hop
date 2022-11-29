@@ -22,7 +22,7 @@
 */
 
 // cells rendered with marching squares
-const uint64_t RENDER_REGION_SIZE = 128;
+const uint64_t RENDER_REGION_SIZE = 128*3;
 // cells for use in on/offscreen dnamics (physics, rng, etc)
 // TODO mutliple levels of "dynamism"
 const uint64_t DYNAMICS_REGION_SIZE = 128*3;
@@ -54,8 +54,13 @@ public:
 private:
 
     uint64_t seed;
+    
     std::unique_ptr<bool[]> renderRegionBuffer;
     std::unique_ptr<bool[]> renderRegionBackBuffer;
+
+    std::unique_ptr<bool[]> dynamicRegionBuffer;
+    std::unique_ptr<bool[]> dynamicRegionBackBuffer;
+
     void processBufferToOffsets();
 
     int posX;
@@ -67,8 +72,8 @@ private:
 
     glm::mat4 projection;
 
-    std::unique_ptr<float[]> offsets;
-    std::unique_ptr<float[]> ids;
+    std::unique_ptr<float[]> renderOffsets;
+    std::unique_ptr<float[]> renderIds;
 
     float quad[6*4] = {
     // positions  / texture coords
