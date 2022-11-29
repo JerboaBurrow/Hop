@@ -22,7 +22,7 @@
 */
 
 // cells rendered with marching squares
-const uint64_t RENDER_REGION_SIZE = 128*3;
+const uint64_t RENDER_REGION_SIZE = 128;
 // cells for use in on/offscreen dnamics (physics, rng, etc)
 // TODO mutliple levels of "dynamism"
 const uint64_t DYNAMICS_REGION_SIZE = 128*3;
@@ -49,6 +49,10 @@ public:
         glDeleteBuffers(1,&VBOoffset);
         glDeleteBuffers(1,&VBOid);
         glDeleteVertexArrays(1,&VAO);
+
+        glDeleteBuffers(1,&minimapVBOoffset);
+        glDeleteBuffers(1,&minimapVBOid);
+        glDeleteVertexArrays(1,&minimapVAO);
     }
 
 private:
@@ -58,22 +62,26 @@ private:
     std::unique_ptr<bool[]> renderRegionBuffer;
     std::unique_ptr<bool[]> renderRegionBackBuffer;
 
-    std::unique_ptr<bool[]> dynamicRegionBuffer;
-    std::unique_ptr<bool[]> dynamicRegionBackBuffer;
-
     void processBufferToOffsets();
 
     int posX;
     int posY;
 
+    float minimapSize = 0.25f;
+    
+
     Perlin perlin;
 
     GLuint shader, VBOquad, VBOoffset, VBOid, VAO;
+    GLuint minimapVBOoffset, minimapVBOid, minimapVAO;
 
     glm::mat4 projection;
 
     std::unique_ptr<float[]> renderOffsets;
     std::unique_ptr<float[]> renderIds;
+
+    std::unique_ptr<float[]> dynamicsOffsets;
+    std::unique_ptr<float[]> dynamicsIds;
 
     float quad[6*4] = {
     // positions  / texture coords

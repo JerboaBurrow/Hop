@@ -28,10 +28,10 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
-  "BUILD_TYPE=\"Debug\""
+  "BUILD_TYPE=\"Release\""
   "GLEW_STATIC"
   "SFML_STATIC"
-  "TIMESTAMP=\"2022-11-29:11:57:57\""
+  "TIMESTAMP=\"2022-11-29:15:29:13\""
   )
 
 # The include file search paths:
