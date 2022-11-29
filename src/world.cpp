@@ -48,14 +48,14 @@ World::World(uint64_t s, glm::mat4 p)
     posX = 0;
     posY = 0;
 
-    regionBuffer = std::make_unique<bool[]>(REGION_BUFFER_SIZE*REGION_BUFFER_SIZE);
-    regionBackBuffer = std::make_unique<bool[]>(REGION_BUFFER_SIZE*REGION_BUFFER_SIZE);
-    offsets = std::make_unique<float[]>(REGION_SIZE*REGION_SIZE*3);
-    ids = std::make_unique<float[]>(REGION_SIZE*REGION_SIZE);
+    regionBuffer = std::make_unique<bool[]>(RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE);
+    regionBackBuffer = std::make_unique<bool[]>(RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE);
+    offsets = std::make_unique<float[]>(RENDER_REGION_SIZE*RENDER_REGION_SIZE*3);
+    ids = std::make_unique<float[]>(RENDER_REGION_SIZE*RENDER_REGION_SIZE);
 
-    for (int i = 0; i < REGION_BUFFER_SIZE; i++){
-        for (int j = 0; j < REGION_BUFFER_SIZE; j++){
-            perlin.getAtCoordinate(i,j,THRESHOLD,REGION_BUFFER_SIZE,regionBuffer[i*REGION_BUFFER_SIZE+j]);
+    for (int i = 0; i < RENDER_REGION_BUFFER_SIZE; i++){
+        for (int j = 0; j < RENDER_REGION_BUFFER_SIZE; j++){
+            perlin.getAtCoordinate(i,j,THRESHOLD,RENDER_REGION_BUFFER_SIZE,regionBuffer[i*RENDER_REGION_BUFFER_SIZE+j]);
         }
     }
 
@@ -99,7 +99,7 @@ World::World(uint64_t s, glm::mat4 p)
     glBindBuffer(GL_ARRAY_BUFFER,VBOoffset);
     glBufferData(
         GL_ARRAY_BUFFER,
-        sizeof(float)*3*REGION_SIZE*REGION_SIZE,
+        sizeof(float)*3*RENDER_REGION_SIZE*RENDER_REGION_SIZE,
         offsets.get(),
         GL_STATIC_DRAW
     );
@@ -117,7 +117,7 @@ World::World(uint64_t s, glm::mat4 p)
     glBindBuffer(GL_ARRAY_BUFFER,VBOid);
     glBufferData(
         GL_ARRAY_BUFFER,
-        sizeof(float)*REGION_SIZE*REGION_SIZE,
+        sizeof(float)*RENDER_REGION_SIZE*RENDER_REGION_SIZE,
         ids.get(),
         GL_DYNAMIC_DRAW
     );
@@ -139,13 +139,13 @@ World::World(uint64_t s, glm::mat4 p)
 
 void World::processBufferToOffsets(){
     int k = 0;
-    float w = 1.0/REGION_SIZE;
-    for (int i = 0; i < REGION_SIZE; i++){
-        for (int j = 0; j < REGION_SIZE; j++){
-            uint8_t ul = regionBuffer[i*REGION_BUFFER_SIZE+j+1];
-            uint8_t ur = regionBuffer[(i+1)*REGION_BUFFER_SIZE+j+1];
-            uint8_t lr = regionBuffer[(i+1)*REGION_BUFFER_SIZE+j];
-            uint8_t ll = regionBuffer[i*REGION_BUFFER_SIZE+j];
+    float w = 1.0/RENDER_REGION_SIZE;
+    for (int i = 0; i < RENDER_REGION_SIZE; i++){
+        for (int j = 0; j < RENDER_REGION_SIZE; j++){
+            uint8_t ul = regionBuffer[i*RENDER_REGION_BUFFER_SIZE+j+1];
+            uint8_t ur = regionBuffer[(i+1)*RENDER_REGION_BUFFER_SIZE+j+1];
+            uint8_t lr = regionBuffer[(i+1)*RENDER_REGION_BUFFER_SIZE+j];
+            uint8_t ll = regionBuffer[i*RENDER_REGION_BUFFER_SIZE+j];
             uint8_t hash = ll | (lr<<1) | (ur<<2) | (ul<<3);
             // store transposed
             offsets[k*3] = j*w;
@@ -158,8 +158,8 @@ void World::processBufferToOffsets(){
 }
 
 void World::worldToCell(float x, float y, float & ix, float & iy){
-    ix = std::floor(x*float(REGION_BUFFER_SIZE));
-    iy = std::floor(y*float(REGION_BUFFER_SIZE));
+    ix = std::floor(x*float(RENDER_REGION_BUFFER_SIZE));
+    iy = std::floor(y*float(RENDER_REGION_BUFFER_SIZE));
 }
 
 void World::getWorldShell(int ox, int oy){
@@ -179,31 +179,31 @@ void World::updateRegion(float x, float y){
         return;
     }
 
-    for (int i = 0; i < REGION_BUFFER_SIZE*REGION_BUFFER_SIZE; i++){
+    for (int i = 0; i < RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE; i++){
         regionBackBuffer[i] = regionBuffer[i];
     }
 
-    for (int i = 0; i < REGION_BUFFER_SIZE; i++){
-        for (int j = 0; j < REGION_BUFFER_SIZE; j++){
+    for (int i = 0; i < RENDER_REGION_BUFFER_SIZE; i++){
+        for (int j = 0; j < RENDER_REGION_BUFFER_SIZE; j++){
             int newIx = i+ox;
             int newIy = j+oy;
-            if (newIx > 0 && newIx < REGION_BUFFER_SIZE && newIy > 0 && newIy < REGION_BUFFER_SIZE){
+            if (newIx > 0 && newIx < RENDER_REGION_BUFFER_SIZE && newIy > 0 && newIy < RENDER_REGION_BUFFER_SIZE){
                 // alread know the value, just shuffle it over!
-                regionBackBuffer[i*REGION_BUFFER_SIZE+j] = regionBuffer[newIx*REGION_BUFFER_SIZE+newIy];
+                regionBackBuffer[i*RENDER_REGION_BUFFER_SIZE+j] = regionBuffer[newIx*RENDER_REGION_BUFFER_SIZE+newIy];
             }
             else{
                 // need to sample new value
-                perlin.getAtCoordinate(newIx+posX,newIy+posY,THRESHOLD,REGION_BUFFER_SIZE,regionBackBuffer[i*REGION_BUFFER_SIZE+j]);
+                perlin.getAtCoordinate(newIx+posX,newIy+posY,THRESHOLD,RENDER_REGION_BUFFER_SIZE,regionBackBuffer[i*RENDER_REGION_BUFFER_SIZE+j]);
             }
         }
     }
 
-    for (int i = 0; i < REGION_BUFFER_SIZE*REGION_BUFFER_SIZE; i++){
+    for (int i = 0; i < RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE; i++){
         regionBuffer[i] = regionBackBuffer[i];
     }
 
     
-    //perlin.getRegion(ix,iy,THRESHOLD,REGION_BUFFER_SIZE,regionBuffer.get());
+    //perlin.getRegion(ix,iy,THRESHOLD,RENDER_REGION_BUFFER_SIZE,regionBuffer.get());
     
     processBufferToOffsets();
 
@@ -211,7 +211,7 @@ void World::updateRegion(float x, float y){
     glBufferSubData(
         GL_ARRAY_BUFFER,
         0,
-        sizeof(float)*REGION_SIZE*REGION_SIZE,
+        sizeof(float)*RENDER_REGION_SIZE*RENDER_REGION_SIZE,
         ids.get()
     );
     posX = ix;
@@ -221,47 +221,47 @@ void World::updateRegion(float x, float y){
 void World::draw(){
     glBindVertexArray(VAO);
     glUseProgram(shader);
-    glDrawArraysInstanced(GL_TRIANGLES,0,6,REGION_SIZE*REGION_SIZE);
+    glDrawArraysInstanced(GL_TRIANGLES,0,6,RENDER_REGION_SIZE*RENDER_REGION_SIZE);
 }
 
 TexturedQuad World::getMap(float r, float g, float b){
     r /= 255.0;
     b /= 255.0;
     g /= 255.0;
-    std::unique_ptr<float[]> image = std::make_unique<float[]>(REGION_SIZE*REGION_SIZE*3);
-    for (int i = 0; i < REGION_SIZE*REGION_SIZE; i++){
+    std::unique_ptr<float[]> image = std::make_unique<float[]>(RENDER_REGION_SIZE*RENDER_REGION_SIZE*3);
+    for (int i = 0; i < RENDER_REGION_SIZE*RENDER_REGION_SIZE; i++){
         float val = ids[i] > 0 ? 1 : 0;
         image[i*3] = val*r;
         image[i*3+1] = val*g;
         image[i*3+2] = val*b;
     }
 
-    TexturedQuad tQuad(REGION_SIZE,std::move(image),projection);
+    TexturedQuad tQuad(RENDER_REGION_SIZE,std::move(image),projection);
 
     return tQuad;
 }
 
 TexturedQuad World::getLocalRegionMap(){
-    uint64_t n = REGION_BUFFER_SIZE;
+    uint64_t n = RENDER_REGION_BUFFER_SIZE;
     //uint64_t m = 3*n;
     //uint64_t o = n*n*3+n;
-    bool region[REGION_BUFFER_SIZE*REGION_BUFFER_SIZE];
+    bool region[RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE];
     // select central region from 3x3 grid
     for (int i = 0; i < n; i++){
         for (int j = 0; j < n; j++){
-            region[i*REGION_BUFFER_SIZE+j] = regionBuffer[i*n+j];
+            region[i*RENDER_REGION_BUFFER_SIZE+j] = regionBuffer[i*n+j];
         }
     }
 
-    std::unique_ptr<float[]> image = std::make_unique<float[]>(REGION_BUFFER_SIZE*REGION_BUFFER_SIZE*3);
+    std::unique_ptr<float[]> image = std::make_unique<float[]>(RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE*3);
 
-    for (int i = 0; i < REGION_BUFFER_SIZE*REGION_BUFFER_SIZE; i++){
+    for (int i = 0; i < RENDER_REGION_BUFFER_SIZE*RENDER_REGION_BUFFER_SIZE; i++){
         image[i*3] = region[i];
         image[i*3+1] = 0.0f;
         image[i*3+2] = 0.0f;
     }
 
-    TexturedQuad tQuad(REGION_BUFFER_SIZE,std::move(image),projection);
+    TexturedQuad tQuad(RENDER_REGION_BUFFER_SIZE,std::move(image),projection);
     return tQuad;
 }
 
@@ -269,9 +269,9 @@ void World::save(std::string filename){
     std::ofstream of(filename+".map");
     if (!of.is_open()){return;}
     int k = 0;
-    of << REGION_SIZE << "\n";
-    for (int i = 0; i < REGION_SIZE; i++){
-        for (int j = 0; j < REGION_SIZE; j++){
+    of << RENDER_REGION_SIZE << "\n";
+    for (int i = 0; i < RENDER_REGION_SIZE; i++){
+        for (int j = 0; j < RENDER_REGION_SIZE; j++){
             of << offsets[k*3] << ", "
                << offsets[k*3+1] << ", "
                << offsets[k*3+2] << ", "
