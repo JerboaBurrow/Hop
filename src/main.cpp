@@ -32,8 +32,8 @@ double deltas[60];
 
 int main(){
 
-  Object o;
-  std::cout << o.id << "\n";
+  Object o(0.5,0.5,0.1,0.1);
+  std::cout << o.id << ", " << o.id.hash() << "\n";
 
   sf::ContextSettings contextSettings;
   contextSettings.depthBits = 24;
@@ -115,8 +115,10 @@ int main(){
 
     timer.restart();
     map.updateRegion(posX,posY);
+    camera.setPosition(posX,posY);
     double udt = timer.getElapsedTime().asSeconds();
     map.draw();
+    o.drawDebug(camera.getVP());
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;
