@@ -90,7 +90,8 @@ endif()
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB TEXT_SOURCES "src/Text/*.cpp")
-add_executable(Jerboa ${SOURCES} ${TEXT_SOURCES})
+file(GLOB OBJECT_SOURCES "src/Object/*.cpp")
+add_executable(Jerboa ${SOURCES} ${TEXT_SOURCES} ${OBJECT_SOURCES})
 
 target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
