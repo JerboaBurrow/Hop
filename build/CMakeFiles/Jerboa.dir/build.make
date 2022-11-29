@@ -350,7 +350,7 @@ Jerboa: CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/build.make
 Jerboa: libglew.a
-Jerboa: libfreetyped.a
+Jerboa: libfreetype.a
 Jerboa: /media/harvey/ExtraFiles/Jerboa/Games/Desktop/CellLists/include/SFML-2.5.1/build/lib/libsfml-graphics-s.a
 Jerboa: /usr/lib/x86_64-linux-gnu/libGL.so
 Jerboa: /usr/lib/x86_64-linux-gnu/libGLU.so
