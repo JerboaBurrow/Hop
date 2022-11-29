@@ -106,16 +106,16 @@ void Object::initialiseGL(){
     );
     glUseProgram(debugBoundsShader);
 
-    uint64_t h = id.hash() % 256*256*256;
-    uint64_t x = h % 256;
-    uint64_t y = int(std::floor(float(h)/256.0)) % 256;
-    uint64_t z = std::floor(float(h)/(256.0*256.0));
+    uint64_t h = id.hash();
+    std::default_random_engine e;
+    std::uniform_real_distribution<float> U;
+    e.seed(h);
 
     glUniform3f(
         glGetUniformLocation(debugBoundsShader,"u_colour"),
-        float(x)/255.0f,
-        float(y)/255.0f,
-        float(z)/255.0f
+        U(e),
+        U(e),
+        U(e)
     );
 
     glUniform1f(
