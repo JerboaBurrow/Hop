@@ -305,7 +305,7 @@ void World::updateRegion(float x, float y){
 
     glBindBuffer(GL_ARRAY_BUFFER,0);
     glBindBuffer(GL_ARRAY_BUFFER,minimapVBOid);
-        glBufferSubData(
+    glBufferSubData(
         GL_ARRAY_BUFFER,
         0,
         sizeof(float)*DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE,

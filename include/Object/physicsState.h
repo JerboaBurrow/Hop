@@ -24,6 +24,8 @@ struct PhysicsState {
     bool isGhost;
 
     CollisionMesh mesh;
+
+    void updateWorldMesh();
 };
 
 #endif /* PHYSICSSTATE_H */

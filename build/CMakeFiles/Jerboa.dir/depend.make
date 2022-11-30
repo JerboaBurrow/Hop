@@ -206,6 +206,11 @@ CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../src/Object/objectManage
 
 CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o: ../src/Object/objectRenderer.cpp
 
+CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o: ../include/Object/collisionMesh.h
+CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o: ../include/Object/physicsState.h
+CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o: ../include/Object/vertex.h
+CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o: ../src/Object/physicsState.cpp
+
 CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o: ../src/Object/quadTree.cpp
 
 CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o: ../include/Object/vertex.h
@@ -1095,6 +1100,7 @@ CMakeFiles/Jerboa.dir/src/gl.cpp.o: ../src/gl.cpp
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/collisionMesh.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/id.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/object.h
+CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/particle.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/physicsState.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/renderState.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/vertex.h

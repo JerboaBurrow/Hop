@@ -21,6 +21,7 @@
 #include <texturedQuad.h>
 #include <World/world.h>
 #include <Object/object.h>
+#include <Object/particle.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -32,7 +33,7 @@ double deltas[60];
 
 int main(){
 
-  Object o(0.5,0.5,0.1,0.1);
+  Particle o(0.5,0.5,1.0/256.0);
   std::cout << o.id << ", " << o.id.hash() << "\n";
 
   sf::ContextSettings contextSettings;
@@ -52,6 +53,9 @@ int main(){
   glewInit();
 
   uint8_t debug = 0;
+
+  glEnable(GL_PROGRAM_POINT_SIZE);
+  glEnable(GL_POINT_SPRITE);
 
   // for freetype rendering
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
