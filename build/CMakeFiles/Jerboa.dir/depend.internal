@@ -206,6 +206,11 @@ CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o
  /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectManager.cpp
 CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o
  /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectRenderer.cpp
+CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o
+ ../include/Object/collisionMesh.h
+ ../include/Object/physicsState.h
+ ../include/Object/vertex.h
+ /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/physicsState.cpp
 CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o
  /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/quadTree.cpp
 CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o
@@ -1096,6 +1101,7 @@ CMakeFiles/Jerboa.dir/src/main.cpp.o
  ../include/Object/collisionMesh.h
  ../include/Object/id.h
  ../include/Object/object.h
+ ../include/Object/particle.h
  ../include/Object/physicsState.h
  ../include/Object/renderState.h
  ../include/Object/vertex.h

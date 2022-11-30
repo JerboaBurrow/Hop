@@ -1,14 +1,32 @@
 #include <Object/object.h>
+#include <iostream>
+
+const char * circleVertexShader = "#version 330 core\n"
+    "layout(location=0) in vec4 a_position;\n"
+    "layout(location=1) in vec3 a_offset;\n"
+    "uniform mat4 proj;\n"
+    "out vec2 texCoord;\n"
+    "void main(){\n"
+    "gl_Position = proj*vec4(a_offset.z*a_position.xy+a_offset.xy,0.0,1.0);\n"
+    "texCoord = a_position.zw;\n"
+    "}";
+
+const char * circleFragmentShader = "#version 330 core\n"
+    "uniform vec4 u_colour;\n"
+    "in vec2 texCoord;\n"
+    "out vec4 colour;\n"
+    "void main(void){"
+    "   vec2 c = texCoord-vec2(0.5,0.5);\n"
+    "   if (dot(c,c) > 0.5*0.5) {discard;}\n"
+    "   colour = u_colour;\n"
+    "}\n";
 
 const char * boundsVertexShader = "#version 330 core\n"
     "layout(location=0) in vec2 a_position;\n"
     "uniform mat4 proj;\n"
     "uniform vec4 u_offset;\n"
     "void main(){\n"
-    "float c = cos(u_offset.z); float s = sin(u_offset.z);"
-    "float x = a_position.x*c + a_position.y*s;"
-    "float y = a_position.y*c - a_position.x*s;"
-    "gl_Position = proj*vec4(u_offset.w*vec2(x,y)+u_offset.xy,0.0,1.0);\n"
+    "gl_Position = proj*vec4(u_offset.w*a_position.xy+u_offset.xy,0.0,1.0);\n"
     "}";
 
 const char * boundsFragmentShader = "#version 330 core\n"
@@ -43,6 +61,40 @@ void Object::drawDebug(glm::mat4 & proj){
     glDrawArrays(GL_TRIANGLES,0,6);
     glBindVertexArray(0);
 
+    glBindVertexArray(meshVAO);
+    glUseProgram(debugMeshShader);
+    glUniformMatrix4fv(
+        glGetUniformLocation(debugMeshShader, "proj"),
+        1, false, &proj[0][0]
+    );
+
+    for (int i = 0; i < state.mesh.size(); i++){
+        meshVertices[i*3] = state.mesh[i].x-state.mesh[i].r/2.0;
+        meshVertices[i*3+1] = state.mesh[i].y-state.mesh[i].r/2.0;
+        meshVertices[i*3+2] = state.mesh[i].r;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER,meshVBO);
+
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        3*MAX_MESH_VERTICES*sizeof(float),
+        meshVertices.get(),
+        GL_STATIC_DRAW
+    );
+
+    glError("mesh upddate");
+
+    glDrawArraysInstanced(
+        GL_TRIANGLES,
+        0,
+        6,
+        state.mesh.size()
+    );
+    glError("mesh drawing");
+
+    glBindVertexArray(0);
+
 }
 
 void Object::updateRenderState(){
@@ -74,6 +126,7 @@ void Object::initialiseGL(){
     glGenBuffers(1,&boundsVBO);
     glGenVertexArrays(1,&meshVAO);
     glGenBuffers(1,&meshVBO);
+    glGenBuffers(1,&meshQuadVBO);
     debugBoundsShader = glCreateProgram();
     debugMeshShader = glCreateProgram();
 
@@ -131,6 +184,78 @@ void Object::initialiseGL(){
         renderState.os
     );
 
+    glError("rect drawing");
+
+    // mesh drawing
+
+    meshQuad = std::make_unique<float[]>(4*6);
+    meshVertices = std::make_unique<float[]>(MAX_MESH_VERTICES*3);
+
+    for (int i = 0; i < state.mesh.size(); i++){
+        meshVertices[i*3] = state.mesh[i].x-state.mesh[i].r/2.0;
+        meshVertices[i*3+1] = state.mesh[i].y-state.mesh[i].r/2.0;
+        meshVertices[i*3+2] = state.mesh[i].r;
+    }
+
+    meshQuad[0] = 1.0f; meshQuad[1] = 1.0f; meshQuad[2] = 1.0f; meshQuad[3] = 1.0f;
+    meshQuad[4] = 1.0f; meshQuad[5] = 0.0f; meshQuad[6] = 1.0f; meshQuad[7] = 0.0f;
+    meshQuad[8] = 0.0f; meshQuad[9] = 0.0f; meshQuad[10] = 0.0f; meshQuad[11] = 0.0f;
+    meshQuad[12] = 0.0f; meshQuad[13] = 1.0f; meshQuad[14] = 0.0f; meshQuad[15] = 1.0f;
+    meshQuad[16] = 0.0f; meshQuad[17] = 0.0f; meshQuad[18] = 0.0f; meshQuad[19] = 0.0f;
+    meshQuad[20] = 1.0f; meshQuad[21] = 1.0f; meshQuad[22] = 1.0f; meshQuad[23] = 1.0f;
+
+    glBindVertexArray(0);
+    glBindVertexArray(meshVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER,meshQuadVBO);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        4*6*sizeof(float),
+        meshQuad.get(),
+        GL_DYNAMIC_DRAW
+    );
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(
+        0,
+        4,
+        GL_FLOAT,
+        false,
+        4*sizeof(float),
+        0
+    );
+    glVertexAttribDivisor(0,0);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+
+    glBindBuffer(GL_ARRAY_BUFFER,meshVBO);
+    glBufferData(
+        GL_ARRAY_BUFFER,
+        3*MAX_MESH_VERTICES*sizeof(float),
+        meshVertices.get(),
+        GL_DYNAMIC_DRAW
+    );
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(
+        1,
+        3,
+        GL_FLOAT,
+        false,
+        3*sizeof(float),
+        0
+    );
+    glVertexAttribDivisor(1,1);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindVertexArray(0);
+
+    compileShader(debugMeshShader,circleVertexShader,circleFragmentShader);
+
+    glUseProgram(debugMeshShader);
+
+    glUniform4f(
+        glGetUniformLocation(debugMeshShader,"u_colour"),
+        0.0f,0.0f,1.0f,1.0f
+    );
+    glError("mesh drawing");
+
     glInitialised = true;
 }
 
@@ -144,9 +269,29 @@ void Object::freeGL(){
     glDeleteVertexArrays(1,&meshVAO);
     glDeleteBuffers(1,&boundsVBO);
     glDeleteBuffers(1,&boundsVAO);
+    glDeleteBuffers(1,&meshQuadVBO);
 
     boundsVertices.reset();
     meshVertices.reset();
+    meshQuad.reset();
 
     glInitialised = false;
+}
+
+CollisionVertex Object::getCollisionVertex(uint8_t i){ 
+    return state.mesh[i];
+}
+
+void Object::setPosition(double x, double y){
+    state.x = x;
+    state.y = y;
+    state.lastX = x;
+    state.lastY = y;
+
+    state.updateWorldMesh();
+}
+
+void Object::setScale(double s){
+    state.scale = s;
+    state.updateWorldMesh();
 }

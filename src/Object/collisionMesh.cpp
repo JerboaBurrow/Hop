@@ -55,3 +55,19 @@ CollisionMesh::CollisionMesh(std::vector<Vertex> v, double r){
         }
     }
 }
+
+void CollisionMesh::updateWorldMesh(
+    double x,
+    double y,
+    double theta, 
+    double scale
+){
+    double c = std::cos(theta);
+    double s = std::sin(theta);
+    worldVertices = vertices;
+    for (int i = 0; i < vertices.size(); i++){
+        worldVertices[i].x = (vertices[i].x * c + vertices[i].y*s)*scale+x;
+        worldVertices[i].y = (vertices[i].y*c-vertices[i].x*s)*scale+y;
+        worldVertices[i].r = vertices[i].r*scale;
+    }
+}

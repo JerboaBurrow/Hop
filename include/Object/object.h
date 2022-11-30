@@ -7,6 +7,8 @@
 #include <gl.h>
 #include <memory>
 
+const uint32_t MAX_MESH_VERTICES = 128;
+
 struct Rectangle{
     Rectangle()
     : x(0.),y(0.),w(0.),h(0.)
@@ -28,7 +30,7 @@ public:
     Object()
     {}
     Object(float x, float y, float w, float h, bool ghost = false)
-    : boundingRectangle(x,y,w,h),
+    : boundingRectangle(x-w/2.0,y-h/2.0,w,h),
       state(x,y,0.0,ghost),
       renderState(x,y,0.0,1.0),
       glInitialised(false)
@@ -36,9 +38,21 @@ public:
     Id id;
 
     void drawDebug(glm::mat4 & proj);
+
+    // setters
+    virtual void setPosition(double x, double y);
+    virtual void setScale(double s);
+    // getters
+    size_t getCollisionMeshSize(){return state.mesh.size();}
+    CollisionVertex getCollisionVertex(uint8_t i);
+
     ~Object(){
         freeGL();
     }
+
+protected:
+    PhysicsState state;
+    RenderState renderState;
 
 private:
 
@@ -46,13 +60,11 @@ private:
     bool glInitialised;
 
     GLuint debugBoundsShader, boundsVAO, boundsVBO;
-    GLuint debugMeshShader, meshVAO, meshVBO;
+    GLuint debugMeshShader, meshVAO, meshVBO, meshQuadVBO;
 
     Rectangle boundingRectangle;
-    PhysicsState state;
-    RenderState renderState;
 
-    std::unique_ptr<float[]> boundsVertices, meshVertices;
+    std::unique_ptr<float[]> boundsVertices, meshVertices, meshQuad;
 
     void initialiseGL();
     void updateRenderState();
