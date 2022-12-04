@@ -45,10 +45,9 @@ const char * marchingQuadFragmentShader = "#version 330 core\n"
     "if (id == 15) {true;}"
   "\n}";
 
-World::World(uint64_t s, glm::mat4 p)
-: perlin(s,0.07,5.0,5.0,256)
+PerlinWorld::PerlinWorld(uint64_t s, glm::mat4 p)
+: World(s), perlin(s,0.07,5.0,5.0,256)
 {
-    seed = s;
     projection = p;
     posX = 0;
     posY = 0;
@@ -213,7 +212,7 @@ World::World(uint64_t s, glm::mat4 p)
     glBufferStatus("World constructor");
 }
 
-void World::processBufferToOffsets(){
+void PerlinWorld::processBufferToOffsets(){
     int k = 0;
     float w = 1.0/RENDER_REGION_SIZE;
     for (int i = RENDER_REGION_SIZE; i < RENDER_REGION_SIZE*2; i++){
@@ -251,12 +250,12 @@ void World::processBufferToOffsets(){
     }
 }
 
-void World::worldToCell(float x, float y, float & ix, float & iy){
+void PerlinWorld::worldToCell(float x, float y, float & ix, float & iy){
     ix = std::floor(x*float(RENDER_REGION_BUFFER_SIZE));
     iy = std::floor(y*float(RENDER_REGION_BUFFER_SIZE));
 }
 
-void World::updateRegion(float x, float y){
+void PerlinWorld::updateRegion(float x, float y){
     float ix, iy;
     worldToCell(x,y,ix,iy);
     int tmp = ix;
@@ -316,7 +315,7 @@ void World::updateRegion(float x, float y){
     posY = iy;
 }
 
-void World::draw(){
+void PerlinWorld::draw(){
     glBindVertexArray(VAO);
     glUseProgram(shader);
     glUniform1f(
@@ -354,7 +353,7 @@ void World::draw(){
     glBindVertexArray(0);
 }
 
-TexturedQuad World::getMap(float r, float g, float b){
+TexturedQuad PerlinWorld::getMap(float r, float g, float b){
     r /= 255.0;
     b /= 255.0;
     g /= 255.0;
@@ -371,7 +370,7 @@ TexturedQuad World::getMap(float r, float g, float b){
     return tQuad;
 }
 
-TexturedQuad World::getLocalRegionMap(){
+TexturedQuad PerlinWorld::getLocalRegionMap(){
     uint64_t n = DYNAMICS_REGION_BUFFER_SIZE;
     //uint64_t m = 3*n;
     //uint64_t o = n*n*3+n;
@@ -395,7 +394,7 @@ TexturedQuad World::getLocalRegionMap(){
     return tQuad;
 }
 
-void World::save(std::string filename){
+void PerlinWorld::save(std::string filename){
     std::ofstream of(filename+".map");
     if (!of.is_open()){return;}
     int k = 0;

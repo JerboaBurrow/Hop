@@ -71,3 +71,7 @@ void CollisionMesh::updateWorldMesh(
         worldVertices[i].r = vertices[i].r*scale;
     }
 }
+
+bool operator==(const CollisionVertex & lhs, const CollisionVertex & rhs){
+    return lhs.x == rhs.x && lhs.x == rhs.y && lhs.r == rhs.r;
+}

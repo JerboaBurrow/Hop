@@ -14,6 +14,9 @@ struct Id {
     size_t hash(){return std::hash<uuids::uuid>{}(id);}
 
     const uuids::uuid id;
+
+    bool operator==( Id const & rhs ) const {return this->id == id;}
+    operator std::string(){return uuids::to_string(id);}
 };
 
 std::ostream & operator<<(std::ostream & os, Id const & value);

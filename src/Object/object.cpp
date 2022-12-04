@@ -278,7 +278,7 @@ void Object::freeGL(){
     glInitialised = false;
 }
 
-CollisionVertex Object::getCollisionVertex(uint8_t i){ 
+CollisionVertex Object::getCollisionVertex(uint8_t i) { 
     return state.mesh[i];
 }
 

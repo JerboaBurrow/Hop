@@ -6,6 +6,20 @@
 
 #IncludeRegexTransform: 
 
+../include/Object/cellList.h
+Object/collisionDetector.h
+-
+memory
+-
+utility
+-
+
+../include/Object/collisionDetector.h
+Object/collisionResolver.h
+-
+Object/objectManager.h
+-
+
 ../include/Object/collisionMesh.h
 vector
 -
@@ -14,6 +28,10 @@ cmath
 Object/vertex.h
 -
 limits
+-
+
+../include/Object/collisionResolver.h
+string
 -
 
 ../include/Object/id.h
@@ -34,6 +52,26 @@ gl.h
 memory
 -
 
+../include/Object/objectManager.h
+World/world.h
+-
+Object/object.h
+-
+Object/id.h
+-
+Object/objectRenderer.h
+-
+Object/collisionDetector.h
+-
+Object/collisionResolver.h
+-
+unordered_map
+-
+string
+-
+
+../include/Object/objectRenderer.h
+
 ../include/Object/particle.h
 
 ../include/Object/physicsState.h
@@ -41,6 +79,14 @@ Object/collisionMesh.h
 -
 
 ../include/Object/renderState.h
+
+../include/Object/springDashpotResolver.h
+Object/collisionResolver.h
+-
+cmath
+-
+Object/objectManager.h
+-
 
 ../include/Object/vertex.h
 cmath
@@ -2113,6 +2159,8 @@ SFML/Config.hpp
 /media/harvey/ExtraFiles/Jerboa/Games/Desktop/CellLists/include/SFML-2.5.1/include/SFML/Window/WindowStyle.hpp
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/cellList.cpp
+Object/cellList.h
+-
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionDetector.cpp
 
@@ -2133,6 +2181,8 @@ iostream
 -
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectManager.cpp
+Object/objectManager.h
+-
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectRenderer.cpp
 
@@ -2141,6 +2191,12 @@ Object/physicsState.h
 -
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/quadTree.cpp
+
+/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/springDashotResolver.cpp
+Object/springDashpotResolver.h
+-
+Object/collisionMesh.h
+-
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/vertex.cpp
 Object/vertex.h
@@ -2206,6 +2262,8 @@ World/world.h
 Object/object.h
 -
 Object/particle.h
+-
+Object/objectManager.h
 -
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/perlin.cpp

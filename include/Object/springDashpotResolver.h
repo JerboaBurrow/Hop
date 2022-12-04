@@ -1,0 +1,43 @@
+#ifndef SPRINGDASHPOTRESOLVER_H
+#define SPRINGDASHPOTRESOLVER_H
+
+#include <Object/collisionResolver.h>
+#include <cmath>
+#include <Object/objectManager.h>
+
+class SpringDashpot : public CollisionResolver {
+public:
+    SpringDashpot(
+        double tc,
+        double cor
+    )
+    {
+        updateParameters(tc,cor);
+    }
+
+    void handleObjectCollision(
+        std::string oi, std::string oj,
+        uint64_t pi, uint64_t pj,
+        ObjectManager * manager
+    );
+
+    void handleWorldCollision(
+        uint64_t i,
+        ObjectManager * manager,
+        World * world
+    );
+    
+    void updateParameters(
+        double tc,
+        double cor
+    );
+
+private:
+
+    double collisionTime, coefficientOfRestitution;
+
+    // pre-calculated collision parameters
+    double alpha, beta;
+};
+
+#endif /* SPRINGDASHPOTRESOLVER_H */
