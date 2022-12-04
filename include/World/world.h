@@ -9,6 +9,34 @@
 #include <fstream>
 #include <memory>
 
+class CollisionDetector;
+
+// cells rendered with marching squares
+const uint64_t RENDER_REGION_SIZE = 128;
+// cells for use in on/offscreen dnamics (physics, rng, etc)
+// TODO mutliple levels of "dynamism"
+const uint64_t DYNAMICS_REGION_SIZE = 128*3;
+// underlying map +1 to account for marching squares
+const uint64_t RENDER_REGION_BUFFER_SIZE = RENDER_REGION_SIZE+1;
+const uint64_t DYNAMICS_REGION_BUFFER_SIZE = DYNAMICS_REGION_SIZE+1;
+
+class World {
+public:
+    friend class CollisionDetector;
+
+    World(uint64_t s)
+    : seed(s)
+    {}
+    virtual void draw() = 0;
+    virtual void save(std::string filename) = 0;
+
+protected:
+    std::unique_ptr<float[]> dynamicsOffsets;
+    std::unique_ptr<float[]> dynamicsIds;
+
+    uint64_t seed;
+};
+
 /*
 
     Notes:
@@ -21,29 +49,20 @@
 
 */
 
-// cells rendered with marching squares
-const uint64_t RENDER_REGION_SIZE = 128;
-// cells for use in on/offscreen dnamics (physics, rng, etc)
-// TODO mutliple levels of "dynamism"
-const uint64_t DYNAMICS_REGION_SIZE = 128*3;
-// underlying map +1 to account for marching squares
-const uint64_t RENDER_REGION_BUFFER_SIZE = RENDER_REGION_SIZE+1;
-const uint64_t DYNAMICS_REGION_BUFFER_SIZE = DYNAMICS_REGION_SIZE+1;
-
 const float THRESHOLD = 0.2;
 
-class World {
+class PerlinWorld : public World {
 
 public:
-    World(uint64_t s, glm::mat4 p);
+    PerlinWorld(uint64_t s, glm::mat4 p);
     void draw();
+    void save(std::string filename);
     TexturedQuad getMap(float r = 176., float g = 176., float b = 176.);
     TexturedQuad getLocalRegionMap();
-    void save(std::string filename);
     void updateRegion(float x, float y);
     void worldToCell(float x, float y, float & ix, float & iy);
 
-    ~World(){
+    ~PerlinWorld(){
         glDeleteProgram(shader);
         glDeleteBuffers(1,&VBOquad);
         glDeleteBuffers(1,&VBOoffset);
@@ -57,7 +76,7 @@ public:
 
 private:
 
-    uint64_t seed;
+    glm::mat4 projection;
     
     std::unique_ptr<bool[]> renderRegionBuffer;
     std::unique_ptr<bool[]> renderRegionBackBuffer;
@@ -75,13 +94,8 @@ private:
     GLuint shader, VBOquad, VBOoffset, VBOid, VAO;
     GLuint minimapVBOoffset, minimapVBOid, minimapVAO;
 
-    glm::mat4 projection;
-
     std::unique_ptr<float[]> renderOffsets;
     std::unique_ptr<float[]> renderIds;
-
-    std::unique_ptr<float[]> dynamicsOffsets;
-    std::unique_ptr<float[]> dynamicsIds;
 
     float quad[6*4] = {
     // positions  / texture coords

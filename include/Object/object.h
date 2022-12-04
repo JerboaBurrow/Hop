@@ -33,7 +33,8 @@ public:
     : boundingRectangle(x-w/2.0,y-h/2.0,w,h),
       state(x,y,0.0,ghost),
       renderState(x,y,0.0,1.0),
-      glInitialised(false)
+      glInitialised(false),
+      ghost(ghost)
     {}
     Id id;
 
@@ -42,9 +43,11 @@ public:
     // setters
     virtual void setPosition(double x, double y);
     virtual void setScale(double s);
+    void setGhost(bool b){ghost = b;}
     // getters
     size_t getCollisionMeshSize(){return state.mesh.size();}
     CollisionVertex getCollisionVertex(uint8_t i);
+    bool isGhost(){return ghost;}
 
     ~Object(){
         freeGL();
@@ -58,6 +61,7 @@ private:
 
     bool debug;
     bool glInitialised;
+    bool ghost;
 
     GLuint debugBoundsShader, boundsVAO, boundsVBO;
     GLuint debugMeshShader, meshVAO, meshVBO, meshQuadVBO;

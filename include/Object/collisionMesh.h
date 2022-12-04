@@ -17,7 +17,11 @@ struct CollisionVertex {
     double x;
     double y;
     double r;
+
+
 };
+
+bool operator==(const CollisionVertex & lhs, const CollisionVertex & rhs);
 
 const CollisionVertex NULL_COLLISION_VERTEX = CollisionVertex(
     std::numeric_limits<double>::quiet_NaN(),

@@ -22,6 +22,7 @@
 #include <World/world.h>
 #include <Object/object.h>
 #include <Object/particle.h>
+#include <Object/objectManager.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -80,7 +81,7 @@ int main(){
   sf::Clock timer;
   timer.restart();
 
-  World map(2,camera.getVP());
+  PerlinWorld map(2,camera.getVP());
 
   float posX = 0.0;
   float posY = 0.0;
