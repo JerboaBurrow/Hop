@@ -1,5 +1,6 @@
 #include <Object/springDashpotResolver.h>
 #include <Object/collisionMesh.h>
+#include <Object/vertex.h>
 
 void SpringDashpot::handleObjectCollision(
     std::string oi, std::string oj,
@@ -8,18 +9,19 @@ void SpringDashpot::handleObjectCollision(
 ){
     if (oi == oj){return;}
 
-    double ix, iy, jx, jy, rx, ry, dd, rc, meff, kr, kd;
+    double ix, iy, jx, jy, rx, ry, dd, rc, meff, kr, kd, d;
+    double nx, ny, nxt, nyt, ddot, mag, vnorm, fx, fy;
 
-    Object & obi = manager->getObject(oi);
-    Object & obj = manager->getObject(oj);
+    std::shared_ptr<Object> obi = manager->getObject(oi);
+    std::shared_ptr<Object> obj = manager->getObject(oj);
 
-    CollisionVertex ci = obi.getCollisionVertex(pi);
-    CollisionVertex cj = obj.getCollisionVertex(pj);
+    CollisionVertex ci = obi.get()->getCollisionVertex(pi);
+    CollisionVertex cj = obj.get()->getCollisionVertex(pj);
 
     bool gi, gj;
 
-    gi = obi.isGhost();
-    gj = obj.isGhost();
+    gi = obi.get()->isGhost();
+    gj = obj.get()->isGhost();
 
     ix = ci.x;
     iy = ci.y;
@@ -32,8 +34,32 @@ void SpringDashpot::handleObjectCollision(
     rc = ci.r+cj.r;
     if (dd < rc*rc){
 
-        if (gi || gj){manager->collisionCallback(oi,oj);}
+        if (gi || gj){manager->collisionCallback(oi,oj); return;}
         
+        meff = 1.0 / (1.0/obi.get()->getMass()+1.0/obj.get()->getMass());
+        kr = meff*alpha;
+        kd = 2.0*meff*beta;
+        d = std::sqrt(dd);
+        nx = rx / d;
+        ny = ry / d;
+        Vertex vr = obi.get()->getVelocity(ix,iy)-obj.get()->getVelocity(jx,jy);
+        nxt = ny;
+        nyt = -nx;
+        ddot = nx*vr.x+ny*vr.y;
+
+        vnorm = norm(vr);
+
+        if ( (-nxt*vr.x-nyt*vr.y) < (nxt*vr.x+nyt*vr.y) ){
+            nxt *= -1.0;
+            nyt *= -1.0;
+        }
+
+        mag = -kr*(rc-d)-kd*ddot;
+
+        fx = mag*nx+friction*std::abs(mag)*nxt;
+        fy = mag*ny+friction*std::abs(mag)*nyt;
+
+        manager->collisionCallback(oi,oj);
     }
 }
 

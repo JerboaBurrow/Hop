@@ -9,10 +9,12 @@ class SpringDashpot : public CollisionResolver {
 public:
     SpringDashpot(
         double tc,
-        double cor
+        double cor,
+        double f
     )
     {
         updateParameters(tc,cor);
+        friction = f;
     }
 
     void handleObjectCollision(
@@ -37,7 +39,7 @@ private:
     double collisionTime, coefficientOfRestitution;
 
     // pre-calculated collision parameters
-    double alpha, beta;
+    double alpha, beta, friction;
 };
 
 #endif /* SPRINGDASHPOTRESOLVER_H */

@@ -40,8 +40,8 @@ public:
     : collisionCallback(callback)
     {}
 
-    void add(Object & o);
-    void add(Object & o, std::string handle);
+    void add(std::shared_ptr<Object> o);
+    void add(std::shared_ptr<Object> o, std::string handle);
 
     void remove(Id id);
     void remove(std::string handle);
@@ -49,8 +49,8 @@ public:
     void step(double delta, World * world);
     void draw(bool debug);
 
-    std::unordered_map<std::string,Object> * getObjects(){return &objects;}
-    Object & getObject(std::string name);
+    std::unordered_map<std::string,std::shared_ptr<Object>> * getObjects(){return &objects;}
+    std::shared_ptr<Object> getObject(std::string name);
 
     CollisionCallback collisionCallback;
 
@@ -58,7 +58,7 @@ private:
 
     friend class ObjectRenderer;
 
-    std::unordered_map<std::string,Object> objects;
+    std::unordered_map<std::string,std::shared_ptr<Object>> objects;
 
     ObjectRenderer * renderer;
     CollisionDetector * detector;

@@ -73,6 +73,10 @@ string
 ../include/Object/objectRenderer.h
 
 ../include/Object/particle.h
+Object/object.h
+-
+Object/vertex.h
+-
 
 ../include/Object/physicsState.h
 Object/collisionMesh.h
@@ -2186,6 +2190,10 @@ Object/objectManager.h
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectRenderer.cpp
 
+/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/particle.cpp
+Object/particle.h
+-
+
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/physicsState.cpp
 Object/physicsState.h
 -
@@ -2196,6 +2204,8 @@ Object/physicsState.h
 Object/springDashpotResolver.h
 -
 Object/collisionMesh.h
+-
+Object/vertex.h
 -
 
 /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/vertex.cpp

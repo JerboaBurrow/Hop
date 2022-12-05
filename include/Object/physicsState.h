@@ -19,6 +19,11 @@ struct PhysicsState {
     double lastY;
     double lastTheta;
 
+    double vx;
+    double vy;
+
+    double mass;
+
     double scale;
 
     bool isGhost;

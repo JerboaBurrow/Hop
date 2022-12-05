@@ -1,6 +1,6 @@
 #include <Object/objectManager.h>
 
-Object & ObjectManager::getObject(std::string name){
+std::shared_ptr<Object> ObjectManager::getObject(std::string name){
     return objects[name];
 }
 
