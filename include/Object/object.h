@@ -48,6 +48,9 @@ public:
     size_t getCollisionMeshSize(){return state.mesh.size();}
     CollisionVertex getCollisionVertex(uint8_t i);
     bool isGhost(){return ghost;}
+    double getMass(){return state.mass;}
+    Vertex getVelocity(){return Vertex(state.vx,state.vy);}
+    virtual Vertex getVelocity(double x, double y) = 0;
 
     ~Object(){
         freeGL();
