@@ -1,50 +1,6 @@
 #include <World/world.h>
 #include <iostream>
 
-const char * marchingQuadVertexShader = "#version 330 core\n"
-  "layout(location=0) in vec4 a_position;\n"
-  "layout(location=1) in vec3 a_offset;\n"
-  "layout(location=2) in float a_id;\n"
-  "uniform float u_scale;\n"
-  "out vec2 texCoord;\n"
-  "flat out int id;\n"
-  "uniform mat4 proj;\n"
-  "void main(){\n"
-  " vec4 pos = proj*vec4(a_position.xy*a_offset.z*u_scale+a_offset.xy,0.0,1.0);\n"
-  " gl_Position = pos;\n"
-  " id = int(a_id);\n"
-  // transposed texs
-  " texCoord = a_position.wz;\n"
-  "}";
-
-const char * marchingQuadFragmentShader = "#version 330 core\n"
-  "in vec2 texCoord;\n"
-  "flat in int id;\n"
-  "uniform float u_alpha;\n"
-  "uniform int u_transparentBackground;\n"
-  "uniform vec3 u_background;\n"
-  "out vec4 colour;\n"
-  "void background(){if(u_transparentBackground==1){discard;}else{colour=vec4(u_background,u_alpha);}}\n"
-  "void main(){"
-    "colour=vec4(1.,0.,0.,u_alpha);"
-    "if (id == 0){background();}\n"
-    "if (id == 1 && texCoord.x+texCoord.y > 0.5) {background();}"
-    "if (id == 2 && (1.0-texCoord.x)+texCoord.y > 0.5) {background();}"
-    "if (id == 3 && texCoord.y > 0.5) {background();}"
-    "if (id == 4 && texCoord.x+(texCoord.y-1.0)<0.5) {background();}"
-    "if (id == 5 && (texCoord.x+(1.0-texCoord.y)<0.5 || (1.0-texCoord.x)+texCoord.y < 0.5)) {background();}"
-    "if (id == 6 && texCoord.x < 0.5) {background();}"
-    "if (id == 7 && texCoord.x + (1.0-texCoord.y) < 0.5) {background();}"
-    "if (id == 8 && texCoord.x + (1.0-texCoord.y) > 0.5) {background();}"
-    "if (id == 9 && texCoord.x > 0.5) {background();}"
-    "if (id == 10 && ( ( (1.0-texCoord.x)+(1.0-texCoord.y) < 0.5) || (texCoord.x+texCoord.y<0.5) )) {background();}"
-    "if (id == 11 && (1.0-texCoord.x)+(1.0-texCoord.y)<0.5) {background();}"
-    "if (id == 12 && texCoord.y < 0.5) {background();}"
-    "if (id == 13 && (1.0-texCoord.x)+texCoord.y < 0.5) {background();}"
-    "if (id == 14 && texCoord.x+texCoord.y < 0.5) {background();}"
-    "if (id == 15) {true;}"
-  "\n}";
-
 PerlinWorld::PerlinWorld(uint64_t s, glm::mat4 p)
 : World(s), perlin(s,0.07,5.0,5.0,256)
 {
@@ -67,17 +23,6 @@ PerlinWorld::PerlinWorld(uint64_t s, glm::mat4 p)
     }
 
     processBufferToOffsets();
-
-    shader = glCreateProgram();
-    compileShader(shader,marchingQuadVertexShader,marchingQuadFragmentShader);
-    glUseProgram(shader);
-
-    glUniformMatrix4fv(
-        glGetUniformLocation(shader,"proj"),
-        1,
-        GL_FALSE,
-        &projection[0][0]
-    );
 
     glGenVertexArrays(1,&VAO);
     glGenBuffers(1,&VBOoffset);
@@ -318,6 +263,7 @@ void PerlinWorld::updateRegion(float x, float y){
 void PerlinWorld::draw(Shader & s){
     glBindVertexArray(VAO);
     s.use();
+    s.setMatrix4x4(projection, "proj");
     s.set1f(1.0f,"u_alpha");
     s.set1f(1.0f,"u_scale");
     s.set1i(1,"u_transparentBackground");
@@ -335,44 +281,8 @@ void PerlinWorld::draw(Shader & s){
 
     glDrawArraysInstanced(GL_TRIANGLES,0,6,DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE);
     glBindVertexArray(0);
-}
 
-void PerlinWorld::draw(){
-    glBindVertexArray(VAO);
-    glUseProgram(shader);
-    glUniform1f(
-        glGetUniformLocation(shader,"u_alpha"),1.0f
-    );
-    glUniform1f(
-        glGetUniformLocation(shader,"u_scale"),1.0f
-    );
-    glUniform1i(
-        glGetUniformLocation(shader,"u_transparentBackground"),1
-    );
-    glUniform3f(
-        glGetUniformLocation(shader,"u_background"),
-        1.0f,1.0f,1.0f
-    );
-    glDrawArraysInstanced(GL_TRIANGLES,0,6,RENDER_REGION_SIZE*RENDER_REGION_SIZE);
-
-    glBindVertexArray(0);
-    glBindVertexArray(minimapVAO);
-
-    glUniform1f(
-        glGetUniformLocation(shader,"u_alpha"),1.0f
-    );
-    glUniform1f(
-        glGetUniformLocation(shader,"u_scale"),1.0f
-    );
-    glUniform1i(
-        glGetUniformLocation(shader,"u_transparentBackground"),0
-    );
-    glUniform3f(
-        glGetUniformLocation(shader,"u_background"),
-        1.0f,1.0f,1.0f
-    );
-    glDrawArraysInstanced(GL_TRIANGLES,0,6,DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE);
-    glBindVertexArray(0);
+    glError("World::draw()");
 }
 
 TexturedQuad PerlinWorld::getMap(float r, float g, float b){
