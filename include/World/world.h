@@ -28,12 +28,10 @@ public:
     World(uint64_t s)
     : seed(s)
     {}
-    virtual void draw() = 0;
+    virtual void draw(Shader & s) = 0;
     virtual void save(std::string filename) = 0;
 
 protected:
-    std::unique_ptr<float[]> dynamicsOffsets;
-    std::unique_ptr<float[]> dynamicsIds;
 
     uint64_t seed;
 };
@@ -56,7 +54,6 @@ class PerlinWorld : public World {
 
 public:
     PerlinWorld(uint64_t s, glm::mat4 p);
-    void draw();
     void draw(Shader & s);
     void save(std::string filename);
     TexturedQuad getMap(float r = 176., float g = 176., float b = 176.);
@@ -65,7 +62,6 @@ public:
     void worldToCell(float x, float y, float & ix, float & iy);
 
     ~PerlinWorld(){
-        glDeleteProgram(shader);
         glDeleteBuffers(1,&VBOquad);
         glDeleteBuffers(1,&VBOoffset);
         glDeleteBuffers(1,&VBOid);
@@ -83,6 +79,9 @@ private:
     std::unique_ptr<bool[]> renderRegionBuffer;
     std::unique_ptr<bool[]> renderRegionBackBuffer;
 
+    std::unique_ptr<float[]> dynamicsOffsets;
+    std::unique_ptr<float[]> dynamicsIds;
+
     void processBufferToOffsets();
 
     int posX;
@@ -93,7 +92,7 @@ private:
 
     Perlin perlin;
 
-    GLuint shader, VBOquad, VBOoffset, VBOid, VAO;
+    GLuint VBOquad, VBOoffset, VBOid, VAO;
     GLuint minimapVBOoffset, minimapVBOid, minimapVAO;
 
     std::unique_ptr<float[]> renderOffsets;

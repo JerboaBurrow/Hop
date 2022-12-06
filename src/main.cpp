@@ -37,7 +37,6 @@ Shaders shaderPool;
 int main(){
 
   std::shared_ptr<Particle> o = std::make_unique<Particle>(0.5,0.5,1.0/256.0);
-  //shaderPool.add(Shader(marchingQuadFragmentShader,marchingQuadVertexShader),"mapShader");
 
   sf::ContextSettings contextSettings;
   contextSettings.depthBits = 24;
@@ -88,6 +87,9 @@ int main(){
   float posX = 0.0;
   float posY = 0.0;
 
+  Shader mapShader(marchingQuadVertexShader,marchingQuadFragmentShader);
+  shaderPool.add(mapShader,"mapShader");
+
   while (window.isOpen()){
 
     sf::Event event;
@@ -124,7 +126,7 @@ int main(){
     map.updateRegion(posX,posY);
     camera.setPosition(posX,posY);
     double udt = timer.getElapsedTime().asSeconds();
-    map.draw();
+    map.draw(shaderPool.get("mapShader"));
     o.get()->drawDebug(camera.getVP());
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();

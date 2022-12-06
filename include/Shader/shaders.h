@@ -4,7 +4,7 @@
 #include <gl.h>
 #include <string>
 #include <unordered_map>
-
+#include <iostream>
 struct Shader {
     const char * vertex;
     const char * fragment;
@@ -44,12 +44,14 @@ class Shaders {
 public:
     Shaders(){}
 
-    void add(Shader s, std::string n);
+    void add(Shader & s, std::string n);
     void remove(std::string n);
-    Shader getShader(std::string n);
+    Shader & get(std::string n);
 
 private:
-    std::unordered_map<std::string,Shader> shaders;
+    std::unordered_map<std::string, Shader> shaders;
 };
+
+#include <Shader/marchingQuad.h>
 
 #endif /* SHADERS_H */
