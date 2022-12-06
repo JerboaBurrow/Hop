@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <memory>
+#include <Shader/shaders.h>
 
 class CollisionDetector;
 
@@ -56,6 +57,7 @@ class PerlinWorld : public World {
 public:
     PerlinWorld(uint64_t s, glm::mat4 p);
     void draw();
+    void draw(Shader & s);
     void save(std::string filename);
     TexturedQuad getMap(float r = 176., float g = 176., float b = 176.);
     TexturedQuad getLocalRegionMap();

@@ -315,6 +315,28 @@ void PerlinWorld::updateRegion(float x, float y){
     posY = iy;
 }
 
+void PerlinWorld::draw(Shader & s){
+    glBindVertexArray(VAO);
+    s.use();
+    s.set1f(1.0f,"u_alpha");
+    s.set1f(1.0f,"u_scale");
+    s.set1i(1,"u_transparentBackground");
+    s.set3f(1.0f,1.0f,1.0f,"u_background");
+
+    glDrawArraysInstanced(GL_TRIANGLES,0,6,RENDER_REGION_SIZE*RENDER_REGION_SIZE);
+
+    glBindVertexArray(0);
+    glBindVertexArray(minimapVAO);
+
+    s.set1f(1.0f,"u_alpha");
+    s.set1f(1.0f,"u_scale");
+    s.set1i(0,"u_transparentBackground");
+    s.set3f(1.0f,1.0f,1.0f,"u_background");
+
+    glDrawArraysInstanced(GL_TRIANGLES,0,6,DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE);
+    glBindVertexArray(0);
+}
+
 void PerlinWorld::draw(){
     glBindVertexArray(VAO);
     glUseProgram(shader);
