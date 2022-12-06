@@ -35,9 +35,12 @@ class ObjectManager {
 public:
 
     ObjectManager(
+        ObjectRenderer * ren,
+        CollisionDetector * d,
+        CollisionResolver * res,
         void (*callback)(std::string,std::string) = &identityCallback
     )
-    : collisionCallback(callback)
+    : collisionCallback(callback), renderer(ren), detector(d), resolver(res)
     {}
 
     void add(std::shared_ptr<Object> o);

@@ -91,7 +91,8 @@ find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB TEXT_SOURCES "src/Text/*.cpp")
 file(GLOB OBJECT_SOURCES "src/Object/*.cpp")
-add_executable(Jerboa ${SOURCES} ${TEXT_SOURCES} ${OBJECT_SOURCES})
+file(GLOB SHADER_SOURCES "src/Shader/*.cpp")
+add_executable(Jerboa ${SHADER_SOURCES} ${SOURCES} ${TEXT_SOURCES} ${OBJECT_SOURCES})
 
 target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 

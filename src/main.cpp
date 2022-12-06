@@ -32,10 +32,12 @@ const float MAX_SPEED = 1.0/60.0;
 uint8_t frameId = 0;
 double deltas[60];
 
+Shaders shaderPool;
+
 int main(){
 
-  Particle o(0.5,0.5,1.0/256.0);
-  std::cout << o.id << ", " << o.id.hash() << "\n";
+  std::shared_ptr<Particle> o = std::make_unique<Particle>(0.5,0.5,1.0/256.0);
+  //shaderPool.add(Shader(marchingQuadFragmentShader,marchingQuadVertexShader),"mapShader");
 
   sf::ContextSettings contextSettings;
   contextSettings.depthBits = 24;
@@ -123,7 +125,7 @@ int main(){
     camera.setPosition(posX,posY);
     double udt = timer.getElapsedTime().asSeconds();
     map.draw();
-    o.drawDebug(camera.getVP());
+    o.get()->drawDebug(camera.getVP());
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;

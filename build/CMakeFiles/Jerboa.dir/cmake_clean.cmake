@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/Jerboa.dir/src/Shader/marchingQuad.cpp.o"
+  "CMakeFiles/Jerboa.dir/src/Shader/shaders.cpp.o"
   "CMakeFiles/Jerboa.dir/src/gl.cpp.o"
   "CMakeFiles/Jerboa.dir/src/main.cpp.o"
   "CMakeFiles/Jerboa.dir/src/perlin.cpp.o"
