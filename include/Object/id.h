@@ -11,14 +11,22 @@ struct Id {
     : id(generateId())
     {}
 
-    size_t hash(){return std::hash<uuids::uuid>{}(id);}
+    size_t hash() const {return std::hash<uuids::uuid>{}(id);}
 
     const uuids::uuid id;
 
-    bool operator==( Id const & rhs ) const {return this->id == id;}
+    bool operator==( Id const & rhs ) const {return this->id == rhs.id;}
     operator std::string(){return uuids::to_string(id);}
+
+    bool operator<(const Id & rhs) const {
+        return this->id < rhs.id;
+    }
 };
 
 std::ostream & operator<<(std::ostream & os, Id const & value);
+
+template<> struct std::hash<Id> {
+    std::size_t operator()(const Id & i) const {return i.hash();}
+};
 
 #endif /* ID_H */
