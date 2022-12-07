@@ -20,8 +20,7 @@
 #include <Text/typeUtils.h>
 #include <texturedQuad.h>
 #include <World/world.h>
-#include <Object/object.h>
-#include <Object/particle.h>
+
 #include <Object/objectManager.h>
 
 const int resX = 1000;

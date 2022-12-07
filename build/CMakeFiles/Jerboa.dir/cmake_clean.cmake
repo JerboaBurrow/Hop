@@ -18,7 +18,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/Jerboa.dir/src/Object/object.cpp.o"
   "CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o"
   "CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o"
-  "CMakeFiles/Jerboa.dir/src/Object/particle.cpp.o"
   "CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o"
   "CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o"
   "CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o"

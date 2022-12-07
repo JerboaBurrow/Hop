@@ -32,32 +32,22 @@
 typedef void (*CollisionCallback)(std::string,std::string);
 void identityCallback(std::string a, std::string b);
 
-typedef std::unordered_map<
-            Id,
-            std::pair<
-                std::shared_ptr<Object>,
-                Signature
-            >
-        > ObjectMap;
-
 class ObjectManager {
 public:
 
     ObjectManager(
-        CollisionDetector * d,
-        CollisionResolver * res,
         void (*callback)(std::string,std::string) = &identityCallback
     )
-    : collisionCallback(callback), detector(d), resolver(res)
-    {}
+    : collisionCallback(callback)
+    {
+    }
 
-    void add(std::shared_ptr<Object> o);
-    void add(std::shared_ptr<Object> o, std::string handle);
+    void createObject();
+    void createObject(std::string handle);
 
     void remove(Id id);
     void remove(std::string handle);
 
-    ObjectMap * getObjects(){return &objects;}
     std::shared_ptr<Object> getObject(Id id);
     std::shared_ptr<Object> getObject(std::string name);
 
@@ -84,11 +74,9 @@ public:
 
 private:
 
-    ObjectMap objects;
     std::unordered_map<std::string,Id> handleToId;
-
-    CollisionDetector * detector;
-    CollisionResolver * resolver;
+    std::unordered_map<Id,Signature> idToSignature;
+    std::unordered_map<Id,std::shared_ptr<Object>> objects;
 
     std::unique_ptr<SystemManager> systemManager;
     std::unique_ptr<ComponentManager> componentManager;
