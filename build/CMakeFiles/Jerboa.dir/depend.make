@@ -49,8 +49,6 @@ CMakeFiles/Jerboa.dir/src/Object/object.cpp.o: ../src/Object/object.cpp
 
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/componentArray.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/componentManager.h
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/collisionDetector.h
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/collisionResolver.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/id.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/object.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/objectManager.h
@@ -1323,8 +1321,6 @@ CMakeFiles/Jerboa.dir/src/gl.cpp.o: ../src/gl.cpp
 
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/componentArray.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/componentManager.h
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/collisionDetector.h
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/collisionResolver.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/id.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/object.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/objectManager.h
