@@ -32,14 +32,14 @@ void CellList::clear(bool full){
 void CellList::populate(ObjectManager * manager){
     clear();
 
-    std::unordered_map<std::string,std::shared_ptr<Object>>::iterator iter;
+    ObjectMap::iterator iter;
     int o = 0;
-    std::unordered_map<std::string,std::shared_ptr<Object>> * objects = manager->getObjects();
+    ObjectMap * objects = manager->getObjects();
     for (iter = objects->begin(); iter != objects->cend(); iter++){
-        if (iter->second.get()->isGhost()){continue;}
-        uint64_t meshSize = iter->second.get()->getCollisionMeshSize();
+        if (iter->second.first.get()->isGhost()){continue;}
+        uint64_t meshSize = iter->second.first.get()->getCollisionMeshSize();
         for (int i = 0; i < meshSize; i++){
-            const CollisionVertex p = iter->second.get()->getCollisionVertex(i);
+            const CollisionVertex p = iter->second.first.get()->getCollisionVertex(i);
             // just incase!
             if (p == NULL_COLLISION_VERTEX){continue;}
             uint64_t h = hash(p.x,p.y);

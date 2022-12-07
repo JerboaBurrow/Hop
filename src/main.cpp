@@ -36,8 +36,6 @@ Shaders shaderPool;
 
 int main(){
 
-  std::shared_ptr<Particle> o = std::make_unique<Particle>(0.5,0.5,1.0/256.0);
-
   sf::ContextSettings contextSettings;
   contextSettings.depthBits = 24;
   contextSettings.antialiasingLevel = 0;
@@ -127,7 +125,6 @@ int main(){
     camera.setPosition(posX,posY);
     double udt = timer.getElapsedTime().asSeconds();
     map.draw(shaderPool.get("mapShader"));
-    o.get()->drawDebug(camera.getVP());
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;

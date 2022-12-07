@@ -3,10 +3,11 @@
 
 #include <World/world.h>
 #include <Object/object.h>
-#include <Object/id.h>
-#include <Object/objectRenderer.h>
 #include <Object/collisionDetector.h>
 #include <Object/collisionResolver.h>
+
+#include <Component/componentManager.h>
+#include <System/systemManager.h>
 
 #include <unordered_map>
 #include <string>
@@ -31,16 +32,23 @@
 typedef void (*CollisionCallback)(std::string,std::string);
 void identityCallback(std::string a, std::string b);
 
+typedef std::unordered_map<
+            Id,
+            std::pair<
+                std::shared_ptr<Object>,
+                Signature
+            >
+        > ObjectMap;
+
 class ObjectManager {
 public:
 
     ObjectManager(
-        ObjectRenderer * ren,
         CollisionDetector * d,
         CollisionResolver * res,
         void (*callback)(std::string,std::string) = &identityCallback
     )
-    : collisionCallback(callback), renderer(ren), detector(d), resolver(res)
+    : collisionCallback(callback), detector(d), resolver(res)
     {}
 
     void add(std::shared_ptr<Object> o);
@@ -49,23 +57,41 @@ public:
     void remove(Id id);
     void remove(std::string handle);
 
-    void step(double delta, World * world);
-    void draw(bool debug);
-
-    std::unordered_map<std::string,std::shared_ptr<Object>> * getObjects(){return &objects;}
+    ObjectMap * getObjects(){return &objects;}
+    std::shared_ptr<Object> getObject(Id id);
     std::shared_ptr<Object> getObject(std::string name);
 
     CollisionCallback collisionCallback;
 
+    // component interface
+    template<class T>
+    void registerComponent(){
+        componentManager->registerComponent<T>();
+    }
+
+    template <class T>
+    void addComponent(Id i, T component);
+
+    template <class T>
+    void removeComponent(Id i);
+
+    // system interface
+    template<class T>
+	std::shared_ptr<T> registerSystem(){systemManager->registerSystem<T>();}
+
+    template<class T>
+	void setSystemSignature(Signature signature){systemManager->setSignature<T>(signature);}
+
 private:
 
-    friend class ObjectRenderer;
+    ObjectMap objects;
+    std::unordered_map<std::string,Id> handleToId;
 
-    std::unordered_map<std::string,std::shared_ptr<Object>> objects;
-
-    ObjectRenderer * renderer;
     CollisionDetector * detector;
     CollisionResolver * resolver;
+
+    std::unique_ptr<SystemManager> systemManager;
+    std::unique_ptr<ComponentManager> componentManager;
 };
 
 #endif /* OBJECTMANAGER_H */

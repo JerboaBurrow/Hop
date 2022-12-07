@@ -92,7 +92,9 @@ file(GLOB SOURCES "src/*.cpp")
 file(GLOB TEXT_SOURCES "src/Text/*.cpp")
 file(GLOB OBJECT_SOURCES "src/Object/*.cpp")
 file(GLOB SHADER_SOURCES "src/Shader/*.cpp")
-add_executable(Jerboa ${SHADER_SOURCES} ${SOURCES} ${TEXT_SOURCES} ${OBJECT_SOURCES})
+file(GLOB SYSTEM_SOURCES "src/System/*.cpp")
+file(GLOB COMPONENT_SOURCES "src/Component/*.cpp") 
+add_executable(Jerboa ${SHADER_SOURCES} ${SOURCES} ${TEXT_SOURCES} ${OBJECT_SOURCES} ${SYSTEM_SOURCES} ${COMPONENT_SOURCES})
 
 target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
