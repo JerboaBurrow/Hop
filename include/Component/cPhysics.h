@@ -18,6 +18,9 @@ struct cPhysics {
     double vy;
 
     double mass;
+
+    double fx;
+    double fy;
 }
 
 #endif /* CPHYSICS_H */

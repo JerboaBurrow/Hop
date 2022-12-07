@@ -6,6 +6,7 @@ struct cRenderable {
     float oy;
     float otheta;
     float os;
+    std::string shaderHandle;
 }
 
 #endif /* CRENDERABLE_H */

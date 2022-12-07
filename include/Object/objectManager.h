@@ -3,8 +3,6 @@
 
 #include <World/world.h>
 #include <Object/object.h>
-#include <Object/collisionDetector.h>
-#include <Object/collisionResolver.h>
 
 #include <Component/componentManager.h>
 #include <System/systemManager.h>
