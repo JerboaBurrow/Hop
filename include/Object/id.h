@@ -11,6 +11,10 @@ struct Id {
     : id(generateId())
     {}
 
+    Id(uuids::uuid i)
+    : id(i)
+    {}
+
     size_t hash() const {return std::hash<uuids::uuid>{}(id);}
 
     const uuids::uuid id;
@@ -20,6 +24,10 @@ struct Id {
 
     bool operator<(const Id & rhs) const {
         return this->id < rhs.id;
+    }
+
+    Id operator=(const Id & j){
+        return Id(j.id);
     }
 };
 

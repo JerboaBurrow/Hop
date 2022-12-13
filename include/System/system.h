@@ -1,6 +1,8 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#include <Object/id.h>
+
 #include <set>
 
 class System {

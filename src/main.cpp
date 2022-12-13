@@ -18,10 +18,11 @@
 #include <vector>
 
 #include <Text/typeUtils.h>
-#include <texturedQuad.h>
 #include <World/world.h>
 
 #include <Object/objectManager.h>
+
+#include <System/sRender.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -84,8 +85,24 @@ int main(){
   float posX = 0.0;
   float posY = 0.0;
 
-  Shader mapShader(marchingQuadVertexShader,marchingQuadFragmentShader);
-  shaderPool.add(mapShader,"mapShader");
+  ObjectManager manager;
+
+  // Shader mapShader(marchingQuadVertexShader,marchingQuadFragmentShader);
+  // Shader circleObjectShader(objectVertexShader,circleObjectFragmentShader);
+  shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
+  shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
+
+  manager.createObject("particle");
+
+  Id pid = manager.idFromHandle("particle");
+  manager.addComponent<cRenderable>(
+    pid,
+    cRenderable(
+      0.0,0.0,"circleObjectShader"
+    )
+  );
+
+  sRender & rendering = manager.getSystem<sRender>();
 
   while (window.isOpen()){
 
@@ -123,7 +140,12 @@ int main(){
     map.updateRegion(posX,posY);
     camera.setPosition(posX,posY);
     double udt = timer.getElapsedTime().asSeconds();
-    map.draw(shaderPool.get("mapShader"));
+
+    //map.draw(*shaderPool.get("mapShader").get());
+
+    shaderPool.setProjection(camera.getVP());
+    rendering.update(&manager, &shaderPool);
+    rendering.draw(&shaderPool);
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;

@@ -31,26 +31,68 @@ public:
     {}
 
     template <class T>
-    void registerComponent();
+    void registerComponent(uint32_t m){
+        const char * handle = typeid(T).name();
 
-    // don't think this is a good idea
-    //  rug-pulls objects
-    // template <class T>
-    // void deregisterComponent();
+        if (componentRegistered(handle)){
+            return;
+        }
 
-    template <class T>
-    void addComponent(Id i, T component);
+        if (nextComponentIndex >= MAX_COMPONENTS){
+            return;
+        }
 
-    template <class T>
-    void removeComponent(Id i);
-
-    template <class T>
-    T & getComponent(Id i);
-
-    void objectFreed(Id i);
+        registeredComponents[handle] = nextComponentIndex;
+        componentData[handle] = std::make_shared<ComponentArray<T>>(m);
+    }
 
     template <class T>
-    uint32_t getComponentId();
+    void addComponent(Id i, T component){
+        const char * handle = typeid(T).name();
+
+        if (!componentRegistered(handle)){
+            return;
+        }
+
+        getComponentArray<T>()->insert(i,component);
+    }
+
+    template <class T>
+    void removeComponent(Id i){
+        const char * handle = typeid(T).name();
+
+        if (!componentRegistered(handle)){
+            return;
+        }
+
+        getComponentArray<T>()->remove(i);
+    }
+
+    template <class T>
+    T & getComponent(Id i){
+        const char * handle = typeid(T).name();
+
+        if (!componentRegistered(handle)){
+            throw ComponentNotRegistered(" Attempt to getComponent<"+std::string(handle)+">("+std::string(i)+")");
+        }
+
+        return getComponentArray<T>()->get(i);
+    }
+
+    void objectFreed(Id i){
+        for (auto const& pair : componentData){
+            pair.second.get()->objectFreed(i);
+        }
+    }
+
+    template <class T>
+    uint32_t getComponentId(){
+        const char * handle = typeid(T).name();
+        if (!componentRegistered(handle)){
+            throw ComponentNotRegistered(" Attempt to getComponent<"+std::string(handle)+">()");
+        }
+        return registeredComponents[handle];
+    }
 
 private:
 

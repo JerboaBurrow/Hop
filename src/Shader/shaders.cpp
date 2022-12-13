@@ -2,6 +2,27 @@
 
 Shader NULL_SHADER = Shader("","");
 
+Shader::Shader(std::string path, std::string name){
+    std::ifstream fileVs(path+name+".vs");
+    std::ifstream fileFs(path+name+".fs");
+    if (fileVs.is_open() && fileFs.is_open()){
+        const char * v = parseShaderSource(fileVs);
+        const char * f = parseShaderSource(fileFs);
+    }
+    else{
+        throw ShaderSourceNotFound(" attempting to locate source files .vs and .fs at "+path+name);
+    }
+}
+
+const char * Shader::parseShaderSource(std::ifstream & file){
+    std::string src = "";
+    std::string line;
+    while (std::getline(file,line)){
+        src += line + "\n";
+    }
+    return src.c_str();
+}
+
 bool operator==(const Shader & lhs, const Shader & rhs){
     return lhs.vertex == rhs.vertex && lhs.fragment == rhs.fragment;
 }
@@ -60,10 +81,21 @@ void Shader::setMatrix4x4(glm::mat4 & m, const char * name, bool transpose){
     );
 }
 
-void Shaders::add(Shader & s, std::string n){
-    if (shaders.find(n) != shaders.end()){return;}
-    if (!s.isCompiled()){s.compile();}
-    shaders[n] = s;
+void Shaders::makeShader(
+    const char * v, 
+    const char * f,
+    std::string n
+){
+    if (shaders.find(n)!=shaders.end()){
+        return;
+    }
+
+    shaders[n] = std::make_unique<Shader>(
+        v,
+        f
+    );
+
+
 }
 
 void Shaders::remove(std::string n){
@@ -71,7 +103,14 @@ void Shaders::remove(std::string n){
     shaders.erase(n);
 }
 
-Shader & Shaders::get(std::string n) {
-    if (shaders.find(n) == shaders.end()){return NULL_SHADER;}
+std::shared_ptr<Shader> Shaders::get(std::string n) {
     return shaders[n];
+}
+
+void Shaders::setProjection(glm::mat4 proj){
+   for (auto it = shaders.begin(); it != shaders.end(); it++){
+        std::shared_ptr<Shader> shader = it->second;
+        shader->use();
+        shader->setMatrix4x4(proj,"proj");
+   }
 }
