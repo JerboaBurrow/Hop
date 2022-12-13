@@ -7,7 +7,13 @@ void ObjectManager::createObject(){
     idToSignature[o->id] = Signature();
 }
 
-void ObjectManager::createObject(std::string handle){}
+void ObjectManager::createObject(std::string handle){
+    std::shared_ptr<Object> o = std::make_shared<Object>();
+
+    objects[o->id] = o;
+    idToSignature[o->id] = Signature();
+    handleToId[handle] = o->id;
+}
 
 void ObjectManager::remove(Id id){}
 
@@ -25,22 +31,14 @@ std::shared_ptr<Object> ObjectManager::getObject(std::string name){
 // do nothing callback
 void identityCallback(std::string a, std::string b){return;}
 
-template <class T>
-void ObjectManager::addComponent(Id i, T component){
-    componentManager->addComponent<T>(i,component);
-    idToSignature[i].set(
-        componentManager->getComponentId<T>(),
+void ObjectManager::initialiseBaseECS(){
+    registerComponent<cRenderable>();
+    registerSystem<sRender>();
+
+    uint32_t cId = componentManager.getComponentId<cRenderable>();
+    Signature sRenderSig = Signature();
+    sRenderSig.set(
+        cId,
         true
     );
-    systemManager->objectSignatureChanged(i,idToSignature[i]);
-}
-
-template <class T>
-void ObjectManager::removeComponent(Id i){
-    componentManager->removeComponent<T>(i);
-    idToSignature[i].set(
-        componentManager->getComponentId<T>(),
-        false
-    );
-    systemManager->objectSignatureChanged(i,idToSignature[i]);
 }

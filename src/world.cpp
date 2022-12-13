@@ -285,46 +285,46 @@ void PerlinWorld::draw(Shader & s){
     glError("World::draw()");
 }
 
-TexturedQuad PerlinWorld::getMap(float r, float g, float b){
-    r /= 255.0;
-    b /= 255.0;
-    g /= 255.0;
-    std::unique_ptr<float[]> image = std::make_unique<float[]>(DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE*3);
-    for (int i = 0; i < DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE; i++){
-        float val = dynamicsIds[i] > 0 ? 1 : 0;
-        image[i*3] = val*r;
-        image[i*3+1] = val*g;
-        image[i*3+2] = val*b;
-    }
+// TexturedQuad PerlinWorld::getMap(float r, float g, float b){
+//     r /= 255.0;
+//     b /= 255.0;
+//     g /= 255.0;
+//     std::unique_ptr<float[]> image = std::make_unique<float[]>(DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE*3);
+//     for (int i = 0; i < DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE; i++){
+//         float val = dynamicsIds[i] > 0 ? 1 : 0;
+//         image[i*3] = val*r;
+//         image[i*3+1] = val*g;
+//         image[i*3+2] = val*b;
+//     }
 
-    TexturedQuad tQuad(DYNAMICS_REGION_SIZE,std::move(image),projection);
+//     TexturedQuad tQuad(DYNAMICS_REGION_SIZE,std::move(image),projection);
 
-    return tQuad;
-}
+//     return tQuad;
+// }
 
-TexturedQuad PerlinWorld::getLocalRegionMap(){
-    uint64_t n = DYNAMICS_REGION_BUFFER_SIZE;
-    //uint64_t m = 3*n;
-    //uint64_t o = n*n*3+n;
-    bool renderRegion[DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE];
-    // select central renderRegion from 3x3 grid
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
-            renderRegion[i*DYNAMICS_REGION_BUFFER_SIZE+j] = renderRegionBuffer[i*n+j];
-        }
-    }
+// TexturedQuad PerlinWorld::getLocalRegionMap(){
+//     uint64_t n = DYNAMICS_REGION_BUFFER_SIZE;
+//     //uint64_t m = 3*n;
+//     //uint64_t o = n*n*3+n;
+//     bool renderRegion[DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE];
+//     // select central renderRegion from 3x3 grid
+//     for (int i = 0; i < n; i++){
+//         for (int j = 0; j < n; j++){
+//             renderRegion[i*DYNAMICS_REGION_BUFFER_SIZE+j] = renderRegionBuffer[i*n+j];
+//         }
+//     }
 
-    std::unique_ptr<float[]> image = std::make_unique<float[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE*3);
+//     std::unique_ptr<float[]> image = std::make_unique<float[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE*3);
 
-    for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE; i++){
-        image[i*3] = renderRegion[i];
-        image[i*3+1] = 0.0f;
-        image[i*3+2] = 0.0f;
-    }
+//     for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE; i++){
+//         image[i*3] = renderRegion[i];
+//         image[i*3+1] = 0.0f;
+//         image[i*3+2] = 0.0f;
+//     }
 
-    TexturedQuad tQuad(DYNAMICS_REGION_BUFFER_SIZE,std::move(image),projection);
-    return tQuad;
-}
+//     TexturedQuad tQuad(DYNAMICS_REGION_BUFFER_SIZE,std::move(image),projection);
+//     return tQuad;
+// }
 
 void PerlinWorld::save(std::string filename){
     std::ofstream of(filename+".map");

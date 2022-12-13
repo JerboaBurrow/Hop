@@ -56,8 +56,8 @@ public:
     PerlinWorld(uint64_t s, glm::mat4 p);
     void draw(Shader & s);
     void save(std::string filename);
-    TexturedQuad getMap(float r = 176., float g = 176., float b = 176.);
-    TexturedQuad getLocalRegionMap();
+    // TexturedQuad getMap(float r = 176., float g = 176., float b = 176.);
+    // TexturedQuad getLocalRegionMap();
     void updateRegion(float x, float y);
     void worldToCell(float x, float y, float & ix, float & iy);
 

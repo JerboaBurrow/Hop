@@ -21,6 +21,6 @@ struct cPhysics {
 
     double fx;
     double fy;
-}
+};
 
 #endif /* CPHYSICS_H */

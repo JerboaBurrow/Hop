@@ -7,8 +7,20 @@
 #include <Component/componentManager.h>
 #include <System/systemManager.h>
 
+#include <Component/cRenderable.h>
+#include <Component/cPhysics.h>
+#include <Component/cCollideable.h>
+
+#include <System/sRender.h>
+// class sPhysics;
+// class sCollision;
+
 #include <unordered_map>
 #include <string>
+
+class ObjectManager;
+class sRender;
+
 
 /*
     Stores an unordered map of objects that can be added to
@@ -30,6 +42,8 @@
 typedef void (*CollisionCallback)(std::string,std::string);
 void identityCallback(std::string a, std::string b);
 
+const uint32_t MAX_OBJECTS = 1000000;
+
 class ObjectManager {
 public:
 
@@ -38,6 +52,7 @@ public:
     )
     : collisionCallback(callback)
     {
+        initialiseBaseECS();
     }
 
     void createObject();
@@ -54,21 +69,45 @@ public:
     // component interface
     template<class T>
     void registerComponent(){
-        componentManager->registerComponent<T>();
+        componentManager.registerComponent<T>(MAX_OBJECTS);
     }
 
     template <class T>
-    void addComponent(Id i, T component);
+    void addComponent(Id i, T component){
+        componentManager.addComponent<T>(i,component);
+        idToSignature[i].set(
+            componentManager.getComponentId<T>(),
+            true
+        );
+        systemManager.objectSignatureChanged(i,idToSignature[i]);
+    }
 
     template <class T>
-    void removeComponent(Id i);
+    void removeComponent(Id i){
+        componentManager.removeComponent<T>(i);
+        idToSignature[i].set(
+            componentManager.getComponentId<T>(),
+            false
+        );
+        systemManager.objectSignatureChanged(i,idToSignature[i]);
+    }
+
+    template <class T>
+    T & getComponent(Id i){
+        return componentManager.getComponent<T>(i);
+    }
 
     // system interface
     template<class T>
-	std::shared_ptr<T> registerSystem(){systemManager->registerSystem<T>();}
+	void registerSystem(){systemManager.registerSystem<T>();}
 
     template<class T>
-	void setSystemSignature(Signature signature){systemManager->setSignature<T>(signature);}
+	void setSystemSignature(Signature signature){systemManager.setSignature<T>(signature);}
+
+    Id idFromHandle(std::string handle){return handleToId[handle];}
+
+    template <class T>
+    T & getSystem(){return systemManager.getSystem<T>();}
 
 private:
 
@@ -76,8 +115,11 @@ private:
     std::unordered_map<Id,Signature> idToSignature;
     std::unordered_map<Id,std::shared_ptr<Object>> objects;
 
-    std::unique_ptr<SystemManager> systemManager;
-    std::unique_ptr<ComponentManager> componentManager;
+    SystemManager systemManager;
+    ComponentManager componentManager;
+
+    void initialiseBaseECS();
 };
+
 
 #endif /* OBJECTMANAGER_H */
