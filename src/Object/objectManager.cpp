@@ -1,18 +1,22 @@
 #include <Object/objectManager.h>
 
-void ObjectManager::createObject(){
+Id ObjectManager::createObject(){
     std::shared_ptr<Object> o = std::make_shared<Object>();
 
     objects[o->id] = o;
     idToSignature[o->id] = Signature();
+
+    return o->id;
 }
 
-void ObjectManager::createObject(std::string handle){
+Id ObjectManager::createObject(std::string handle){
     std::shared_ptr<Object> o = std::make_shared<Object>();
 
     objects[o->id] = o;
     idToSignature[o->id] = Signature();
     handleToId[handle] = o->id;
+
+    return o->id;
 }
 
 void ObjectManager::remove(Id id){}

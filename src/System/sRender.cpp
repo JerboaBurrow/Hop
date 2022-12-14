@@ -1,25 +1,42 @@
 #include <System/sRender.h>
 
+#include <time.h>
+
 void sRender::update(ObjectManager * m, Shaders * s){
+    // 10k static objects gives ~ 0.001 secc update, 50k 0.01
+    bool newData = false;
+    bool staleData = false;
     for (auto it = objects.begin(); it != objects.end(); it++){
+
         Id i = *it;
-        cRenderable data = m->getComponent<cRenderable>(i);
+
+        cRenderable & data = m->getComponent<cRenderable>(i);
+
+        if(!data.stale){continue;}
+
+        staleData = true;
 
         if (offsets.find(data.shaderHandle) == offsets.end()){
             // new shader
             addNewShader(data.shaderHandle);
+            newData = true;
+            std::cout << "new shader\n";
         }
         glError("add new shader");
 
         if (idToIndex.find(i) == idToIndex.end()){
             // new object
             addNewObject(i,data.shaderHandle);
+            newData = true;           
+            std::cout << "new object\n"; 
         }
         glError("add new object");
 
         // handle shader change
         if (idToIndex[i].first != data.shaderHandle){
             moveOffsets(i,idToIndex[i].first,data.shaderHandle);
+            newData = true;
+            std::cout << "shader changed\n";
         }
         glError("move offsets");
 
@@ -32,18 +49,24 @@ void sRender::update(ObjectManager * m, Shaders * s){
         offsets[data.shaderHandle].second[start*4+2] = data.otheta;
         offsets[data.shaderHandle].second[start*4+3] = data.os;
 
-        offset = 4*MAX_OBJECTS_PER_SHADER;
-        offsets[data.shaderHandle].second[start*4+offset] = data.r;
-        offsets[data.shaderHandle].second[start*4+1+offset] = data.g;
-        offsets[data.shaderHandle].second[start*4+2+offset] = data.b;
-        offsets[data.shaderHandle].second[start*4+3+offset] = data.a;
+        if (newData){
+            offset = 4*MAX_OBJECTS_PER_SHADER;
+            offsets[data.shaderHandle].second[start*4+offset] = data.r;
+            offsets[data.shaderHandle].second[start*4+1+offset] = data.g;
+            offsets[data.shaderHandle].second[start*4+2+offset] = data.b;
+            offsets[data.shaderHandle].second[start*4+3+offset] = data.a;
 
-        offset = 2*4*MAX_OBJECTS_PER_SHADER;
-        offsets[data.shaderHandle].second[start*4+offset] = data.ux;
-        offsets[data.shaderHandle].second[start*4+1+offset] = data.uy;
-        offsets[data.shaderHandle].second[start*4+2+offset] = data.vx;
-        offsets[data.shaderHandle].second[start*4+3+offset] = data.vy;
+            offset = 2*4*MAX_OBJECTS_PER_SHADER;
+            offsets[data.shaderHandle].second[start*4+offset] = data.ux;
+            offsets[data.shaderHandle].second[start*4+1+offset] = data.uy;
+            offsets[data.shaderHandle].second[start*4+2+offset] = data.vx;
+            offsets[data.shaderHandle].second[start*4+3+offset] = data.vy;
+        }
+
+        data.stale = false;
     }
+
+    if (!staleData){return;}
 
     for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++){
         glBindVertexArray(it->second.first);
@@ -52,14 +75,17 @@ void sRender::update(ObjectManager * m, Shaders * s){
         shader->use();
 
         updateOffsets(it->first);
-        updateColours(it->first);
-        updateTexOffsets(it->first);
+        if (newData){
+            updateColours(it->first);
+            updateTexOffsets(it->first);
+        }
     }
+
+    std::cout << "sRender buffers updated\n"; 
 }
 
 void sRender::updateOffsets(std::string handle){
     size_t cnt = offsets[handle].first+1;
-    std::cout << cnt << "\n";
     GLuint oBuffer = shaderBufferObjects[handle].second[0];
     glBindBuffer(GL_ARRAY_BUFFER,oBuffer);
     glBufferSubData(
@@ -68,7 +94,6 @@ void sRender::updateOffsets(std::string handle){
         4*cnt*sizeof(float),
         &offsets[handle].second[0]
     );
-    std::cout << offsets[handle].second[0] << ", " << offsets[handle].second[1] << ", " << offsets[handle].second[2] << ", " << offsets[handle].second[3] << "\n";
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
@@ -80,7 +105,7 @@ void sRender::updateColours(std::string handle){
         GL_ARRAY_BUFFER,
         4*MAX_OBJECTS_PER_SHADER,
         4*cnt*sizeof(float),
-        &offsets[handle].second[4*MAX_OBJECTS_PER_SHADER]
+        &offsets[handle].second[0]
     );
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
@@ -93,7 +118,7 @@ void sRender::updateTexOffsets(std::string handle){
         GL_ARRAY_BUFFER,
         2*4*MAX_OBJECTS_PER_SHADER,
         4*cnt*sizeof(float),
-        &offsets[handle].second[2*4*MAX_OBJECTS_PER_SHADER]
+        &offsets[handle].second[0]
     );
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
@@ -103,7 +128,7 @@ void sRender::addNewShader(std::string handle){
     offsets[handle].second.reserve(3*MAX_OBJECTS_PER_SHADER*4);
 
     for (int i = 0; i < 3*MAX_OBJECTS_PER_SHADER*4; i++){
-        offsets[handle].second[i] = 0.0;
+        offsets[handle].second.push_back(0.0);
     }
 
     GLuint vboO, vboC, vboT, vao;
@@ -141,7 +166,7 @@ void sRender::addNewShader(std::string handle){
     );
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
-        0,
+        1,
         4,
         GL_FLOAT,
         false,
@@ -160,7 +185,7 @@ void sRender::addNewShader(std::string handle){
     );
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(
-        0,
+        2,
         4,
         GL_FLOAT,
         false,
@@ -179,7 +204,7 @@ void sRender::addNewShader(std::string handle){
     );
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(
-        0,
+        3,
         4,
         GL_FLOAT,
         false,
@@ -256,8 +281,6 @@ void sRender::draw(Shaders * s, bool debug){
         shader->use();
 
         size_t count = offsets[it->first].first+1;
-
-        std::cout << count << ", " << it->first << "\n";
         
         glDrawArraysInstanced(GL_TRIANGLES,0,6,count);
         
