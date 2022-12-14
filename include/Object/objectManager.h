@@ -55,8 +55,8 @@ public:
         initialiseBaseECS();
     }
 
-    void createObject();
-    void createObject(std::string handle);
+    Id createObject();
+    Id createObject(std::string handle);
 
     void remove(Id id);
     void remove(std::string handle);

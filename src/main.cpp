@@ -92,16 +92,41 @@ int main(){
   shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
   shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
 
-  manager.createObject("particle");
+  std::uniform_real_distribution<double> U;
+  std::default_random_engine e;
+  int n = 1000;
+  sf::Clock timer2;
+  double t1 = 0.0;
+  double t2 = 0.0;
+  double t3 = 0.0;
+  timer.restart();
+  for (int i = 0; i < n; i++){
+    std::string name = "p"+std::to_string(i);
 
-  Id pid = manager.idFromHandle("particle");
-  manager.addComponent<cRenderable>(
-    pid,
-    cRenderable(
-      0.0,0.0,"circleObjectShader"
-    )
-  );
+    timer2.restart();
+    manager.createObject(name);
+    t1 += timer2.getElapsedTime().asSeconds();
 
+    timer2.restart();
+    double x = U(e);
+    double y = U(e);
+    t3 += timer2.getElapsedTime().asSeconds();
+
+    timer2.restart();
+    Id pid = manager.idFromHandle(name);
+    manager.addComponent<cRenderable>(
+      pid,
+      cRenderable(
+        x,y,0.005,"circleObjectShader"
+      )
+    );
+    t2 += timer2.getElapsedTime().asSeconds();
+  }
+  double ct = timer.getElapsedTime().asSeconds();
+  std::cout << "object creation time/ per object " << ct << ", " << ct/float(n) << "\n";
+  std::cout << "createObject time " << t1/float(n) << "\n";
+  std::cout << "addComponent time " << t2/float(n) << "\n";
+  std::cout << "random numbers " << t3/float(n) << "\n";
   sRender & rendering = manager.getSystem<sRender>();
 
   while (window.isOpen()){
@@ -144,8 +169,13 @@ int main(){
     //map.draw(*shaderPool.get("mapShader").get());
 
     shaderPool.setProjection(camera.getVP());
+
+    timer.restart();
     rendering.update(&manager, &shaderPool);
+    double rudt = timer.getElapsedTime().asSeconds();
+    timer.restart();
     rendering.draw(&shaderPool);
+    double rdt = timer.getElapsedTime().asSeconds();
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;
@@ -172,7 +202,9 @@ int main(){
         "\n" <<
         "pos " << fixedLengthNumber(posX,4) << ", " << fixedLengthNumber(posY,4) <<
         "\n" << 
-        "update time: " << fixedLengthNumber(udt,6);
+        "update time: " << fixedLengthNumber(udt,6) <<
+        "\n" <<
+        "sRender update/draw time: " << fixedLengthNumber(rudt,6) << "/" << fixedLengthNumber(rdt,6);
 
       textRenderer.renderText(
         OD,
