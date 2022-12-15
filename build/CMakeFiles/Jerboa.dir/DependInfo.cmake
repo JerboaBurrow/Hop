@@ -20,6 +20,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/vertex.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Shader/marchingQuad.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/Shader/marchingQuad.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Shader/shaders.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/Shader/shaders.cpp.o"
+  "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sPhysics.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sRender.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/systemManager.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/popup.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o"
@@ -27,6 +28,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/type.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/Text/type.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/typeUtils.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/gl.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/gl.cpp.o"
+  "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/log.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/log.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/main.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/main.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/perlin.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/perlin.cpp.o"
   "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/texturedQuad.cpp" "/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/Jerboa.dir/src/texturedQuad.cpp.o"
@@ -36,10 +38,10 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
-  "BUILD_TYPE=\"Release\""
+  "BUILD_TYPE=\"Debug\""
   "GLEW_STATIC"
   "SFML_STATIC"
-  "TIMESTAMP=\"2022-12-14:18:06:59\""
+  "TIMESTAMP=\"2022-12-15:11:44:21\""
   )
 
 # The include file search paths:

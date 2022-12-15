@@ -36,8 +36,12 @@ std::shared_ptr<Object> ObjectManager::getObject(std::string name){
 void identityCallback(std::string a, std::string b){return;}
 
 void ObjectManager::initialiseBaseECS(){
+
     registerComponent<cRenderable>();
+    registerComponent<cPhysics>();
+
     registerSystem<sRender>();
+    registerSystem<sPhysics>();
 
     uint32_t cId = componentManager.getComponentId<cRenderable>();
     Signature sRenderSig = Signature();
@@ -45,4 +49,17 @@ void ObjectManager::initialiseBaseECS(){
         cId,
         true
     );
+
+    systemManager.setSignature<sRender>(sRenderSig);
+
+    cId = componentManager.getComponentId<cPhysics>();
+    Signature sPhysicsSig = Signature();
+    sPhysicsSig.set(
+        cId,
+        true
+    );
+
+    std::cout << sRenderSig << ", " << sPhysicsSig << "\n";
+
+    systemManager.setSignature<sPhysics>(sPhysicsSig);
 }

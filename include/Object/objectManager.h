@@ -12,14 +12,16 @@
 #include <Component/cCollideable.h>
 
 #include <System/sRender.h>
-// class sPhysics;
-// class sCollision;
+#include <System/sPhysics.h>
 
 #include <unordered_map>
 #include <string>
 
+#include <log.h>
+
 class ObjectManager;
 class sRender;
+class sPhysics;
 
 
 /*
@@ -109,6 +111,12 @@ public:
     template <class T>
     T & getSystem(){return systemManager.getSystem<T>();}
 
+    void postToLog(LogType msg){
+        msg >> log; 
+    }
+
+    Log & getLog(){return log;}
+
 private:
 
     std::unordered_map<std::string,Id> handleToId;
@@ -119,6 +127,8 @@ private:
     ComponentManager componentManager;
 
     void initialiseBaseECS();
+
+    Log log;
 };
 
 
