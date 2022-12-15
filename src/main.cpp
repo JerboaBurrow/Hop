@@ -23,6 +23,7 @@
 #include <Object/objectManager.h>
 
 #include <System/sRender.h>
+#include <log.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -94,14 +95,13 @@ int main(){
 
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
-  int n = 1000;
+  int n = 4;
   sf::Clock timer2;
   double t1 = 0.0;
   double t2 = 0.0;
   double t3 = 0.0;
   timer.restart();
   for (int i = 0; i < n; i++){
-    std::string name = "p"+std::to_string(i);
 
     timer2.restart();
     manager.createObject(name);
@@ -127,7 +127,9 @@ int main(){
   std::cout << "createObject time " << t1/float(n) << "\n";
   std::cout << "addComponent time " << t2/float(n) << "\n";
   std::cout << "random numbers " << t3/float(n) << "\n";
+
   sRender & rendering = manager.getSystem<sRender>();
+  sPhysics & physics = manager.getSystem<sPhysics>();
 
   while (window.isOpen()){
 
@@ -172,6 +174,7 @@ int main(){
 
     timer.restart();
     rendering.update(&manager, &shaderPool);
+    physics.update(&manager,1.0/60.0);
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();
     rendering.draw(&shaderPool);
@@ -179,6 +182,10 @@ int main(){
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;
+
+    if (frameId == 59){
+      std::cout << manager.getLog();
+    }
 
     if (debug){
       double delta = 0.0;

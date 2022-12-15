@@ -16,11 +16,14 @@ struct cPhysics {
 
     double vx;
     double vy;
+    double phi;
 
     double mass;
+    double momentOfInertia;
 
     double fx;
     double fy;
+    double omega;
 };
 
 #endif /* CPHYSICS_H */

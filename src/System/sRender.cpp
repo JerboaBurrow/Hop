@@ -3,7 +3,7 @@
 #include <time.h>
 
 void sRender::update(ObjectManager * m, Shaders * s){
-    // 10k static objects gives ~ 0.001 secc update, 50k 0.01
+    // 10k static objects gives ~ 0.001 sec update, 50k 0.01
     bool newData = false;
     bool staleData = false;
     for (auto it = objects.begin(); it != objects.end(); it++){
@@ -20,7 +20,6 @@ void sRender::update(ObjectManager * m, Shaders * s){
             // new shader
             addNewShader(data.shaderHandle);
             newData = true;
-            std::cout << "new shader\n";
         }
         glError("add new shader");
 
@@ -28,7 +27,6 @@ void sRender::update(ObjectManager * m, Shaders * s){
             // new object
             addNewObject(i,data.shaderHandle);
             newData = true;           
-            std::cout << "new object\n"; 
         }
         glError("add new object");
 
@@ -36,7 +34,6 @@ void sRender::update(ObjectManager * m, Shaders * s){
         if (idToIndex[i].first != data.shaderHandle){
             moveOffsets(i,idToIndex[i].first,data.shaderHandle);
             newData = true;
-            std::cout << "shader changed\n";
         }
         glError("move offsets");
 
@@ -80,8 +77,6 @@ void sRender::update(ObjectManager * m, Shaders * s){
             updateTexOffsets(it->first);
         }
     }
-
-    std::cout << "sRender buffers updated\n"; 
 }
 
 void sRender::updateOffsets(std::string handle){

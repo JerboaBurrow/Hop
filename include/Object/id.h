@@ -8,20 +8,20 @@ const uuids::uuid generateId();
 
 struct Id {
     Id()
-    : id(generateId())
+    : id(generateId()),idStr(uuids::to_string(id))
     {}
 
     Id(uuids::uuid i)
-    : id(i)
+    : id(i),idStr(uuids::to_string(id))
     {}
 
     size_t hash() const {return std::hash<uuids::uuid>{}(id);}
 
     const uuids::uuid id;
+    const std::string idStr;
 
     bool operator==( Id const & rhs ) const {return this->id == rhs.id;}
-    operator std::string(){return uuids::to_string(id);}
-
+    
     bool operator<(const Id & rhs) const {
         return this->id < rhs.id;
     }

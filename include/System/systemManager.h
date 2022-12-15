@@ -3,6 +3,20 @@
 
 #include <Component/componentManager.h>
 #include <System/system.h>
+#include <exception>
+
+class SystemNotRegistered: public std::exception {
+public:
+    SystemNotRegistered(std::string msg)
+    : msg(msg)
+    {}
+private:
+    virtual const char * what() const throw(){
+        return msg.c_str();
+    }
+    std::string msg;
+};
+
 
 class SystemManager {
 public:
@@ -23,6 +37,7 @@ public:
     void setSignature(Signature signature){
         const char * handle = typeid(T).name();
         if (!isRegistered(handle)){
+            throw SystemNotRegistered("setSignature");
             return;
         }
         signatures[handle] = signature;
@@ -32,7 +47,7 @@ public:
     T & getSystem(){
         const char * handle = typeid(T).name();
         if (!isRegistered(handle)){
-
+            throw SystemNotRegistered("getSystem");
         }
 
         return *(std::static_pointer_cast<T>(systems[handle]).get());

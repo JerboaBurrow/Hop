@@ -43,6 +43,7 @@ public:
         }
 
         registeredComponents[handle] = nextComponentIndex;
+        nextComponentIndex++;
         componentData[handle] = std::make_shared<ComponentArray<T>>(m);
     }
 
@@ -73,7 +74,7 @@ public:
         const char * handle = typeid(T).name();
 
         if (!componentRegistered(handle)){
-            throw ComponentNotRegistered(" Attempt to getComponent<"+std::string(handle)+">("+std::string(i)+")");
+            throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
         }
 
         return getComponentArray<T>()->get(i);
