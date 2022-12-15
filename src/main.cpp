@@ -95,14 +95,15 @@ int main(){
 
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
-  int n = 4;
+  std::normal_distribution normal;
+  int n = 10000;
   sf::Clock timer2;
   double t1 = 0.0;
   double t2 = 0.0;
   double t3 = 0.0;
   timer.restart();
   for (int i = 0; i < n; i++){
-
+    std::string name = "p"+std::to_string(i);
     timer2.restart();
     manager.createObject(name);
     t1 += timer2.getElapsedTime().asSeconds();
@@ -114,10 +115,18 @@ int main(){
 
     timer2.restart();
     Id pid = manager.idFromHandle(name);
+
     manager.addComponent<cRenderable>(
       pid,
       cRenderable(
-        x,y,0.005,"circleObjectShader"
+      x,y,0.01,"circleObjectShader"
+      )
+    );
+
+    manager.addComponent<cPhysics>(
+      pid,
+      cPhysics(
+        x,y,0.0,0.1
       )
     );
     t2 += timer2.getElapsedTime().asSeconds();
@@ -171,6 +180,19 @@ int main(){
     //map.draw(*shaderPool.get("mapShader").get());
 
     shaderPool.setProjection(camera.getVP());
+
+    for (auto it = physics.objects.begin(); it != physics.objects.end(); it++){
+        Id i = *it;
+
+        cPhysics & data = manager.getComponent<cPhysics>(i);
+        cRenderable & dataR = manager.getComponent<cRenderable>(i);
+
+        dataR.stale = true;
+
+        data.fx += 1.0/600.0 * std::cos(data.theta)*data.scale;
+        data.fy += 1.0/600.0 * std::sin(data.theta)*data.scale;
+        data.omega += std::sqrt(2.0*0.1*60.0)*normal(e);
+    }
 
     timer.restart();
     rendering.update(&manager, &shaderPool);
