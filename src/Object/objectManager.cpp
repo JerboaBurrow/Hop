@@ -37,25 +37,39 @@ void identityCallback(std::string a, std::string b){return;}
 
 void ObjectManager::initialiseBaseECS(){
 
+    registerComponent<cTransform>();
     registerComponent<cRenderable>();
     registerComponent<cPhysics>();
 
     registerSystem<sRender>();
     registerSystem<sPhysics>();
 
-    uint32_t cId = componentManager.getComponentId<cRenderable>();
+    uint32_t tId = componentManager.getComponentId<cTransform>();
+    uint32_t rId = componentManager.getComponentId<cRenderable>();
+    uint32_t pId = componentManager.getComponentId<cPhysics>();
+
     Signature sRenderSig = Signature();
+
     sRenderSig.set(
-        cId,
+        rId,
+        true
+    );
+
+    sRenderSig.set(
+        tId,
         true
     );
 
     systemManager.setSignature<sRender>(sRenderSig);
 
-    cId = componentManager.getComponentId<cPhysics>();
     Signature sPhysicsSig = Signature();
+
     sPhysicsSig.set(
-        cId,
+        pId,
+        true
+    );
+    sPhysicsSig.set(
+        tId,
         true
     );
 

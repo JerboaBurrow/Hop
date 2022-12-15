@@ -4,37 +4,33 @@ void sPhysics::update(ObjectManager * m, double dt){
     for (auto it = objects.begin(); it != objects.end(); it++){
         Id i = *it;
 
-        cPhysics & data = m->getComponent<cPhysics>(i);
-        cRenderable & dataR = m->getComponent<cRenderable>(i);
+        cTransform & dataT = m->getComponent<cTransform>(i);
+        cPhysics & dataP = m->getComponent<cPhysics>(i);
 
         double dtdt = dt*dt;
-        double nx = 2.0*data.x-data.lastX+data.fx*dtdt/data.mass;
-        double ny = 2.0*data.y-data.lastY+data.fy*dtdt/data.mass;
+        double nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
+        double ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
 
-        data.vx = (nx-data.lastX)/2.0;
-        data.vy = (ny-data.lastY)/2.0;
+        dataP.vx = (nx-dataP.lastX)/2.0;
+        dataP.vy = (ny-dataP.lastY)/2.0;
 
-        data.lastX = data.x;
-        data.lastY = data.y;
+        dataP.lastX = dataT.x;
+        dataP.lastY = dataT.y;
 
-        data.x = nx;
-        data.y = ny;
+        dataT.x = nx;
+        dataT.y = ny;
 
-        data.fx = 0.0;
-        data.fy = 0.0;
+        dataP.fx = 0.0;
+        dataP.fy = 0.0;
 
-        double ntheta = 2.0*data.theta-data.lastTheta+data.omega*dtdt/data.momentOfInertia;
+        double ntheta = 2.0*dataT.theta-dataP.lastTheta+dataP.omega*dtdt/dataP.momentOfInertia;
 
-        data.phi = (ntheta-data.lastTheta)/2.0;
+        dataP.phi = (ntheta-dataP.lastTheta)/2.0;
         
-        data.lastTheta = data.theta;
-        data.theta = ntheta;
+        dataP.lastTheta = dataT.theta;
+        dataT.theta = ntheta;
 
-        data.omega = 0.0;
-
-        dataR.ox = data.x;
-        dataR.oy = data.y;
-        dataR.otheta = data.theta;
+        dataP.omega = 0.0;
     }
 }
 
@@ -46,17 +42,18 @@ void sPhysics::applyForce(
     double fx,
     double fy
 ){
-    cPhysics & data = m->getComponent<cPhysics>(i);
+    cPhysics & dataP = m->getComponent<cPhysics>(i);
+    cTransform & dataT = m->getComponent<cTransform>(i);
 
-    data.fx += fx;
-    data.fy += fy;
+    dataP.fx += fx;
+    dataP.fy += fy;
 
-    if (data.x != x || data.y != y){
-        double rx = x-data.x;
-        double ry = y-data.y;
+    if (dataT.x != x || dataT.y != y){
+        double rx = x-dataT.x;
+        double ry = y-dataT.y;
         double tau = rx*fy-ry*fx;
         double r2 = rx*rx+ry*ry;
-        data.omega -= tau/(data.mass*r2); 
+        dataP.omega -= tau/(dataP.mass*r2); 
     }
 }
 
@@ -66,9 +63,9 @@ void sPhysics::applyForce(
     double fy
 ){
     for (auto it = objects.begin(); it != objects.end(); it++){
-        cPhysics & data = m->getComponent<cPhysics>(*it);
+        cPhysics & dataP = m->getComponent<cPhysics>(*it);
 
-        data.fx += fx;
-        data.fy += fy;
+        dataP.fx += fx;
+        dataP.fy += fy;
     }
 }

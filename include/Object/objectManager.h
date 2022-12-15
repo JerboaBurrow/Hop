@@ -7,6 +7,7 @@
 #include <Component/componentManager.h>
 #include <System/systemManager.h>
 
+#include <Component/cTransform.h>
 #include <Component/cRenderable.h>
 #include <Component/cPhysics.h>
 #include <Component/cCollideable.h>

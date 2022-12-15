@@ -2,68 +2,70 @@
 
 #include <time.h>
 
-void sRender::update(ObjectManager * m, Shaders * s){
+void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
     // 10k static objects gives ~ 0.001 sec update, 50k 0.01
     bool newData = false;
     bool staleData = false;
+    clock_t timer = clock();
+    double ct = 0.0;
+
     for (auto it = objects.begin(); it != objects.end(); it++){
 
         Id i = *it;
 
-        cRenderable & data = m->getComponent<cRenderable>(i);
+        clock_t c = clock();
+        cRenderable & dataR = m->getComponent<cRenderable>(i);
+        cTransform & dataT = m->getComponent<cTransform>(i);
+        ct += (clock()-c)/float(CLOCKS_PER_SEC);
 
-        if(!data.stale){continue;}
+        if(refresh){
+            if (offsets.find(dataR.shaderHandle) == offsets.end()){
+                // new shader
+                addNewShader(dataR.shaderHandle);
+                newData = true;
+            }
+            glError("add new shader");
 
-        staleData = true;
+            if (idToIndex.find(i) == idToIndex.end()){
+                // new object
+                addNewObject(i,dataR.shaderHandle);
+                newData = true;           
+            }
+            glError("add new object");
 
-        if (offsets.find(data.shaderHandle) == offsets.end()){
-            // new shader
-            addNewShader(data.shaderHandle);
-            newData = true;
+            // handle shader change
+            if (idToIndex[i].first != dataR.shaderHandle){
+                moveOffsets(i,idToIndex[i].first,dataR.shaderHandle);
+                newData = true;
+            }
+            glError("move offsets");
         }
-        glError("add new shader");
-
-        if (idToIndex.find(i) == idToIndex.end()){
-            // new object
-            addNewObject(i,data.shaderHandle);
-            newData = true;           
-        }
-        glError("add new object");
-
-        // handle shader change
-        if (idToIndex[i].first != data.shaderHandle){
-            moveOffsets(i,idToIndex[i].first,data.shaderHandle);
-            newData = true;
-        }
-        glError("move offsets");
 
         std::string handle = idToIndex[i].first;
         std::size_t start = idToIndex[i].second;
         
         size_t offset = 0;
-        offsets[data.shaderHandle].second[start*4] = data.ox;
-        offsets[data.shaderHandle].second[start*4+1] = data.oy;
-        offsets[data.shaderHandle].second[start*4+2] = data.otheta;
-        offsets[data.shaderHandle].second[start*4+3] = data.os;
+        offsets[handle].second[start*4] = dataT.x;
+        offsets[handle].second[start*4+1] = dataT.y;
+        offsets[handle].second[start*4+2] = dataT.theta;
+        offsets[handle].second[start*4+3] = dataT.scale;
 
         if (newData){
             offset = 4*MAX_OBJECTS_PER_SHADER;
-            offsets[data.shaderHandle].second[start*4+offset] = data.r;
-            offsets[data.shaderHandle].second[start*4+1+offset] = data.g;
-            offsets[data.shaderHandle].second[start*4+2+offset] = data.b;
-            offsets[data.shaderHandle].second[start*4+3+offset] = data.a;
+            offsets[handle].second[start*4+offset] = dataR.r;
+            offsets[handle].second[start*4+1+offset] = dataR.g;
+            offsets[handle].second[start*4+2+offset] = dataR.b;
+            offsets[handle].second[start*4+3+offset] = dataR.a;
 
             offset = 2*4*MAX_OBJECTS_PER_SHADER;
-            offsets[data.shaderHandle].second[start*4+offset] = data.ux;
-            offsets[data.shaderHandle].second[start*4+1+offset] = data.uy;
-            offsets[data.shaderHandle].second[start*4+2+offset] = data.vx;
-            offsets[data.shaderHandle].second[start*4+3+offset] = data.vy;
+            offsets[handle].second[start*4+offset] = dataR.ux;
+            offsets[handle].second[start*4+1+offset] = dataR.uy;
+            offsets[handle].second[start*4+2+offset] = dataR.vx;
+            offsets[handle].second[start*4+3+offset] = dataR.vy;
         }
-
-        data.stale = false;
     }
-
-    if (!staleData){return;}
+    std::cout << "pffsets time " << (clock()-timer)/float(CLOCKS_PER_SEC) << "\n";
+    std::cout << "get data time " << ct << "\n";
 
     for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++){
         glBindVertexArray(it->second.first);
@@ -77,6 +79,8 @@ void sRender::update(ObjectManager * m, Shaders * s){
             updateTexOffsets(it->first);
         }
     }
+
+
 }
 
 void sRender::updateOffsets(std::string handle){
