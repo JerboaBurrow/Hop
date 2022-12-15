@@ -28,28 +28,28 @@ The CXX compiler identification is GNU, found in "/media/harvey/ExtraFiles/Jerbo
 Determining if the C compiler works passed with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_42f67/fast"
-/usr/bin/make -f CMakeFiles/cmTC_42f67.dir/build.make CMakeFiles/cmTC_42f67.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_c0f19/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c0f19.dir/build.make CMakeFiles/cmTC_c0f19.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_42f67.dir/testCCompiler.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_42f67.dir/testCCompiler.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_42f67
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_42f67.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_42f67.dir/testCCompiler.c.o  -o cmTC_42f67 
+Building C object CMakeFiles/cmTC_c0f19.dir/testCCompiler.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_c0f19.dir/testCCompiler.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_c0f19
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c0f19.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_c0f19.dir/testCCompiler.c.o  -o cmTC_c0f19 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_be602/fast"
-/usr/bin/make -f CMakeFiles/cmTC_be602.dir/build.make CMakeFiles/cmTC_be602.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_4fd3a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4fd3a.dir/build.make CMakeFiles/cmTC_4fd3a.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.13/Modules/CMakeCCompilerABI.c
-Linking C executable cmTC_be602
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_be602.dir/link.txt --verbose=1
-/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o  -o cmTC_be602 
+Building C object CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.13/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_4fd3a
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4fd3a.dir/link.txt --verbose=1
+/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o  -o cmTC_4fd3a 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/cc
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper
@@ -61,9 +61,9 @@ Thread model: posix
 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_be602' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/cc74IdfG.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_be602 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_be602' '-mtune=generic' '-march=x86-64'
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_4fd3a' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccN3MN7w.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_4fd3a /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_4fd3a' '-mtune=generic' '-march=x86-64'
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -71,14 +71,14 @@ Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_be602/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_be602.dir/build.make CMakeFiles/cmTC_be602.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_4fd3a/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_4fd3a.dir/build.make CMakeFiles/cmTC_4fd3a.dir/build]
   ignore line: [make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.13/Modules/CMakeCCompilerABI.c]
-  ignore line: [Linking C executable cmTC_be602]
-  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_be602.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o  -o cmTC_be602 ]
+  ignore line: [Building C object CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o   -c /usr/local/share/cmake-3.13/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_4fd3a]
+  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4fd3a.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc     -v -rdynamic CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o  -o cmTC_4fd3a ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/cc]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper]
@@ -90,13 +90,13 @@ Parsed C implicit link information from above output:
   ignore line: [gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_be602' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/cc74IdfG.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_be602 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_4fd3a' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccN3MN7w.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_4fd3a /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/cc74IdfG.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccN3MN7w.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -115,7 +115,7 @@ Parsed C implicit link information from above output:
     arg [-znow] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_be602] ==> ignore
+    arg [cmTC_4fd3a] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o] ==> ignore
@@ -127,7 +127,7 @@ Parsed C implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../..]
-    arg [CMakeFiles/cmTC_be602.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [CMakeFiles/cmTC_4fd3a.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--push-state] ==> ignore
     arg [--as-needed] ==> ignore
@@ -159,14 +159,14 @@ Parsed C implicit link information from above output:
 Detecting C [-std=c11] compiler features compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_219c3/fast"
-/usr/bin/make -f CMakeFiles/cmTC_219c3.dir/build.make CMakeFiles/cmTC_219c3.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_d4e8d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d4e8d.dir/build.make CMakeFiles/cmTC_d4e8d.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_219c3.dir/feature_tests.c.o
-/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_219c3.dir/feature_tests.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_219c3
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_219c3.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_219c3.dir/feature_tests.c.o  -o cmTC_219c3 
+Building C object CMakeFiles/cmTC_d4e8d.dir/feature_tests.c.o
+/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_d4e8d.dir/feature_tests.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_d4e8d
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d4e8d.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_d4e8d.dir/feature_tests.c.o  -o cmTC_d4e8d 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -179,14 +179,14 @@ make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/b
 Detecting C [-std=c99] compiler features compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_cc2cc/fast"
-/usr/bin/make -f CMakeFiles/cmTC_cc2cc.dir/build.make CMakeFiles/cmTC_cc2cc.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_26385/fast"
+/usr/bin/make -f CMakeFiles/cmTC_26385.dir/build.make CMakeFiles/cmTC_26385.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_cc2cc.dir/feature_tests.c.o
-/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_cc2cc.dir/feature_tests.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_cc2cc
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cc2cc.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_cc2cc.dir/feature_tests.c.o  -o cmTC_cc2cc 
+Building C object CMakeFiles/cmTC_26385.dir/feature_tests.c.o
+/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_26385.dir/feature_tests.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_26385
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_26385.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_26385.dir/feature_tests.c.o  -o cmTC_26385 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -199,14 +199,14 @@ make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/b
 Detecting C [-std=c90] compiler features compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_d0818/fast"
-/usr/bin/make -f CMakeFiles/cmTC_d0818.dir/build.make CMakeFiles/cmTC_d0818.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_1f981/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1f981.dir/build.make CMakeFiles/cmTC_1f981.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_d0818.dir/feature_tests.c.o
-/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_d0818.dir/feature_tests.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_d0818
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d0818.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_d0818.dir/feature_tests.c.o  -o cmTC_d0818 
+Building C object CMakeFiles/cmTC_1f981.dir/feature_tests.c.o
+/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_1f981.dir/feature_tests.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_1f981
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1f981.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_1f981.dir/feature_tests.c.o  -o cmTC_1f981 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -217,28 +217,28 @@ make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/b
 Determining if the CXX compiler works passed with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_e8c0a/fast"
-/usr/bin/make -f CMakeFiles/cmTC_e8c0a.dir/build.make CMakeFiles/cmTC_e8c0a.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_82f7d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_82f7d.dir/build.make CMakeFiles/cmTC_82f7d.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_e8c0a.dir/testCXXCompiler.cxx.o
-/usr/bin/c++     -o CMakeFiles/cmTC_e8c0a.dir/testCXXCompiler.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
-Linking CXX executable cmTC_e8c0a
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e8c0a.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_e8c0a.dir/testCXXCompiler.cxx.o  -o cmTC_e8c0a 
+Building CXX object CMakeFiles/cmTC_82f7d.dir/testCXXCompiler.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_82f7d.dir/testCXXCompiler.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_82f7d
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_82f7d.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_82f7d.dir/testCXXCompiler.cxx.o  -o cmTC_82f7d 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_daac0/fast"
-/usr/bin/make -f CMakeFiles/cmTC_daac0.dir/build.make CMakeFiles/cmTC_daac0.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_beed1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_beed1.dir/build.make CMakeFiles/cmTC_beed1.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o
-/usr/bin/c++     -o CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.13/Modules/CMakeCXXCompilerABI.cpp
-Linking CXX executable cmTC_daac0
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_daac0.dir/link.txt --verbose=1
-/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_daac0 
+Building CXX object CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++     -o CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.13/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_beed1
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_beed1.dir/link.txt --verbose=1
+/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_beed1 
 Using built-in specs.
 COLLECT_GCC=/usr/bin/c++
 COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper
@@ -250,9 +250,9 @@ Thread model: posix
 gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04) 
 COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/
 LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_daac0' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccGoHU21.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_daac0 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
-COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_daac0' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_beed1' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccbbEobK.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_beed1 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_beed1' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -260,14 +260,14 @@ Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_daac0/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_daac0.dir/build.make CMakeFiles/cmTC_daac0.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_beed1/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_beed1.dir/build.make CMakeFiles/cmTC_beed1.dir/build]
   ignore line: [make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/usr/bin/c++     -o CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.13/Modules/CMakeCXXCompilerABI.cpp]
-  ignore line: [Linking CXX executable cmTC_daac0]
-  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_daac0.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_daac0 ]
+  ignore line: [Building CXX object CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++     -o CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.13/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_beed1]
+  ignore line: [/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_beed1.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++      -v -rdynamic CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_beed1 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=/usr/bin/c++]
   ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper]
@@ -279,13 +279,13 @@ Parsed CXX implicit link information from above output:
   ignore line: [gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04) ]
   ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/]
   ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_daac0' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccGoHU21.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_daac0 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_beed1' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccbbEobK.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_beed1 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o]
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/collect2] ==> ignore
     arg [-plugin] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so] ==> ignore
     arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccGoHU21.res] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccbbEobK.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lc] ==> ignore
@@ -304,7 +304,7 @@ Parsed CXX implicit link information from above output:
     arg [-znow] ==> ignore
     arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_daac0] ==> ignore
+    arg [cmTC_beed1] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o] ==> ignore
     arg [/usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o] ==> ignore
@@ -316,7 +316,7 @@ Parsed CXX implicit link information from above output:
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
     arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
     arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../..]
-    arg [CMakeFiles/cmTC_daac0.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [CMakeFiles/cmTC_beed1.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -344,14 +344,14 @@ Parsed CXX implicit link information from above output:
 Detecting CXX [-std=c++1z] compiler features compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_e90ed/fast"
-/usr/bin/make -f CMakeFiles/cmTC_e90ed.dir/build.make CMakeFiles/cmTC_e90ed.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_e6bb9/fast"
+/usr/bin/make -f CMakeFiles/cmTC_e6bb9.dir/build.make CMakeFiles/cmTC_e6bb9.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_e90ed.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++1z -o CMakeFiles/cmTC_e90ed.dir/feature_tests.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_e90ed
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e90ed.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_e90ed.dir/feature_tests.cxx.o  -o cmTC_e90ed 
+Building CXX object CMakeFiles/cmTC_e6bb9.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++1z -o CMakeFiles/cmTC_e6bb9.dir/feature_tests.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_e6bb9
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e6bb9.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_e6bb9.dir/feature_tests.cxx.o  -o cmTC_e6bb9 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -417,14 +417,14 @@ make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/b
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_7a413/fast"
-/usr/bin/make -f CMakeFiles/cmTC_7a413.dir/build.make CMakeFiles/cmTC_7a413.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_f1477/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f1477.dir/build.make CMakeFiles/cmTC_f1477.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_7a413.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++14 -o CMakeFiles/cmTC_7a413.dir/feature_tests.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_7a413
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7a413.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_7a413.dir/feature_tests.cxx.o  -o cmTC_7a413 
+Building CXX object CMakeFiles/cmTC_f1477.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++14 -o CMakeFiles/cmTC_f1477.dir/feature_tests.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_f1477
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f1477.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_f1477.dir/feature_tests.cxx.o  -o cmTC_f1477 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -490,14 +490,14 @@ make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/b
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_ff4b9/fast"
-/usr/bin/make -f CMakeFiles/cmTC_ff4b9.dir/build.make CMakeFiles/cmTC_ff4b9.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_4518a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4518a.dir/build.make CMakeFiles/cmTC_4518a.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_ff4b9.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_ff4b9.dir/feature_tests.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_ff4b9
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ff4b9.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_ff4b9.dir/feature_tests.cxx.o  -o cmTC_ff4b9 
+Building CXX object CMakeFiles/cmTC_4518a.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_4518a.dir/feature_tests.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_4518a
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4518a.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_4518a.dir/feature_tests.cxx.o  -o cmTC_4518a 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -563,14 +563,14 @@ make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/b
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_80cd8/fast"
-/usr/bin/make -f CMakeFiles/cmTC_80cd8.dir/build.make CMakeFiles/cmTC_80cd8.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_aef14/fast"
+/usr/bin/make -f CMakeFiles/cmTC_aef14.dir/build.make CMakeFiles/cmTC_aef14.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_80cd8.dir/feature_tests.cxx.o
-/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_80cd8.dir/feature_tests.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_80cd8
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_80cd8.dir/link.txt --verbose=1
-/usr/bin/c++       -rdynamic CMakeFiles/cmTC_80cd8.dir/feature_tests.cxx.o  -o cmTC_80cd8 
+Building CXX object CMakeFiles/cmTC_aef14.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_aef14.dir/feature_tests.cxx.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_aef14
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aef14.dir/link.txt --verbose=1
+/usr/bin/c++       -rdynamic CMakeFiles/cmTC_aef14.dir/feature_tests.cxx.o  -o cmTC_aef14 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
@@ -634,42 +634,42 @@ make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/b
 Determining if the include file unistd.h exists passed with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_aaadc/fast"
-/usr/bin/make -f CMakeFiles/cmTC_aaadc.dir/build.make CMakeFiles/cmTC_aaadc.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_1b597/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1b597.dir/build.make CMakeFiles/cmTC_1b597.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_aaadc.dir/CheckIncludeFile.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_aaadc.dir/CheckIncludeFile.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_aaadc
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aaadc.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_aaadc.dir/CheckIncludeFile.c.o  -o cmTC_aaadc 
+Building C object CMakeFiles/cmTC_1b597.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_1b597.dir/CheckIncludeFile.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_1b597
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1b597.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_1b597.dir/CheckIncludeFile.c.o  -o cmTC_1b597 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
 Determining if the include file fcntl.h exists passed with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_372d9/fast"
-/usr/bin/make -f CMakeFiles/cmTC_372d9.dir/build.make CMakeFiles/cmTC_372d9.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_ead08/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ead08.dir/build.make CMakeFiles/cmTC_ead08.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_372d9.dir/CheckIncludeFile.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_372d9.dir/CheckIncludeFile.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_372d9
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_372d9.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_372d9.dir/CheckIncludeFile.c.o  -o cmTC_372d9 
+Building C object CMakeFiles/cmTC_ead08.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_ead08.dir/CheckIncludeFile.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_ead08
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ead08.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_ead08.dir/CheckIncludeFile.c.o  -o cmTC_ead08 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 
 Determining if the include file stdint.h exists passed with the following output:
 Change Dir: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_b8295/fast"
-/usr/bin/make -f CMakeFiles/cmTC_b8295.dir/build.make CMakeFiles/cmTC_b8295.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_84f7b/fast"
+/usr/bin/make -f CMakeFiles/cmTC_84f7b.dir/build.make CMakeFiles/cmTC_84f7b.dir/build
 make[1]: Entering directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b8295.dir/CheckIncludeFile.c.o
-/usr/bin/cc    -o CMakeFiles/cmTC_b8295.dir/CheckIncludeFile.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
-Linking C executable cmTC_b8295
-/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b8295.dir/link.txt --verbose=1
-/usr/bin/cc      -rdynamic CMakeFiles/cmTC_b8295.dir/CheckIncludeFile.c.o  -o cmTC_b8295 
+Building C object CMakeFiles/cmTC_84f7b.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_84f7b.dir/CheckIncludeFile.c.o   -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_84f7b
+/usr/local/bin/cmake -E cmake_link_script CMakeFiles/cmTC_84f7b.dir/link.txt --verbose=1
+/usr/bin/cc      -rdynamic CMakeFiles/cmTC_84f7b.dir/CheckIncludeFile.c.o  -o cmTC_84f7b 
 make[1]: Leaving directory '/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles/CMakeTmp'
 
 

@@ -98,9 +98,9 @@ void sRender::updateColours(std::string handle){
     glBindBuffer(GL_ARRAY_BUFFER,cBuffer);
     glBufferSubData(
         GL_ARRAY_BUFFER,
-        4*MAX_OBJECTS_PER_SHADER,
+        0,
         4*cnt*sizeof(float),
-        &offsets[handle].second[0]
+        &offsets[handle].second[4*MAX_OBJECTS_PER_SHADER]
     );
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
@@ -111,9 +111,9 @@ void sRender::updateTexOffsets(std::string handle){
     glBindBuffer(GL_ARRAY_BUFFER,tBuffer);
     glBufferSubData(
         GL_ARRAY_BUFFER,
-        2*4*MAX_OBJECTS_PER_SHADER,
+        0,
         4*cnt*sizeof(float),
-        &offsets[handle].second[0]
+        &offsets[handle].second[2*4*MAX_OBJECTS_PER_SHADER]
     );
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }

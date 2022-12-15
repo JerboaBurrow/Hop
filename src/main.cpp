@@ -102,7 +102,7 @@ int main(){
   double t3 = 0.0;
   timer.restart();
   for (int i = 0; i < n; i++){
-
+    std::string name = "p"+std::to_string(i);
     timer2.restart();
     manager.createObject(name);
     t1 += timer2.getElapsedTime().asSeconds();
@@ -117,7 +117,7 @@ int main(){
     manager.addComponent<cRenderable>(
       pid,
       cRenderable(
-        x,y,0.005,"circleObjectShader"
+        x,y,0.01,"circleObjectShader"
       )
     );
     t2 += timer2.getElapsedTime().asSeconds();
