@@ -6,17 +6,11 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
     // 10k static objects gives ~ 0.001 sec update, 50k 0.01
     bool newData = false;
     bool staleData = false;
-    clock_t timer = clock();
-    double ct = 0.0;
-
     for (auto it = objects.begin(); it != objects.end(); it++){
 
         Id i = *it;
-
-        clock_t c = clock();
         cRenderable & dataR = m->getComponent<cRenderable>(i);
         cTransform & dataT = m->getComponent<cTransform>(i);
-        ct += (clock()-c)/float(CLOCKS_PER_SEC);
 
         if(refresh){
             if (offsets.find(dataR.shaderHandle) == offsets.end()){
@@ -64,8 +58,6 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
             offsets[handle].second[start*4+3+offset] = dataR.vy;
         }
     }
-    std::cout << "pffsets time " << (clock()-timer)/float(CLOCKS_PER_SEC) << "\n";
-    std::cout << "get data time " << ct << "\n";
 
     for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++){
         glBindVertexArray(it->second.first);
