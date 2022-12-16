@@ -41,7 +41,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
   "BUILD_TYPE=\"Release\""
   "GLEW_STATIC"
   "SFML_STATIC"
-  "TIMESTAMP=\"2022-12-15:17:33:37\""
+  "TIMESTAMP=\"2022-12-16:09:28:25\""
   )
 
 # The include file search paths:

@@ -39,6 +39,7 @@ private:
     void updateOffsets(std::string handle);
     void updateColours(std::string handle);
     void updateTexOffsets(std::string handle);
+    void threadProcessObject(ObjectManager * m, Shaders * s, int i);
     
     /*
         Keep offsets in contiguous memory per shader

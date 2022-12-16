@@ -86,7 +86,7 @@ public:
     }
 
     template <class T>
-    void removeComponent(Id i){
+    void removeComponent(Id & i){
         componentManager.removeComponent<T>(i);
         idToSignature[i].set(
             componentManager.getComponentId<T>(),
@@ -96,7 +96,7 @@ public:
     }
 
     template <class T>
-    T & getComponent(Id i){
+    inline T & getComponent(const Id & i){
         return componentManager.getComponent<T>(i);
     }
 

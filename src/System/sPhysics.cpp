@@ -1,15 +1,17 @@
 #include <System/sPhysics.h>
 
+#include <chrono>
+using namespace std::chrono;
+
 void sPhysics::update(ObjectManager * m, double dt){
+    double dtdt, nx, ny, ntheta;
+    dtdt = dt*dt;
     for (auto it = objects.begin(); it != objects.end(); it++){
-        Id i = *it;
+        cTransform & dataT = m->getComponent<cTransform>(*it);
+        cPhysics & dataP = m->getComponent<cPhysics>(*it);
 
-        cTransform & dataT = m->getComponent<cTransform>(i);
-        cPhysics & dataP = m->getComponent<cPhysics>(i);
-
-        double dtdt = dt*dt;
-        double nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
-        double ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
+        nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
+        ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
 
         dataP.vx = (nx-dataP.lastX)/2.0;
         dataP.vy = (ny-dataP.lastY)/2.0;
@@ -23,7 +25,7 @@ void sPhysics::update(ObjectManager * m, double dt){
         dataP.fx = 0.0;
         dataP.fy = 0.0;
 
-        double ntheta = 2.0*dataT.theta-dataP.lastTheta+dataP.omega*dtdt/dataP.momentOfInertia;
+        ntheta = 2.0*dataT.theta-dataP.lastTheta+dataP.omega*dtdt/dataP.momentOfInertia;
 
         dataP.phi = (ntheta-dataP.lastTheta)/2.0;
         

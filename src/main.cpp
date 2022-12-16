@@ -96,7 +96,7 @@ int main(){
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 10000;
+  int n = 1000;
   sf::Clock timer2;
   double t1 = 0.0;
   double t2 = 0.0;
@@ -189,21 +189,18 @@ int main(){
 
     //map.draw(*shaderPool.get("mapShader").get());
 
+    timer.restart();
+    rendering.update(&manager, &shaderPool,false);
     shaderPool.setProjection(camera.getVP());
-
+    double D = std::sqrt(2.0*0.1*60.0);
     for (auto it = physics.objects.begin(); it != physics.objects.end(); it++){
-        Id i = *it;
-
-        cPhysics & data = manager.getComponent<cPhysics>(i);
-        cTransform & dataT = manager.getComponent<cTransform>(i);
+        cPhysics & data = manager.getComponent<cPhysics>(*it);
+        cTransform & dataT = manager.getComponent<cTransform>(*it);
 
         data.fx += 1.0/600.0 * std::cos(dataT.theta)*dataT.scale;
         data.fy += 1.0/600.0 * std::sin(dataT.theta)*dataT.scale;
-        data.omega += std::sqrt(2.0*0.1*60.0)*normal(e);
+        data.omega += D*normal(e);
     }
-
-    timer.restart();
-    rendering.update(&manager, &shaderPool,false);
     physics.update(&manager,1.0/60.0);
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();

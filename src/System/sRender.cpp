@@ -1,16 +1,35 @@
 #include <System/sRender.h>
 
-#include <time.h>
+void sRender::threadProcessObject(ObjectManager * m, Shaders * s, int ind){
+    auto it = objects.begin();
+    std::advance(it,ind);
+    Id i = *it;
+    cRenderable & dataR = m->getComponent<cRenderable>(i);
+    cTransform & dataT = m->getComponent<cTransform>(i);
+
+    std::string handle = idToIndex[i].first;
+    std::size_t start = idToIndex[i].second;
+
+    size_t offset = 0;
+    
+    offsets[handle].second[start*4] = dataT.x;
+    offsets[handle].second[start*4+1] = dataT.y;
+    offsets[handle].second[start*4+2] = dataT.theta;
+    offsets[handle].second[start*4+3] = dataT.scale;
+}
 
 void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
     // 10k static objects gives ~ 0.001 sec update, 50k 0.01
+    // 10k update # 0.007-0.0092
+    // that ecs 3d box example got 5k objects in 30 fps
+    //  float-double cast not the issue
     bool newData = false;
     bool staleData = false;
+    std::string handle;
+    std::size_t start, offset;
     for (auto it = objects.begin(); it != objects.end(); it++){
-
-        Id i = *it;
-        cRenderable & dataR = m->getComponent<cRenderable>(i);
-        cTransform & dataT = m->getComponent<cTransform>(i);
+        cRenderable & dataR = m->getComponent<cRenderable>(*it);
+        cTransform & dataT = m->getComponent<cTransform>(*it);
 
         if(refresh){
             if (offsets.find(dataR.shaderHandle) == offsets.end()){
@@ -20,42 +39,42 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
             }
             glError("add new shader");
 
-            if (idToIndex.find(i) == idToIndex.end()){
+            if (idToIndex.find(*it) == idToIndex.end()){
                 // new object
-                addNewObject(i,dataR.shaderHandle);
+                addNewObject(*it,dataR.shaderHandle);
                 newData = true;           
             }
             glError("add new object");
 
             // handle shader change
-            if (idToIndex[i].first != dataR.shaderHandle){
-                moveOffsets(i,idToIndex[i].first,dataR.shaderHandle);
+            if (idToIndex[*it].first != dataR.shaderHandle){
+                moveOffsets(*it,idToIndex[*it].first,dataR.shaderHandle);
                 newData = true;
             }
             glError("move offsets");
         }
 
-        std::string handle = idToIndex[i].first;
-        std::size_t start = idToIndex[i].second;
+        handle = dataR.shaderHandle;
+        start = idToIndex[*it].second*4;
+        offset = 0;
         
-        size_t offset = 0;
-        offsets[handle].second[start*4] = dataT.x;
-        offsets[handle].second[start*4+1] = dataT.y;
-        offsets[handle].second[start*4+2] = dataT.theta;
-        offsets[handle].second[start*4+3] = dataT.scale;
+        offsets[handle].second[start] = dataT.x;
+        offsets[handle].second[start+1] = dataT.y;
+        offsets[handle].second[start+2] = dataT.theta;
+        offsets[handle].second[start+3] = dataT.scale;
 
         if (newData){
             offset = 4*MAX_OBJECTS_PER_SHADER;
-            offsets[handle].second[start*4+offset] = dataR.r;
-            offsets[handle].second[start*4+1+offset] = dataR.g;
-            offsets[handle].second[start*4+2+offset] = dataR.b;
-            offsets[handle].second[start*4+3+offset] = dataR.a;
+            offsets[handle].second[start+offset] = dataR.r;
+            offsets[handle].second[start+1+offset] = dataR.g;
+            offsets[handle].second[start+2+offset] = dataR.b;
+            offsets[handle].second[start+3+offset] = dataR.a;
 
             offset = 2*4*MAX_OBJECTS_PER_SHADER;
-            offsets[handle].second[start*4+offset] = dataR.ux;
-            offsets[handle].second[start*4+1+offset] = dataR.uy;
-            offsets[handle].second[start*4+2+offset] = dataR.vx;
-            offsets[handle].second[start*4+3+offset] = dataR.vy;
+            offsets[handle].second[start+offset] = dataR.ux;
+            offsets[handle].second[start+1+offset] = dataR.uy;
+            offsets[handle].second[start+2+offset] = dataR.vx;
+            offsets[handle].second[start+3+offset] = dataR.vy;
         }
     }
 
