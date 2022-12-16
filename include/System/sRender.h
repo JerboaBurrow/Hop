@@ -27,7 +27,7 @@ public:
 
     // update float verts, loop over all object
     //  with matching signature
-    void update(ObjectManager * m, Shaders * s);
+    void update(ObjectManager * m, Shaders * s, bool refresh);
     void draw(Shaders * s, bool debug = false);
     void initialise();
 
@@ -39,6 +39,7 @@ private:
     void updateOffsets(std::string handle);
     void updateColours(std::string handle);
     void updateTexOffsets(std::string handle);
+    void threadProcessObject(ObjectManager * m, Shaders * s, int i);
     
     /*
         Keep offsets in contiguous memory per shader
