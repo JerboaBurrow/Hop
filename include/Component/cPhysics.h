@@ -6,10 +6,6 @@
      and moving.
 */
 struct cPhysics {
-    double x;
-    double y;
-    double theta;
-
     double lastX;
     double lastY;
     double lastTheta;
@@ -24,6 +20,14 @@ struct cPhysics {
     double fx;
     double fy;
     double omega;
+
+    cPhysics(double x, double y, double t)
+    : lastX(x), lastY(y), lastTheta(t),
+      vx(0.0),vy(0.0),mass(0.01),momentOfInertia(0.01),
+      phi(0.0),fx(0.0),fy(0.0),omega(0.0)
+    {}
+
+    cPhysics() = default;
 };
 
 #endif /* CPHYSICS_H */
