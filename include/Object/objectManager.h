@@ -7,6 +7,7 @@
 #include <Component/componentManager.h>
 #include <System/systemManager.h>
 
+#include <Component/cTransform.h>
 #include <Component/cRenderable.h>
 #include <Component/cPhysics.h>
 #include <Component/cCollideable.h>
@@ -85,7 +86,7 @@ public:
     }
 
     template <class T>
-    void removeComponent(Id i){
+    void removeComponent(Id & i){
         componentManager.removeComponent<T>(i);
         idToSignature[i].set(
             componentManager.getComponentId<T>(),
@@ -95,7 +96,7 @@ public:
     }
 
     template <class T>
-    T & getComponent(Id i){
+    inline T & getComponent(const Id & i){
         return componentManager.getComponent<T>(i);
     }
 

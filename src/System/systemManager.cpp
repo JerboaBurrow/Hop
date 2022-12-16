@@ -13,7 +13,6 @@ void SystemManager::objectSignatureChanged(Id i, Signature es){
         const char * handle = pair.first;
         std::shared_ptr<System> system = pair.second;
         Signature ss = signatures[handle];
-        std::cout << es << ", " << ss << "\n";
         if ((es & ss) == ss){
             system->objects.insert(i);
         }

@@ -500,7 +500,7 @@ Jerboa: CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/build.make
 Jerboa: libglew.a
-Jerboa: libfreetyped.a
+Jerboa: libfreetype.a
 Jerboa: ../include/SFML-2.5.1/build/lib/libsfml-graphics-s.a
 Jerboa: /usr/lib/x86_64-linux-gnu/libGL.so
 Jerboa: /usr/lib/x86_64-linux-gnu/libGLU.so
