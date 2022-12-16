@@ -1,23 +1,5 @@
 #include <System/sRender.h>
 
-void sRender::threadProcessObject(ObjectManager * m, Shaders * s, int ind){
-    auto it = objects.begin();
-    std::advance(it,ind);
-    Id i = *it;
-    cRenderable & dataR = m->getComponent<cRenderable>(i);
-    cTransform & dataT = m->getComponent<cTransform>(i);
-
-    std::string handle = idToIndex[i].first;
-    std::size_t start = idToIndex[i].second;
-
-    size_t offset = 0;
-    
-    offsets[handle].second[start*4] = dataT.x;
-    offsets[handle].second[start*4+1] = dataT.y;
-    offsets[handle].second[start*4+2] = dataT.theta;
-    offsets[handle].second[start*4+3] = dataT.scale;
-}
-
 void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
     // 10k static objects gives ~ 0.001 sec update, 50k 0.01
     // 10k update # 0.007-0.0092
@@ -26,55 +8,56 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
     bool newData = false;
     bool staleData = false;
     std::string handle;
-    std::size_t start, offset;
-    for (auto it = objects.begin(); it != objects.end(); it++){
-        cRenderable & dataR = m->getComponent<cRenderable>(*it);
-        cTransform & dataT = m->getComponent<cTransform>(*it);
+    std::size_t start, offset, pStart, rStart;
+    for (auto it = m->idToIndex.begin(); it != m->idToIndex.end(); it++){
+
+        handle = m->objectShaders[it->second];
 
         if(refresh){
-            if (offsets.find(dataR.shaderHandle) == offsets.end()){
+            if (offsets.find(handle) == offsets.end()){
                 // new shader
-                addNewShader(dataR.shaderHandle);
+                addNewShader(handle);
                 newData = true;
             }
             glError("add new shader");
 
-            if (idToIndex.find(*it) == idToIndex.end()){
+            if (idToIndex.find(it->first) == idToIndex.end()){
                 // new object
-                addNewObject(*it,dataR.shaderHandle);
+                addNewObject(it->first,handle);
                 newData = true;           
             }
             glError("add new object");
 
             // handle shader change
-            if (idToIndex[*it].first != dataR.shaderHandle){
-                moveOffsets(*it,idToIndex[*it].first,dataR.shaderHandle);
+            if (idToIndex[it->first].first != handle){
+                moveOffsets(it->first,idToIndex[it->first].first,handle);
                 newData = true;
             }
             glError("move offsets");
         }
 
-        handle = dataR.shaderHandle;
-        start = idToIndex[*it].second*4;
+        start = idToIndex[it->first].second*4;
+        pStart = it->second*m->physData;
         offset = 0;
         
-        offsets[handle].second[start] = dataT.x;
-        offsets[handle].second[start+1] = dataT.y;
-        offsets[handle].second[start+2] = dataT.theta;
-        offsets[handle].second[start+3] = dataT.scale;
+        offsets[handle].second[start] = m->objectPhysData[pStart];
+        offsets[handle].second[start+1] = m->objectPhysData[pStart+2];
+        offsets[handle].second[start+2] = m->objectPhysData[pStart+4];
+        offsets[handle].second[start+3] = m->objectPhysData[pStart+6];
 
         if (newData){
+            rStart = it->second*m->renderData;
             offset = 4*MAX_OBJECTS_PER_SHADER;
-            offsets[handle].second[start+offset] = dataR.r;
-            offsets[handle].second[start+1+offset] = dataR.g;
-            offsets[handle].second[start+2+offset] = dataR.b;
-            offsets[handle].second[start+3+offset] = dataR.a;
+            offsets[handle].second[start+offset] = m->objectRenderData[rStart];
+            offsets[handle].second[start+1+offset] = m->objectRenderData[rStart+1];
+            offsets[handle].second[start+2+offset] = m->objectRenderData[rStart+2];
+            offsets[handle].second[start+3+offset] = m->objectRenderData[rStart+3];
 
             offset = 2*4*MAX_OBJECTS_PER_SHADER;
-            offsets[handle].second[start+offset] = dataR.ux;
-            offsets[handle].second[start+1+offset] = dataR.uy;
-            offsets[handle].second[start+2+offset] = dataR.vx;
-            offsets[handle].second[start+3+offset] = dataR.vy;
+            offsets[handle].second[start+offset] = m->objectRenderData[rStart+4];
+            offsets[handle].second[start+1+offset] = m->objectRenderData[rStart+5];
+            offsets[handle].second[start+2+offset] = m->objectRenderData[rStart+6];
+            offsets[handle].second[start+3+offset] = m->objectRenderData[rStart+7];
         }
     }
 

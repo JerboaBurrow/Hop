@@ -15,7 +15,7 @@ const int MAX_OBJECTS_PER_SHADER = 100000; // 0.4 megabytes per shader
 class ObjectManager;
 class sRender;
 
-class sRender : public System {
+class sRender {
 public:
 
     sRender()
@@ -39,7 +39,6 @@ private:
     void updateOffsets(std::string handle);
     void updateColours(std::string handle);
     void updateTexOffsets(std::string handle);
-    void threadProcessObject(ObjectManager * m, Shaders * s, int i);
     
     /*
         Keep offsets in contiguous memory per shader

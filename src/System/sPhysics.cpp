@@ -5,34 +5,51 @@ using namespace std::chrono;
 
 void sPhysics::update(ObjectManager * m, double dt){
     double dtdt, nx, ny, ntheta;
+    double x,y,lastX,lastY,theta,lastTheta,fx,fy,omega,mass,momentOfInertia;
     dtdt = dt*dt;
-    for (auto it = objects.begin(); it != objects.end(); it++){
-        cTransform & dataT = m->getComponent<cTransform>(*it);
-        cPhysics & dataP = m->getComponent<cPhysics>(*it);
-
-        nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
-        ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
-
-        dataP.vx = (nx-dataP.lastX)/2.0;
-        dataP.vy = (ny-dataP.lastY)/2.0;
-
-        dataP.lastX = dataT.x;
-        dataP.lastY = dataT.y;
-
-        dataT.x = nx;
-        dataT.y = ny;
-
-        dataP.fx = 0.0;
-        dataP.fy = 0.0;
-
-        ntheta = 2.0*dataT.theta-dataP.lastTheta+dataP.omega*dtdt/dataP.momentOfInertia;
-
-        dataP.phi = (ntheta-dataP.lastTheta)/2.0;
+    size_t start;
+    for (auto it = m->idToIndex.begin(); it != m->idToIndex.end(); it++){
+        start = it->second*m->physData;
         
-        dataP.lastTheta = dataT.theta;
-        dataT.theta = ntheta;
+        x = m->objectPhysData[start];
+        lastX = m->objectPhysData[start+1];
 
-        dataP.omega = 0.0;
+        y = m->objectPhysData[start+2];
+        lastY = m->objectPhysData[start+3];
+        
+        theta = m->objectPhysData[start+4];
+        lastTheta = m->objectPhysData[start+5];
+
+        mass = m->objectPhysData[start+10];
+        momentOfInertia = m->objectPhysData[start+11];
+
+        fx = m->objectPhysData[start+12];
+        fy = m->objectPhysData[start+13];
+        omega = m->objectPhysData[start+14];
+
+        nx = 2.0*x-lastX+fx*dtdt/mass;
+        ny = 2.0*y-lastY+fy*dtdt/mass;
+
+        m->objectPhysData[start+7] = (nx-lastX)/2.0;
+        m->objectPhysData[start+8] = (ny-lastY)/2.0;
+
+        m->objectPhysData[start+1] = x;
+        m->objectPhysData[start+3] = y;
+
+        m->objectPhysData[start] = nx;
+        m->objectPhysData[start+2] = ny;
+
+        m->objectPhysData[start+12] = 0.0;
+        m->objectPhysData[start+13] = 0.0;
+
+        ntheta = 2.0*theta-lastTheta+omega*dtdt/momentOfInertia;
+
+        m->objectPhysData[start+9]= (ntheta-lastTheta)/2.0;
+        
+        m->objectPhysData[start+5] = theta;
+        m->objectPhysData[start+4] = ntheta;
+
+        m->objectPhysData[start+14] = 0.0;
     }
 }
 
@@ -44,30 +61,16 @@ void sPhysics::applyForce(
     double fx,
     double fy
 ){
-    cPhysics & dataP = m->getComponent<cPhysics>(i);
-    cTransform & dataT = m->getComponent<cTransform>(i);
+    size_t start = m->idToIndex[i]*m->physData;
 
-    dataP.fx += fx;
-    dataP.fy += fy;
+    m->objectPhysData[start+12] += fx;
+    m->objectPhysData[start+13] += fy;
 
-    if (dataT.x != x || dataT.y != y){
-        double rx = x-dataT.x;
-        double ry = y-dataT.y;
+    if (x != m->objectPhysData[start] || y != m->objectPhysData[start+2]){
+        double rx = x-m->objectPhysData[start];
+        double ry = y-m->objectPhysData[start+2];
         double tau = rx*fy-ry*fx;
         double r2 = rx*rx+ry*ry;
-        dataP.omega -= tau/(dataP.mass*r2); 
-    }
-}
-
-void sPhysics::applyForce(
-    ObjectManager * m,
-    double fx,
-    double fy
-){
-    for (auto it = objects.begin(); it != objects.end(); it++){
-        cPhysics & dataP = m->getComponent<cPhysics>(*it);
-
-        dataP.fx += fx;
-        dataP.fy += fy;
+        m->objectPhysData[start+14] -= tau/(m->objectPhysData[start+10]*r2); 
     }
 }

@@ -47,17 +47,11 @@ CMakeFiles/Jerboa.dir/src/Object/object.cpp.o: ../include/vendored/stduuid/gsl/s
 CMakeFiles/Jerboa.dir/src/Object/object.cpp.o: ../include/vendored/stduuid/include/uuid.h
 CMakeFiles/Jerboa.dir/src/Object/object.cpp.o: ../src/Object/object.cpp
 
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/cCollideable.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/cPhysics.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/cRenderable.h
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/cTransform.h
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/componentArray.h
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/componentManager.h
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/collisionMesh.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/id.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/object.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/objectManager.h
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/vertex.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Procedural/perlin.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Shader/marchingQuad.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Shader/object.h
@@ -65,7 +59,6 @@ CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Shader/shaders.
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/System/sPhysics.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/System/sRender.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/System/system.h
-CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/System/systemManager.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/World/world.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/gl.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/log.h
@@ -437,17 +430,11 @@ CMakeFiles/Jerboa.dir/src/Shader/shaders.cpp.o: ../include/vendored/glm/glm/vec4
 CMakeFiles/Jerboa.dir/src/Shader/shaders.cpp.o: ../include/vendored/glm/glm/vector_relational.hpp
 CMakeFiles/Jerboa.dir/src/Shader/shaders.cpp.o: ../src/Shader/shaders.cpp
 
-CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/cCollideable.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/cPhysics.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/cRenderable.h
-CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/cTransform.h
-CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/componentArray.h
-CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/componentManager.h
-CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Object/collisionMesh.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Object/id.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Object/object.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Object/objectManager.h
-CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Object/vertex.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Procedural/perlin.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Shader/marchingQuad.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Shader/object.h
@@ -455,7 +442,6 @@ CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Shader/shaders.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/System/sPhysics.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/System/sRender.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/System/system.h
-CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/System/systemManager.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/World/world.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/gl.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/log.h
@@ -636,17 +622,11 @@ CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/vendored/stduuid/gsl
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/vendored/stduuid/include/uuid.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../src/System/sPhysics.cpp
 
-CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/cCollideable.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/cPhysics.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/cRenderable.h
-CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/cTransform.h
-CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/componentArray.h
-CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/componentManager.h
-CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Object/collisionMesh.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Object/id.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Object/object.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Object/objectManager.h
-CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Object/vertex.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Procedural/perlin.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Shader/marchingQuad.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Shader/object.h
@@ -654,7 +634,6 @@ CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Shader/shaders.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/System/sPhysics.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/System/sRender.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/System/system.h
-CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/System/systemManager.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/World/world.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/gl.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/log.h
@@ -1731,17 +1710,11 @@ CMakeFiles/Jerboa.dir/src/gl.cpp.o: ../src/gl.cpp
 CMakeFiles/Jerboa.dir/src/log.cpp.o: ../include/log.h
 CMakeFiles/Jerboa.dir/src/log.cpp.o: ../src/log.cpp
 
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/cCollideable.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/cPhysics.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/cRenderable.h
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/cTransform.h
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/componentArray.h
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/componentManager.h
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/collisionMesh.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/id.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/object.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/objectManager.h
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/vertex.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Procedural/perlin.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/SFML-2.5.1/include/SFML/Config.hpp
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/SFML-2.5.1/include/SFML/Graphics.hpp
@@ -1824,7 +1797,6 @@ CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Shader/shaders.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/System/sPhysics.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/System/sRender.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/System/system.h
-CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/System/systemManager.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Text/glyph.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Text/textRenderer.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Text/type.h

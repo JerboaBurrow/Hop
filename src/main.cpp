@@ -96,60 +96,25 @@ int main(){
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 1000;
+  int n = 65000;
 
   sf::Clock timer2;
-  double t1 = 0.0;
-  double t2 = 0.0;
-  double t3 = 0.0;
   timer.restart();
   for (int i = 0; i < n; i++){
-    std::string name = "p"+std::to_string(i);
-    timer2.restart();
-    manager.createObject(name);
-    t1 += timer2.getElapsedTime().asSeconds();
 
-    timer2.restart();
     double x = U(e);
     double y = U(e);
-    t3 += timer2.getElapsedTime().asSeconds();
 
-    timer2.restart();
-    Id pid = manager.idFromHandle(name);
+    manager.createObject(x,y,0.01,"circleObjectShader");
 
-    manager.addComponent<cTransform>(
-      pid,
-      cTransform(
-        x,y,0.01,0.0
-      )
-    );
-
-    manager.addComponent<cRenderable>(
-      pid,
-      cRenderable(
-       "circleObjectShader"
-      )
-    );
-
-    manager.addComponent<cPhysics>(
-      pid,
-      cPhysics(
-        x,y,0.0
-      )
-    );
-
-    t2 += timer2.getElapsedTime().asSeconds();
   }
   double ct = timer.getElapsedTime().asSeconds();
   std::cout << "object creation time/ per object " << ct << ", " << ct/float(n) << "\n";
-  std::cout << "createObject time " << t1/float(n) << "\n";
-  std::cout << "addComponent time " << t2/float(n) << "\n";
-  std::cout << "random numbers " << t3/float(n) << "\n";
 
-  sRender & rendering = manager.getSystem<sRender>();
-  sPhysics & physics = manager.getSystem<sPhysics>();
+  sRender rendering;
+  sPhysics physics;
 
-  rendering.update(&manager, &shaderPool,true);
+  rendering.update(&manager, &shaderPool, true);
 
   while (window.isOpen()){
 
@@ -193,15 +158,19 @@ int main(){
     timer.restart();
     rendering.update(&manager, &shaderPool,false);
     shaderPool.setProjection(camera.getVP());
-    double D = std::sqrt(2.0*0.1*60.0);
-    for (auto it = physics.objects.begin(); it != physics.objects.end(); it++){
-        cPhysics & data = manager.getComponent<cPhysics>(*it);
-        cTransform & dataT = manager.getComponent<cTransform>(*it);
 
-        data.fx += 1.0/600.0 * std::cos(dataT.theta)*dataT.scale;
-        data.fy += 1.0/600.0 * std::sin(dataT.theta)*dataT.scale;
-        data.omega += D*normal(e);
+    double D = std::sqrt(2.0*0.1*60.0);
+
+    std::vector<double> & pData = manager.getPhysData();
+    size_t n = manager.nObjects();
+    size_t start;
+    for (int i = 0; i < n; i++){
+        start = i*manager.physData;
+        pData[start+12] += 1.0/600.0 * std::cos(pData[start+4])*pData[start+6];
+        pData[start+13] += 1.0/600.0 * std::sin(pData[start+4])*pData[start+6];
+        pData[start+14] += D*normal(e);
     }
+
     physics.update(&manager,1.0/60.0);
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();

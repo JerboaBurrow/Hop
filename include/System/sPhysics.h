@@ -9,7 +9,7 @@ class sPhysics;
 /*
     System to update cPhysics components given forces
 */
-class sPhysics : public System {
+class sPhysics {
 public:
 
     sPhysics(){}
@@ -21,12 +21,6 @@ public:
         Id i,
         double x,
         double y,
-        double fx,
-        double fy
-    );
-
-    void applyForce(
-        ObjectManager * m,
         double fx,
         double fy
     );

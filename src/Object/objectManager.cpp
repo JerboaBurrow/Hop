@@ -1,79 +1,62 @@
 #include <Object/objectManager.h>
 
-Id ObjectManager::createObject(){
-    std::shared_ptr<Object> o = std::make_shared<Object>();
+Id ObjectManager::createObject(
+    double x,
+    double y,
+    double s,
+    std::string shader
+){
+    std::shared_ptr<Id> id = std::make_shared<Id>();
 
-    objects[o->id] = o;
-    idToSignature[o->id] = Signature();
+    for (int i = 0; i < physData; i++){
+        objectPhysData.push_back(0.0);
+    }
 
-    return o->id;
-}
+    for (int i = 0; i < renderData; i++){
+        objectRenderData.push_back(0.0);
+    }
 
-Id ObjectManager::createObject(std::string handle){
-    std::shared_ptr<Object> o = std::make_shared<Object>();
+    objectShaders.push_back("");
 
-    objects[o->id] = o;
-    idToSignature[o->id] = Signature();
-    handleToId[handle] = o->id;
+    objectPhysData[physData*lastObject] = x;
+    objectPhysData[physData*lastObject+1] = x;
 
-    return o->id;
-}
+    objectPhysData[physData*lastObject+2] = y;
+    objectPhysData[physData*lastObject+3] = y;
 
-void ObjectManager::remove(Id id){}
+    objectPhysData[physData*lastObject+4] = 0.0;
+    objectPhysData[physData*lastObject+5] = 0.0;
 
-void ObjectManager::remove(std::string handle){}
+    objectPhysData[physData*lastObject+6] = s;
 
-std::shared_ptr<Object> ObjectManager::getObject(Id id){
-    return objects[id];
-}
+    objectPhysData[physData*lastObject+7] = 0.0;
+    objectPhysData[physData*lastObject+8] = 0.0;
+    objectPhysData[physData*lastObject+9] = 0.0;
 
-std::shared_ptr<Object> ObjectManager::getObject(std::string name){
-    Id id = handleToId[name];
-    return objects[id];
+    objectPhysData[physData*lastObject+10] = 0.01;
+    objectPhysData[physData*lastObject+11] = 0.01;
+
+    objectPhysData[physData*lastObject+12] = 0.0;
+    objectPhysData[physData*lastObject+13] = 0.0;
+    objectPhysData[physData*lastObject+14] = 0.0;
+
+    objectRenderData[renderData*lastObject] = 1.0;
+    objectRenderData[renderData*lastObject+1] = 0.0;
+    objectRenderData[renderData*lastObject+2] = 0.0;
+    objectRenderData[renderData*lastObject+3] = 1.0;
+
+    objectRenderData[renderData*lastObject+4] = 0.0;
+    objectRenderData[renderData*lastObject+5] = 0.0;
+    objectRenderData[renderData*lastObject+6] = 0.0;
+    objectRenderData[renderData*lastObject+7] = 0.0;
+
+    objectShaders[lastObject] = shader;
+
+    idToIndex[*id.get()] = lastObject;
+    ids.push_back(id);
+    lastObject++;
+    return *id.get();
 }
 
 // do nothing callback
 void identityCallback(std::string a, std::string b){return;}
-
-void ObjectManager::initialiseBaseECS(){
-
-    registerComponent<cTransform>();
-    registerComponent<cRenderable>();
-    registerComponent<cPhysics>();
-
-    registerSystem<sRender>();
-    registerSystem<sPhysics>();
-
-    uint32_t tId = componentManager.getComponentId<cTransform>();
-    uint32_t rId = componentManager.getComponentId<cRenderable>();
-    uint32_t pId = componentManager.getComponentId<cPhysics>();
-
-    Signature sRenderSig = Signature();
-
-    sRenderSig.set(
-        rId,
-        true
-    );
-
-    sRenderSig.set(
-        tId,
-        true
-    );
-
-    systemManager.setSignature<sRender>(sRenderSig);
-
-    Signature sPhysicsSig = Signature();
-
-    sPhysicsSig.set(
-        pId,
-        true
-    );
-    sPhysicsSig.set(
-        tId,
-        true
-    );
-
-    std::cout << sRenderSig << ", " << sPhysicsSig << "\n";
-
-    systemManager.setSignature<sPhysics>(sPhysicsSig);
-}
