@@ -50,6 +50,7 @@ CMakeFiles/Jerboa.dir/src/Object/object.cpp.o: ../src/Object/object.cpp
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/cCollideable.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/cPhysics.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/cRenderable.h
+CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/cTransform.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/componentArray.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Component/componentManager.h
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: ../include/Object/collisionMesh.h
@@ -439,6 +440,7 @@ CMakeFiles/Jerboa.dir/src/Shader/shaders.cpp.o: ../src/Shader/shaders.cpp
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/cCollideable.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/cPhysics.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/cRenderable.h
+CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/cTransform.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/componentArray.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Component/componentManager.h
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../include/Object/collisionMesh.h
@@ -637,6 +639,7 @@ CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: ../src/System/sPhysics.cpp
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/cCollideable.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/cPhysics.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/cRenderable.h
+CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/cTransform.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/componentArray.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Component/componentManager.h
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: ../include/Object/collisionMesh.h
@@ -1731,6 +1734,7 @@ CMakeFiles/Jerboa.dir/src/log.cpp.o: ../src/log.cpp
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/cCollideable.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/cPhysics.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/cRenderable.h
+CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/cTransform.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/componentArray.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Component/componentManager.h
 CMakeFiles/Jerboa.dir/src/main.cpp.o: ../include/Object/collisionMesh.h

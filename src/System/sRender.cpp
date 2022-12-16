@@ -1,69 +1,82 @@
 #include <System/sRender.h>
 
-#include <time.h>
+void sRender::threadProcessObject(ObjectManager * m, Shaders * s, int ind){
+    auto it = objects.begin();
+    std::advance(it,ind);
+    Id i = *it;
+    cRenderable & dataR = m->getComponent<cRenderable>(i);
+    cTransform & dataT = m->getComponent<cTransform>(i);
 
-void sRender::update(ObjectManager * m, Shaders * s){
+    std::string handle = idToIndex[i].first;
+    std::size_t start = idToIndex[i].second;
+
+    size_t offset = 0;
+    
+    offsets[handle].second[start*4] = dataT.x;
+    offsets[handle].second[start*4+1] = dataT.y;
+    offsets[handle].second[start*4+2] = dataT.theta;
+    offsets[handle].second[start*4+3] = dataT.scale;
+}
+
+void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
     // 10k static objects gives ~ 0.001 sec update, 50k 0.01
+    // 10k update # 0.007-0.0092
+    // that ecs 3d box example got 5k objects in 30 fps
+    //  float-double cast not the issue
     bool newData = false;
     bool staleData = false;
+    std::string handle;
+    std::size_t start, offset;
     for (auto it = objects.begin(); it != objects.end(); it++){
+        cRenderable & dataR = m->getComponent<cRenderable>(*it);
+        cTransform & dataT = m->getComponent<cTransform>(*it);
 
-        Id i = *it;
+        if(refresh){
+            if (offsets.find(dataR.shaderHandle) == offsets.end()){
+                // new shader
+                addNewShader(dataR.shaderHandle);
+                newData = true;
+            }
+            glError("add new shader");
 
-        cRenderable & data = m->getComponent<cRenderable>(i);
+            if (idToIndex.find(*it) == idToIndex.end()){
+                // new object
+                addNewObject(*it,dataR.shaderHandle);
+                newData = true;           
+            }
+            glError("add new object");
 
-        if(!data.stale){continue;}
-
-        staleData = true;
-
-        if (offsets.find(data.shaderHandle) == offsets.end()){
-            // new shader
-            addNewShader(data.shaderHandle);
-            newData = true;
+            // handle shader change
+            if (idToIndex[*it].first != dataR.shaderHandle){
+                moveOffsets(*it,idToIndex[*it].first,dataR.shaderHandle);
+                newData = true;
+            }
+            glError("move offsets");
         }
-        glError("add new shader");
 
-        if (idToIndex.find(i) == idToIndex.end()){
-            // new object
-            addNewObject(i,data.shaderHandle);
-            newData = true;           
-        }
-        glError("add new object");
-
-        // handle shader change
-        if (idToIndex[i].first != data.shaderHandle){
-            moveOffsets(i,idToIndex[i].first,data.shaderHandle);
-            newData = true;
-        }
-        glError("move offsets");
-
-        std::string handle = idToIndex[i].first;
-        std::size_t start = idToIndex[i].second;
+        handle = dataR.shaderHandle;
+        start = idToIndex[*it].second*4;
+        offset = 0;
         
-        size_t offset = 0;
-        offsets[data.shaderHandle].second[start*4] = data.ox;
-        offsets[data.shaderHandle].second[start*4+1] = data.oy;
-        offsets[data.shaderHandle].second[start*4+2] = data.otheta;
-        offsets[data.shaderHandle].second[start*4+3] = data.os;
+        offsets[handle].second[start] = dataT.x;
+        offsets[handle].second[start+1] = dataT.y;
+        offsets[handle].second[start+2] = dataT.theta;
+        offsets[handle].second[start+3] = dataT.scale;
 
         if (newData){
             offset = 4*MAX_OBJECTS_PER_SHADER;
-            offsets[data.shaderHandle].second[start*4+offset] = data.r;
-            offsets[data.shaderHandle].second[start*4+1+offset] = data.g;
-            offsets[data.shaderHandle].second[start*4+2+offset] = data.b;
-            offsets[data.shaderHandle].second[start*4+3+offset] = data.a;
+            offsets[handle].second[start+offset] = dataR.r;
+            offsets[handle].second[start+1+offset] = dataR.g;
+            offsets[handle].second[start+2+offset] = dataR.b;
+            offsets[handle].second[start+3+offset] = dataR.a;
 
             offset = 2*4*MAX_OBJECTS_PER_SHADER;
-            offsets[data.shaderHandle].second[start*4+offset] = data.ux;
-            offsets[data.shaderHandle].second[start*4+1+offset] = data.uy;
-            offsets[data.shaderHandle].second[start*4+2+offset] = data.vx;
-            offsets[data.shaderHandle].second[start*4+3+offset] = data.vy;
+            offsets[handle].second[start+offset] = dataR.ux;
+            offsets[handle].second[start+1+offset] = dataR.uy;
+            offsets[handle].second[start+2+offset] = dataR.vx;
+            offsets[handle].second[start+3+offset] = dataR.vy;
         }
-
-        data.stale = false;
     }
-
-    if (!staleData){return;}
 
     for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++){
         glBindVertexArray(it->second.first);
@@ -77,6 +90,8 @@ void sRender::update(ObjectManager * m, Shaders * s){
             updateTexOffsets(it->first);
         }
     }
+
+
 }
 
 void sRender::updateOffsets(std::string handle){
@@ -98,9 +113,9 @@ void sRender::updateColours(std::string handle){
     glBindBuffer(GL_ARRAY_BUFFER,cBuffer);
     glBufferSubData(
         GL_ARRAY_BUFFER,
-        4*MAX_OBJECTS_PER_SHADER,
+        0,
         4*cnt*sizeof(float),
-        &offsets[handle].second[0]
+        &offsets[handle].second[4*MAX_OBJECTS_PER_SHADER]
     );
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
@@ -111,9 +126,9 @@ void sRender::updateTexOffsets(std::string handle){
     glBindBuffer(GL_ARRAY_BUFFER,tBuffer);
     glBufferSubData(
         GL_ARRAY_BUFFER,
-        2*4*MAX_OBJECTS_PER_SHADER,
+        0,
         4*cnt*sizeof(float),
-        &offsets[handle].second[0]
+        &offsets[handle].second[2*4*MAX_OBJECTS_PER_SHADER]
     );
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }

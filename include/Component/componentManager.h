@@ -70,12 +70,12 @@ public:
     }
 
     template <class T>
-    T & getComponent(Id i){
-        const char * handle = typeid(T).name();
+    inline T & getComponent(const Id & i){
+        // const char * handle = typeid(T).name();
 
-        if (!componentRegistered(handle)){
-            throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
-        }
+        // if (!componentRegistered(handle)){
+        //     throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
+        // }
 
         return getComponentArray<T>()->get(i);
     }

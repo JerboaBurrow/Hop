@@ -22,8 +22,21 @@ public:
     
     void insert(Id i, T component);
     void remove(Id i);
-    T & get(Id i);
-    void objectFreed(Id i);
+
+    inline T & get(const Id & i){
+        // if (!idTaken(i)){
+        
+        // }
+        return componentData[idToIndex[i]];
+    }
+
+    inline void objectFreed(Id i){
+        if (!idTaken(i)){
+            return;
+        }
+        remove(i);
+    }
+
 
 private:
 
@@ -75,21 +88,4 @@ void ComponentArray<T>::remove(Id i){
     nextIndex--;
 
 }
-
-template <class T>
-T & ComponentArray<T>::get(Id i){
-    if (!idTaken(i)){
-       
-    }
-    return componentData[idToIndex[i]];
-}
-
-template <class T>
-void ComponentArray<T>::objectFreed(Id i){
-    if (!idTaken(i)){
-        return;
-    }
-    remove(i);
-}
-
 #endif /* COMONENTARRAY_H */
