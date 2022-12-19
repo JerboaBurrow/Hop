@@ -4,3 +4,5 @@ Makefile
 CMakeFiles/*
 build/*
 include/SFML-2.5.1/*
+call*
+build/*

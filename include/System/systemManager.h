@@ -1,9 +1,13 @@
 #ifndef SYSTEMMANAGER_H
 #define SYSTEMMANAGER_H
 
-#include <Component/componentManager.h>
 #include <System/system.h>
 #include <exception>
+#include <bitset>
+#include <algorithm>
+
+const uint32_t MAX_COMPONENTS = 64;
+typedef std::bitset<MAX_COMPONENTS> Signature;
 
 class SystemNotRegistered: public std::exception {
 public:
@@ -20,6 +24,10 @@ private:
 
 class SystemManager {
 public:
+
+    SystemManager(size_t n)
+    : threads(n)
+    {}
 
     template<typename T>
     void registerSystem(){
@@ -64,6 +72,8 @@ private:
 
     std::unordered_map<const char*, Signature> signatures;
 	std::unordered_map<const char*, std::shared_ptr<System>> systems;
+
+    const size_t threads;
 };
 
 #endif /* SYSTEMMANAGER_H */

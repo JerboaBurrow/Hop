@@ -25,6 +25,10 @@
 #include <System/sRender.h>
 #include <log.h>
 
+#include <chrono>
+using namespace std::chrono;
+
+
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
@@ -86,7 +90,7 @@ int main(){
   float posX = 0.0;
   float posY = 0.0;
 
-  ObjectManager manager;
+  ObjectManager manager(std::thread::hardware_concurrency());
 
   // Shader mapShader(marchingQuadVertexShader,marchingQuadFragmentShader);
   // Shader circleObjectShader(objectVertexShader,circleObjectFragmentShader);
@@ -101,7 +105,6 @@ int main(){
   sf::Clock timer2;
   double t1 = 0.0;
   double t2 = 0.0;
-  double t3 = 0.0;
   timer.restart();
   for (int i = 0; i < n; i++){
     std::string name = "p"+std::to_string(i);
@@ -109,10 +112,8 @@ int main(){
     manager.createObject(name);
     t1 += timer2.getElapsedTime().asSeconds();
 
-    timer2.restart();
     double x = U(e);
     double y = U(e);
-    t3 += timer2.getElapsedTime().asSeconds();
 
     timer2.restart();
     Id pid = manager.idFromHandle(name);
@@ -141,15 +142,16 @@ int main(){
     t2 += timer2.getElapsedTime().asSeconds();
   }
   double ct = timer.getElapsedTime().asSeconds();
-  std::cout << "object creation time/ per object " << ct << ", " << ct/float(n) << "\n";
-  std::cout << "createObject time " << t1/float(n) << "\n";
-  std::cout << "addComponent time " << t2/float(n) << "\n";
-  std::cout << "random numbers " << t3/float(n) << "\n";
+  Log & log = manager.getLog();
+
+  INFO("object creation time/ per object " + std::to_string(ct) + ", " + std::to_string(ct/float(n))) >> log;
+  INFO("createObject time "+std::to_string(t1/float(n))) >> log;
+  INFO("addComponents time "+std::to_string(t2/float(n))) >> log;
 
   sRender & rendering = manager.getSystem<sRender>();
   sPhysics & physics = manager.getSystem<sPhysics>();
 
-  rendering.update(&manager, &shaderPool,true);
+  rendering.update(&manager, &shaderPool, true);
 
   while (window.isOpen()){
 
@@ -163,6 +165,13 @@ int main(){
       }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F1){
         debug = !debug;
+      }
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M){
+        manager.addThread();
+      }
+
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L){
+        manager.releaseThread();
       }
     }
 
@@ -191,18 +200,12 @@ int main(){
     //map.draw(*shaderPool.get("mapShader").get());
 
     timer.restart();
-    rendering.update(&manager, &shaderPool,false);
-    shaderPool.setProjection(camera.getVP());
-    double D = std::sqrt(2.0*0.1*60.0);
-    for (auto it = physics.objects.begin(); it != physics.objects.end(); it++){
-        cPhysics & data = manager.getComponent<cPhysics>(*it);
-        cTransform & dataT = manager.getComponent<cTransform>(*it);
 
-        data.fx += 1.0/600.0 * std::cos(dataT.theta)*dataT.scale;
-        data.fy += 1.0/600.0 * std::sin(dataT.theta)*dataT.scale;
-        data.omega += D*normal(e);
-    }
+    shaderPool.setProjection(camera.getVP());
+    
+    rendering.update(&manager, &shaderPool,false);
     physics.update(&manager,1.0/60.0);
+
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();
     rendering.draw(&shaderPool);

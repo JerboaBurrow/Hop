@@ -15,7 +15,7 @@ public:
     sPhysics(){}
 
     void update(ObjectManager * m, double dt);
-
+    
     void applyForce(
         ObjectManager * m,
         Id i,
@@ -32,6 +32,10 @@ public:
     );
 
 private:
+
+    void processThreaded(ObjectManager * m, double dtdt, size_t threadId);
+
+    void updateThreaded(ObjectManager * m, double dt);
 
 };
 
