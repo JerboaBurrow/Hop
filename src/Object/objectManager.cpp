@@ -44,9 +44,9 @@ void ObjectManager::initialiseBaseECS(){
     registerSystem<sRender>();
     registerSystem<sPhysics>();
 
-    uint32_t tId = componentManager.getComponentId<cTransform>();
-    uint32_t rId = componentManager.getComponentId<cRenderable>();
-    uint32_t pId = componentManager.getComponentId<cPhysics>();
+    uint32_t tId = getComponentId<cTransform>();
+    uint32_t rId = getComponentId<cRenderable>();
+    uint32_t pId = getComponentId<cPhysics>();
 
     Signature sRenderSig = Signature();
 

@@ -20,8 +20,8 @@ public:
         componentData = std::make_unique<T[]>(maxObjects);
     }
     
-    void insert(Id i, T component);
-    void remove(Id i);
+    void insert(Id & i, T component);
+    void remove(Id & i);
 
     inline T & get(const Id & i){
         // if (!idTaken(i)){
@@ -52,7 +52,7 @@ private:
 };
 
 template <class T>
-void ComponentArray<T>::insert(Id i, T component){
+void ComponentArray<T>::insert(Id & i, T component){
     if (idTaken(i)){
         return;
     }
@@ -65,7 +65,7 @@ void ComponentArray<T>::insert(Id i, T component){
 }
 
 template <class T>
-void ComponentArray<T>::remove(Id i){
+void ComponentArray<T>::remove(Id & i){
     if (!idTaken(i)){
         return;
     }
