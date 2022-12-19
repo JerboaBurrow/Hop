@@ -3,9 +3,75 @@
 #include <chrono>
 using namespace std::chrono;
 
+#include <thread>
+
+void sPhysics::processThreaded(ObjectManager * m, double dtdt, size_t threadId){
+    double nx, ny, ntheta;
+    std::default_random_engine e;
+    std::normal_distribution normal;
+    double D = std::sqrt(2.0*0.1*60.0);
+    for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++){
+        cTransform & dataT = m->getComponent<cTransform>(*it);
+        cPhysics & dataP = m->getComponent<cPhysics>(*it);
+
+        dataP.fx += 1.0/600.0 * std::cos(dataT.theta)*dataT.scale;
+        dataP.fy += 1.0/600.0 * std::sin(dataT.theta)*dataT.scale;
+        dataP.omega += D*normal(e);
+
+        nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
+        ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
+
+        dataP.vx = (nx-dataP.lastX)/2.0;
+        dataP.vy = (ny-dataP.lastY)/2.0;
+
+        dataP.lastX = dataT.x;
+        dataP.lastY = dataT.y;
+
+        dataT.x = nx;
+        dataT.y = ny;
+
+        dataP.fx = 0.0;
+        dataP.fy = 0.0;
+
+        ntheta = 2.0*dataT.theta-dataP.lastTheta+dataP.omega*dtdt/dataP.momentOfInertia;
+
+        dataP.phi = (ntheta-dataP.lastTheta)/2.0;
+        
+        dataP.lastTheta = dataT.theta;
+        dataT.theta = ntheta;
+
+        dataP.omega = 0.0;
+    }
+}
+
+void sPhysics::updateThreaded(ObjectManager * m, double dt){
+    
+    double dtdt = dt*dt;
+
+    for (int j = 0; j < threadJobs.size(); j++){
+        m->postJob(
+            std::bind(
+                &sPhysics::processThreaded,
+                this,
+                m,
+                dtdt,
+                j
+            )
+        );
+    }
+    m->waitForJobs();
+}
+
 void sPhysics::update(ObjectManager * m, double dt){
+
+    if (m->isThreaded()){
+        updateThreaded(m,dt);
+        return;
+    }
+
     double dtdt, nx, ny, ntheta;
     dtdt = dt*dt;
+
     for (auto it = objects.begin(); it != objects.end(); it++){
         cTransform & dataT = m->getComponent<cTransform>(*it);
         cPhysics & dataP = m->getComponent<cPhysics>(*it);

@@ -8,6 +8,7 @@
 class System {
 public:
     std::set<Id> objects;
+    std::vector<std::vector<Id>> threadJobs;
 };
 
 #endif /* SYSTEM_H */

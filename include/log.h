@@ -7,7 +7,9 @@
 #include <string>
 #include <vector>
 #include <map>
+
 #include <ctime>
+std::string get_time();
 
 class Log {
 public:
@@ -25,11 +27,13 @@ public:
   }
 
   void put(std::string s){
+    s = get_time() + " " + s;
     logStream.push_back(s);
   }
 
   inline void put(const char * c){
-    logStream.push_back(std::string(c));
+    std::string s = get_time() + " " + std::string(c);
+    logStream.push_back(s);
   }
 
   inline std::string get() {
@@ -134,4 +138,4 @@ private:
   std::vector<std::string> sequence;
 };
 
-#endif
+#endif /* LOG_H */

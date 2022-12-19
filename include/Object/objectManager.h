@@ -4,7 +4,6 @@
 #include <World/world.h>
 #include <Object/object.h>
 
-#include <Component/componentManager.h>
 #include <System/systemManager.h>
 
 #include <Component/cTransform.h>
@@ -18,7 +17,26 @@
 #include <unordered_map>
 #include <string>
 
+#include <typeinfo>
+#include <exception>
+
+#include <Component/componentArray.h>
+
+#include <Thread/threadPool.h>
+
 #include <log.h>
+
+class ComponentNotRegistered: public std::exception {
+public:
+    ComponentNotRegistered(std::string msg)
+    : msg(msg)
+    {}
+private:
+    virtual const char * what() const throw(){
+        return msg.c_str();
+    }
+    std::string msg;
+};
 
 class ObjectManager;
 class sRender;
@@ -45,17 +63,23 @@ class sPhysics;
 typedef void (*CollisionCallback)(std::string,std::string);
 void identityCallback(std::string a, std::string b);
 
-const uint32_t MAX_OBJECTS = 1000000;
+const uint32_t MAX_OBJECTS = 100000;
 
 class ObjectManager {
 public:
 
     ObjectManager(
+        size_t threads,
         void (*callback)(std::string,std::string) = &identityCallback
     )
-    : collisionCallback(callback)
+    : collisionCallback(callback), 
+    nextComponentIndex(0), 
+    workers(ThreadPool(threads)),
+    systemManager(SystemManager(threads)),
+    threads(threads)
     {
         initialiseBaseECS();
+        INFO("using "+std::to_string(threads)+" threads") >> log;
     }
 
     Id createObject();
@@ -70,26 +94,51 @@ public:
     CollisionCallback collisionCallback;
 
     // component interface
-    template<class T>
+
+    template <class T>
     void registerComponent(){
-        componentManager.registerComponent<T>(MAX_OBJECTS);
+        const char * handle = typeid(T).name();
+
+        if (componentRegistered(handle)){
+            return;
+        }
+
+        if (nextComponentIndex >= MAX_COMPONENTS){
+            return;
+        }
+
+        registeredComponents[handle] = nextComponentIndex;
+        nextComponentIndex++;
+        componentData[handle] = std::make_shared<ComponentArray<T>>(MAX_OBJECTS);
     }
 
     template <class T>
     void addComponent(Id i, T component){
-        componentManager.addComponent<T>(i,component);
+        const char * handle = typeid(T).name();
+
+        if (!componentRegistered(handle)){
+            return;
+        }
+
+        getComponentArray<T>()->insert(i,component);
         idToSignature[i].set(
-            componentManager.getComponentId<T>(),
+            getComponentId<T>(),
             true
         );
         systemManager.objectSignatureChanged(i,idToSignature[i]);
     }
 
     template <class T>
-    void removeComponent(Id & i){
-        componentManager.removeComponent<T>(i);
+    void removeComponent(Id i){
+        const char * handle = typeid(T).name();
+
+        if (!componentRegistered(handle)){
+            return;
+        }
+
+        getComponentArray<T>()->remove(i);
         idToSignature[i].set(
-            componentManager.getComponentId<T>(),
+            getComponentId<T>(),
             false
         );
         systemManager.objectSignatureChanged(i,idToSignature[i]);
@@ -97,7 +146,28 @@ public:
 
     template <class T>
     inline T & getComponent(const Id & i){
-        return componentManager.getComponent<T>(i);
+        // const char * handle = typeid(T).name();
+
+        // if (!componentRegistered(handle)){
+        //     throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
+        // }
+        const char * handle = typeid(T).name();
+        return (std::static_pointer_cast<ComponentArray<T>>(componentData[handle]))->get(i);
+    }
+
+    void objectFreed(Id i){
+        for (auto const& pair : componentData){
+            pair.second.get()->objectFreed(i);
+        }
+    }
+
+    template <class T>
+    uint32_t getComponentId(){
+        const char * handle = typeid(T).name();
+        if (!componentRegistered(handle)){
+            throw ComponentNotRegistered(" Attempt to getComponent<"+std::string(handle)+">()");
+        }
+        return registeredComponents[handle];
     }
 
     // system interface
@@ -112,11 +182,33 @@ public:
     template <class T>
     T & getSystem(){return systemManager.getSystem<T>();}
 
-    void postToLog(LogType msg){
-        msg >> log; 
+    Log & getLog(){return log;}
+
+    void postJob(
+        const std::function<void(void)> & job
+    ){
+        workers.queueJob(job);
     }
 
-    Log & getLog(){return log;}
+    void waitForJobs(){
+        workers.wait();
+    }
+
+    bool isThreaded(){
+        return workers.size()>0;
+    }
+
+    void releaseThread(){
+        INFO("releaseing a thread (nThreads): "+std::to_string(workers.size()))>>log;
+        workers.joinThread();
+        INFO("join called (nThreads): "+std::to_string(workers.size()))>>log;
+    }
+
+    void addThread(){
+        INFO("adding a thread (nThreads): "+std::to_string(workers.size()))>>log;
+        workers.createThread();
+        INFO("create called (nThreads): "+std::to_string(workers.size()))>>log;
+    }
 
 private:
 
@@ -125,11 +217,29 @@ private:
     std::unordered_map<Id,std::shared_ptr<Object>> objects;
 
     SystemManager systemManager;
-    ComponentManager componentManager;
+
+    ThreadPool workers;
+    const size_t threads;
 
     void initialiseBaseECS();
 
     Log log;
+
+    // components
+
+    bool componentRegistered(const char * h){return registeredComponents.find(h)!=registeredComponents.end();}
+
+    uint32_t nextComponentIndex;
+    std::unordered_map<const char *,uint32_t> registeredComponents;
+    std::unordered_map<const char*, std::shared_ptr<AbstractComponentArray>> componentData;
+
+
+    template<typename T>
+	std::shared_ptr<ComponentArray<T>> getComponentArray()
+	{
+        const char * handle = typeid(T).name();
+		return std::static_pointer_cast<ComponentArray<T>>(componentData[handle]);
+	}
 };
 
 
