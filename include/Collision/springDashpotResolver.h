@@ -1,7 +1,7 @@
 #ifndef SPRINGDASHPOTRESOLVER_H
 #define SPRINGDASHPOTRESOLVER_H
 
-#include <Object/collisionResolver.h>
+#include <Collision/collisionResolver.h>
 #include <cmath>
 #include <Object/objectManager.h>
 
@@ -18,7 +18,7 @@ public:
     }
 
     void handleObjectCollision(
-        std::string oi, std::string oj,
+        std::string & oi, std::string & oj,
         uint64_t pi, uint64_t pj,
         ObjectManager * manager
     );

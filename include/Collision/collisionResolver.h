@@ -2,6 +2,7 @@
 #define COLLISIONRESOLVER_H
 
 #include <string>
+#include <Object/id.h>
 
 class ObjectManager;
 class World;
@@ -17,7 +18,7 @@ public:
     //  handles collision between pi and pj
     //  and updates each object via the manager
     virtual void handleObjectCollision(
-        std::string oi, std::string oj,
+        std::string & oi, std::string & oj,
         uint64_t pi, uint64_t pj,
         ObjectManager * manager
     ) = 0;

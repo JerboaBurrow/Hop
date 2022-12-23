@@ -1,11 +1,16 @@
 #ifndef CCOLLIDEABLE_H
 #define CCOLLIDEABLE_H
 
-#include <Object/collisionMesh.h>
+#include <Collision/collisionMesh.h>
 
 struct cCollideable {
-    bool isGhost;
     CollisionMesh mesh;
+
+    cCollideable(std::vector<CollisionVertex> v)
+    : mesh(CollisionMesh(v))
+    {}
+
+    cCollideable(){}
 };
 
 #endif /* CCOLLIDEABLE_H */

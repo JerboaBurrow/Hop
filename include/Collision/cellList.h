@@ -1,11 +1,11 @@
 #ifndef CELLLIST_H
 #define CELLLIST_H
 
-#include <Object/collisionDetector.h>
+#include <Collision/collisionDetector.h>
 #include <memory>
 #include <utility>
 
-const uint64_t MAX_PARTICLES = 1048576; // 2^20
+const uint64_t MAX_PARTICLES = 100000;
 const uint64_t MAX_PARTICLES_PER_CELL = 64;
 const uint64_t NULL_INDEX = MAX_PARTICLES_PER_CELL+1;
 
@@ -29,7 +29,7 @@ public:
             lastElementInCell[i] = NULL_INDEX;
         }
         for (int i = 0; i < MAX_PARTICLES; i++){
-            id[i] = std::pair("NULL",NULL_INDEX);
+            id[i] = std::pair("",NULL_INDEX);
         }
     }
 private:
@@ -49,7 +49,7 @@ private:
 
     void clear(bool full = false);
 
-    void populate(ObjectManager * manager);
+    void populate(ObjectManager * manager, std::set<Id> objects);
 
     void cellCollisions(
         uint64_t a1,
@@ -62,13 +62,15 @@ private:
 
     void handleObjectCollisions(
         ObjectManager * manager,
-        CollisionResolver * resolver
+        CollisionResolver * resolver,
+        std::set<Id> objects
     );
     
     void handleWorldCollisions(
         ObjectManager * manager,
         CollisionResolver * resolver,
-        World * world
+        World * world,
+        std::set<Id> objects
     );
 
 };

@@ -5,7 +5,7 @@
 #include <ostream>
 
 const uuids::uuid generateId();
-
+const uuids::uuid NULL_ID;
 struct Id {
     Id()
     : id(generateId()),idStr(uuids::to_string(id))
@@ -17,8 +17,8 @@ struct Id {
 
     size_t hash() const {return std::hash<uuids::uuid>{}(id);}
 
-    const uuids::uuid id;
-    const std::string idStr;
+    uuids::uuid id;
+    std::string idStr;
 
     bool operator==( Id const & rhs ) const {return this->id == rhs.id;}
     
@@ -26,8 +26,10 @@ struct Id {
         return this->id < rhs.id;
     }
 
-    Id operator=(const Id & j){
-        return Id(j.id);
+    Id & operator=(const Id & j){
+        id = j.id;
+        idStr = j.idStr;
+        return *this;
     }
 };
 

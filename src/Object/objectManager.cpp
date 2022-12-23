@@ -5,6 +5,7 @@ Id ObjectManager::createObject(){
 
     objects[o->id] = o;
     idToSignature[o->id] = Signature();
+    handleToId[o->id.idStr] = o->id;
 
     return o->id;
 }
@@ -14,6 +15,7 @@ Id ObjectManager::createObject(std::string handle){
 
     objects[o->id] = o;
     idToSignature[o->id] = Signature();
+
     handleToId[handle] = o->id;
 
     return o->id;
@@ -23,30 +25,24 @@ void ObjectManager::remove(Id id){}
 
 void ObjectManager::remove(std::string handle){}
 
-std::shared_ptr<Object> ObjectManager::getObject(Id id){
-    return objects[id];
-}
-
-std::shared_ptr<Object> ObjectManager::getObject(std::string name){
-    Id id = handleToId[name];
-    return objects[id];
-}
-
 // do nothing callback
-void identityCallback(std::string a, std::string b){return;}
+void identityCallback(Id & i, Id & j){return;}
 
 void ObjectManager::initialiseBaseECS(){
 
     registerComponent<cTransform>();
     registerComponent<cRenderable>();
     registerComponent<cPhysics>();
+    registerComponent<cCollideable>();
 
     registerSystem<sRender>();
     registerSystem<sPhysics>();
+    registerSystem<sCollision>();
 
     uint32_t tId = getComponentId<cTransform>();
     uint32_t rId = getComponentId<cRenderable>();
     uint32_t pId = getComponentId<cPhysics>();
+    uint32_t cId = getComponentId<cCollideable>();
 
     Signature sRenderSig = Signature();
 
@@ -73,7 +69,24 @@ void ObjectManager::initialiseBaseECS(){
         true
     );
 
-    std::cout << sRenderSig << ", " << sPhysicsSig << "\n";
-
     systemManager.setSignature<sPhysics>(sPhysicsSig);
+    
+    Signature sCollisionSig = Signature();
+
+    sCollisionSig.set(
+        pId,
+        true
+    );
+    sCollisionSig.set(
+        cId,
+        true
+    );
+
+    systemManager.setSignature<sCollision>(sCollisionSig);
+
+    INFO("Registered rendering with signature"+sRenderSig.to_string())>>log;
+    INFO("Registered physics with signature"+sPhysicsSig.to_string())>>log;
+    INFO("Registered collisions with signature"+sCollisionSig.to_string())>>log;
+
+
 }

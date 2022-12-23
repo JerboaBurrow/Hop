@@ -237,66 +237,10 @@ CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Text/typeUtils.cpp -o CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.s
 
-CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/cellList.cpp
-CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/cellList.cpp
-
-CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/cellList.cpp > CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.i
-
-CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/cellList.cpp -o CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.s
-
-CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionDetector.cpp
-CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionDetector.cpp
-
-CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionDetector.cpp > CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.i
-
-CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionDetector.cpp -o CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.s
-
-CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionMesh.cpp
-CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionMesh.cpp
-
-CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionMesh.cpp > CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.i
-
-CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionMesh.cpp -o CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.s
-
-CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionResolver.cpp
-CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionResolver.cpp
-
-CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionResolver.cpp > CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.i
-
-CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/collisionResolver.cpp -o CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.s
-
 CMakeFiles/Jerboa.dir/src/Object/id.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/Object/id.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/id.cpp
 CMakeFiles/Jerboa.dir/src/Object/id.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/id.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/id.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/id.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/id.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/id.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/id.cpp
 
 CMakeFiles/Jerboa.dir/src/Object/id.cpp.i: cmake_force
@@ -310,7 +254,7 @@ CMakeFiles/Jerboa.dir/src/Object/id.cpp.s: cmake_force
 CMakeFiles/Jerboa.dir/src/Object/object.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/Object/object.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/object.cpp
 CMakeFiles/Jerboa.dir/src/Object/object.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/object.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/object.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/object.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/object.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/object.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/object.cpp
 
 CMakeFiles/Jerboa.dir/src/Object/object.cpp.i: cmake_force
@@ -324,7 +268,7 @@ CMakeFiles/Jerboa.dir/src/Object/object.cpp.s: cmake_force
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectManager.cpp
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectManager.cpp
 
 CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.i: cmake_force
@@ -338,7 +282,7 @@ CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.s: cmake_force
 CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectRenderer.cpp
 CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectRenderer.cpp
 
 CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.i: cmake_force
@@ -349,66 +293,24 @@ CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/objectRenderer.cpp -o CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.s
 
-CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/physicsState.cpp
-CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/physicsState.cpp
+CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sCollision.cpp
+CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o -MF CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o.d -o CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sCollision.cpp
 
-CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/physicsState.cpp > CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.i
+CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sCollision.cpp > CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.i
 
-CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/physicsState.cpp -o CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.s
-
-CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/quadTree.cpp
-CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/quadTree.cpp
-
-CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/quadTree.cpp > CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.i
-
-CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/quadTree.cpp -o CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.s
-
-CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/springDashotResolver.cpp
-CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/springDashotResolver.cpp
-
-CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/springDashotResolver.cpp > CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.i
-
-CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/springDashotResolver.cpp -o CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.s
-
-CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o: CMakeFiles/Jerboa.dir/flags.make
-CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/vertex.cpp
-CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o -MF CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/vertex.cpp
-
-CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/vertex.cpp > CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.i
-
-CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Object/vertex.cpp -o CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.s
+CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sCollision.cpp -o CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.s
 
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sPhysics.cpp
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o -MF CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o.d -o CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sPhysics.cpp
 
 CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.i: cmake_force
@@ -422,7 +324,7 @@ CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.s: cmake_force
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sRender.cpp
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o -MF CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o.d -o CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/sRender.cpp
 
 CMakeFiles/Jerboa.dir/src/System/sRender.cpp.i: cmake_force
@@ -436,7 +338,7 @@ CMakeFiles/Jerboa.dir/src/System/sRender.cpp.s: cmake_force
 CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/systemManager.cpp
 CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o -MF CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o.d -o CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/System/systemManager.cpp
 
 CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.i: cmake_force
@@ -450,7 +352,7 @@ CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.s: cmake_force
 CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Component/componentArray.cpp
 CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o -MF CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Component/componentArray.cpp
 
 CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.i: cmake_force
@@ -464,7 +366,7 @@ CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.s: cmake_force
 CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o: CMakeFiles/Jerboa.dir/flags.make
 CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Component/componentManager.cpp
 CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o -MF CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Component/componentManager.cpp
 
 CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.i: cmake_force
@@ -474,6 +376,104 @@ CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.i: cmake_force
 CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Component/componentManager.cpp -o CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.s
+
+CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/cellList.cpp
+CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o -MF CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/cellList.cpp
+
+CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/cellList.cpp > CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.i
+
+CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/cellList.cpp -o CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.s
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionDetector.cpp
+CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o -MF CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionDetector.cpp
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionDetector.cpp > CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.i
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionDetector.cpp -o CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.s
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionMesh.cpp
+CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o -MF CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionMesh.cpp
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionMesh.cpp > CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.i
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionMesh.cpp -o CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.s
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionResolver.cpp
+CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o -MF CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionResolver.cpp
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionResolver.cpp > CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.i
+
+CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/collisionResolver.cpp -o CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.s
+
+CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/quadTree.cpp
+CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o -MF CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/quadTree.cpp
+
+CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/quadTree.cpp > CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.i
+
+CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/quadTree.cpp -o CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.s
+
+CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/springDashotResolver.cpp
+CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o -MF CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/springDashotResolver.cpp
+
+CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/springDashotResolver.cpp > CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.i
+
+CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/springDashotResolver.cpp -o CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.s
+
+CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o: CMakeFiles/Jerboa.dir/flags.make
+CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o: /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/vertex.cpp
+CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o: CMakeFiles/Jerboa.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o -MF CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o.d -o CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o -c /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/vertex.cpp
+
+CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/vertex.cpp > CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.i
+
+CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/harvey/ExtraFiles/Jerboa/Tech/ProceduralMap/src/Collision/vertex.cpp -o CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.s
 
 # Object files for target Jerboa
 Jerboa_OBJECTS = \
@@ -489,23 +489,23 @@ Jerboa_OBJECTS = \
 "CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/Text/type.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/Object/id.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/Object/object.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o" \
 "CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o" \
-"CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o"
+"CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o" \
+"CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o"
 
 # External object files for target Jerboa
 Jerboa_EXTERNAL_OBJECTS =
@@ -522,23 +522,23 @@ Jerboa: CMakeFiles/Jerboa.dir/src/Text/popup.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Text/textRenderer.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Text/type.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Text/typeUtils.cpp.o
-Jerboa: CMakeFiles/Jerboa.dir/src/Object/cellList.cpp.o
-Jerboa: CMakeFiles/Jerboa.dir/src/Object/collisionDetector.cpp.o
-Jerboa: CMakeFiles/Jerboa.dir/src/Object/collisionMesh.cpp.o
-Jerboa: CMakeFiles/Jerboa.dir/src/Object/collisionResolver.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Object/id.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Object/object.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Object/objectManager.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Object/objectRenderer.cpp.o
-Jerboa: CMakeFiles/Jerboa.dir/src/Object/physicsState.cpp.o
-Jerboa: CMakeFiles/Jerboa.dir/src/Object/quadTree.cpp.o
-Jerboa: CMakeFiles/Jerboa.dir/src/Object/springDashotResolver.cpp.o
-Jerboa: CMakeFiles/Jerboa.dir/src/Object/vertex.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/System/sCollision.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/System/sPhysics.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/System/sRender.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/System/systemManager.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Component/componentArray.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/src/Component/componentManager.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Collision/cellList.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Collision/collisionDetector.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Collision/collisionMesh.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Collision/collisionResolver.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Collision/quadTree.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Collision/springDashotResolver.cpp.o
+Jerboa: CMakeFiles/Jerboa.dir/src/Collision/vertex.cpp.o
 Jerboa: CMakeFiles/Jerboa.dir/build.make
 Jerboa: libglew.a
 Jerboa: libfreetyped.a

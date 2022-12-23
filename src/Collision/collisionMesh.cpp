@@ -1,4 +1,4 @@
-#include <Object/collisionMesh.h>
+#include <Collision/collisionMesh.h>
 
 // Decorate a polygon defined by edges with circles of radius r
 //  by placing circles inside the polygon that just touch the

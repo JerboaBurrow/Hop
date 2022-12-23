@@ -23,7 +23,10 @@
 #include <Object/objectManager.h>
 
 #include <System/sRender.h>
+
 #include <log.h>
+
+#include <logo.h>
 
 #include <chrono>
 using namespace std::chrono;
@@ -54,6 +57,11 @@ int main(){
   window.setVerticalSyncEnabled(true);
   window.setFramerateLimit(60);
   window.setActive();
+
+  sf::Image icon;
+  icon.loadFromMemory(&LOGO[0],sizeof(LOGO));
+
+  window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
   glewInit();
 
@@ -92,36 +100,33 @@ int main(){
 
   ObjectManager manager(std::thread::hardware_concurrency());
 
-  // Shader mapShader(marchingQuadVertexShader,marchingQuadFragmentShader);
-  // Shader circleObjectShader(objectVertexShader,circleObjectFragmentShader);
   shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
   shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
 
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 1000;
+  int n = 500;
 
   sf::Clock timer2;
   double t1 = 0.0;
   double t2 = 0.0;
   timer.restart();
+  Id pid;
   for (int i = 0; i < n; i++){
-    std::string name = "p"+std::to_string(i);
     timer2.restart();
-    manager.createObject(name);
+    pid = manager.createObject();
     t1 += timer2.getElapsedTime().asSeconds();
 
     double x = U(e);
     double y = U(e);
 
     timer2.restart();
-    Id pid = manager.idFromHandle(name);
 
     manager.addComponent<cTransform>(
       pid,
       cTransform(
-        x,y,0.01,0.0
+        x,y,0.0,1.0/128.0
       )
     );
 
@@ -139,6 +144,15 @@ int main(){
       )
     );
 
+    manager.addComponent<cCollideable>(
+      pid,
+      cCollideable(
+        std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)}
+      )
+    );
+
+    std::cout << pid << "\n";
+
     t2 += timer2.getElapsedTime().asSeconds();
   }
   double ct = timer.getElapsedTime().asSeconds();
@@ -150,6 +164,11 @@ int main(){
 
   sRender & rendering = manager.getSystem<sRender>();
   sPhysics & physics = manager.getSystem<sPhysics>();
+  sCollision & collisions = manager.getSystem<sCollision>();
+  auto cellList = std::make_unique<CellList>(128);
+  auto res = std::make_unique<SpringDashpot>(1.0/60.0,0.5,0.0);
+  collisions.setDetector(std::move(cellList));
+  collisions.setResolver(std::move(res));
 
   rendering.update(&manager, &shaderPool, true);
 
@@ -204,6 +223,7 @@ int main(){
     shaderPool.setProjection(camera.getVP());
     
     rendering.update(&manager, &shaderPool,false);
+    collisions.update(&manager, &map);
     physics.update(&manager,1.0/60.0);
 
     double rudt = timer.getElapsedTime().asSeconds();

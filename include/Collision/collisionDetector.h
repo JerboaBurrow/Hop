@@ -1,8 +1,9 @@
 #ifndef COLLISIONDETECTOR_H
 #define COLLISIONDETECTOR_H
 
-#include <Object/collisionResolver.h>
+#include <Collision/collisionResolver.h>
 #include <Object/objectManager.h>
+#include <Object/id.h>
 
 class ObjectManager;
 
@@ -13,13 +14,15 @@ public:
 
     virtual void handleObjectCollisions(
         ObjectManager * manager,
-        CollisionResolver * resolver
+        CollisionResolver * resolver,
+        std::set<Id>
     ) = 0;
 
     virtual void handleWorldCollisions(
         ObjectManager * manager,
         CollisionResolver * resolver,
-        World * world
+        World * world,
+        std::set<Id>
     ) = 0;
 
 

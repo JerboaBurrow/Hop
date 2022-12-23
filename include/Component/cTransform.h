@@ -9,8 +9,8 @@ struct cTransform {
     cTransform(
         double x,
         double y,
-        double s,
-        double t
+        double t,
+        double s
     )
     : x(x), y(y), scale(s), theta(t)
     {}

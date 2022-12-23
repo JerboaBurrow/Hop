@@ -9,7 +9,7 @@ void sPhysics::processThreaded(ObjectManager * m, double dtdt, size_t threadId){
     double nx, ny, ntheta;
     std::default_random_engine e;
     std::normal_distribution normal;
-    double D = std::sqrt(2.0*0.1*60.0);
+    double D = std::sqrt(2.0*0.1*1.0/60.0);
     for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++){
         cTransform & dataT = m->getComponent<cTransform>(*it);
         cPhysics & dataP = m->getComponent<cPhysics>(*it);
@@ -41,6 +41,16 @@ void sPhysics::processThreaded(ObjectManager * m, double dtdt, size_t threadId){
         dataT.theta = ntheta;
 
         dataP.omega = 0.0;
+
+        if (m->hasComponent<cCollideable>(*it)){
+            cCollideable & data = m->getComponent<cCollideable>(*it);
+            data.mesh.updateWorldMesh(
+                dataT.x,
+                dataT.y,
+                dataT.theta,
+                dataT.scale
+            );
+        }
     }
 }
 
@@ -99,6 +109,17 @@ void sPhysics::update(ObjectManager * m, double dt){
         dataT.theta = ntheta;
 
         dataP.omega = 0.0;
+
+        if (m->hasComponent<cCollideable>(*it)){
+            cCollideable & data = m->getComponent<cCollideable>(*it);
+            data.mesh.updateWorldMesh(
+                dataT.x,
+                dataT.y,
+                dataT.theta,
+                dataT.scale
+            );
+        }
+        
     }
 }
 

@@ -3,10 +3,10 @@
 
 #include <vector>
 #include <cmath>
-#include <Object/vertex.h>
+#include <Collision/vertex.h>
 #include <limits>
 
-class PhysicsState;
+#include <iostream>
 
 struct CollisionVertex {
     CollisionVertex(double x, double y, double r)
@@ -43,11 +43,12 @@ struct CollisionMesh {
 
     size_t size(){return vertices.size();}
     CollisionVertex operator[](size_t i) {
-        if (i < 0 || i > vertices.size()){return NULL_COLLISION_VERTEX;}
+        if (i < 0 || i > vertices.size()){
+            return NULL_COLLISION_VERTEX;
+        }
+        //std::cout << worldVertices[i].x << "\n";
         return worldVertices[i];
     }
-
-    friend class PhysicsState;
 
     void updateWorldMesh(
         double x,

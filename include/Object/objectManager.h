@@ -13,6 +13,7 @@
 
 #include <System/sRender.h>
 #include <System/sPhysics.h>
+#include <System/sCollision.h>
 
 #include <unordered_map>
 #include <string>
@@ -60,8 +61,8 @@ class sPhysics;
 */
 
 // define CollisionCallback as this func ptr
-typedef void (*CollisionCallback)(std::string,std::string);
-void identityCallback(std::string a, std::string b);
+typedef void (*CollisionCallback)(Id & i, Id & j);
+void identityCallback(Id & i, Id & j);
 
 const uint32_t MAX_OBJECTS = 100000;
 
@@ -70,7 +71,7 @@ public:
 
     ObjectManager(
         size_t threads,
-        void (*callback)(std::string,std::string) = &identityCallback
+        void (*callback)(Id & i, Id & j) = &identityCallback
     )
     : collisionCallback(callback), 
     nextComponentIndex(0), 
@@ -88,8 +89,13 @@ public:
     void remove(Id id);
     void remove(std::string handle);
 
-    std::shared_ptr<Object> getObject(Id id);
-    std::shared_ptr<Object> getObject(std::string name);
+    Id & idFromHandle(std::string handle){
+        if (handleToId.find(handle) == handleToId.end()){
+            WARN("Tried to access id with non-existent handle "+handle)>>log;
+        }
+        return handleToId[handle];
+    }
+
 
     CollisionCallback collisionCallback;
 
@@ -177,8 +183,6 @@ public:
     template<class T>
 	void setSystemSignature(Signature signature){systemManager.setSignature<T>(signature);}
 
-    Id idFromHandle(std::string handle){return handleToId[handle];}
-
     template <class T>
     T & getSystem(){return systemManager.getSystem<T>();}
 
@@ -209,6 +213,9 @@ public:
         workers.createThread();
         INFO("create called (nThreads): "+std::to_string(workers.size()))>>log;
     }
+
+    template<class T>
+    bool hasComponent(const Id & i){return idToSignature[i][getComponentId<T>()];}
 
 private:
 
