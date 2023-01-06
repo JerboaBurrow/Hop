@@ -18,9 +18,19 @@
 #include <vector>
 
 #include <Text/typeUtils.h>
-#include <Perlin/perlin.h>
-#include <texturedQuad.h>
 #include <World/world.h>
+
+#include <Object/objectManager.h>
+
+#include <System/sRender.h>
+
+#include <log.h>
+
+#include <logo.h>
+
+#include <chrono>
+using namespace std::chrono;
+
 
 const int resX = 1000;
 const int resY = 1000;
@@ -29,6 +39,8 @@ const float MAX_SPEED = 1.0/60.0;
 // for smoothing delta numbers
 uint8_t frameId = 0;
 double deltas[60];
+
+Shaders shaderPool;
 
 int main(){
 
@@ -46,9 +58,17 @@ int main(){
   window.setFramerateLimit(60);
   window.setActive();
 
+  sf::Image icon;
+  icon.loadFromMemory(&LOGO[0],sizeof(LOGO));
+
+  window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
   glewInit();
 
   uint8_t debug = 0;
+
+  glEnable(GL_PROGRAM_POINT_SIZE);
+  glEnable(GL_POINT_SPRITE);
 
   // for freetype rendering
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -73,12 +93,85 @@ int main(){
   sf::Clock timer;
   timer.restart();
 
-  World map(2,camera.getVP());
-  map.save("t");
-  TexturedQuad mapImage = map.getMap();
+  PerlinWorld map(2,camera.getVP());
 
   float posX = 0.0;
   float posY = 0.0;
+
+  ObjectManager manager(0);
+
+  shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
+  shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
+
+  std::uniform_real_distribution<double> U;
+  std::default_random_engine e;
+  std::normal_distribution normal;
+  int n = 1000;
+
+  sf::Clock timer2;
+  double t1 = 0.0;
+  double t2 = 0.0;
+  timer.restart();
+  Id pid;
+  for (int i = 0; i < n; i++){
+    timer2.restart();
+    pid = manager.createObject();
+    t1 += timer2.getElapsedTime().asSeconds();
+
+    double x = U(e);
+    double y = U(e);
+
+    timer2.restart();
+
+    manager.addComponent<cTransform>(
+      pid,
+      cTransform(
+        x,y,0.0,1.0/128.0
+      )
+    );
+
+    manager.addComponent<cRenderable>(
+      pid,
+      cRenderable(
+       "circleObjectShader"
+      )
+    );
+
+    manager.addComponent<cPhysics>(
+      pid,
+      cPhysics(
+        x,y,0.0
+      )
+    );
+
+    manager.addComponent<cCollideable>(
+      pid,
+      cCollideable(
+        std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)}
+      )
+    );
+
+    std::cout << pid << "\n";
+
+    t2 += timer2.getElapsedTime().asSeconds();
+  }
+  double ct = timer.getElapsedTime().asSeconds();
+  Log & log = manager.getLog();
+
+  INFO("object creation time/ per object " + std::to_string(ct) + ", " + std::to_string(ct/float(n))) >> log;
+  INFO("createObject time "+std::to_string(t1/float(n))) >> log;
+  INFO("addComponents time "+std::to_string(t2/float(n))) >> log;
+
+  sRender & rendering = manager.getSystem<sRender>();
+  sPhysics & physics = manager.getSystem<sPhysics>();
+  sCollision & collisions = manager.getSystem<sCollision>();
+
+  auto cellList = std::make_unique<CellList>(64);
+  auto res = std::make_unique<SpringDashpot>(1.0/6.0,0.5,0.0);
+  collisions.setDetector(std::move(cellList));
+  collisions.setResolver(std::move(res));
+
+  rendering.update(&manager, &shaderPool, true);
 
   while (window.isOpen()){
 
@@ -92,6 +185,13 @@ int main(){
       }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F1){
         debug = !debug;
+      }
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M){
+        manager.addThread();
+      }
+
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L){
+        manager.releaseThread();
       }
     }
 
@@ -114,13 +214,30 @@ int main(){
 
     timer.restart();
     map.updateRegion(posX,posY);
+    camera.setPosition(posX,posY);
     double udt = timer.getElapsedTime().asSeconds();
-    map.draw();
-    mapImage.draw(0.33);
-    //localMapImage.draw(0.33/3.0,0.33+0.05,0.0);
+
+    //map.draw(*shaderPool.get("mapShader").get());
+
+    timer.restart();
+
+    shaderPool.setProjection(camera.getVP());
+    
+    rendering.update(&manager, &shaderPool,false);
+    collisions.update(&manager, &map);
+    physics.update(&manager,1.0/600.0);
+
+    double rudt = timer.getElapsedTime().asSeconds();
+    timer.restart();
+    rendering.draw(&shaderPool);
+    double rdt = timer.getElapsedTime().asSeconds();
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;
+
+    if (frameId == 59){
+      std::cout << manager.getLog();
+    }
 
     if (debug){
       double delta = 0.0;
@@ -144,7 +261,9 @@ int main(){
         "\n" <<
         "pos " << fixedLengthNumber(posX,4) << ", " << fixedLengthNumber(posY,4) <<
         "\n" << 
-        "update time: " << fixedLengthNumber(udt,6);
+        "update time: " << fixedLengthNumber(udt,6) <<
+        "\n" <<
+        "sRender update/draw time: " << fixedLengthNumber(rudt,6) << "/" << fixedLengthNumber(rdt,6);
 
       textRenderer.renderText(
         OD,

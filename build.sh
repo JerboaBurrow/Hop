@@ -3,6 +3,7 @@ WINDOWS=1
 OSX=1
 RELEASE=0
 TEST=0
+SYNTAX=0
 while [[ $# -gt 0 ]]; do
   case $1 in
     -w|--windows)
@@ -19,6 +20,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -t|--test)
       TEST=1
+      shift
+      ;;
+    -s|--syntax)
+      SYNTAX=1
       shift
       ;;
     -*|--*)
@@ -50,12 +55,12 @@ echo "release ${RELEASE}"
 if [[ $WINDOWS -eq 0 ]];
 then 
   cmake -E make_directory build
-  cmake -E chdir build cmake .. -D WINDOWS=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -C build
+  cmake -E chdir build cmake .. -D WINDOWS=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -C build
 elif [[ $OSX -eq 0 ]];
 then
   cmake -E make_directory build
-  cmake -E chdir build cmake .. -D OSX=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -C build
+  cmake -E chdir build cmake .. -D OSX=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -C build
 else
   cmake -E make_directory build
-  cmake -E chdir build cmake -D RELEASE=$RELEASE -D TEST_SUITE=$TEST .. && make -C build
+  cmake -E chdir build cmake -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX .. && make -C build
 fi
