@@ -133,7 +133,8 @@ int main(){
     manager.addComponent<cRenderable>(
       pid,
       cRenderable(
-       "circleObjectShader"
+       "circleObjectShader",
+       200.0/255.0,200.0/255.0,250.0/255.0,1.0
       )
     );
 
@@ -151,8 +152,6 @@ int main(){
       )
     );
 
-    std::cout << pid << "\n";
-
     t2 += timer2.getElapsedTime().asSeconds();
   }
   double ct = timer.getElapsedTime().asSeconds();
@@ -166,7 +165,7 @@ int main(){
   sPhysics & physics = manager.getSystem<sPhysics>();
   sCollision & collisions = manager.getSystem<sCollision>();
 
-  auto cellList = std::make_unique<CellList>(64);
+  auto cellList = std::make_unique<CellList>(64,tupled(-1.0,1.0),tupled(-1.0,1.0));
   auto res = std::make_unique<SpringDashpot>(1.0/6.0,0.5,0.0);
   collisions.setDetector(std::move(cellList));
   collisions.setResolver(std::move(res));
@@ -217,7 +216,7 @@ int main(){
     camera.setPosition(posX,posY);
     double udt = timer.getElapsedTime().asSeconds();
 
-    //map.draw(*shaderPool.get("mapShader").get());
+    map.draw(*shaderPool.get("mapShader").get());
 
     timer.restart();
 
