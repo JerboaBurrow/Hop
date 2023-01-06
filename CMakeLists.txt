@@ -1,16 +1,36 @@
 cmake_minimum_required(VERSION 3.1)
 project(Jerboa)
 
+option(SYNTAX_ONLY "only check syntax" OFF)
 option(TEST_SUITE "test" OFF)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 option(RELEASE On)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 if (RELEASE)
     set(CMAKE_BUILD_TYPE Release)
 else()
     set(CMAKE_BUILD_TYPE Debug)
 endif()
+
+if (SYNTAX_ONLY)
+    add_compile_options(-fsyntax-only)
+    # graphics for sf::RenderWindow (window is in sfml-window)
+    find_package(OpenGL REQUIRED)
+    set(GLEW_INCLUDE include/vendored/glew/include/)
+    include_directories(
+        include 
+        ${OPENGL_INCLUDE_DIRS} 
+        ${GLEW_INCLUDE} 
+        include/vendored/freetype/include 
+        include/vendored/glm
+        include/SFML-2.5.1/include
+    )
+    file(GLOB SOURCES "src/*.cpp")
+    file(GLOB TEXT_SOURCES "src/Text/*.cpp")
+    add_executable(Jerboa ${SOURCES} ${TEXT_SOURCES})
+
+else()
 
 string(TIMESTAMP TODAY "%Y-%m-%d:%H:%M:%S")
 add_compile_definitions(TIMESTAMP="${TODAY}")
@@ -33,6 +53,7 @@ set(CMAKE_BUILD_RPATH ".")
 
 add_subdirectory(include/vendored/freetype)
 add_subdirectory(include/vendored/glm)
+add_subdirectory(include/vendored/stduuid)
 
 find_package(OpenGL REQUIRED)
 # let sources know glew is static
@@ -69,9 +90,14 @@ endif()
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB TEXT_SOURCES "src/Text/*.cpp")
-add_executable(Jerboa ${SOURCES} ${TEXT_SOURCES})
+file(GLOB OBJECT_SOURCES "src/Object/*.cpp")
+file(GLOB SHADER_SOURCES "src/Shader/*.cpp")
+file(GLOB SYSTEM_SOURCES "src/System/*.cpp")
+file(GLOB COMPONENT_SOURCES "src/Component/*.cpp") 
+file(GLOB COLLISION_SOURCES "src/Collision/*.cpp") 
+add_executable(Jerboa ${SHADER_SOURCES} ${SOURCES} ${TEXT_SOURCES} ${OBJECT_SOURCES} ${SYSTEM_SOURCES} ${COMPONENT_SOURCES} ${COLLISION_SOURCES})
 
-target_link_libraries(Jerboa glew freetype glm sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 IF (TEST_SUITE)
 
@@ -83,3 +109,5 @@ IF (TEST_SUITE)
   target_link_libraries(testSuite sfml-system sfml-window sfml-graphics sfml-audio X11 ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 ENDIF(TEST_SUITE)
+
+endif()

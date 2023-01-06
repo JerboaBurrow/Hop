@@ -33,7 +33,7 @@ public:
     return invProjection*nvd;
   }
 
-  glm::mat4 getVP(){return vp;}
+  glm::mat4 & getVP(){return vp;}
   glm::mat4 getProjection(){return projection;}
   float getZoomLevel(){return zoomLevel;}
   glm::vec2 getPosition(){return position;}

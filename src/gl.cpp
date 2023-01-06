@@ -1,5 +1,6 @@
 
 #include <gl.h>
+#include <iostream>
 
 class GLRuntimeException: public std::exception {
 public:
@@ -66,7 +67,6 @@ GLuint glError(const std::string msg){
 
 // compile a gl shader given a program and source code as const char *
 void compileShader(GLuint & shaderProgram, const char * vert, const char * frag){
-
     GLuint vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader,1,&vert,NULL);
@@ -80,7 +80,7 @@ void compileShader(GLuint & shaderProgram, const char * vert, const char * frag)
     if(!success)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        throw( GLRuntimeException( std::string("GLSL (VERTEX) ERROR: \n") + infoLog + "\n") );
+        throw( GLRuntimeException( std::string("GLSL (VERTEX) ERROR: \n") + infoLog + "\n"+vert+"\n") );
     }
 
     GLuint fragmentShader;
@@ -93,7 +93,7 @@ void compileShader(GLuint & shaderProgram, const char * vert, const char * frag)
     if(!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        throw( GLRuntimeException( std::string("GLSL (FRAGMENT) ERROR: \n") + infoLog +"\n") );
+        throw( GLRuntimeException( std::string("GLSL (FRAGMENT) ERROR: \n") + infoLog +"\n"+frag+"\n") );
     }
 
     glAttachShader(shaderProgram,vertexShader);
@@ -104,6 +104,7 @@ void compileShader(GLuint & shaderProgram, const char * vert, const char * frag)
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        throw( GLRuntimeException( std::string("GLSL (LINK) ERROR: \n") + infoLog + "\n") );
+        throw( GLRuntimeException( std::string("GLSL (LINK) ERROR: \n") + infoLog + "\n"+vert+"\n"+frag+"\n") );
     }
+    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 }

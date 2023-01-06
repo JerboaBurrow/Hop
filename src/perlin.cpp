@@ -1,4 +1,4 @@
-#include <Perlin/perlin.h>
+#include <Procedural/perlin.h>
 
 std::vector<uint64_t> generateTable(
     uint64_t length, 
