@@ -202,6 +202,11 @@ void PerlinWorld::worldToCell(float x, float y, float & ix, float & iy){
     iy = std::floor(y*float(RENDER_REGION_BUFFER_SIZE));
 }
 
+void PerlinWorld::worldToCellCode(float x, float y, float & ix, float & iy){
+    ix = std::floor(x*float(RENDER_REGION_BUFFER_SIZE));
+    iy = std::floor(y*float(RENDER_REGION_BUFFER_SIZE));
+}
+
 void PerlinWorld::updateRegion(float x, float y){
     float ix, iy;
     worldToCell(x,y,ix,iy);

@@ -21,6 +21,7 @@ public:
     {}
     virtual void draw(Shader & s) = 0;
     virtual void save(std::string filename) = 0;
+    virtual void worldToCell(float x, float y, float & ix, float & iy) = 0;
     virtual float worldUnitLength() = 0;
 
 protected:
