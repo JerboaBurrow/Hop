@@ -35,6 +35,22 @@ struct cRenderable {
       ux(0.0),uy(0.0),vx(0.0),vy(0.0),
       shaderHandle(""),stale(true)
     {}
+
+    cRenderable(
+      std::string shader, float r, float g, float b, float a
+    )
+    : r(r),g(g),b(b),a(a),
+      ux(0.0),uy(0.0),vx(0.0),vy(0.0),
+      shaderHandle(shader),stale(true)
+    {}
+
+    cRenderable(
+      float r, float g, float b, float a
+    )
+    : r(r),g(g),b(b),a(a),
+      ux(0.0),uy(0.0),vx(0.0),vy(0.0),
+      shaderHandle(""),stale(true)
+    {}
      
 };
 
