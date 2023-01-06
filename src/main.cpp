@@ -126,7 +126,7 @@ int main(){
     manager.addComponent<cTransform>(
       pid,
       cTransform(
-        x,y,0.0,1.0/256.0
+        x,y,0.0,0.5*map.worldUnitLength()
       )
     );
 
