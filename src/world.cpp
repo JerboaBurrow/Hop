@@ -1,8 +1,10 @@
 #include <World/world.h>
 #include <iostream>
 
-PerlinWorld::PerlinWorld(uint64_t s, glm::mat4 p)
-: World(s), perlin(s,0.07,5.0,5.0,256)
+PerlinWorld::PerlinWorld(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion)
+: World(s), perlin(s,0.07,5.0,5.0,256), 
+  RENDER_REGION_SIZE(renderRegion), RENDER_REGION_BUFFER_SIZE(renderRegion+1),
+  DYNAMICS_REGION_SIZE(dynamicsRegion), DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1)
 {
     projection = p;
     posX = 0;

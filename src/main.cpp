@@ -93,7 +93,7 @@ int main(){
   sf::Clock timer;
   timer.restart();
 
-  PerlinWorld map(2,camera.getVP());
+  PerlinWorld map(2,camera.getVP(),128,128*3);
 
   float posX = 0.0;
   float posY = 0.0;
@@ -126,7 +126,7 @@ int main(){
     manager.addComponent<cTransform>(
       pid,
       cTransform(
-        x,y,0.0,1.0/128.0
+        x,y,0.0,1.0/256.0
       )
     );
 
