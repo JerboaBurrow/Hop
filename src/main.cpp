@@ -98,7 +98,7 @@ int main(){
   float posX = 0.0;
   float posY = 0.0;
 
-  ObjectManager manager(std::thread::hardware_concurrency());
+  ObjectManager manager(0);
 
   shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
   shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
@@ -106,7 +106,7 @@ int main(){
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 500;
+  int n = 1000;
 
   sf::Clock timer2;
   double t1 = 0.0;
@@ -165,8 +165,9 @@ int main(){
   sRender & rendering = manager.getSystem<sRender>();
   sPhysics & physics = manager.getSystem<sPhysics>();
   sCollision & collisions = manager.getSystem<sCollision>();
-  auto cellList = std::make_unique<CellList>(128);
-  auto res = std::make_unique<SpringDashpot>(1.0/60.0,0.5,0.0);
+
+  auto cellList = std::make_unique<CellList>(64);
+  auto res = std::make_unique<SpringDashpot>(1.0/6.0,0.5,0.0);
   collisions.setDetector(std::move(cellList));
   collisions.setResolver(std::move(res));
 
@@ -224,7 +225,7 @@ int main(){
     
     rendering.update(&manager, &shaderPool,false);
     collisions.update(&manager, &map);
-    physics.update(&manager,1.0/60.0);
+    physics.update(&manager,1.0/600.0);
 
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();

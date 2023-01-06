@@ -21,7 +21,9 @@ void SystemManager::objectSignatureChanged(Id i, Signature es){
         Signature ss = signatures[handle];
         if ((es & ss) == ss){
             size_t n = system->objects.size();
-            system->threadJobs[n%threads].push_back(i);
+            if (threads != 0){
+                system->threadJobs[n%threads].push_back(i);
+            }
             system->objects.insert(i);
         }
         else{

@@ -7,8 +7,6 @@ using namespace std::chrono;
 
 void sPhysics::processThreaded(ObjectManager * m, double dtdt, size_t threadId){
     double nx, ny, ntheta;
-    std::default_random_engine e;
-    std::normal_distribution normal;
     double D = std::sqrt(2.0*0.1*1.0/60.0);
     for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++){
         cTransform & dataT = m->getComponent<cTransform>(*it);
@@ -79,12 +77,17 @@ void sPhysics::update(ObjectManager * m, double dt){
         return;
     }
 
-    double dtdt, nx, ny, ntheta;
+    double dtdt, nx, ny, ntheta, ar, br, cr;
+    double D = std::sqrt(2.0*0.5*dt);
+    unsigned k = 0;
     dtdt = dt*dt;
-
     for (auto it = objects.begin(); it != objects.end(); it++){
         cTransform & dataT = m->getComponent<cTransform>(*it);
         cPhysics & dataP = m->getComponent<cPhysics>(*it);
+
+        dataP.fx += 1.0/600.0 * std::cos(dataT.theta)*dataT.scale;
+        dataP.fy += 1.0/600.0 * std::sin(dataT.theta)*dataT.scale;
+        dataP.omega += D*normal(e);
 
         nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
         ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
@@ -95,20 +98,26 @@ void sPhysics::update(ObjectManager * m, double dt){
         dataP.lastX = dataT.x;
         dataP.lastY = dataT.y;
 
-        dataT.x = nx;
-        dataT.y = ny;
-
         dataP.fx = 0.0;
         dataP.fy = 0.0;
 
-        ntheta = 2.0*dataT.theta-dataP.lastTheta+dataP.omega*dtdt/dataP.momentOfInertia;
+        cr = dt / (2.0*dataP.momentOfInertia);
+        br = 1.0/(1.0+cr);
+        ar = (1.0-cr)*br;
+
+        D *= normal(e);
+
+        ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia + br*dt/dataP.momentOfInertia * D;
 
         dataP.phi = (ntheta-dataP.lastTheta)/2.0;
-        
+
         dataP.lastTheta = dataT.theta;
-        dataT.theta = ntheta;
 
         dataP.omega = 0.0;
+
+        dataT.x = nx;
+        dataT.y = ny;
+        dataT.theta = ntheta;
 
         if (m->hasComponent<cCollideable>(*it)){
             cCollideable & data = m->getComponent<cCollideable>(*it);

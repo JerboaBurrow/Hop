@@ -27,7 +27,7 @@ void CellList::clear(bool full){
             id[i] = std::pair("",NULL_INDEX);
         }
     }
-    lastElement = 0;
+    lastElement = NULL_INDEX;
 }
 
 void CellList::populate(ObjectManager * manager, std::set<Id> objects){
@@ -37,6 +37,7 @@ void CellList::populate(ObjectManager * manager, std::set<Id> objects){
     for (auto it = objects.begin(); it != objects.cend(); it++){
 
         cCollideable & data = manager->getComponent<cCollideable>(*it);
+        cTransform & dataT = manager->getComponent<cTransform>(*it);
 
         uint64_t meshSize = data.mesh.size();
 

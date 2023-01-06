@@ -34,7 +34,7 @@ struct Shader {
     {}
     Shader(std::string path, std::string name);
 
-    ~Shader(){std::cout << "shader deleted\n"; if(compiled){glDeleteProgram(program);}}
+    ~Shader(){if(compiled){glDeleteProgram(program);}}
 
     void compile();
     void use();

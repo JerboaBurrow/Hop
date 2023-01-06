@@ -37,14 +37,16 @@ void SpringDashpot::handleObjectCollision(
 
     if (dd < rc*rc){
         
-        meff = 1.0 / (1.0/dataPi.mass+1.0/dataPj.mass);
+        meff = 1.0 / (1.0+1.0);
         kr = meff*alpha;
         kd = 2.0*meff*beta;
+
         d = std::sqrt(dd);
         nx = rx / d;
         ny = ry / d;
 
         vrx = dataPi.vx-dataPj.vx;
+        vry = dataPi.vy-dataPj.vy;
 
         nxt = ny;
         nyt = -nx;

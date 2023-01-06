@@ -7,15 +7,20 @@
 
 const uint64_t MAX_PARTICLES = 100000;
 const uint64_t MAX_PARTICLES_PER_CELL = 64;
-const uint64_t NULL_INDEX = MAX_PARTICLES_PER_CELL+1;
+const uint64_t NULL_INDEX = MAX_PARTICLES+1;
+
+typedef std::pair<double,double> tupled;
 
 class CellList : public CollisionDetector {
 public:
-    CellList(uint64_t n)
-    : rootNCells(n), nCells(n*n)
+    CellList(uint64_t n, tupled lx = tupled(0.0,1.0), tupled ly = tupled(0.0,1.0))
+    : rootNCells(n), nCells(n*n), limX(lx), limY(ly)
     {
-        dx = 1.0 / double(rootNCells);
-        dy = 1.0 / double(rootNCells);
+        lX = limX.second-limX.first;
+        lY = limY.second-limY.first;
+
+        dx = lX / double(rootNCells);
+        dy = lY / double(rootNCells);
 
         cells = std::make_unique<uint64_t[]>(nCells*MAX_PARTICLES_PER_CELL);
         lastElementInCell = std::make_unique<uint64_t[]>(nCells);
@@ -36,7 +41,8 @@ private:
 
     uint64_t rootNCells, nCells; // rootNCells x rootNCells grid
 
-    double dx, dy;
+    double dx, dy, lX, lY;
+    tupled limX, limY;
 
     std::unique_ptr<uint64_t[]> cells;
     std::unique_ptr<uint64_t[]> lastElementInCell;
@@ -44,7 +50,7 @@ private:
     uint64_t lastElement;
 
     uint64_t hash(double x, double y){
-        return std::floor(x/dx)*rootNCells+std::floor(y/dy);
+        return std::floor((x-limX.first)/dx)*rootNCells+std::floor((y-limY.first)/dy);
     }
 
     void clear(bool full = false);

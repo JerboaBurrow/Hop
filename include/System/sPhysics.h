@@ -37,6 +37,9 @@ private:
 
     void updateThreaded(ObjectManager * m, double dt);
 
+    std::default_random_engine e;
+    std::normal_distribution<double> normal;
+
 };
 
 #endif /* SPHYSICS_H */

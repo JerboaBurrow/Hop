@@ -94,7 +94,7 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
         offsets[handle].second[start] = dataT.x;
         offsets[handle].second[start+1] = dataT.y;
         offsets[handle].second[start+2] = dataT.theta;
-        offsets[handle].second[start+3] = dataT.scale;
+        offsets[handle].second[start+3] = dataT.scale*2.0;
 
         if (newData){
             offset = 4*MAX_OBJECTS_PER_SHADER;

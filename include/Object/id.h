@@ -6,9 +6,10 @@
 
 const uuids::uuid generateId();
 const uuids::uuid NULL_ID;
+
 struct Id {
     Id()
-    : id(generateId()),idStr(uuids::to_string(id))
+    : id(gen()),idStr(uuids::to_string(id))
     {}
 
     Id(uuids::uuid i)
@@ -31,6 +32,11 @@ struct Id {
         idStr = j.idStr;
         return *this;
     }
+
+private:
+    static std::random_device rd;
+    static std::mt19937 generator;
+    static uuids::uuid_random_generator gen;
 };
 
 std::ostream & operator<<(std::ostream & os, Id const & value);
