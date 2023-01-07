@@ -85,8 +85,8 @@ void sPhysics::update(ObjectManager * m, double dt){
         cTransform & dataT = m->getComponent<cTransform>(*it);
         cPhysics & dataP = m->getComponent<cPhysics>(*it);
 
-        dataP.fx += 1.0/600.0 * std::cos(dataT.theta)*dataT.scale;
-        dataP.fy += 1.0/600.0 * std::sin(dataT.theta)*dataT.scale;
+        dataP.fx += 1.0/60.0 * std::cos(dataT.theta)*dataT.scale;
+        dataP.fy += 1.0/60.0 * std::sin(dataT.theta)*dataT.scale;
         dataP.omega += D*normal(e);
 
         nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;

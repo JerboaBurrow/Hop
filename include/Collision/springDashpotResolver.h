@@ -23,8 +23,8 @@ public:
         ObjectManager * manager
     );
 
-    void handleWorldCollision(
-        uint64_t i,
+    void handleObjectWorldCollisions(
+        Id id,
         ObjectManager * manager,
         World * world
     );

@@ -169,9 +169,9 @@ void PerlinWorld::processBufferToOffsets(){
             uint8_t lr = renderRegionBuffer[(i+1)*DYNAMICS_REGION_BUFFER_SIZE+j];
             uint8_t ll = renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j];
             uint8_t hash = ll | (lr<<1) | (ur<<2) | (ul<<3);
-            // store transposed
-            renderOffsets[k*3] = (j-RENDER_REGION_SIZE)*w;
-            renderOffsets[k*3+1] = (i-RENDER_REGION_SIZE)*w;
+           
+            renderOffsets[k*3] = (i-RENDER_REGION_SIZE)*w;
+            renderOffsets[k*3+1] = (j-RENDER_REGION_SIZE)*w;
             renderOffsets[k*3+2] = w;
             renderIds[k] = float(hash);
             k++;
@@ -187,9 +187,9 @@ void PerlinWorld::processBufferToOffsets(){
             uint8_t lr = renderRegionBuffer[(i+1)*DYNAMICS_REGION_BUFFER_SIZE+j];
             uint8_t ll = renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j];
             uint8_t hash = ll | (lr<<1) | (ur<<2) | (ul<<3);
-            // store transposed
-            dynamicsOffsets[k*3] = j*w;
-            dynamicsOffsets[k*3+1] = i*w;
+        
+            dynamicsOffsets[k*3] = i*w;
+            dynamicsOffsets[k*3+1] = j*w;
             dynamicsOffsets[k*3+2] = w;
             dynamicsIds[k] = float(hash);
             k++;
@@ -197,12 +197,33 @@ void PerlinWorld::processBufferToOffsets(){
     }
 }
 
-void PerlinWorld::worldToCell(float x, float y, float & ix, float & iy){
-    ix = std::floor(x*float(RENDER_REGION_BUFFER_SIZE));
-    iy = std::floor(y*float(RENDER_REGION_BUFFER_SIZE));
-}
+float PerlinWorld::worldToCellData(float x, float y, float & h, float & x0, float & y0, float & s){
+    float ix, iy;
+    worldToCell(x,y,ix,iy);
+    int ox = posX-RENDER_REGION_BUFFER_SIZE;
+    int oy = posY-RENDER_REGION_BUFFER_SIZE;
 
-void PerlinWorld::worldToCellCode(float x, float y, float & ix, float & iy){
+    int i = ix - ox;
+    int j = iy - oy;
+
+    if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE){
+        // data is buffered
+        int k = i*DYNAMICS_REGION_SIZE+j;
+        h = dynamicsIds[k];
+        s = 1.0/float(RENDER_REGION_BUFFER_SIZE);
+        x0 = iy*s;
+        y0 = ix*s;
+    }
+    else{
+        // not buffered, so out of dynamics zone, ignore
+        h = 0.0;
+        s = 0.0;
+        x0 = 0.0;
+        y0 = 0.0;
+    }
+}   
+
+void PerlinWorld::worldToCell(float x, float y, float & ix, float & iy){
     ix = std::floor(x*float(RENDER_REGION_BUFFER_SIZE));
     iy = std::floor(y*float(RENDER_REGION_BUFFER_SIZE));
 }
@@ -210,9 +231,6 @@ void PerlinWorld::worldToCellCode(float x, float y, float & ix, float & iy){
 void PerlinWorld::updateRegion(float x, float y){
     float ix, iy;
     worldToCell(x,y,ix,iy);
-    int tmp = ix;
-    ix = iy;
-    iy = tmp;
     int oy = iy-posY;
     int ox = ix-posX;
     if (oy == 0 && ox == 0){
@@ -273,21 +291,21 @@ void PerlinWorld::draw(Shader & s){
     s.setMatrix4x4(projection, "proj");
     s.set1f(1.0f,"u_alpha");
     s.set1f(1.0f,"u_scale");
-    s.set1i(1,"u_transparentBackground");
+    s.set1i(0,"u_transparentBackground");
     s.set3f(1.0f,1.0f,1.0f,"u_background");
 
     glDrawArraysInstanced(GL_TRIANGLES,0,6,RENDER_REGION_SIZE*RENDER_REGION_SIZE);
 
     glBindVertexArray(0);
-    glBindVertexArray(minimapVAO);
+    // glBindVertexArray(minimapVAO);
 
-    s.set1f(1.0f,"u_alpha");
-    s.set1f(1.0f,"u_scale");
-    s.set1i(0,"u_transparentBackground");
-    s.set3f(1.0f,1.0f,1.0f,"u_background");
+    // s.set1f(1.0f,"u_alpha");
+    // s.set1f(1.0f,"u_scale");
+    // s.set1i(0,"u_transparentBackground");
+    // s.set3f(1.0f,1.0f,1.0f,"u_background");
 
-    glDrawArraysInstanced(GL_TRIANGLES,0,6,DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE);
-    glBindVertexArray(0);
+    // glDrawArraysInstanced(GL_TRIANGLES,0,6,DYNAMICS_REGION_SIZE*DYNAMICS_REGION_SIZE);
+    // glBindVertexArray(0);
 
     glError("World::draw()");
 }

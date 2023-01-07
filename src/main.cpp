@@ -93,7 +93,7 @@ int main(){
   sf::Clock timer;
   timer.restart();
 
-  PerlinWorld map(2,camera.getVP(),128,128*3);
+  PerlinWorld map(2,camera.getVP(),16,16*3);
 
   float posX = 0.0;
   float posY = 0.0;
@@ -106,7 +106,7 @@ int main(){
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 1000;
+  int n = 1;
 
   sf::Clock timer2;
   double t1 = 0.0;
@@ -224,7 +224,9 @@ int main(){
     
     rendering.update(&manager, &shaderPool,false);
     collisions.update(&manager, &map);
-    physics.update(&manager,1.0/600.0);
+    for (unsigned i = 0; i < 10; i++){
+      physics.update(&manager,1.0/600.0);
+    }
 
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();
@@ -251,10 +253,18 @@ int main(){
       float cameraX = camera.getPosition().x;
       float cameraY = camera.getPosition().y;
 
+      glm::vec4 world = camera.screenToWorld(mouse.x,mouse.y);
+      float h, x0, y0, s;
+      map.worldToCellData(
+        world[1],world[0],h,x0,y0,s
+      );
+
       debugText << "Delta: " << fixedLengthNumber(delta,6) <<
         " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
         "\n" <<
         "Mouse (" << fixedLengthNumber(mouse.x,4) << "," << fixedLengthNumber(mouse.y,4) << ")" <<
+        "\n" <<
+        "Mouse cell (" << fixedLengthNumber(x0,4) << ", " << fixedLengthNumber(y0,4) << ", " << h <<
         "\n" <<
         "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
         "\n" <<

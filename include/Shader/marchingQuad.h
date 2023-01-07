@@ -14,7 +14,7 @@ static const char * marchingQuadVertexShader = "#version 330 core\n"
   " gl_Position = pos;\n"
   " id = int(a_id);\n"
   // transposed texs
-  " texCoord = a_position.wz;\n"
+  " texCoord = a_position.zw;\n"
   "}";
 
 static const char * marchingQuadFragmentShader = "#version 330 core\n"
@@ -27,6 +27,8 @@ static const char * marchingQuadFragmentShader = "#version 330 core\n"
   "void background(){if(u_transparentBackground==1){discard;}else{colour=vec4(u_background,u_alpha);}}\n"
   "void main(){"
     "colour=vec4(1.,0.,0.,u_alpha);"
+    "if (id == 1){colour=vec4(0.,1.,0.,u_alpha);}"
+    "if (id == 2){colour=vec4(0.,0.,1.,u_alpha);}"
     "if (id == 0){background();}\n"
     "if (id == 1 && texCoord.x+texCoord.y > 0.5) {background();}"
     "if (id == 2 && (1.0-texCoord.x)+texCoord.y > 0.5) {background();}"

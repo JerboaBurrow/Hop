@@ -14,15 +14,13 @@ class CollisionDetector;
 
 class World {
 public:
-    friend class CollisionDetector;
-
     World(uint64_t s)
     : seed(s)
     {}
     virtual void draw(Shader & s) = 0;
     virtual void save(std::string filename) = 0;
-    virtual void worldToCell(float x, float y, float & ix, float & iy) = 0;
     virtual float worldUnitLength() = 0;
+    virtual float worldToCellData(float x, float y, float & h, float & x0, float & y0, float & s) = 0;
 
 protected:
 
@@ -62,6 +60,7 @@ public:
     // TexturedQuad getLocalRegionMap();
     void updateRegion(float x, float y);
     void worldToCell(float x, float y, float & ix, float & iy);
+    float worldToCellData(float x, float y, float & h, float & x0, float & y0, float & s);
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
     ~PerlinWorld(){
