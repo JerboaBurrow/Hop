@@ -197,40 +197,72 @@ void PerlinWorld::processBufferToOffsets(){
     }
 }
 
-float PerlinWorld::worldToCellData(float x, float y, float & h, float & x0, float & y0, float & s){
-    float ix, iy;
-    worldToCell(x,y,ix,iy);
-    int ox = posX-RENDER_REGION_BUFFER_SIZE;
-    int oy = posY-RENDER_REGION_BUFFER_SIZE;
+void PerlinWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s){
 
-    int i = ix - ox;
-    int j = iy - oy;
+    int ix,iy,i,j;
+    worldToTile(x,y,ix,iy);
+    tileToBufferCoord(ix,iy,i,j);
 
     if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE){
         // data is buffered
         int k = i*DYNAMICS_REGION_SIZE+j;
-        h = dynamicsIds[k];
-        s = 1.0/float(RENDER_REGION_BUFFER_SIZE);
-        x0 = iy*s;
-        y0 = ix*s;
+        int t = static_cast<int>(dynamicsIds[k]);
+        if (t < 0 || t > MAX_TILE){
+            h = Tile::NULL_TILE;
+        }
+        else{
+            h = static_cast<Tile>(t);
+        }
+
+        s = 1.0/float(RENDER_REGION_SIZE);
+        x0 = i*s;
+        y0 = j*s;
     }
     else{
         // not buffered, so out of dynamics zone, ignore
-        h = 0.0;
+        h = Tile::NULL_TILE;
         s = 0.0;
         x0 = 0.0;
         y0 = 0.0;
     }
-}   
+}
 
-void PerlinWorld::worldToCell(float x, float y, float & ix, float & iy){
+Tile PerlinWorld::tileType(int & i, int & j){
+    if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE){
+        // data is buffered
+        int k = i*DYNAMICS_REGION_SIZE+j;
+        int h = static_cast<int>(dynamicsIds[k]);
+        if (h < 0 || h > MAX_TILE){
+            return Tile::NULL_TILE;
+        }
+        else{
+            return static_cast<Tile>(h);
+        }
+    }
+    return Tile::NULL_TILE;
+}
+
+void PerlinWorld::tileToBufferCoord(int & ix, int & iy, int & i, int & j){
+    int ox = posX-RENDER_REGION_SIZE;
+    int oy = posY-RENDER_REGION_SIZE;
+
+    i = ix - ox;
+    j = iy - oy;
+}
+
+void PerlinWorld::worldToTile(float x, float y, int & ix, int & iy){
+    ix = int(std::floor(x*float(RENDER_REGION_SIZE)));
+    iy = int(std::floor(y*float(RENDER_REGION_SIZE)));
+}
+
+void PerlinWorld::worldToField(float x, float y, float & ix, float & iy){
     ix = std::floor(x*float(RENDER_REGION_BUFFER_SIZE));
     iy = std::floor(y*float(RENDER_REGION_BUFFER_SIZE));
 }
 
 void PerlinWorld::updateRegion(float x, float y){
     float ix, iy;
-    worldToCell(x,y,ix,iy);
+    worldToField(x,y,ix,iy);
     int oy = iy-posY;
     int ox = ix-posX;
     if (oy == 0 && ox == 0){

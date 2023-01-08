@@ -9,6 +9,7 @@
 #include <fstream>
 #include <memory>
 #include <Shader/shaders.h>
+#include <World/tile.h>
 
 class CollisionDetector;
 
@@ -20,7 +21,11 @@ public:
     virtual void draw(Shader & s) = 0;
     virtual void save(std::string filename) = 0;
     virtual float worldUnitLength() = 0;
-    virtual float worldToCellData(float x, float y, float & h, float & x0, float & y0, float & s) = 0;
+    // world coord to tile index (may of may not be buffered)
+    virtual void worldToTile(float x, float y, int & ix, int & iy) = 0;
+    // data for given tile
+    virtual void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s) = 0;
+    virtual Tile tileType(int & i, int & j) = 0;
 
 protected:
 
@@ -41,15 +46,6 @@ protected:
 
 const float THRESHOLD = 0.2;
 
-// // cells rendered with marching squares
-// const uint64_t RENDER_REGION_SIZE = 128;
-// // cells for use in on/offscreen dnamics (physics, rng, etc)
-// // TODO mutliple levels of "dynamism"
-// const uint64_t DYNAMICS_REGION_SIZE = 128*3;
-// // underlying map +1 to account for marching squares
-// const uint64_t RENDER_REGION_BUFFER_SIZE = RENDER_REGION_SIZE+1;
-// const uint64_t DYNAMICS_REGION_BUFFER_SIZE = DYNAMICS_REGION_SIZE+1;
-
 class PerlinWorld : public World {
 
 public:
@@ -59,8 +55,13 @@ public:
     // TexturedQuad getMap(float r = 176., float g = 176., float b = 176.);
     // TexturedQuad getLocalRegionMap();
     void updateRegion(float x, float y);
-    void worldToCell(float x, float y, float & ix, float & iy);
-    float worldToCellData(float x, float y, float & h, float & x0, float & y0, float & s);
+
+    void worldToField(float x, float y, float & ix, float & iy);
+    void worldToTile(float x, float y, int & ix, int & iy);
+    void tileToBufferCoord(int & ix, int & iy, int & i, int & j);
+    Tile tileType(int & i, int & j);
+    void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
+
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
     ~PerlinWorld(){

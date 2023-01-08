@@ -101,7 +101,8 @@ void SpringDashpot::handleObjectWorldCollisions(
     World * world
 ){
 
-    float h, x0, y0, s;
+    float x0, y0, s;
+    Tile h;
     double nx, ny, d2, d2p, halfS, S, hx, hy, lx, ly;
     bool op;
 
@@ -112,7 +113,7 @@ void SpringDashpot::handleObjectWorldCollisions(
 
         CollisionVertex c = data.mesh[p];
 
-        world->worldToCellData(
+        world->worldToTileData(
             c.x,
             c.y,
             h,
@@ -137,12 +138,12 @@ void SpringDashpot::handleObjectWorldCollisions(
              op indicates also applying the opposing vector in
              cases with two lines, id in (5,10)
         */
-        if (h == 0.0 || h == 15){
+        if (h == Tile::EMPTY || h == Tile::FULL){
             // no boundaries, or within
             break;
         }
 
-        if (h == 1.0){
+        if (h == Tile::BOTTOM_LEFT){
             /*
              _____
             |     |
@@ -157,7 +158,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 x0,hy
             );
         }
-        else if (h == 14.0){
+        else if (h == Tile::EMPTY_BOTTOM_LEFT){
             /*
              _____
             x     x
@@ -172,7 +173,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 x0,hy
             );
         }
-        else if (h == 2.0){
+        else if (h == Tile::BOTTOM_RIGHT){
             /*
              _____
             |     |
@@ -187,7 +188,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 lx,hy
             );
         }
-        else if (h == 13.0){
+        else if (h == Tile::EMPTY_BOTTOM_RIGHT){
             /*
              _____
             x     x
@@ -202,7 +203,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 lx,hy
             );
         }
-        else if (h == 4.0){
+        else if (h == Tile::TOP_RIGHT){
             /*
              _____
             |   \ x
@@ -217,7 +218,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,ly
             );
         }
-        else if (h == 11.0){
+        else if (h == Tile::EMPTY_TOP_RIGHT){
             /*
              _____
             x   \ |
@@ -232,7 +233,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,ly
             );
         }
-        else if (h == 8.0){
+        else if (h == Tile::TOP_LEFT){
             /*
              _____
             x /   |
@@ -247,7 +248,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,ly
             );
         }
-        else if (h == 7.0){
+        else if (h == Tile::EMPTY_TOP_LEFT){
             /*
              _____
             | /   x
@@ -262,7 +263,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,ly
             );
         }
-        else if (h == 3.0){
+        else if (h == Tile::BOTTOM_HALF){
             /*
              _____
             |     |
@@ -277,7 +278,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 lx,hy
             );
         }
-        else if (h == 12.0){
+        else if (h == Tile::TOP_HALF){
             /*
              _____
             x     x
@@ -292,7 +293,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 lx,hy
             );
         }
-        else if (h == 9.0){
+        else if (h == Tile::LEFT_HALF){
             /*
              _____
             x  |  |
@@ -307,7 +308,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,ly
             );
         }
-        else if (h == 6.0){
+        else if (h == Tile::RIGHT_HALF){
             /*
              _____
             |  |  x
@@ -322,7 +323,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,ly
             );
         }
-        else if (h == 5.0){
+        else if (h == Tile::BOTTOM_LEFT_AND_TOP_RIGHT){
             /*
              _____
             |   \ x
@@ -343,7 +344,7 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,ly
             );
         }
-        else if (h == 10.0){
+        else if (h == Tile::TOP_LEFT_AND_BOTTOM_RIGHT){
             /*
              _____
             x /   |

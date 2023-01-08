@@ -254,15 +254,18 @@ int main(){
       float cameraY = camera.getPosition().y;
 
       glm::vec4 world = camera.screenToWorld(mouse.x,mouse.y);
-      float h, x0, y0, s;
-      map.worldToCellData(
-        world[1],world[0],h,x0,y0,s
+      Tile h;
+      float x0, y0, s;
+      map.worldToTileData(
+        world[0],world[1],h,x0,y0,s
       );
 
       debugText << "Delta: " << fixedLengthNumber(delta,6) <<
         " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
         "\n" <<
         "Mouse (" << fixedLengthNumber(mouse.x,4) << "," << fixedLengthNumber(mouse.y,4) << ")" <<
+        "\n" <<
+        "Mouse [world] (" << fixedLengthNumber(world[0],4) << "," << fixedLengthNumber(world[1],4) << ")" <<
         "\n" <<
         "Mouse cell (" << fixedLengthNumber(x0,4) << ", " << fixedLengthNumber(y0,4) << ", " << h <<
         "\n" <<
