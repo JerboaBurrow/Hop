@@ -95,6 +95,27 @@ T pointLineSegmentDistanceSquared(
     return dx*dx+dy*dy;
 }
 
+template <class T>
+int pointLineHandedness(
+    T x, T y,
+    T ax, T ay,
+    T bx, T by
+){
+    T sx = (bx-ax);
+    T sy = (by-ay);
+    T tx = (x-ax);
+    T ty = (y-ay);
+
+    T d = sx*ty-sy*tx;
+    if (d < 0.0){
+        return -1;
+    }
+    else if (d > 0){
+        return 1;
+    }
+    else return 0;
+}
+
 void SpringDashpot::handleObjectWorldCollisions(
     Id id,
     ObjectManager * manager,
@@ -104,7 +125,7 @@ void SpringDashpot::handleObjectWorldCollisions(
     float x0, y0, s;
     Tile h;
     double nx, ny, d2, d2p, halfS, S, hx, hy, lx, ly;
-    bool op;
+    bool op, inside;
 
     cCollideable & data = manager->getComponent<cCollideable>(id);
     cPhysics & dataP = manager->getComponent<cPhysics>(id);
@@ -125,6 +146,7 @@ void SpringDashpot::handleObjectWorldCollisions(
         nx = 0.0;
         ny = 0.0;
         op = false;
+        inside = false;
 
         halfS = double(s)*0.5;
         S = double(s);
@@ -138,8 +160,8 @@ void SpringDashpot::handleObjectWorldCollisions(
              op indicates also applying the opposing vector in
              cases with two lines, id in (5,10)
         */
-        if (h == Tile::EMPTY || h == Tile::FULL){
-            // no boundaries, or within
+        if (h == Tile::EMPTY || h == Tile::FULL || h == Tile::NULL_TILE){
+            // no boundaries, or within, or null
             break;
         }
 
@@ -157,6 +179,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,y0,
                 x0,hy
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                hx,y0,
+                x0,hy
+            ) == 1;
         }
         else if (h == Tile::EMPTY_BOTTOM_LEFT){
             /*
@@ -172,6 +199,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,y0,
                 x0,hy
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                hx,y0,
+                x0,hy
+            ) == -1;
         }
         else if (h == Tile::BOTTOM_RIGHT){
             /*
@@ -187,6 +219,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,y0,
                 lx,hy
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                hx,y0,
+                lx,hy
+            ) == -1;
         }
         else if (h == Tile::EMPTY_BOTTOM_RIGHT){
             /*
@@ -199,9 +236,14 @@ void SpringDashpot::handleObjectWorldCollisions(
             nx = 1.0; ny = -1.0;
             d2 = pointLineSegmentDistanceSquared<double>(
                 c.x,c.y,
-                hx,0,
+                hx,y0,
                 lx,hy
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                hx,y0,
+                lx,hy
+            ) == 1;
         }
         else if (h == Tile::TOP_RIGHT){
             /*
@@ -217,6 +259,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 lx,hy,
                 hx,ly
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                lx,hy,
+                hx,ly
+            ) == -1;
         }
         else if (h == Tile::EMPTY_TOP_RIGHT){
             /*
@@ -232,6 +279,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 lx,hy,
                 hx,ly
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                lx,hy,
+                hx,ly
+            ) == 1;
         }
         else if (h == Tile::TOP_LEFT){
             /*
@@ -247,6 +299,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 x0,hy,
                 hx,ly
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                x0,hy,
+                hx,ly
+            ) == 1;
         }
         else if (h == Tile::EMPTY_TOP_LEFT){
             /*
@@ -262,6 +319,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 x0,hy,
                 hx,ly
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                x0,hy,
+                hx,ly
+            ) == -1;
         }
         else if (h == Tile::BOTTOM_HALF){
             /*
@@ -277,6 +339,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 x0,hy,
                 lx,hy
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                x0,hy,
+                lx,hy
+            ) == -1;
         }
         else if (h == Tile::TOP_HALF){
             /*
@@ -287,11 +354,11 @@ void SpringDashpot::handleObjectWorldCollisions(
             
             */
             nx = 0.0; ny = -1.0;
-            d2 = pointLineSegmentDistanceSquared<double>(
+            inside = pointLineHandedness<double>(
                 c.x,c.y,
                 x0,hy,
                 lx,hy
-            );
+            ) == 1;
         }
         else if (h == Tile::LEFT_HALF){
             /*
@@ -307,6 +374,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,y0,
                 hx,ly
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                hx,y0,
+                hx,ly
+            ) == 1;
         }
         else if (h == Tile::RIGHT_HALF){
             /*
@@ -322,6 +394,11 @@ void SpringDashpot::handleObjectWorldCollisions(
                 hx,y0,
                 hx,ly
             );
+            inside = pointLineHandedness<double>(
+                c.x,c.y,
+                hx,y0,
+                hx,ly
+            ) == -1;
         }
         else if (h == Tile::BOTTOM_LEFT_AND_TOP_RIGHT){
             /*
@@ -335,14 +412,34 @@ void SpringDashpot::handleObjectWorldCollisions(
             op = true;
             d2 = pointLineSegmentDistanceSquared<double>(
                 c.x,c.y,
-                hx,hy,
+                hx,y0,
                 x0,hy
             );
+            
+            if (pointLineHandedness<double>(
+                    c.x,c.y,
+                    hx,y0,
+                    x0,hy
+                    ) == 1
+            ){
+                inside = true;
+            }
+
+
             d2p = pointLineSegmentDistanceSquared<double>(
                 c.x,c.y,
                 lx,hy,
                 hx,ly
             );
+
+            if (!inside && pointLineHandedness<double>(
+                    c.x,c.y,
+                    lx,hy,
+                    hx,ly
+                    ) == -1
+            ){
+                inside = true;
+            }
         }
         else if (h == Tile::TOP_LEFT_AND_BOTTOM_RIGHT){
             /*
@@ -359,12 +456,33 @@ void SpringDashpot::handleObjectWorldCollisions(
                 x0,hy,
                 hx,ly
             );
+
+            if (pointLineHandedness<double>(
+                    c.x,c.y,
+                    x0,hy,
+                    hx,ly
+                    ) == 1
+            ){
+                inside = true;
+            }
+
             d2p = pointLineSegmentDistanceSquared<double>(
                 c.x,c.y,
                 hx,y0,
                 lx,hy
             );
+
+            if (!inside && pointLineHandedness<double>(
+                    c.x,c.y,
+                    hx,y0,
+                    lx,hy
+                    ) == -1
+            ){
+                inside = true;
+            }
         }
+
+        if (inside){continue;}
 
         double r2 = c.r*c.r;
 
@@ -403,10 +521,10 @@ void SpringDashpot::handleObjectWorldCollisions(
             fx = mag*nx+friction*std::abs(mag)*nxt;
             fy = mag*ny+friction*std::abs(mag)*nyt;
 
-            dataP.fx += fx;
-            dataP.fy += fy;
+            //dataP.fx -= fx;
+            //dataP.fy -= fy;
 
-            //std::cout << "col: " << fx << ", " << fy << "\n";
+            std::cout << "col: " << fx << ", " << fy << "\n";
         }
 
         if (f2){
@@ -417,8 +535,8 @@ void SpringDashpot::handleObjectWorldCollisions(
             fx = mag*nx+friction*std::abs(mag)*nxt;
             fy = mag*ny+friction*std::abs(mag)*nyt;
 
-            // dataP.fx -= fx;
-            // dataP.fy -= fy;
+            //dataP.fx += fx;
+            //dataP.fy += fy;
         }
     }
 

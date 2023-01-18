@@ -192,6 +192,9 @@ int main(){
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L){
         manager.releaseThread();
       }
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space){
+        posX = 0.0; posY = 0.0;
+      }
     }
 
     if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) ){
@@ -212,8 +215,12 @@ int main(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     timer.restart();
+
+    // TODO this uncoupling is horrible...
     map.updateRegion(posX,posY);
-    camera.setPosition(posX,posY);
+    std::pair<float,float> p = map.getPos();
+    camera.setPosition(p.first,p.second);
+    
     double udt = timer.getElapsedTime().asSeconds();
 
     map.draw(*shaderPool.get("mapShader").get());
@@ -224,6 +231,7 @@ int main(){
     
     rendering.update(&manager, &shaderPool,false);
     collisions.update(&manager, &map);
+    
     for (unsigned i = 0; i < 10; i++){
       physics.update(&manager,1.0/600.0);
     }
@@ -255,7 +263,9 @@ int main(){
 
       glm::vec4 world = camera.screenToWorld(mouse.x,mouse.y);
       Tile h;
+      
       float x0, y0, s;
+      
       map.worldToTileData(
         world[0],world[1],h,x0,y0,s
       );

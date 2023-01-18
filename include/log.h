@@ -57,7 +57,7 @@ public:
   LogType(){}
   LogType(std::string s):msg(s){}
   LogType(const char * c):msg(c){}
-  virtual std::string get()const {};
+  virtual std::string get()const {return std::string("");};
   void operator>> (Log & l){l.put(this->get());}
 protected:
   std::string msg;

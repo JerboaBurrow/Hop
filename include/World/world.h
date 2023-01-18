@@ -64,6 +64,8 @@ public:
 
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
+    std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*fieldPosX,u*fieldPosY);}
+
     ~PerlinWorld(){
         glDeleteBuffers(1,&VBOquad);
         glDeleteBuffers(1,&VBOoffset);
@@ -91,6 +93,9 @@ private:
 
     int posX;
     int posY;
+
+    int tilePosX, tilePosY;
+    int fieldPosX, fieldPosY;
 
     float minimapSize = 0.25f;
     

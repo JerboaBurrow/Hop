@@ -92,8 +92,8 @@ void sPhysics::update(ObjectManager * m, double dt){
         nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
         ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
 
-        dataP.vx = (nx-dataP.lastX)/2.0;
-        dataP.vy = (ny-dataP.lastY)/2.0;
+        dataP.vx = (nx-dataP.lastX)/(2.0*dt);
+        dataP.vy = (ny-dataP.lastY)/(2.0*dt);
 
         dataP.lastX = dataT.x;
         dataP.lastY = dataT.y;
