@@ -5,23 +5,44 @@ const double tol = 1e-6;
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-// SCENARIO("Testing if rays pass through triangles", "[rayIn3DTriangle]"){
-//   GIVEN("a triangle with vertices [1 0 0], [0 1 0], [0 0 1]"){
-//     vector<int> x {1,0,0};
-//     vector<int> y {0,1,0};
-//     vector<int> z {0,0,1};
-//     Triangle <int> tri(x,y,z,x.size());
-//
-//     AND_GIVEN("the points p = [0,0,0], q = [0.5,0.5,0]"){
-//       vector<double> p {0,0,0};
-//       vector<double> q {0.5,0.5,0};
-//       THEN("the ray from p to q passes through the triangle"){
-//         REQUIRE(rayIn3DTriangle <double, int>(p,q,tri));
-//       }
-//       THEN("the ray from p to -q does not pass through the triangle"){
-//         vector<double> k {-0.5,-0.5,0};
-//         REQUIRE(!(rayIn3DTriangle <double, int>(p,k,tri)));
-//       }
-//     }
-//   }
-// }
+template <class T>
+T pointLineSegmentDistanceSquared(
+    T px, T py,
+    T ax, T ay,
+    T bx, T by
+){
+
+    T rx = bx-ax; T ry = by-ay;
+
+    T length2 = rx*rx+ry*ry;
+
+    T pMINUSaDOTrOVERlength2 = ((px-ax)*rx + (py-ay)*ry)/length2;
+
+    pMINUSaDOTrOVERlength2 = std::max(static_cast<T>(0.0),std::min(static_cast<T>(1.0),pMINUSaDOTrOVERlength2));
+
+    T tx = ax + pMINUSaDOTrOVERlength2 * rx;
+    T ty = ay + pMINUSaDOTrOVERlength2 * ry;
+
+    T dx = px-tx;
+    T dy = py-ty;
+
+    return dx*dx+dy*dy;
+}
+
+SCENARIO("Point Line Distance", "[geometry]"){
+    GIVEN("A point (5,5) and a line (5,-2),(5,2)"){
+        float x = 5; float y = 5;
+        float ax,ay,bx,by;
+        ax = 5; ay = -2; bx = 5; by = 2;
+        THEN("The point line segement distance is 3"){
+            float d = pointLineSegmentDistanceSquared(
+                x,y,
+                ax,ay,
+                bx,by
+            );
+
+
+            REQUIRE(d == 9);
+        }
+    }
+}

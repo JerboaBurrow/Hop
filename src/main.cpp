@@ -118,15 +118,15 @@ int main(){
     pid = manager.createObject();
     t1 += timer2.getElapsedTime().asSeconds();
 
-    double x = U(e);
-    double y = U(e);
+    double x = 0.18;
+    double y = 0.72;
 
     timer2.restart();
 
     manager.addComponent<cTransform>(
       pid,
       cTransform(
-        x,y,0.0,0.5*map.worldUnitLength()
+        x,y,0.0,0.1*map.worldUnitLength()
       )
     );
 
@@ -219,6 +219,7 @@ int main(){
     // TODO this uncoupling is horrible...
     map.updateRegion(posX,posY);
     std::pair<float,float> p = map.getPos();
+    float l = map.worldUnitLength();
     camera.setPosition(p.first,p.second);
     
     double udt = timer.getElapsedTime().asSeconds();
@@ -280,8 +281,6 @@ int main(){
         "Mouse cell (" << fixedLengthNumber(x0,4) << ", " << fixedLengthNumber(y0,4) << ", " << h <<
         "\n" <<
         "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
-        "\n" <<
-        "pos " << fixedLengthNumber(posX,4) << ", " << fixedLengthNumber(posY,4) <<
         "\n" << 
         "update time: " << fixedLengthNumber(udt,6) <<
         "\n" <<

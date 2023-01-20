@@ -64,7 +64,7 @@ public:
 
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
-    std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*fieldPosX,u*fieldPosY);}
+    std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
 
     ~PerlinWorld(){
         glDeleteBuffers(1,&VBOquad);

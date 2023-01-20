@@ -86,6 +86,9 @@ T pointLineSegmentDistanceSquared(
     T length2 = rx*rx+ry*ry;
 
     T pMINUSaDOTrOVERlength2 = ((px-ax)*rx + (py-ay)*ry)/length2;
+
+    pMINUSaDOTrOVERlength2 = std::max(static_cast<T>(0.0),std::min(static_cast<T>(1.0),pMINUSaDOTrOVERlength2));
+
     T tx = ax + pMINUSaDOTrOVERlength2 * rx;
     T ty = ay + pMINUSaDOTrOVERlength2 * ry;
 
@@ -482,7 +485,7 @@ void SpringDashpot::handleObjectWorldCollisions(
             }
         }
 
-        if (inside){continue;}
+        //if (inside){continue;}
 
         double r2 = c.r*c.r;
 
@@ -491,49 +494,49 @@ void SpringDashpot::handleObjectWorldCollisions(
         bool f1 = d2 < r2;
         bool f2 = op && (d2p < r2);
 
-        std::cout << "data: " << h << ", " << S << ", " << x0 << ", " << y0 << ", " << c.r << ", " << c.x << ", " << c.y << ", " << lx << ", " << ly << "\n";
-
         if (f1 || f2){
             meff = 1.0 / (1.0+1.0);
             kr = meff*alpha;
             kd = 2.0*meff*beta;
 
-            vrx = dataP.vx;
-            vry = dataP.vy;
+            // vrx = dataP.vx;
+            // vry = dataP.vy;
 
-            nxt = ny;
-            nyt = -nx;
-            ddot = nx*vrx+ny*vry;
+            // nxt = ny;
+            // nyt = -nx;
+            // ddot = nx*vrx+ny*vry;
 
-            vnorm = vrx*vrx+vry*vry;
+            // vnorm = vrx*vrx+vry*vry;
 
-            if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) ){
-                nxt *= -1.0;
-                nyt *= -1.0;
-            }
+            // if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) ){
+            //     nxt *= -1.0;
+            //     nyt *= -1.0;
+            // }
         }
 
         if (f1){
             d = std::sqrt(d2);
 
-            mag = -kr*(c.r-d)-kd*ddot;
+            mag = 1000.0*(c.r-d);//+kd*ddot;
 
-            fx = mag*nx+friction*std::abs(mag)*nxt;
-            fy = mag*ny+friction*std::abs(mag)*nyt;
+            fx = mag*nx;//+friction*std::abs(mag)*nxt;
+            fy = mag*ny;//+friction*std::abs(mag)*nyt;
 
-            //dataP.fx -= fx;
-            //dataP.fy -= fy;
+            dataP.fx += fx;
+            dataP.fy += fy;
 
-            std::cout << "col: " << fx << ", " << fy << "\n";
+            std::cout << "data: " << h << ", " << S << ", " << x0 << ", " << y0 << ", " << lx << ", " << ly << " particle " << c.r << ", " << c.x << ", " << c.y << "\n";
+    
+            std::cout << "col: " << fx << ", " << fy << ", " << d << "\n";
         }
 
         if (f2){
             d = std::sqrt(d2p);
 
-            mag = -kr*(c.r-d)-kd*ddot;
+            mag = kr*(c.r-d);//-kd*ddot;
 
-            fx = mag*nx+friction*std::abs(mag)*nxt;
-            fy = mag*ny+friction*std::abs(mag)*nyt;
+            fx = mag*nx;//+friction*std::abs(mag)*nxt;
+            fy = mag*ny;//+friction*std::abs(mag)*nyt;
 
             //dataP.fx += fx;
             //dataP.fy += fy;

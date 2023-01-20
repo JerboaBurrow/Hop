@@ -7,11 +7,11 @@ void sCollision::update(ObjectManager * m, World * w){
         objects
     );
 
-    // for (auto it = objects.begin(); it != objects.end(); it++){
-    //     resolver->handleObjectWorldCollisions(
-    //         *it,
-    //         m,
-    //         w
-    //     );
-    // }
+    for (auto it = objects.begin(); it != objects.end(); it++){
+        resolver->handleObjectWorldCollisions(
+            *it,
+            m,
+            w
+        );
+    }
 }

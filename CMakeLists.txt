@@ -112,11 +112,11 @@ target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBR
 IF (TEST_SUITE)
 
   file(GLOB TEST_SRC "tests/*.cpp")
-  include_directories(include "tests/" ${OPENGL_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${PNG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
+  include_directories(include "tests/")
 
   add_executable(testSuite ${TEST_SRC})
 
-  target_link_libraries(testSuite sfml-system sfml-window sfml-graphics sfml-audio X11 ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+  target_link_libraries(testSuite stduuid freetype glm)
 
 ENDIF(TEST_SUITE)
 
