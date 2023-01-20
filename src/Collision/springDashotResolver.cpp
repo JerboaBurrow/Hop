@@ -495,29 +495,20 @@ void SpringDashpot::handleObjectWorldCollisions(
         bool f2 = op && (d2p < r2);
 
         if (f1 || f2){
-            meff = 1.0 / (1.0+1.0);
+            meff = 1.0 / (1.0/1.0+1.0);
             kr = meff*alpha;
             kd = 2.0*meff*beta;
 
-            // vrx = dataP.vx;
-            // vry = dataP.vy;
+            vrx = dataP.vx;
+            vry = dataP.vy;
 
-            // nxt = ny;
-            // nyt = -nx;
-            // ddot = nx*vrx+ny*vry;
-
-            // vnorm = vrx*vrx+vry*vry;
-
-            // if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) ){
-            //     nxt *= -1.0;
-            //     nyt *= -1.0;
-            // }
+            ddot = nx*vrx+ny*vry;
         }
 
         if (f1){
             d = std::sqrt(d2);
 
-            mag = 1000.0*(c.r-d);//+kd*ddot;
+            mag = kr*(c.r-d)-kd*ddot;
 
             fx = mag*nx;//+friction*std::abs(mag)*nxt;
             fy = mag*ny;//+friction*std::abs(mag)*nyt;

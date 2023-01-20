@@ -118,7 +118,7 @@ int main(){
     pid = manager.createObject();
     t1 += timer2.getElapsedTime().asSeconds();
 
-    double x = 0.18;
+    double x = 0.2;
     double y = 0.72;
 
     timer2.restart();
@@ -233,10 +233,8 @@ int main(){
     rendering.update(&manager, &shaderPool,false);
     collisions.update(&manager, &map);
     
-    for (unsigned i = 0; i < 10; i++){
-      physics.update(&manager,1.0/600.0);
-    }
-
+    physics.update(&manager,1.0/600.0);
+    
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();
     rendering.draw(&shaderPool);
