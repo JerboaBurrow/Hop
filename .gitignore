@@ -6,3 +6,7 @@ build/*
 include/SFML-2.5.1/*
 call*
 build/*
+.vscode/*
+.cmake/*
+callgrind*
+*.ipynb

@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/media/harvey/ExtraFiles/Jerboa/SFML-Skeleton",
-  "command": "/usr/bin/c++  -DSFML_STATIC -I/media/harvey/ExtraFiles/Jerboa/SFML-Skeleton/include -I/media/harvey/ExtraFiles/Jerboa/SFML-Skeleton/include/freetype -isystem /media/harvey/ExtraFiles/Jerboa/Games/Desktop/CellLists/include/SFML-2.5.1/include   -pthread -O3 -g   -std=gnu++14 -o CMakeFiles/Jerboa.dir/src/main.cpp.o -c /media/harvey/ExtraFiles/Jerboa/SFML-Skeleton/src/main.cpp",
-  "file": "/media/harvey/ExtraFiles/Jerboa/SFML-Skeleton/src/main.cpp"
-}
-]
