@@ -7,8 +7,6 @@ PerlinWorld::PerlinWorld(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_
   DYNAMICS_REGION_SIZE(dynamicsRegion), DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1)
 {
     projection = p;
-    fieldPosX = 0;
-    fieldPosY = 0;
     tilePosX = 0;
     tilePosY = 0;
 
@@ -181,7 +179,7 @@ void PerlinWorld::processBufferToOffsets(){
     }
 
     k = 0;
-    w = minimapSize*1.0/DYNAMICS_REGION_SIZE;
+    w = 1.0/RENDER_REGION_SIZE;
     for (int i = 0; i < DYNAMICS_REGION_SIZE; i++){
         for (int j = 0; j < DYNAMICS_REGION_SIZE; j++){
             uint8_t ul = renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j+1];
@@ -204,7 +202,7 @@ void PerlinWorld::worldToTileData(float x, float y, Tile & h, float & x0, float 
     int ix,iy,i,j;
     worldToTile(x,y,ix,iy);
     tileToBufferCoord(ix,iy,i,j);
-
+ 
     if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE){
         // data is buffered
         int k = i*DYNAMICS_REGION_SIZE+j;
@@ -257,20 +255,12 @@ void PerlinWorld::worldToTile(float x, float y, int & ix, int & iy){
     iy = int(std::floor(y*float(RENDER_REGION_SIZE)));
 }
 
-void PerlinWorld::worldToField(float x, float y, float & ix, float & iy){
-    ix = std::floor(x*float(RENDER_REGION_BUFFER_SIZE));
-    iy = std::floor(y*float(RENDER_REGION_BUFFER_SIZE));
-}
-
 void PerlinWorld::updateRegion(float x, float y){
-    float ix, iy;
-    worldToField(x,y,ix,iy);
-    worldToTile(x,y,tilePosX,tilePosY);
-    int oy = iy-fieldPosY;
-    int ox = ix-fieldPosX;
+    int ix, iy;
+    worldToTile(x,y,ix,iy);
+    int oy = iy-tilePosY;
+    int ox = ix-tilePosX;
     if (oy == 0 && ox == 0){
-        fieldPosX = ix;
-        fieldPosY = iy;
         return;
     }
 
@@ -288,7 +278,7 @@ void PerlinWorld::updateRegion(float x, float y){
             }
             else{
                 // need to sample new value
-                perlin.getAtCoordinate(newIx+fieldPosX,newIy+fieldPosY,THRESHOLD,DYNAMICS_REGION_BUFFER_SIZE,renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j]);
+                perlin.getAtCoordinate(newIx+tilePosX,newIy+tilePosY,THRESHOLD,DYNAMICS_REGION_BUFFER_SIZE,renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j]);
             }
         }
     }
@@ -316,8 +306,7 @@ void PerlinWorld::updateRegion(float x, float y){
         dynamicsIds.get()
     );
     glBindBuffer(GL_ARRAY_BUFFER,0);
-    fieldPosX = ix;
-    fieldPosY = iy;
+    tilePosX = ix; tilePosY = iy;
 }
 
 void PerlinWorld::draw(Shader & s){

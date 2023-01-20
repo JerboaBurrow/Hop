@@ -17,6 +17,7 @@ std::ostream & operator<<(std::ostream & os, Tile const & t){
         case Tile::LEFT_HALF: os << "LEFT_HALF"; break;
         case Tile::TOP_LEFT_AND_BOTTOM_RIGHT: os << "TOP_LEFT_AND_BOTTOM_RIGHT"; break;
         case Tile::EMPTY_TOP_RIGHT: os << "EMPTY_TOP_RIGHT"; break;
+        case Tile::TOP_HALF: os << "TOP_HALF"; break;
         case Tile::EMPTY_BOTTOM_RIGHT: os << "EMPTY_BOTTOM_RIGHT"; break;
         case Tile::EMPTY_BOTTOM_LEFT: os << "EMPTY_BOTTOM_LEFT"; break;
         case Tile::FULL: os << "FULL"; break;

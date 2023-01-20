@@ -219,7 +219,7 @@ int main(){
     // TODO this uncoupling is horrible...
     map.updateRegion(posX,posY);
     std::pair<float,float> p = map.getPos();
-    float l = map.worldUnitLength();
+
     camera.setPosition(p.first,p.second);
     
     double udt = timer.getElapsedTime().asSeconds();

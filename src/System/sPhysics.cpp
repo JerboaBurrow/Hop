@@ -127,8 +127,9 @@ void sPhysics::update(ObjectManager * m, double dt){
                 dataT.theta,
                 dataT.scale
             );
+
+            
         }
-        
     }
 }
 

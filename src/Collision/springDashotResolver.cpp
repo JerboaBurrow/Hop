@@ -525,9 +525,9 @@ void SpringDashpot::handleObjectWorldCollisions(
             dataP.fx += fx;
             dataP.fy += fy;
 
-            std::cout << "data: " << h << ", " << S << ", " << x0 << ", " << y0 << ", " << lx << ", " << ly << " particle " << c.r << ", " << c.x << ", " << c.y << "\n";
+            //std::cout << "data: " << h << ", " << S << ", " << x0 << ", " << y0 << ", " << lx << ", " << ly << " particle " << c.r << ", " << c.x << ", " << c.y << "\n";
     
-            std::cout << "col: " << fx << ", " << fy << ", " << d << "\n";
+            //std::cout << "col: " << fx << ", " << fy << ", " << d << "\n";
         }
 
         if (f2){

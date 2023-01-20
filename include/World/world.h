@@ -56,7 +56,6 @@ public:
     // TexturedQuad getLocalRegionMap();
     void updateRegion(float x, float y);
 
-    void worldToField(float x, float y, float & ix, float & iy);
     void worldToTile(float x, float y, int & ix, int & iy);
     void tileToBufferCoord(int & ix, int & iy, int & i, int & j);
     Tile tileType(int & i, int & j);
@@ -95,8 +94,6 @@ private:
     int posY;
 
     int tilePosX, tilePosY;
-    int fieldPosX, fieldPosY;
-
     float minimapSize = 0.25f;
     
     Perlin perlin;
