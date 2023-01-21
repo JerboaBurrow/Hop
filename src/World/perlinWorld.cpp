@@ -125,18 +125,55 @@ void PerlinWorld::processBufferToOffsets(){
     }
 }
 
-void PerlinWorld::draw(Shader & s){
-    glBindVertexArray(VAO);
-    s.use();
-    s.setMatrix4x4(projection, "proj");
-    s.set1f(1.0f,"u_alpha");
-    s.set1f(1.0f,"u_scale");
-    s.set1i(0,"u_transparentBackground");
-    s.set3f(1.0f,1.0f,1.0f,"u_background");
+void PerlinWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s){
 
-    glDrawArraysInstanced(GL_TRIANGLES,0,6,RENDER_REGION_SIZE*RENDER_REGION_SIZE);
+    int ix,iy,i,j;
+    worldToTile(x,y,ix,iy);
+    tileToIdCoord(ix,iy,i,j);
+ 
+    if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE){
+        // data is buffered
+        int k = i*DYNAMICS_REGION_SIZE+j;
+        int t = static_cast<int>(dynamicsIds[k]);
+        if (t < 0 || t > MAX_TILE){
+            h = Tile::NULL_TILE;
+        }
+        else{
+            h = static_cast<Tile>(t);
+        }
 
-    glBindVertexArray(0);
+        s = 1.0/float(RENDER_REGION_SIZE);
+        x0 = ix*s;
+        y0 = iy*s;
+    }
+    else{
+        // not buffered, so out of dynamics zone, ignore
+        h = Tile::NULL_TILE;
+        s = 0.0;
+        x0 = 0.0;
+        y0 = 0.0;
+    }
+}
 
-    glError("World::draw()");
+Tile PerlinWorld::tileType(int & i, int & j){
+    if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE){
+        // data is buffered
+        int k = i*DYNAMICS_REGION_SIZE+j;
+        int h = static_cast<int>(dynamicsIds[k]);
+        if (h < 0 || h > MAX_TILE){
+            return Tile::NULL_TILE;
+        }
+        else{
+            return static_cast<Tile>(h);
+        }
+    }
+    return Tile::NULL_TILE;
+}
+
+void PerlinWorld::tileToIdCoord(int ix, int iy, int & i, int & j){
+    int ox = tilePosX-RENDER_REGION_SIZE;
+    int oy = tilePosY-RENDER_REGION_SIZE;
+
+    i = ix - ox;
+    j = iy - oy;
 }

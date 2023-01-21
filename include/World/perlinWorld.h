@@ -24,10 +24,13 @@ public:
 
     PerlinWorld(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion);
     
-    void draw(Shader & s);
-    void load(std::string filename){/*void for now*/}
-    void save(std::string filename){/*void for now*/}
+    void load(std::string filename){};
+    void save(std::string filename){};
     void updateRegion(float x, float y);
+
+    void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
+    Tile tileType(int & i, int & j);
+    void tileToIdCoord(int ix, int iy, int & i, int & j);
 
     std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
 

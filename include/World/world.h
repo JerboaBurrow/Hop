@@ -18,15 +18,16 @@ public:
 
     virtual void draw(Shader & s);
 
-    virtual void save(std::string filename);
-    virtual void load(std::string filename);
+    virtual void save(std::string filename) = 0;
+    virtual void load(std::string filename) = 0;
 
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
     void worldToTile(float x, float y, int & ix, int & iy);
-    void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
-    Tile tileType(int & i, int & j);
-    void tileToIdCoord(int & ix, int & iy, int & i, int & j);
+
+    virtual void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s) = 0;
+    virtual Tile tileType(int & i, int & j) = 0;
+    virtual void tileToIdCoord(int ix, int iy, int & i, int & j) = 0;
 
     virtual void updateRegion(float x, float y) = 0;
 
