@@ -2,8 +2,6 @@
 #define WORLD_H
 
 #include <gl.h>
-#include <Procedural/perlin.h>
-#include <texturedQuad.h>
 #include <random>
 #include <string>
 #include <fstream>
@@ -15,94 +13,51 @@ class CollisionDetector;
 
 class World {
 public:
-    World(uint64_t s)
-    : seed(s)
-    {}
-    virtual void draw(Shader & s) = 0;
-    virtual void save(std::string filename) = 0;
-    virtual float worldUnitLength() = 0;
-    // world coord to tile index (may of may not be buffered)
-    virtual void worldToTile(float x, float y, int & ix, int & iy) = 0;
-    // data for given tile
-    virtual void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s) = 0;
-    virtual Tile tileType(int & i, int & j) = 0;
 
-protected:
+    World(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion);
 
-    uint64_t seed;
-};
+    virtual void draw(Shader & s);
 
-/*
-
-    Notes:
-
-    1024*1024 cells each changing every frame ~ 55fps limited by glBufferSubData
-    
-    Key is to avoid calculating noise samples
-
-    1024*1024 60 fps with online sampling limit is position delta
-
-*/
-
-const float THRESHOLD = 0.2;
-
-class PerlinWorld : public World {
-
-public:
-    PerlinWorld(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion);
-    void draw(Shader & s);
-    void save(std::string filename);
-    // TexturedQuad getMap(float r = 176., float g = 176., float b = 176.);
-    // TexturedQuad getLocalRegionMap();
-    void updateRegion(float x, float y);
-
-    void worldToTile(float x, float y, int & ix, int & iy);
-    void tileToBufferCoord(int & ix, int & iy, int & i, int & j);
-    Tile tileType(int & i, int & j);
-    void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
+    virtual void save(std::string filename);
+    virtual void load(std::string filename);
 
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
-    std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
+    void worldToTile(float x, float y, int & ix, int & iy);
+    void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
+    Tile tileType(int & i, int & j);
+    void tileToIdCoord(int & ix, int & iy, int & i, int & j);
 
-    ~PerlinWorld(){
+    virtual void updateRegion(float x, float y) = 0;
+
+    ~World(){
         glDeleteBuffers(1,&VBOquad);
         glDeleteBuffers(1,&VBOoffset);
         glDeleteBuffers(1,&VBOid);
         glDeleteVertexArrays(1,&VAO);
-
-        glDeleteBuffers(1,&minimapVBOoffset);
-        glDeleteBuffers(1,&minimapVBOid);
-        glDeleteVertexArrays(1,&minimapVAO);
     }
 
-private:
+protected:
 
-    const uint64_t RENDER_REGION_SIZE, DYNAMICS_REGION_SIZE, RENDER_REGION_BUFFER_SIZE, DYNAMICS_REGION_BUFFER_SIZE;
+
+    uint64_t seed;
+    
+    const uint64_t RENDER_REGION_SIZE, DYNAMICS_REGION_SIZE;
 
     glm::mat4 projection;
-    
-    std::unique_ptr<bool[]> renderRegionBuffer;
-    std::unique_ptr<bool[]> renderRegionBackBuffer;
 
     std::unique_ptr<float[]> dynamicsOffsets;
     std::unique_ptr<float[]> dynamicsIds;
 
-    void processBufferToOffsets();
+    std::unique_ptr<float[]> renderOffsets;
+    std::unique_ptr<float[]> renderIds;
 
     int posX;
     int posY;
 
     int tilePosX, tilePosY;
-    float minimapSize = 0.25f;
-    
-    Perlin perlin;
 
     GLuint VBOquad, VBOoffset, VBOid, VAO;
-    GLuint minimapVBOoffset, minimapVBOid, minimapVAO;
-
-    std::unique_ptr<float[]> renderOffsets;
-    std::unique_ptr<float[]> renderIds;
 
     float quad[6*4] = {
     // positions  / texture coords

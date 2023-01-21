@@ -18,7 +18,7 @@
 #include <vector>
 
 #include <Text/typeUtils.h>
-#include <World/world.h>
+#include <World/perlinWorld.h>
 
 #include <Object/objectManager.h>
 
