@@ -37,7 +37,7 @@ void SpringDashpot::handleObjectCollision(
 
     if (dd < rc*rc){
         
-        meff = 1.0 / (1.0+1.0);
+        meff = 1.0 / (2.0/PARTICLE_MASS); // mass defined as 1
         kr = meff*alpha;
         kd = 2.0*meff*beta;
 
@@ -163,7 +163,7 @@ void SpringDashpot::handleObjectWorldCollisions(
              op indicates also applying the opposing vector in
              cases with two lines, id in (5,10)
         */
-        if (h == Tile::EMPTY || h == Tile::FULL || h == Tile::NULL_TILE){
+        if (h == Tile::EMPTY || h == Tile::FULL){
             // no boundaries, or within, or null
             break;
         }
@@ -495,7 +495,7 @@ void SpringDashpot::handleObjectWorldCollisions(
         bool f2 = op && (d2p < r2);
 
         if (f1 || f2){
-            meff = 1.0 / (1.0/1.0+1.0);
+            meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
             kr = meff*alpha;
             kd = 2.0*meff*beta;
 
@@ -508,7 +508,7 @@ void SpringDashpot::handleObjectWorldCollisions(
         if (f1){
             d = std::sqrt(d2);
 
-            mag = kr*(c.r-d)-kd*ddot;
+            mag = std::min(1.0/d,10.0)*kr*(c.r-d)-kd*ddot;
 
             fx = mag*nx;//+friction*std::abs(mag)*nxt;
             fy = mag*ny;//+friction*std::abs(mag)*nyt;
@@ -517,8 +517,6 @@ void SpringDashpot::handleObjectWorldCollisions(
             dataP.fy += fy;
 
             //std::cout << "data: " << h << ", " << S << ", " << x0 << ", " << y0 << ", " << lx << ", " << ly << " particle " << c.r << ", " << c.x << ", " << c.y << "\n";
-    
-            //std::cout << "col: " << fx << ", " << fy << ", " << d << "\n";
         }
 
         if (f2){

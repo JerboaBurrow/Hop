@@ -1,7 +1,7 @@
 #include <World/perlinWorld.h>
 
-PerlinWorld::PerlinWorld(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion)
-: World(s,p,renderRegion,dynamicsRegion),
+PerlinWorld::PerlinWorld(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64_t dynamicsRegion)
+: World(s,c,renderRegion,dynamicsRegion),
   RENDER_REGION_BUFFER_SIZE(renderRegion+1),
   DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1),
   perlin(seed,0.07,5.0,5.0,256)
@@ -85,6 +85,9 @@ void PerlinWorld::updateRegion(float x, float y){
     glBindBuffer(GL_ARRAY_BUFFER,0);
 
     tilePosX = ix; tilePosY = iy;
+    
+    std::pair<float,float> p = getPos();
+    camera.setPosition(p.first,p.second);
 }
 
 void PerlinWorld::processBufferToOffsets(){
@@ -136,7 +139,7 @@ void PerlinWorld::worldToTileData(float x, float y, Tile & h, float & x0, float 
         int k = i*DYNAMICS_REGION_SIZE+j;
         int t = static_cast<int>(dynamicsIds[k]);
         if (t < 0 || t > MAX_TILE){
-            h = Tile::NULL_TILE;
+            h = Tile::EMPTY;
         }
         else{
             h = static_cast<Tile>(t);
@@ -148,7 +151,7 @@ void PerlinWorld::worldToTileData(float x, float y, Tile & h, float & x0, float 
     }
     else{
         // not buffered, so out of dynamics zone, ignore
-        h = Tile::NULL_TILE;
+        h = Tile::EMPTY;
         s = 0.0;
         x0 = 0.0;
         y0 = 0.0;
@@ -161,13 +164,13 @@ Tile PerlinWorld::tileType(int & i, int & j){
         int k = i*DYNAMICS_REGION_SIZE+j;
         int h = static_cast<int>(dynamicsIds[k]);
         if (h < 0 || h > MAX_TILE){
-            return Tile::NULL_TILE;
+            return Tile::EMPTY;
         }
         else{
             return static_cast<Tile>(h);
         }
     }
-    return Tile::NULL_TILE;
+    return Tile::EMPTY;
 }
 
 void PerlinWorld::tileToIdCoord(int ix, int iy, int & i, int & j){

@@ -5,7 +5,6 @@
 #include <ostream>
 
 enum class Tile : uint_fast8_t {
-    NULL_TILE                   = 255,
     EMPTY                       = 0,
     BOTTOM_LEFT                 = 1,
     BOTTOM_RIGHT                = 2,

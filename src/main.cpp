@@ -19,6 +19,7 @@
 
 #include <Text/typeUtils.h>
 #include <World/perlinWorld.h>
+#include <World/fixedWorld.h>
 
 #include <Object/objectManager.h>
 
@@ -41,6 +42,8 @@ uint8_t frameId = 0;
 double deltas[60];
 
 Shaders shaderPool;
+
+const double deltaPhysics = 1.0/300.0;
 
 int main(){
 
@@ -93,7 +96,8 @@ int main(){
   sf::Clock timer;
   timer.restart();
 
-  PerlinWorld map(2,camera.getVP(),16,16*3);
+  //PerlinWorld map(2,camera.getVP(),16,16*3);
+  FixedWorld map(2,camera,16,16,"t.map",0,0);
 
   float posX = 0.0;
   float posY = 0.0;
@@ -106,7 +110,7 @@ int main(){
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 1;
+  int n = 100;
 
   sf::Clock timer2;
   double t1 = 0.0;
@@ -118,8 +122,8 @@ int main(){
     pid = manager.createObject();
     t1 += timer2.getElapsedTime().asSeconds();
 
-    double x = 0.2;
-    double y = 0.72;
+    double x = U(e);
+    double y = U(e);
 
     timer2.restart();
 
@@ -165,8 +169,12 @@ int main(){
   sPhysics & physics = manager.getSystem<sPhysics>();
   sCollision & collisions = manager.getSystem<sCollision>();
 
+  physics.setTimeStep(deltaPhysics);
+  physics.setGravity(9.81);
+  physics.stabaliseObjectParameters(&manager);
+
   auto cellList = std::make_unique<CellList>(64,tupled(-1.0,1.0),tupled(-1.0,1.0));
-  auto res = std::make_unique<SpringDashpot>(1.0/6.0,0.5,0.0);
+  auto res = std::make_unique<SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
   collisions.setDetector(std::move(cellList));
   collisions.setResolver(std::move(res));
 
@@ -197,17 +205,33 @@ int main(){
       }
     }
 
-    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) ){
-      posY += MAX_SPEED;
+    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
+      if (!map.cameraOutOfBounds(
+        posX,posY+MAX_SPEED
+      )){
+        posY += MAX_SPEED;
+      }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
-      posY -= MAX_SPEED;
+      if (!map.cameraOutOfBounds(
+        posX,posY-MAX_SPEED
+      )){
+        posY -= MAX_SPEED;
+      }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
-      posX -= MAX_SPEED;
+      if (!map.cameraOutOfBounds(
+        posX-MAX_SPEED,posY
+      )){
+        posX -= MAX_SPEED;
+      }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-      posX += MAX_SPEED;
+      if (!map.cameraOutOfBounds(
+        posX+MAX_SPEED,posY
+      )){
+        posX += MAX_SPEED;
+      }
     }
 
 
@@ -216,11 +240,7 @@ int main(){
 
     timer.restart();
 
-    // TODO this uncoupling is horrible...
     map.updateRegion(posX,posY);
-    std::pair<float,float> p = map.getPos();
-
-    camera.setPosition(p.first,p.second);
     
     double udt = timer.getElapsedTime().asSeconds();
 
@@ -232,8 +252,8 @@ int main(){
     
     rendering.update(&manager, &shaderPool,false);
     collisions.update(&manager, &map);
-    
-    physics.update(&manager,1.0/600.0);
+  
+    physics.update(&manager);
     
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();

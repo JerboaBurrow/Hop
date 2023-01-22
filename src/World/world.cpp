@@ -1,8 +1,8 @@
 #include <World/world.h>
 #include <iostream>
 
-World::World(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion)
-: seed(s), projection(p),
+World::World(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64_t dynamicsRegion)
+: seed(s), camera(c), projection(c.getVP()),
   RENDER_REGION_SIZE(renderRegion), 
   DYNAMICS_REGION_SIZE(dynamicsRegion)
 {

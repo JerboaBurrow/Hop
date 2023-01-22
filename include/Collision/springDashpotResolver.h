@@ -5,6 +5,8 @@
 #include <cmath>
 #include <Object/objectManager.h>
 
+const double WALL_MASS_MULTIPLIER = 10.0;
+
 class SpringDashpot : public CollisionResolver {
 public:
     SpringDashpot(

@@ -8,10 +8,20 @@ public:
 
     FixedWorld(
         uint64_t s, 
-        glm::mat4 p, 
+        OrthoCam & c, 
         uint64_t renderRegion, 
         uint64_t dynamicsRegion,
         uint64_t totalRegion,
+        uint64_t periodicX = 0,
+        uint64_t periodicY = 0
+    );
+
+    FixedWorld(
+        uint64_t s, 
+        OrthoCam & c, 
+        uint64_t renderRegion, 
+        uint64_t dynamicsRegion,
+        std::string worldFile,
         uint64_t periodicX = 0,
         uint64_t periodicY = 0
     );
@@ -26,11 +36,15 @@ public:
     Tile tileType(int & i, int & j);
     void tileToIdCoord(int ix, int iy, int & i, int & j);
 
+    bool pointOutOfBounds(float x, float y);
+    bool cameraOutOfBounds(float x, float y);
+
 private:
 
     std::unique_ptr<Tile[]> worldBuffer;
 
     bool outOfBounds(int ix, int iy);
+    unsigned getWorldSizeFromFile(std::string filename);
 
     uint64_t periodicX, periodicY;
 

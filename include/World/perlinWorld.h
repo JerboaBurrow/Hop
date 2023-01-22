@@ -22,7 +22,7 @@ class PerlinWorld : public World {
 
 public:
 
-    PerlinWorld(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion);
+    PerlinWorld(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64_t dynamicsRegion);
     
     void load(std::string filename){};
     void save(std::string filename){};
@@ -31,8 +31,6 @@ public:
     void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
     Tile tileType(int & i, int & j);
     void tileToIdCoord(int ix, int iy, int & i, int & j);
-
-    std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
 
 private:
 

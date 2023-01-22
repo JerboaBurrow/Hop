@@ -10,3 +10,4 @@ build/*
 .cmake/*
 callgrind*
 *.ipynb
+*.map

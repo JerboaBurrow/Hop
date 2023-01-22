@@ -5,7 +5,7 @@ using namespace std::chrono;
 
 #include <thread>
 
-void sPhysics::processThreaded(ObjectManager * m, double dtdt, size_t threadId){
+void sPhysics::processThreaded(ObjectManager * m, size_t threadId){
     double nx, ny, ntheta;
     double D = std::sqrt(2.0*0.1*1.0/60.0);
     for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++){
@@ -16,8 +16,8 @@ void sPhysics::processThreaded(ObjectManager * m, double dtdt, size_t threadId){
         dataP.fy += 1.0/600.0 * std::sin(dataT.theta)*dataT.scale;
         dataP.omega += D*normal(e);
 
-        nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
-        ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
+        nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/PARTICLE_MASS;
+        ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/PARTICLE_MASS;
 
         dataP.vx = (nx-dataP.lastX)/2.0;
         dataP.vy = (ny-dataP.lastY)/2.0;
@@ -52,9 +52,7 @@ void sPhysics::processThreaded(ObjectManager * m, double dtdt, size_t threadId){
     }
 }
 
-void sPhysics::updateThreaded(ObjectManager * m, double dt){
-    
-    double dtdt = dt*dt;
+void sPhysics::updateThreaded(ObjectManager * m){
 
     for (int j = 0; j < threadJobs.size(); j++){
         m->postJob(
@@ -62,7 +60,6 @@ void sPhysics::updateThreaded(ObjectManager * m, double dt){
                 &sPhysics::processThreaded,
                 this,
                 m,
-                dtdt,
                 j
             )
         );
@@ -70,27 +67,30 @@ void sPhysics::updateThreaded(ObjectManager * m, double dt){
     m->waitForJobs();
 }
 
-void sPhysics::update(ObjectManager * m, double dt){
+void sPhysics::update(ObjectManager * m){
 
     if (m->isThreaded()){
-        updateThreaded(m,dt);
+        updateThreaded(m);
         return;
     }
 
-    double dtdt, nx, ny, ntheta, ar, br, cr;
+    double nx, ny, ntheta, ar, br, cr, at, bt, ct;
     double D = std::sqrt(2.0*0.5*dt);
     unsigned k = 0;
-    dtdt = dt*dt;
     for (auto it = objects.begin(); it != objects.end(); it++){
         cTransform & dataT = m->getComponent<cTransform>(*it);
         cPhysics & dataP = m->getComponent<cPhysics>(*it);
 
         //dataP.fx += 1.0/6.0 * std::cos(dataT.theta)*dataT.scale;
-        dataP.fy += -9.81*dataP.mass;//1.0/6.0 * std::sin(dataT.theta)*dataT.scale;
+        dataP.fy += -gravity*PARTICLE_MASS;//1.0/6.0 * std::sin(dataT.theta)*dataT.scale;
         dataP.omega += D*normal(e);
 
-        nx = 2.0*dataT.x-dataP.lastX+dataP.fx*dtdt/dataP.mass;
-        ny = 2.0*dataT.y-dataP.lastY+dataP.fy*dtdt/dataP.mass;
+        ct = dt * dataP.translationalDrag / (2.0*PARTICLE_MASS);
+        bt = 1.0/(1.0+ct);
+        at = (1.0-ct)*bt;
+
+        nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
+        ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
 
         dataP.vx = (nx-dataP.lastX)/(dt*2.0);
         dataP.vy = (ny-dataP.lastY)/(dt*2.0);
@@ -101,7 +101,7 @@ void sPhysics::update(ObjectManager * m, double dt){
         dataP.fx = 0.0;
         dataP.fy = 0.0;
 
-        cr = dt / (2.0*dataP.momentOfInertia);
+        cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
         br = 1.0/(1.0+cr);
         ar = (1.0-cr)*br;
 
@@ -152,7 +152,7 @@ void sPhysics::applyForce(
         double ry = y-dataT.y;
         double tau = rx*fy-ry*fx;
         double r2 = rx*rx+ry*ry;
-        dataP.omega -= tau/(dataP.mass*r2); 
+        dataP.omega -= tau/(PARTICLE_MASS*r2); 
     }
 }
 
@@ -167,4 +167,54 @@ void sPhysics::applyForce(
         dataP.fx += fx;
         dataP.fy += fy;
     }
+}
+
+void sPhysics::stabaliseObjectParameters(ObjectManager * m){
+    for (auto it = objects.begin(); it != objects.end(); it++){
+        cTransform & dataT = m->getComponent<cTransform>(*it);
+        cPhysics & dataP = m->getComponent<cPhysics>(*it);
+
+        dataP.translationalDrag = 1.1*stableDragUnderdampedLangevinWithGravityUnitMass(
+            dt,
+            gravity,
+            dataT.scale
+        );
+    }
+}
+
+/*
+
+    Given particle of unit mass, under gravity, with a given simulation 
+    timestep, what drag coefficient is the minimum that is numerically stable?
+
+    I.e EQ of M for y(t), (Underdamped Langevin equation)
+    
+    mass*a(t) = -drag*v(t) + mass*gravity.
+
+    Solve with integration factor to get
+
+    v(t) = exp(-drag/mass * t) * (Const. + mass*gravity/drag) - mass*gravity/drag.
+
+    A simulation (with collisions) is stable if the change in position is 
+    in one timestep less than or equal to the object size.
+
+    The max speed under free fall is |v(t)| as t -> infinity, which is
+
+    |v(t)| -> mass*gravity/drag, as t -> infinity
+
+    For a time step dt, and object size r, we need to satisfy
+
+    dt*(mass*gravity/drag) ~ r,
+
+    and for a unit mass
+    
+    drag ~ dt*gravity/r.
+
+*/
+double sPhysics::stableDragUnderdampedLangevinWithGravityUnitMass(
+    double dt,
+    double gravity,
+    double radius
+){
+    return dt*gravity/radius;
 }

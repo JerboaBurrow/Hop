@@ -8,13 +8,39 @@
 #include <memory>
 #include <Shader/shaders.h>
 #include <World/tile.h>
+#include <exception>
+#include <orthoCam.h>
 
 class CollisionDetector;
+
+class MapReadException: public std::exception {
+public:
+    MapReadException(std::string msg)
+    : msg(msg)
+    {}
+private:
+    virtual const char * what() const throw(){
+        return msg.c_str();
+    }
+    std::string msg;
+};
+
+class MapWriteException: public std::exception {
+public:
+    MapWriteException(std::string msg)
+    : msg(msg)
+    {}
+private:
+    virtual const char * what() const throw(){
+        return msg.c_str();
+    }
+    std::string msg;
+};
 
 class World {
 public:
 
-    World(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion);
+    World(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64_t dynamicsRegion);
 
     virtual void draw(Shader & s);
 
@@ -29,7 +55,13 @@ public:
     virtual Tile tileType(int & i, int & j) = 0;
     virtual void tileToIdCoord(int ix, int iy, int & i, int & j) = 0;
 
+    virtual bool pointOutOfBounds(float x, float y){return false;}
+    virtual bool cameraOutOfBounds(float x, float y){return false;}
+
     virtual void updateRegion(float x, float y) = 0;
+
+    std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
+
 
     ~World(){
         glDeleteBuffers(1,&VBOquad);
@@ -40,10 +72,11 @@ public:
 
 protected:
 
-
     uint64_t seed;
     
     const uint64_t RENDER_REGION_SIZE, DYNAMICS_REGION_SIZE;
+
+    OrthoCam & camera;
 
     glm::mat4 projection;
 
