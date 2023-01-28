@@ -254,6 +254,8 @@ int main(){
     shaderPool.setProjection(camera.getVP());
     
     rendering.update(&manager, &shaderPool,false);
+
+    collisions.centreOn(map.getPos());
     collisions.update(&manager, &map);
   
     physics.update(&manager);

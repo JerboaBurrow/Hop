@@ -15,3 +15,7 @@ void sCollision::update(ObjectManager * m, World * w){
         );
     }
 }
+
+void sCollision::centreOn(double x, double y){
+    detector->centreOn(x,y);
+}
