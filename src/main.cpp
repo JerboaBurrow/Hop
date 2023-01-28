@@ -255,7 +255,7 @@ int main(){
     
     rendering.update(&manager, &shaderPool,false);
 
-    collisions.centreOn(map.getPos());
+    collisions.centreOn(map.getMapCenter());
     collisions.update(&manager, &map);
   
     physics.update(&manager);

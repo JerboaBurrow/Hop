@@ -61,7 +61,10 @@ public:
     virtual void updateRegion(float x, float y) = 0;
 
     std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
-
+    std::pair<float,float> getMapCenter(){
+        float u = worldUnitLength(); 
+        return std::pair<float,float>(u*(tilePosX+RENDER_REGION_SIZE/2.0),u*(tilePosY+RENDER_REGION_SIZE/2.0));
+    }
 
     ~World(){
         glDeleteBuffers(1,&VBOquad);
