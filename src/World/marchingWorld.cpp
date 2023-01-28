@@ -1,10 +1,16 @@
-#include <World/perlinWorld.h>
+#include <World/marchingWorld.h>
 
-PerlinWorld::PerlinWorld(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64_t dynamicsRegion)
+MarchingWorld::MarchingWorld(
+    uint64_t s, 
+    OrthoCam & c, 
+    uint64_t renderRegion, 
+    uint64_t dynamicsRegion,
+    FieldSource * f
+)
 : World(s,c,renderRegion,dynamicsRegion),
   RENDER_REGION_BUFFER_SIZE(renderRegion+1),
   DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1),
-  perlin(seed,0.07,5.0,5.0,256)
+  field(f)
 {
 
     renderRegionBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);
@@ -12,7 +18,7 @@ PerlinWorld::PerlinWorld(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64
 
     for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE; i++){
         for (int j = 0; j < DYNAMICS_REGION_BUFFER_SIZE; j++){
-            perlin.getAtCoordinate(i,j,THRESHOLD,DYNAMICS_REGION_BUFFER_SIZE,renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j]);
+            field->getAtCoordinate(i,j,renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j]);
         }
     }
 
@@ -40,7 +46,7 @@ PerlinWorld::PerlinWorld(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64
     glBufferStatus("World constructor");
 }
 
-void PerlinWorld::updateRegion(float x, float y){
+void MarchingWorld::updateRegion(float x, float y){
     int ix, iy;
     worldToTile(x,y,ix,iy);
     int oy = iy-tilePosY;
@@ -63,7 +69,7 @@ void PerlinWorld::updateRegion(float x, float y){
             }
             else{
                 // need to sample new value
-                perlin.getAtCoordinate(newIx+tilePosX,newIy+tilePosY,THRESHOLD,DYNAMICS_REGION_BUFFER_SIZE,renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j]);
+                field->getAtCoordinate(newIx+tilePosX,newIy+tilePosY,renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j]);
             }
         }
     }
@@ -90,7 +96,7 @@ void PerlinWorld::updateRegion(float x, float y){
     camera.setPosition(p.first,p.second);
 }
 
-void PerlinWorld::processBufferToOffsets(){
+void MarchingWorld::processBufferToOffsets(){
     int k = 0;
     float w = 1.0/RENDER_REGION_SIZE;
     for (int i = RENDER_REGION_SIZE; i < RENDER_REGION_SIZE*2; i++){
@@ -128,7 +134,7 @@ void PerlinWorld::processBufferToOffsets(){
     }
 }
 
-void PerlinWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s){
+void MarchingWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s){
 
     int ix,iy,i,j;
     worldToTile(x,y,ix,iy);
@@ -158,7 +164,7 @@ void PerlinWorld::worldToTileData(float x, float y, Tile & h, float & x0, float 
     }
 }
 
-Tile PerlinWorld::tileType(int & i, int & j){
+Tile MarchingWorld::tileType(int & i, int & j){
     if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE){
         // data is buffered
         int k = i*DYNAMICS_REGION_SIZE+j;
@@ -173,7 +179,7 @@ Tile PerlinWorld::tileType(int & i, int & j){
     return Tile::EMPTY;
 }
 
-void PerlinWorld::tileToIdCoord(int ix, int iy, int & i, int & j){
+void MarchingWorld::tileToIdCoord(int ix, int iy, int & i, int & j){
     int ox = tilePosX-RENDER_REGION_SIZE;
     int oy = tilePosY-RENDER_REGION_SIZE;
 

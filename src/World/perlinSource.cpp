@@ -1,4 +1,4 @@
-#include <Procedural/perlin.h>
+#include <World/perlinSource.h>
 
 std::vector<uint64_t> generateTable(
     uint64_t length, 
@@ -23,7 +23,7 @@ std::vector<uint64_t> generateTable(
     return ret;
 }
 
-Perlin::Perlin(
+PerlinSource::PerlinSource(
     uint64_t seed,
     float turbulence,
     float xPeriod,
@@ -46,7 +46,7 @@ Perlin::Perlin(
 
 }
 
-void Perlin::gradient(uint64_t value, float & cx, float & cy){
+void PerlinSource::gradient(uint64_t value, float & cx, float & cy){
     uint8_t h = value % 4;
     switch (h){
         case 0:
@@ -60,7 +60,7 @@ void Perlin::gradient(uint64_t value, float & cx, float & cy){
     }
 }
 
-float Perlin::getValue(float x, float y, uint8_t t){
+float PerlinSource::getValue(float x, float y, uint8_t t){
 
     float xf = std::floor(x);
     float yf = std::floor(y);
@@ -113,7 +113,7 @@ float Perlin::getValue(float x, float y, uint8_t t){
     )*0.5+0.5;
 }
 
-float Perlin::getTurbulence(float x, float y, uint64_t size, uint8_t table){
+float PerlinSource::getTurbulence(float x, float y, uint64_t size, uint8_t table){
     float t = 0.0;
     float scale = size;
     while (scale > 1.0) {
@@ -123,7 +123,7 @@ float Perlin::getTurbulence(float x, float y, uint64_t size, uint8_t table){
     return t;
 }
 
-void Perlin::getAtCoordinate(int ix, int iy, float threshold, uint64_t size, bool & value){
+void PerlinSource::getAtCoordinate(int ix, int iy, bool & value){
     float u = ix*xPeriod / size;
     float v = iy*yPeriod / size;
     float t = u+v+turbulence*getTurbulence(ix,iy,size,0);

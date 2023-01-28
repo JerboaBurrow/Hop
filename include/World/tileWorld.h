@@ -1,12 +1,12 @@
-#ifndef FIXEDWORLD_H
-#define FIXEDWORLD_H
+#ifndef TILEWORLD_H
+#define TILEWORLD_H
 
 #include <World/world.h>
 
-class FixedWorld : public World {
+class TileWorld : public World {
 public:
 
-    FixedWorld(
+    TileWorld(
         uint64_t s, 
         OrthoCam & c, 
         uint64_t renderRegion, 
@@ -16,7 +16,7 @@ public:
         uint64_t periodicY = 0
     );
 
-    FixedWorld(
+    TileWorld(
         uint64_t s, 
         OrthoCam & c, 
         uint64_t renderRegion, 
@@ -52,4 +52,4 @@ private:
 
 };
 
-#endif /* FIXEDWORLD_H */
+#endif /* TILEWORLD_H */

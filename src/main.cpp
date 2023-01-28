@@ -18,8 +18,8 @@
 #include <vector>
 
 #include <Text/typeUtils.h>
-#include <World/perlinWorld.h>
-#include <World/fixedWorld.h>
+#include <World/marchingWorld.h>
+#include <World/tileWorld.h>
 
 #include <Object/objectManager.h>
 
@@ -96,8 +96,11 @@ int main(){
   sf::Clock timer;
   timer.restart();
 
-  //PerlinWorld map(2,camera.getVP(),16,16*3);
-  FixedWorld map(2,camera,16,16,"t.map",0,0);
+  PerlinSource perlin(2,0.07,5.0,5.0,256);
+  perlin.setThreshold(0.2);
+  perlin.setSize(16*3+1);
+  MarchingWorld map(2,camera,16,16*3,&perlin);
+  //TileWorld map(2,camera,16,16,"t.map",0,0);
 
   float posX = 0.0;
   float posY = 0.0;

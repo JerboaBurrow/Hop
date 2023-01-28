@@ -1,13 +1,15 @@
-#ifndef PERLIN_H
-#define PERLIN_H
+#ifndef PERLINSOURCE_H
+#define PERLINSOURCE_H
+
+#include <World/fieldSource.h>
 
 #include <vector>
 #include <random>
 
-class Perlin {
+class PerlinSource : public FieldSource {
 public:
     
-    Perlin(
+    PerlinSource(
         uint64_t seed,
         float turbulence,
         float xPeriod,
@@ -15,8 +17,13 @@ public:
         uint64_t repeat = 256,
         float detailThreshold = 0.5
     );
+
+    ~PerlinSource(){}
+
+    void setThreshold(float t){threshold=t;}
+    void setSize(uint64_t s){size = s;}
     
-    void getAtCoordinate(int ix, int iy, float threshold, uint64_t size, bool & value);
+    void getAtCoordinate(int ix, int iy, bool & value);
 
 private:
 
@@ -26,6 +33,8 @@ private:
     float yPeriod;
     uint64_t repeat;
     float detailThreshold;
+    float threshold;
+    uint64_t size;
 
     std::vector<std::vector<uint64_t>> tables;
 
@@ -38,4 +47,4 @@ private:
     std::default_random_engine generator;
 };
 
-#endif /* PERLIN_H */
+#endif /* PERLINSOURCE_H */

@@ -1,6 +1,6 @@
-#include <World/fixedWorld.h>
+#include <World/tileWorld.h>
 
-FixedWorld::FixedWorld(
+TileWorld::TileWorld(
     uint64_t s, 
     OrthoCam & c, 
     uint64_t renderRegion, 
@@ -40,7 +40,7 @@ FixedWorld::FixedWorld(
 
 }
 
-unsigned FixedWorld::getWorldSizeFromFile(std::string filename){
+unsigned TileWorld::getWorldSizeFromFile(std::string filename){
     std::ifstream read(filename);
     if (read.is_open()){
 
@@ -62,7 +62,7 @@ unsigned FixedWorld::getWorldSizeFromFile(std::string filename){
 
 }
 
-FixedWorld::FixedWorld(
+TileWorld::TileWorld(
         uint64_t s, 
         OrthoCam & c, 
         uint64_t renderRegion, 
@@ -125,7 +125,7 @@ FixedWorld::FixedWorld(
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-bool FixedWorld::outOfBounds(int ix, int iy){
+bool TileWorld::outOfBounds(int ix, int iy){
     if (ix < 0                      ||
         ix >= TOTAL_REGION_SIZE     ||
         iy < 0                      ||
@@ -136,29 +136,29 @@ bool FixedWorld::outOfBounds(int ix, int iy){
     return false;
 }
 
-bool FixedWorld::pointOutOfBounds(float x, float y){
+bool TileWorld::pointOutOfBounds(float x, float y){
     int ix, iy;
     worldToTile(x,y,ix,iy);
     return outOfBounds(ix,iy);
 }
 
-bool FixedWorld::cameraOutOfBounds(float x, float y){
+bool TileWorld::cameraOutOfBounds(float x, float y){
     int ix, iy;
     worldToTile(x,y,ix,iy);
     return outOfBounds(ix,iy) || outOfBounds(ix+RENDER_REGION_SIZE,iy+RENDER_REGION_SIZE);
 }
 
-void FixedWorld::tileToIdCoord(int ix, int iy, int & i, int & j){
+void TileWorld::tileToIdCoord(int ix, int iy, int & i, int & j){
     i = ix;
     j = iy;
 }
 
-void FixedWorld::worldToTile(float x, float y, int & ix, int & iy){
+void TileWorld::worldToTile(float x, float y, int & ix, int & iy){
     ix = int(std::floor(x*float(RENDER_REGION_SIZE)));
     iy = int(std::floor(y*float(RENDER_REGION_SIZE)));
 }
 
-void FixedWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s){
+void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s){
 
     int ix,iy,i,j;
     worldToTile(x,y,ix,iy);
@@ -177,7 +177,7 @@ void FixedWorld::worldToTileData(float x, float y, Tile & h, float & x0, float &
 
 }
 
-Tile FixedWorld::tileType(int & i, int & j){
+Tile TileWorld::tileType(int & i, int & j){
 
     if (i >= 0 && i < TOTAL_REGION_SIZE && j >= 0 && j < TOTAL_REGION_SIZE){
         return worldBuffer[i*TOTAL_REGION_SIZE+j];
@@ -187,7 +187,7 @@ Tile FixedWorld::tileType(int & i, int & j){
 }
 
 
-void FixedWorld::updateRegion(float x, float y){
+void TileWorld::updateRegion(float x, float y){
     int ix, iy;
     worldToTile(x,y,ix,iy);
 
@@ -242,10 +242,10 @@ void FixedWorld::updateRegion(float x, float y){
         The empty tiles are (i for all i%16==0)
 
 */
-void FixedWorld::save(std::string filename){
+void TileWorld::save(std::string filename){
 }
 
-void FixedWorld::load(std::string filename){
+void TileWorld::load(std::string filename){
     std::ifstream read(filename);
     if (read.is_open()){
 
