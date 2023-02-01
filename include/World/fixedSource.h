@@ -1,15 +1,17 @@
 #ifndef FIXEDSOURCE_H
 #define FIXEDSOURCE_H
 
-class FixedSource : public FieldSource {
+#include <World/mapSource.h>
+
+class FixedSource : public MapSource {
 public:
 
     FixedSource(){}
 
-    void getAtCoordinate(int i, int j, bool & value){}
+    uint64_t getAtCoordinate(int i, int j);
 
-    void save(std::string filename){}
-    void load(std::string filename){}
+    void save(std::string filename);
+    void load(std::string filename);
 
 private:
 };

@@ -18,7 +18,7 @@ MarchingWorld::MarchingWorld(
 
     for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE; i++){
         for (int j = 0; j < DYNAMICS_REGION_BUFFER_SIZE; j++){
-            field->getAtCoordinate(i,j,renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j]);
+            renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] = map->getAtCoordinate(i,j);
         }
     }
 

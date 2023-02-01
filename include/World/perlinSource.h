@@ -1,12 +1,12 @@
 #ifndef PERLINSOURCE_H
 #define PERLINSOURCE_H
 
-#include <World/fieldSource.h>
-
 #include <vector>
 #include <random>
 
-class PerlinSource : public FieldSource {
+#include <World/mapSource.h>
+
+class PerlinSource : public MapSource {
 public:
     
     PerlinSource(
@@ -23,7 +23,10 @@ public:
     void setThreshold(float t){threshold=t;}
     void setSize(uint64_t s){size = s;}
     
-    void getAtCoordinate(int ix, int iy, bool & value);
+    uint64_t getAtCoordinate(int ix, int iy);
+
+    void save(std::string filename){/*TODO*/}
+    void load(std::string filename){/*TODO*/}
 
 private:
 

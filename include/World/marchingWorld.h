@@ -2,7 +2,7 @@
 #define MARCHINGWORLD_H
 
 #include <World/world.h>
-#include <World/fieldSource.h>
+#include <World/mapSource.h>
 #include <World/perlinSource.h>
 #include <World/fixedSource.h>
 
@@ -14,7 +14,7 @@ class MarchingWorld : public World {
         OrthoCam & c, 
         uint64_t renderRegion, 
         uint64_t dynamicsRegion,
-        FieldSource * f
+        MapSource * f
     );
 
     void save(std::string filename){}
@@ -34,7 +34,7 @@ private:
 
     void processBufferToOffsets();
 
-    FieldSource * field;
+    MapSource * map;
 
 };
 
