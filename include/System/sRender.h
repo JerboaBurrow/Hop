@@ -15,6 +15,34 @@ const int MAX_OBJECTS_PER_SHADER = 100000; // 0.4 megabytes per shader
 class ObjectManager;
 class sRender;
 
+/*
+
+    Renders objects grouped by shaders
+
+        Assumptions:
+            - Each object is a centred quad with centroid x,y, orientation t, and scale s
+                as defined in an objects cTransform component
+            - An objects cRenderable component contains it's rgba colour values
+                and/or optionally texture atlas coordinates
+            - An objects shader handles these components correctly, conforming to
+                 a data model of 
+
+                    "layout(location=0) in vec4 a_position;\n"
+                    "layout(location=1) in vec4 a_offset;\n"
+                    "layout(location=2) in vec4 a_colour;\n"
+                    "layout(location=3) in vec4 a_texOffset;\n
+                    "uniform mat4 proj;\n"
+                    "uniform float atlasN;\n"
+
+                a_position is constant quad data (instanced)
+                a_offset is x,y,t,s
+                a_colour, rgba colour
+                a_texOffset is (xy) atlas coord, (zw) spare
+                proj is projection matrix
+                altasN is number of atlas textures along each
+                    dimension (square grid)
+
+*/
 class sRender : public System {
 public:
 
@@ -75,12 +103,12 @@ private:
 
     float quad[6*4] = {
         // positions  / texture coords
-        1.0f,  1.0f, 1.0f, 1.0f,   // top right
-        1.0f,  0.0f, 1.0f, 0.0f,   // bottom right
-        0.0f,  0.0f, 0.0f, 0.0f,   // bottom left
-        0.0f,  1.0f, 0.0f, 1.0f,    // top left 
-        0.0f,  0.0f, 0.0f, 0.0f,   // bottom left
-        1.0f,  1.0f, 1.0f, 1.0f  // top right
+        0.5f,  0.5f, 1.0f, 1.0f,   // top right
+        0.5f,  -0.5f, 1.0f, 0.0f,   // bottom right
+        -0.5f,  -0.5f, 0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f, 1.0f,    // top left 
+        -0.5f,  -0.5f, 0.0f, 0.0f,   // bottom left
+        0.5f,  0.5f, 1.0f, 1.0f  // top right
     };
 
 };

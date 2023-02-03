@@ -9,12 +9,10 @@ const uint64_t MAX_PARTICLES = 100000;
 const uint64_t MAX_PARTICLES_PER_CELL = 64;
 const uint64_t NULL_INDEX = MAX_PARTICLES+1;
 
-typedef std::pair<double,double> tupled;
-
 class CellList : public CollisionDetector {
 public:
-    CellList(uint64_t n, tupled lx = tupled(0.0,1.0), tupled ly = tupled(0.0,1.0))
-    : rootNCells(n), nCells(n*n), limX(lx), limY(ly)
+    CellList(uint64_t n,tupled lx = tupled(0.0,1.0), tupled ly = tupled(0.0,1.0))
+    : CollisionDetector(lx,ly),rootNCells(n), nCells(n*n)
     {
         lX = limX.second-limX.first;
         lY = limY.second-limY.first;
@@ -41,8 +39,7 @@ private:
 
     uint64_t rootNCells, nCells; // rootNCells x rootNCells grid
 
-    double dx, dy, lX, lY;
-    tupled limX, limY;
+    double dx, dy;
 
     std::unique_ptr<uint64_t[]> cells;
     std::unique_ptr<uint64_t[]> lastElementInCell;

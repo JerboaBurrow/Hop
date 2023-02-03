@@ -58,25 +58,23 @@ private:
 
   void update(){
 
-    view = glm::scale(glm::mat4(1.0f),glm::vec3(resolution.x,resolution.y,1.0f)) *
+    view = glm::scale(glm::mat4(1.0),glm::vec3(resolution.x,resolution.y,1.0)) *
       glm::lookAt(
         glm::vec3(position.x,position.y,1.0),
         glm::vec3(position.x,position.y,0.0),
         glm::vec3(0.0,1.0,0.0)
       );
 
-    glm::vec3 center(position.x+0.5,position.y+0.5, 1.0f);
-    view *= glm::translate(glm::mat4(1.0f), center) *
-           glm::scale(glm::mat4(1.0f),glm::vec3(zoomLevel,zoomLevel,1.0f))*
-           glm::translate(glm::mat4(1.0f), -center);
+    glm::vec3 center(position.x+0.5,position.y+0.5, 1.0);
+    view *= glm::translate(glm::mat4(1.0), center) *
+           glm::scale(glm::mat4(1.0),glm::vec3(zoomLevel,zoomLevel,1.0))*
+           glm::translate(glm::mat4(1.0), -center);
 
     projection = glm::ortho(
       0.0,
       double(resolution.x),
       0.0,
-      double(resolution.y),
-      0.1,
-      100.0
+      double(resolution.y)
     );
 
 

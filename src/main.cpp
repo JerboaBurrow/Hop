@@ -18,7 +18,8 @@
 #include <vector>
 
 #include <Text/typeUtils.h>
-#include <World/world.h>
+#include <World/marchingWorld.h>
+#include <World/tileWorld.h>
 
 #include <Object/objectManager.h>
 
@@ -41,6 +42,8 @@ uint8_t frameId = 0;
 double deltas[60];
 
 Shaders shaderPool;
+
+const double deltaPhysics = 1.0/300.0;
 
 int main(){
 
@@ -93,7 +96,12 @@ int main(){
   sf::Clock timer;
   timer.restart();
 
-  PerlinWorld map(2,camera.getVP(),128,128*3);
+  PerlinSource perlin(2,0.07,5.0,5.0,256);
+  perlin.setThreshold(0.2);
+  perlin.setSize(16*3+1);
+  InfiniteBoundary bounds;
+  MarchingWorld map(2,camera,16,16*3,&perlin,&bounds);
+  //TileWorld map(2,camera,16,16,"t.map",0,0);
 
   float posX = 0.0;
   float posY = 0.0;
@@ -106,7 +114,7 @@ int main(){
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 1000;
+  int n = 100;
 
   sf::Clock timer2;
   double t1 = 0.0;
@@ -126,7 +134,7 @@ int main(){
     manager.addComponent<cTransform>(
       pid,
       cTransform(
-        x,y,0.0,0.5*map.worldUnitLength()
+        x,y,0.0,0.1*map.worldUnitLength()
       )
     );
 
@@ -165,8 +173,12 @@ int main(){
   sPhysics & physics = manager.getSystem<sPhysics>();
   sCollision & collisions = manager.getSystem<sCollision>();
 
+  physics.setTimeStep(deltaPhysics);
+  physics.setGravity(9.81);
+  physics.stabaliseObjectParameters(&manager);
+
   auto cellList = std::make_unique<CellList>(64,tupled(-1.0,1.0),tupled(-1.0,1.0));
-  auto res = std::make_unique<SpringDashpot>(1.0/6.0,0.5,0.0);
+  auto res = std::make_unique<SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
   collisions.setDetector(std::move(cellList));
   collisions.setResolver(std::move(res));
 
@@ -192,19 +204,38 @@ int main(){
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L){
         manager.releaseThread();
       }
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space){
+        posX = 0.0; posY = 0.0;
+      }
     }
 
-    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W) ){
-      posY += MAX_SPEED;
+    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
+      if (!map.cameraOutOfBounds(
+        posX,posY+MAX_SPEED
+      )){
+        posY += MAX_SPEED;
+      }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
-      posY -= MAX_SPEED;
+      if (!map.cameraOutOfBounds(
+        posX,posY-MAX_SPEED
+      )){
+        posY -= MAX_SPEED;
+      }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
-      posX -= MAX_SPEED;
+      if (!map.cameraOutOfBounds(
+        posX-MAX_SPEED,posY
+      )){
+        posX -= MAX_SPEED;
+      }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-      posX += MAX_SPEED;
+      if (!map.cameraOutOfBounds(
+        posX+MAX_SPEED,posY
+      )){
+        posX += MAX_SPEED;
+      }
     }
 
 
@@ -212,8 +243,9 @@ int main(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     timer.restart();
+
     map.updateRegion(posX,posY);
-    camera.setPosition(posX,posY);
+    
     double udt = timer.getElapsedTime().asSeconds();
 
     map.draw(*shaderPool.get("mapShader").get());
@@ -223,9 +255,12 @@ int main(){
     shaderPool.setProjection(camera.getVP());
     
     rendering.update(&manager, &shaderPool,false);
-    collisions.update(&manager, &map);
-    physics.update(&manager,1.0/600.0);
 
+    collisions.centreOn(map.getMapCenter());
+    collisions.update(&manager, &map);
+  
+    physics.update(&manager);
+    
     double rudt = timer.getElapsedTime().asSeconds();
     timer.restart();
     rendering.draw(&shaderPool);
@@ -251,14 +286,25 @@ int main(){
       float cameraX = camera.getPosition().x;
       float cameraY = camera.getPosition().y;
 
+      glm::vec4 world = camera.screenToWorld(mouse.x,mouse.y);
+      Tile h;
+      
+      float x0, y0, s;
+      
+      map.worldToTileData(
+        world[0],world[1],h,x0,y0,s
+      );
+
       debugText << "Delta: " << fixedLengthNumber(delta,6) <<
         " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
         "\n" <<
         "Mouse (" << fixedLengthNumber(mouse.x,4) << "," << fixedLengthNumber(mouse.y,4) << ")" <<
         "\n" <<
-        "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
+        "Mouse [world] (" << fixedLengthNumber(world[0],4) << "," << fixedLengthNumber(world[1],4) << ")" <<
         "\n" <<
-        "pos " << fixedLengthNumber(posX,4) << ", " << fixedLengthNumber(posY,4) <<
+        "Mouse cell (" << fixedLengthNumber(x0,4) << ", " << fixedLengthNumber(y0,4) << ", " << h <<
+        "\n" <<
+        "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
         "\n" << 
         "update time: " << fixedLengthNumber(udt,6) <<
         "\n" <<
