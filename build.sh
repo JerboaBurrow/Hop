@@ -55,12 +55,12 @@ echo "release ${RELEASE}"
 if [[ $WINDOWS -eq 0 ]];
 then 
   cmake -E make_directory build
-  cmake -E chdir build cmake .. -D WINDOWS=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -C build
+  cmake -E chdir build cmake .. -D WINDOWS=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8 -C build
 elif [[ $OSX -eq 0 ]];
 then
   cmake -E make_directory build
-  cmake -E chdir build cmake .. -D OSX=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -C build
+  cmake -E chdir build cmake .. -D OSX=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8 -C build
 else
   cmake -E make_directory build
-  cmake -E chdir build cmake -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX .. && make -C build
+  cmake -E chdir build cmake -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX .. && make -j 8 -C build
 fi

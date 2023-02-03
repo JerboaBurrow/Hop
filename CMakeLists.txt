@@ -26,9 +26,9 @@ if (SYNTAX_ONLY)
         include/vendored/glm
         include/SFML-2.5.1/include
     )
-    file(GLOB SOURCES "src/*.cpp")
-    file(GLOB TEXT_SOURCES "src/Text/*.cpp")
-    add_executable(Jerboa ${SOURCES} ${TEXT_SOURCES})
+    file(GLOB SRC "src/*.cpp")
+    file(GLOB TEXT_SRC "src/Text/*.cpp")
+    add_executable(Jerboa ${SRC} ${TEXT_SRC})
 
 else()
 
@@ -88,25 +88,35 @@ endif()
 
 # graphics for sf::RenderWindow (window is in sfml-window)
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
-file(GLOB SOURCES "src/*.cpp")
-file(GLOB TEXT_SOURCES "src/Text/*.cpp")
-file(GLOB OBJECT_SOURCES "src/Object/*.cpp")
-file(GLOB SHADER_SOURCES "src/Shader/*.cpp")
-file(GLOB SYSTEM_SOURCES "src/System/*.cpp")
-file(GLOB COMPONENT_SOURCES "src/Component/*.cpp") 
-file(GLOB COLLISION_SOURCES "src/Collision/*.cpp") 
-add_executable(Jerboa ${SHADER_SOURCES} ${SOURCES} ${TEXT_SOURCES} ${OBJECT_SOURCES} ${SYSTEM_SOURCES} ${COMPONENT_SOURCES} ${COLLISION_SOURCES})
+file(GLOB SRC "src/*.cpp")
+file(GLOB TEXT_SRC "src/Text/*.cpp")
+file(GLOB OBJECT_SRC "src/Object/*.cpp")
+file(GLOB SHADER_SRC "src/Shader/*.cpp")
+file(GLOB SYSTEM_SRC "src/System/*.cpp")
+file(GLOB COMPONENT_SRC "src/Component/*.cpp") 
+file(GLOB COLLISION_SRC "src/Collision/*.cpp")
+file(GLOB WORLD_SRC "src/World/*.cpp") 
+add_executable(Jerboa 
+    ${SHADER_SRC} 
+    ${SRC} 
+    ${TEXT_SRC} 
+    ${OBJECT_SRC} 
+    ${SYSTEM_SRC} 
+    ${COMPONENT_SRC} 
+    ${COLLISION_SRC}
+    ${WORLD_SRC}
+)
 
 target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 IF (TEST_SUITE)
 
-  file(GLOB TEST_SOURCES "tests/*.cpp")
-  include_directories(include "tests/" ${OPENGL_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS} ${PNG_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
+  file(GLOB TEST_SRC "tests/*.cpp")
+  include_directories(include "tests/")
 
-  add_executable(testSuite ${TEST_SOURCES})
+  add_executable(testSuite ${TEST_SRC})
 
-  target_link_libraries(testSuite sfml-system sfml-window sfml-graphics sfml-audio X11 ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} ${ZLIB_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+  target_link_libraries(testSuite stduuid freetype glm)
 
 ENDIF(TEST_SUITE)
 

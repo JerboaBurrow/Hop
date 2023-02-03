@@ -25,6 +25,10 @@ public:
         resolver = std::move(r);
     }
 
+    void centreOn(std::pair<float,float> p){centreOn(p.first,p.second);}
+
+    void centreOn(double x, double y);
+
 private:
 
     void processThreaded(ObjectManager * m, size_t threadId);

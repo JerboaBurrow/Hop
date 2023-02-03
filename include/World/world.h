@@ -2,105 +2,108 @@
 #define WORLD_H
 
 #include <gl.h>
-#include <Procedural/perlin.h>
-#include <texturedQuad.h>
 #include <random>
 #include <string>
 #include <fstream>
 #include <memory>
 #include <Shader/shaders.h>
+#include <World/tile.h>
+#include <exception>
+#include <orthoCam.h>
+#include <World/boundary.h>
 
 class CollisionDetector;
 
-class World {
+class MapReadException: public std::exception {
 public:
-    friend class CollisionDetector;
-
-    World(uint64_t s)
-    : seed(s)
+    MapReadException(std::string msg)
+    : msg(msg)
     {}
-    virtual void draw(Shader & s) = 0;
-    virtual void save(std::string filename) = 0;
-    virtual void worldToCell(float x, float y, float & ix, float & iy) = 0;
-    virtual float worldUnitLength() = 0;
-
-protected:
-
-    uint64_t seed;
+private:
+    virtual const char * what() const throw(){
+        return msg.c_str();
+    }
+    std::string msg;
 };
 
-/*
-
-    Notes:
-
-    1024*1024 cells each changing every frame ~ 55fps limited by glBufferSubData
-    
-    Key is to avoid calculating noise samples
-
-    1024*1024 60 fps with online sampling limit is position delta
-
-*/
-
-const float THRESHOLD = 0.2;
-
-// // cells rendered with marching squares
-// const uint64_t RENDER_REGION_SIZE = 128;
-// // cells for use in on/offscreen dnamics (physics, rng, etc)
-// // TODO mutliple levels of "dynamism"
-// const uint64_t DYNAMICS_REGION_SIZE = 128*3;
-// // underlying map +1 to account for marching squares
-// const uint64_t RENDER_REGION_BUFFER_SIZE = RENDER_REGION_SIZE+1;
-// const uint64_t DYNAMICS_REGION_BUFFER_SIZE = DYNAMICS_REGION_SIZE+1;
-
-class PerlinWorld : public World {
-
+class MapWriteException: public std::exception {
 public:
-    PerlinWorld(uint64_t s, glm::mat4 p, uint64_t renderRegion, uint64_t dynamicsRegion);
-    void draw(Shader & s);
-    void save(std::string filename);
-    // TexturedQuad getMap(float r = 176., float g = 176., float b = 176.);
-    // TexturedQuad getLocalRegionMap();
-    void updateRegion(float x, float y);
-    void worldToCell(float x, float y, float & ix, float & iy);
+    MapWriteException(std::string msg)
+    : msg(msg)
+    {}
+private:
+    virtual const char * what() const throw(){
+        return msg.c_str();
+    }
+    std::string msg;
+};
+
+class World {
+public:
+
+    World(
+        uint64_t s, 
+        OrthoCam & c, 
+        uint64_t renderRegion, 
+        uint64_t dynamicsRegion,
+        Boundary * b
+    );
+
+    virtual void draw(Shader & s);
+
+    virtual void save(std::string filename) = 0;
+    virtual void load(std::string filename) = 0;
+
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
-    ~PerlinWorld(){
+    void worldToTile(float x, float y, int & ix, int & iy);
+
+    virtual void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s) = 0;
+    virtual Tile tileType(int & i, int & j) = 0;
+    virtual void tileToIdCoord(int ix, int iy, int & i, int & j) = 0;
+
+    virtual bool pointOutOfBounds(float x, float y){return false;}
+    virtual bool cameraOutOfBounds(float x, float y){return false;}
+
+    virtual void updateRegion(float x, float y) = 0;
+
+    std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
+    std::pair<float,float> getMapCenter(){
+        float u = worldUnitLength(); 
+        return std::pair<float,float>(u*(tilePosX+RENDER_REGION_SIZE/2.0),u*(tilePosY+RENDER_REGION_SIZE/2.0));
+    }
+
+    ~World(){
         glDeleteBuffers(1,&VBOquad);
         glDeleteBuffers(1,&VBOoffset);
         glDeleteBuffers(1,&VBOid);
         glDeleteVertexArrays(1,&VAO);
-
-        glDeleteBuffers(1,&minimapVBOoffset);
-        glDeleteBuffers(1,&minimapVBOid);
-        glDeleteVertexArrays(1,&minimapVAO);
     }
 
-private:
+protected:
 
-    const uint64_t RENDER_REGION_SIZE, DYNAMICS_REGION_SIZE, RENDER_REGION_BUFFER_SIZE, DYNAMICS_REGION_BUFFER_SIZE;
+    uint64_t seed;
+    
+    const uint64_t RENDER_REGION_SIZE, DYNAMICS_REGION_SIZE;
+
+    OrthoCam & camera;
 
     glm::mat4 projection;
-    
-    std::unique_ptr<bool[]> renderRegionBuffer;
-    std::unique_ptr<bool[]> renderRegionBackBuffer;
 
     std::unique_ptr<float[]> dynamicsOffsets;
     std::unique_ptr<float[]> dynamicsIds;
 
-    void processBufferToOffsets();
+    std::unique_ptr<float[]> renderOffsets;
+    std::unique_ptr<float[]> renderIds;
 
     int posX;
     int posY;
 
-    float minimapSize = 0.25f;
-    
-    Perlin perlin;
+    int tilePosX, tilePosY;
 
     GLuint VBOquad, VBOoffset, VBOid, VAO;
-    GLuint minimapVBOoffset, minimapVBOid, minimapVAO;
 
-    std::unique_ptr<float[]> renderOffsets;
-    std::unique_ptr<float[]> renderIds;
+    Boundary * boundary;
 
     float quad[6*4] = {
     // positions  / texture coords
