@@ -124,12 +124,14 @@ float PerlinSource::getTurbulence(float x, float y, uint64_t size, uint8_t table
 }
 
 uint64_t  PerlinSource::getAtCoordinate(int ix, int iy){
+    uint64_t value = false;
     float u = ix*xPeriod / size;
     float v = iy*yPeriod / size;
     float t = u+v+turbulence*getTurbulence(ix,iy,size,0);
     bool a = std::sin(t) > threshold;
-    if (!a){value = false; return;}
+    if (!a){value = false; return value;}
     float s = u+v+4.0*turbulence*getTurbulence(ix,iy,size,1);
     bool b = std::sin(s) > detailThreshold;
     value = a & (!b);
+    return value;
 }

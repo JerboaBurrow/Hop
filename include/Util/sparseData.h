@@ -10,20 +10,16 @@
     Therebye only storing required data
 
 */
-template <class INDEX, VALUE>
+template <class INDEX, class VALUE>
 class SparseData {
 
 public:
     
-    SparseData(VALUE nullElement, INDEX numberOfElements = -1)
+    SparseData(VALUE nullElement)
     : NULL_ELEMENT(nullElement)
     {}
 
     virtual VALUE operator[](INDEX index){
-
-        if (index >= numberOfElements){
-            throw std::out_of_range("Index " +std::string(index) + " out of range for SparseData of length "+std::string(numberOfElements));
-        }
 
         if (elements.find(index) != elements.end()){
             return elements[index];
@@ -58,7 +54,9 @@ public:
     }
 
 private:
+
     VALUE NULL_ELEMENT;
+
     std::map<INDEX,VALUE> elements;
 };
 

@@ -12,8 +12,7 @@ public:
         uint64_t renderRegion, 
         uint64_t dynamicsRegion,
         uint64_t totalRegion,
-        uint64_t periodicX = 0,
-        uint64_t periodicY = 0
+        Boundary * b
     );
 
     TileWorld(
@@ -22,8 +21,7 @@ public:
         uint64_t renderRegion, 
         uint64_t dynamicsRegion,
         std::string worldFile,
-        uint64_t periodicX = 0,
-        uint64_t periodicY = 0
+        Boundary * b
     );
 
     void save(std::string filename);

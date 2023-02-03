@@ -99,7 +99,8 @@ int main(){
   PerlinSource perlin(2,0.07,5.0,5.0,256);
   perlin.setThreshold(0.2);
   perlin.setSize(16*3+1);
-  MarchingWorld map(2,camera,16,16*3,&perlin);
+  InfiniteBoundary bounds;
+  MarchingWorld map(2,camera,16,16*3,&perlin,&bounds);
   //TileWorld map(2,camera,16,16,"t.map",0,0);
 
   float posX = 0.0;

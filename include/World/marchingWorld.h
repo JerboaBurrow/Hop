@@ -14,7 +14,8 @@ class MarchingWorld : public World {
         OrthoCam & c, 
         uint64_t renderRegion, 
         uint64_t dynamicsRegion,
-        MapSource * f
+        MapSource * f,
+        Boundary * b
     );
 
     void save(std::string filename){}

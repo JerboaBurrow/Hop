@@ -10,6 +10,7 @@
 #include <World/tile.h>
 #include <exception>
 #include <orthoCam.h>
+#include <World/boundary.h>
 
 class CollisionDetector;
 
@@ -40,7 +41,13 @@ private:
 class World {
 public:
 
-    World(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64_t dynamicsRegion);
+    World(
+        uint64_t s, 
+        OrthoCam & c, 
+        uint64_t renderRegion, 
+        uint64_t dynamicsRegion,
+        Boundary * b
+    );
 
     virtual void draw(Shader & s);
 
@@ -95,6 +102,8 @@ protected:
     int tilePosX, tilePosY;
 
     GLuint VBOquad, VBOoffset, VBOid, VAO;
+
+    Boundary * boundary;
 
     float quad[6*4] = {
     // positions  / texture coords

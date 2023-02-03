@@ -5,12 +5,13 @@ MarchingWorld::MarchingWorld(
     OrthoCam & c, 
     uint64_t renderRegion, 
     uint64_t dynamicsRegion,
-    FieldSource * f
+    MapSource * f,
+    Boundary * b
 )
-: World(s,c,renderRegion,dynamicsRegion),
+: World(s,c,renderRegion,dynamicsRegion,b),
   RENDER_REGION_BUFFER_SIZE(renderRegion+1),
   DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1),
-  field(f)
+  map(f)
 {
 
     renderRegionBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);
@@ -69,7 +70,7 @@ void MarchingWorld::updateRegion(float x, float y){
             }
             else{
                 // need to sample new value
-                field->getAtCoordinate(newIx+tilePosX,newIy+tilePosY,renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j]);
+                renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] = map->getAtCoordinate(newIx+tilePosX,newIy+tilePosY);
             }
         }
     }

@@ -6,10 +6,9 @@ TileWorld::TileWorld(
     uint64_t renderRegion, 
     uint64_t dynamicsRegion,
     uint64_t totalRegion,
-    uint64_t periodicX,
-    uint64_t periodicY
+    Boundary * b    
 )
-:   World(s,c,renderRegion,dynamicsRegion),
+:   World(s,c,renderRegion,dynamicsRegion, b),
     periodicX(periodicX), periodicY(periodicY),
     TOTAL_REGION_SIZE(totalRegion),
     WORLD_HALF_SIZE(TOTAL_REGION_SIZE/2)
@@ -68,9 +67,8 @@ TileWorld::TileWorld(
         uint64_t renderRegion, 
         uint64_t dynamicsRegion,
         std::string worldFile,
-        uint64_t periodicX,
-        uint64_t periodicY
-):  World(s,c,renderRegion,dynamicsRegion),
+        Boundary * b
+):  World(s,c,renderRegion,dynamicsRegion, b),
     periodicX(periodicX), periodicY(periodicY),
     TOTAL_REGION_SIZE(getWorldSizeFromFile(worldFile)),
     WORLD_HALF_SIZE(TOTAL_REGION_SIZE/2)
