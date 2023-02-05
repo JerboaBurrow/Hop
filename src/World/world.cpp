@@ -11,7 +11,7 @@ World::World(
 : seed(s), camera(c), projection(c.getVP()),
   RENDER_REGION_SIZE(renderRegion), 
   DYNAMICS_REGION_SIZE(dynamicsRegion),
-  boundary(std::move(b))
+  boundary(b)
 {
     tilePosX = 0;
     tilePosY = 0;
