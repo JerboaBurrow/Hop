@@ -62,8 +62,8 @@ public:
     virtual Tile tileType(int & i, int & j) = 0;
     virtual void tileToIdCoord(int ix, int iy, int & i, int & j) = 0;
 
-    virtual bool pointOutOfBounds(float x, float y){return false;}
-    virtual bool cameraOutOfBounds(float x, float y){return false;}
+    virtual bool pointOutOfBounds(float x, float y);
+    virtual bool cameraOutOfBounds(float x, float y);
 
     virtual void updateRegion(float x, float y) = 0;
 

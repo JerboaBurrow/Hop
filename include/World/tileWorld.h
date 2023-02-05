@@ -34,14 +34,10 @@ public:
     Tile tileType(int & i, int & j);
     void tileToIdCoord(int ix, int iy, int & i, int & j);
 
-    bool pointOutOfBounds(float x, float y);
-    bool cameraOutOfBounds(float x, float y);
-
 private:
 
     std::unique_ptr<Tile[]> worldBuffer;
 
-    bool outOfBounds(int ix, int iy);
     unsigned getWorldSizeFromFile(std::string filename);
 
     uint64_t periodicX, periodicY;

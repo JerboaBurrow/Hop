@@ -1,7 +1,13 @@
 #include <World/world.h>
 #include <iostream>
 
-World::World(uint64_t s, OrthoCam & c, uint64_t renderRegion, uint64_t dynamicsRegion, Boundary * b)
+World::World(
+    uint64_t s, 
+    OrthoCam & c, 
+    uint64_t renderRegion, 
+    uint64_t dynamicsRegion, 
+    Boundary * b
+)
 : seed(s), camera(c), projection(c.getVP()),
   RENDER_REGION_SIZE(renderRegion), 
   DYNAMICS_REGION_SIZE(dynamicsRegion),
@@ -103,4 +109,16 @@ void World::draw(Shader & s){
 void World::worldToTile(float x, float y, int & ix, int & iy){
     ix = int(std::floor(x*float(RENDER_REGION_SIZE)));
     iy = int(std::floor(y*float(RENDER_REGION_SIZE)));
+}
+
+bool World::pointOutOfBounds(float x, float y){
+    int ix, iy;
+    worldToTile(x,y,ix,iy);
+    return boundary->outOfBounds(ix,iy);
+}
+
+bool World::cameraOutOfBounds(float x, float y){
+    int ix, iy;
+    worldToTile(x,y,ix,iy);
+    return boundary->outOfBounds(ix,iy) || boundary->outOfBounds(ix+RENDER_REGION_SIZE,iy+RENDER_REGION_SIZE);
 }
