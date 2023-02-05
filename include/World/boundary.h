@@ -6,7 +6,7 @@ public:
 
     Boundary() = default;
 
-    virtual bool outOfBounds(int ix, int iy){std::cout << "base\n";return false;}
+    virtual bool outOfBounds(int ix, int iy){return false;}
 
 };
 
