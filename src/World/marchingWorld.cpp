@@ -50,6 +50,11 @@ MarchingWorld::MarchingWorld(
 void MarchingWorld::updateRegion(float x, float y){
     int ix, iy;
     worldToTile(x,y,ix,iy);
+
+    if (cameraOutOfBounds(ix,iy)){
+        return;
+    }
+
     int oy = iy-tilePosY;
     int ox = ix-tilePosX;
     if (oy == 0 && ox == 0){
@@ -139,6 +144,11 @@ void MarchingWorld::worldToTileData(float x, float y, Tile & h, float & x0, floa
 
     int ix,iy,i,j;
     worldToTile(x,y,ix,iy);
+    if (boundary->outOfBounds(ix,iy)){
+        h = Tile::EMPTY;
+        s = 0.0; x0 = 0.0; y0 = 0.0;
+        return;
+    }
     tileToIdCoord(ix,iy,i,j);
  
     if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE){

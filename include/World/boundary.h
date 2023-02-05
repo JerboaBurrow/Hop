@@ -6,7 +6,7 @@ public:
 
     Boundary() = default;
 
-    virtual bool outOfBounds(int ix, int iy) = 0;
+    virtual bool outOfBounds(int ix, int iy){std::cout << "base\n";return false;}
 
 };
 
@@ -23,13 +23,13 @@ public:
         int my, 
         int Mx, 
         int My,
-        bool px,
-        bool py
+        int px = 0,
+        int py = 0
     )
     :   minX(mx), 
         minY(my), 
         maxX(Mx), 
-        maxY(my), 
+        maxY(My), 
         periodicX(px), 
         periodicY(py)
     {}
@@ -38,9 +38,9 @@ public:
     bool outOfBounds(int ix, int iy){
         if (
             ix < minX ||
-            ix > maxX ||
+            ix >= maxX ||
             iy < minY ||
-            iy > maxY
+            iy >= maxY
         ){
             return true;
         }
