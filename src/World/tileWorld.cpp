@@ -8,7 +8,7 @@ TileWorld::TileWorld(
     uint64_t totalRegion,
     Boundary * b    
 )
-:   World(s,c,renderRegion,dynamicsRegion, b),
+:   World(s,c,renderRegion,dynamicsRegion,b),
     periodicX(periodicX), periodicY(periodicY),
     TOTAL_REGION_SIZE(totalRegion),
     WORLD_HALF_SIZE(TOTAL_REGION_SIZE/2)
@@ -68,7 +68,7 @@ TileWorld::TileWorld(
         uint64_t dynamicsRegion,
         std::string worldFile,
         Boundary * b
-):  World(s,c,renderRegion,dynamicsRegion, b),
+):  World(s,c,renderRegion,dynamicsRegion,b),
     periodicX(periodicX), periodicY(periodicY),
     TOTAL_REGION_SIZE(getWorldSizeFromFile(worldFile)),
     WORLD_HALF_SIZE(TOTAL_REGION_SIZE/2)
@@ -123,29 +123,6 @@ TileWorld::TileWorld(
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-bool TileWorld::outOfBounds(int ix, int iy){
-    if (ix < 0                      ||
-        ix >= TOTAL_REGION_SIZE     ||
-        iy < 0                      ||
-        iy >= TOTAL_REGION_SIZE
-    ){
-        return true;
-    }
-    return false;
-}
-
-bool TileWorld::pointOutOfBounds(float x, float y){
-    int ix, iy;
-    worldToTile(x,y,ix,iy);
-    return outOfBounds(ix,iy);
-}
-
-bool TileWorld::cameraOutOfBounds(float x, float y){
-    int ix, iy;
-    worldToTile(x,y,ix,iy);
-    return outOfBounds(ix,iy) || outOfBounds(ix+RENDER_REGION_SIZE,iy+RENDER_REGION_SIZE);
-}
-
 void TileWorld::tileToIdCoord(int ix, int iy, int & i, int & j){
     i = ix;
     j = iy;
@@ -160,7 +137,7 @@ void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & 
 
     int ix,iy,i,j;
     worldToTile(x,y,ix,iy);
-    if (outOfBounds(ix,iy)){
+    if (boundary->outOfBounds(ix,iy)){
         h = Tile::EMPTY;
         s = 0.0; x0 = 0.0; y0 = 0.0;
         return;
@@ -189,7 +166,7 @@ void TileWorld::updateRegion(float x, float y){
     int ix, iy;
     worldToTile(x,y,ix,iy);
 
-    if (outOfBounds(ix,iy) || outOfBounds(ix+int(RENDER_REGION_SIZE),iy+int(RENDER_REGION_SIZE))){
+    if (cameraOutOfBounds(ix,iy)){
         return;
     }
 
