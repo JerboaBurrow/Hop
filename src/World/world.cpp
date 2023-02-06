@@ -5,13 +5,14 @@ World::World(
     uint64_t s, 
     OrthoCam & c, 
     uint64_t renderRegion, 
-    uint64_t dynamicsRegion, 
+    uint64_t dynamicsRegion,
+    MapSource * f,
     Boundary * b
 )
 : seed(s), camera(c), projection(c.getVP()),
   RENDER_REGION_SIZE(renderRegion), 
   DYNAMICS_REGION_SIZE(dynamicsRegion),
-  boundary(b)
+  boundary(b), map(f)
 {
     tilePosX = 0;
     tilePosY = 0;

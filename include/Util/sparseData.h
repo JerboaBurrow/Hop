@@ -2,6 +2,7 @@
 #define SparseData_H
 
 #include <map>
+#include <iterator>
 
 /*
 
@@ -35,7 +36,7 @@ public:
     
     }
 
-    void insert(INDEX index, INDEX value){
+    void insert(INDEX index, VALUE value){
 
         elements[index] = value;
 
@@ -53,11 +54,21 @@ public:
 
     }
 
+    auto cbegin(){return elements.cbegin();}
+    auto cend(){return elements.cend();}
+
+    const std::map<INDEX,VALUE> & getElements() const { return elements; }
+
 private:
 
     VALUE NULL_ELEMENT;
 
     std::map<INDEX,VALUE> elements;
 };
+
+template <class INDEX, class VALUE>
+bool operator==(SparseData<INDEX,VALUE> const & lhs, SparseData<INDEX,VALUE> const & rhs){
+    lhs.getElements() == rhs.getElements();
+}
 
 #endif /* SparseData_H */

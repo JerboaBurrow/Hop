@@ -54,6 +54,7 @@ set(CMAKE_BUILD_RPATH ".")
 add_subdirectory(include/vendored/freetype)
 add_subdirectory(include/vendored/glm)
 add_subdirectory(include/vendored/stduuid)
+add_subdirectory(include/vendored/zlib)
 
 find_package(OpenGL REQUIRED)
 # let sources know glew is static
@@ -114,7 +115,10 @@ IF (TEST_SUITE)
   file(GLOB TEST_SRC "tests/*.cpp")
   include_directories(include "tests/")
 
-  add_executable(testSuite ${TEST_SRC})
+  add_executable(testSuite 
+    ${TEST_SRC}
+    "src/World/mapFile.cpp"
+)
 
   target_link_libraries(testSuite stduuid freetype glm)
 

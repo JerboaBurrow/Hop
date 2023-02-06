@@ -1,48 +1,40 @@
 #include <stdint.h>
 #include <iostream>
+#include <random>
 const double tol = 1e-6;
+#include <cmath>
+#include <World/mapFile.h>
+
+std::default_random_engine e;
+std::uniform_int_distribution<uint64_t> U(0,-1);
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-template <class T>
-T pointLineSegmentDistanceSquared(
-    T px, T py,
-    T ax, T ay,
-    T bx, T by
-){
+SCENARIO("MapFile compression", "[io]"){
+    GIVEN("MapData"){
+        
+        MapData m(0);
+        MapFile f;
 
-    T rx = bx-ax; T ry = by-ay;
+        int n = 32;
+        for (int i = -n; i <= n; i++){
+            for (int j = -n; j <= n; j++){
+                m.insert(ivec2(i,j),U(e));
+            }
+        }
 
-    T length2 = rx*rx+ry*ry;
+        WHEN("Saving"){
+            f.save("test.mapz",m);
 
-    T pMINUSaDOTrOVERlength2 = ((px-ax)*rx + (py-ay)*ry)/length2;
+            AND_THEN("loading"){
 
-    pMINUSaDOTrOVERlength2 = std::max(static_cast<T>(0.0),std::min(static_cast<T>(1.0),pMINUSaDOTrOVERlength2));
+                MapData m2(0);
+                f.load("test.mapz",m2);
 
-    T tx = ax + pMINUSaDOTrOVERlength2 * rx;
-    T ty = ay + pMINUSaDOTrOVERlength2 * ry;
+                REQUIRE(m==m2);
 
-    T dx = px-tx;
-    T dy = py-ty;
-
-    return dx*dx+dy*dy;
-}
-
-SCENARIO("Point Line Distance", "[geometry]"){
-    GIVEN("A point (5,5) and a line (5,-2),(5,2)"){
-        float x = 5; float y = 5;
-        float ax,ay,bx,by;
-        ax = 5; ay = -2; bx = 5; by = 2;
-        THEN("The point line segement distance is 3"){
-            float d = pointLineSegmentDistanceSquared(
-                x,y,
-                ax,ay,
-                bx,by
-            );
-
-
-            REQUIRE(d == 9);
+            }
         }
     }
 }

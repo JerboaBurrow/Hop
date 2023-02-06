@@ -8,10 +8,9 @@ MarchingWorld::MarchingWorld(
     MapSource * f,
     Boundary * b
 )
-: World(s,c,renderRegion,dynamicsRegion,b),
+: World(s,c,renderRegion,dynamicsRegion,f,b),
   RENDER_REGION_BUFFER_SIZE(renderRegion+1),
-  DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1),
-  map(f)
+  DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1)
 {
 
     renderRegionBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);

@@ -1,11 +1,7 @@
 #ifndef MAPSOURCE_H
 #define MAPSOURCE_H
 
-#include <Util/sparseData.h>
-#include <utility>
-
-using ivec2 = std::pair<int,int>;
-using MapData = SparseData<ivec2,uint64_t>;
+#include <World/mapFile.h>
 
 class MapSource {
 public:
