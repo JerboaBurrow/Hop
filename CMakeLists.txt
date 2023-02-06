@@ -58,6 +58,7 @@ add_subdirectory(include/vendored/freetype)
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 add_subdirectory(include/vendored/glm)
 add_subdirectory(include/vendored/stduuid)
+add_subdirectory(include/vendored/zlib)
 
 find_package(OpenGL REQUIRED)
 # let sources know glew is static
