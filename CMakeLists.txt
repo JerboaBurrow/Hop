@@ -51,10 +51,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 # without setting this, seemed to work in terminal though!
 set(CMAKE_BUILD_RPATH ".")
 
+add_subdirectory(include/vendored/zlib)
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+# force freetype to use the static zlib build
 add_subdirectory(include/vendored/freetype)
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 add_subdirectory(include/vendored/glm)
 add_subdirectory(include/vendored/stduuid)
-add_subdirectory(include/vendored/zlib)
 
 find_package(OpenGL REQUIRED)
 # let sources know glew is static
@@ -62,7 +65,7 @@ add_compile_definitions(GLEW_STATIC)
 set(GLEW_SOURCE include/vendored/glew/src/glew.c)
 set(GLEW_INCLUDE include/vendored/glew/include/)
 
-include_directories(include ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE})
+include_directories(include ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
 add_library(glew STATIC ${GLEW_SOURCE} ${GLEW_INCLUDE})
 
@@ -108,7 +111,7 @@ add_executable(Jerboa
     ${WORLD_SRC}
 )
 
-target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(Jerboa glew zlibstatic freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 IF (TEST_SUITE)
 
@@ -120,7 +123,7 @@ IF (TEST_SUITE)
     "src/World/mapFile.cpp"
 )
 
-  target_link_libraries(testSuite stduuid freetype glm)
+  target_link_libraries(testSuite stduuid zlibstatic freetype glm)
 
 ENDIF(TEST_SUITE)
 

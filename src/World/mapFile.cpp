@@ -4,10 +4,12 @@
 #include <algorithm>
 #include <sstream>
 
-void MapFile::load(std::string fileName, MapData & data){
+void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
 
     std::vector<uint8_t> compressedData;
     std::vector<uint8_t> rawData;
+
+    std::string fileName = fileNameWithoutExtension+MAP_FILE_EXTENSION_COMPRESSED;
     std::ifstream in(fileName,std::ios::binary);
 
     if (in.is_open()){
@@ -20,11 +22,11 @@ void MapFile::load(std::string fileName, MapData & data){
         std::string size;
 
         if (!std::getline(in,header)){
-            throw MapFileIOError("EOF when reading header for "+fileName);
+            throw MapFileIOError("EOF when reading header for "+fileNameWithoutExtension);
         }
 
         if (!std::getline(in,size)){
-            throw MapFileIOError("EOF when reading uncompressed size for "+fileName);
+            throw MapFileIOError("EOF when reading uncompressed size for "+fileNameWithoutExtension);
         }
 
         uint64_t uncompressedSize = std::stoull(size);
@@ -51,10 +53,10 @@ void MapFile::load(std::string fileName, MapData & data){
             case Z_OK:
                 break;
             case Z_MEM_ERROR:
-                throw MapFileIOError("Z_MEM_ERROR while loading "+fileName);
+                throw MapFileIOError("Z_MEM_ERROR while loading "+fileNameWithoutExtension);
                 break;
             case Z_BUF_ERROR:
-                throw MapFileIOError("Z_BUF_ERROR while loading "+fileName);
+                throw MapFileIOError("Z_BUF_ERROR while loading "+fileNameWithoutExtension);
                 break;
         }
 
@@ -98,7 +100,7 @@ void MapFile::load(std::string fileName, MapData & data){
 
 }
 
-void MapFile::save(std::string fileName, MapData & data){
+void MapFile::save(std::string fileNameWithoutExtension, MapData & data){
 
     std::vector<uint8_t> rawData;
     std::vector<uint8_t> compressedData;
@@ -136,6 +138,7 @@ void MapFile::save(std::string fileName, MapData & data){
         
     );
 
+    std::string fileName = fileNameWithoutExtension + MAP_FILE_EXTENSION_COMPRESSED;
     std::ofstream out(fileName,std::ios::binary);
     if (out.is_open()){
         
@@ -156,10 +159,10 @@ void MapFile::save(std::string fileName, MapData & data){
         case Z_OK:
             break;
         case Z_MEM_ERROR:
-            throw MapFileIOError("Z_MEM_ERROR while saving "+fileName);
+            throw MapFileIOError("Z_MEM_ERROR while saving "+fileNameWithoutExtension);
             break;
         case Z_BUF_ERROR:
-            throw MapFileIOError("Z_BUF_ERROR while saving "+fileName);
+            throw MapFileIOError("Z_BUF_ERROR while saving "+fileNameWithoutExtension);
             break;
     }
 

@@ -25,12 +25,12 @@ SCENARIO("MapFile compression", "[io]"){
         }
 
         WHEN("Saving"){
-            f.save("test.mapz",m);
+            f.save("test",m);
 
             AND_THEN("loading"){
 
                 MapData m2(0);
-                f.load("test.mapz",m2);
+                f.load("test",m2);
 
                 REQUIRE(m==m2);
 

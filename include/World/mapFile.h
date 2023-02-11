@@ -15,6 +15,9 @@
 using ivec2 = std::pair<int32_t,int32_t>;
 using MapData = SparseData<ivec2,uint64_t>;
 
+const char * const MAP_FILE_EXTENSION = ".hmap";
+const char * const MAP_FILE_EXTENSION_COMPRESSED = ".hmap.z";
+
 class MapFileIOError: public std::exception {
 public:
     MapFileIOError(std::string msg)
@@ -32,9 +35,9 @@ public:
 
     MapFile() = default;
 
-    void load(std::string fileName, MapData & data);
+    void load(std::string fileNameWithoutExtension, MapData & data);
 
-    void save(std::string fileName, MapData & data);
+    void save(std::string fileNameWithoutExtension, MapData & data);
 
 
 private:
