@@ -1,5 +1,4 @@
 #include <World/world.h>
-#include <iostream>
 
 World::World(
     uint64_t s, 
@@ -121,5 +120,5 @@ bool World::pointOutOfBounds(float x, float y){
 bool World::cameraOutOfBounds(float x, float y){
     int ix, iy;
     worldToTile(x,y,ix,iy);
-    return boundary->outOfBounds(ix,iy) || boundary->outOfBounds(ix+RENDER_REGION_SIZE,iy+RENDER_REGION_SIZE);
+    return boundary->outOfBounds(ix,iy) || boundary->outOfBounds(ix+int(RENDER_REGION_SIZE)-1,iy+int(RENDER_REGION_SIZE)-1);
 }

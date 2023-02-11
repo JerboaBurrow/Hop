@@ -11,7 +11,7 @@ std::uniform_int_distribution<uint64_t> U(0,-1);
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-SCENARIO("MapFile compression", "[io]"){
+SCENARIO("MapFile i/o", "[io]"){
     GIVEN("MapData"){
         
         MapData m(0);
@@ -24,13 +24,25 @@ SCENARIO("MapFile compression", "[io]"){
             }
         }
 
-        WHEN("Saving"){
+        WHEN("Saving compressed"){
             f.save("test",m);
 
             AND_THEN("loading"){
 
                 MapData m2(0);
                 f.load("test",m2);
+
+                REQUIRE(m==m2);
+
+            }
+        }
+        WHEN("Saving"){
+            f.saveUncompressed("test",m);
+
+            AND_THEN("loading"){
+
+                MapData m2(0);
+                f.loadUncompressed("test",m2);
 
                 REQUIRE(m==m2);
 

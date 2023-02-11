@@ -54,8 +54,8 @@ public:
 
     virtual void draw(Shader & s);
 
-    virtual void save(std::string filename){map->save(filename);}
-    virtual void load(std::string filename){map->load(filename);}
+    virtual void save(std::string fileNameWithoutExtension, bool compressed = true){map->save(fileNameWithoutExtension, compressed); forceUpdate = true;}
+    virtual void load(std::string fileNameWithoutExtension, bool compressed = true){map->load(fileNameWithoutExtension, compressed); forceUpdate = true;}
 
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
@@ -103,6 +103,8 @@ protected:
     int posY;
 
     int tilePosX, tilePosY;
+
+    bool forceUpdate;
 
     GLuint VBOquad, VBOoffset, VBOid, VAO;
 

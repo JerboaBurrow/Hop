@@ -28,7 +28,7 @@ public:
         if (elements.find(index) != elements.end()){
             return elements[index];
         }
-
+    
         return NULL_ELEMENT;
         
     }

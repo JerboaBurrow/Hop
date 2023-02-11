@@ -5,16 +5,13 @@ TileWorld::TileWorld(
     OrthoCam & c, 
     uint64_t renderRegion, 
     uint64_t dynamicsRegion,
-    uint64_t totalRegion,
     MapSource * f,
     Boundary * b    
 )
-:   World(s,c,renderRegion,dynamicsRegion,f,b),
-    TOTAL_REGION_SIZE(totalRegion),
-    WORLD_HALF_SIZE(TOTAL_REGION_SIZE/2)
+:   World(s,c,renderRegion,dynamicsRegion,f,b)
 {
 
-    worldBuffer = std::make_unique<Tile[]>(totalRegion*totalRegion);
+    forceUpdate = true;
 
     float w = 1.0 / RENDER_REGION_SIZE;
     int k = 0;
@@ -60,7 +57,8 @@ void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & 
     }
     tileToIdCoord(ix,iy,i,j);
 
-    h = worldBuffer[i*TOTAL_REGION_SIZE+j];
+    h = toTile<uint64_t>(map->getAtCoordinate(i,j));
+
 
     s = 1.0/float(RENDER_REGION_SIZE);
     x0 = ix*s;
@@ -70,10 +68,7 @@ void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & 
 
 Tile TileWorld::tileType(int & i, int & j){
 
-    if (i >= 0 && i < TOTAL_REGION_SIZE && j >= 0 && j < TOTAL_REGION_SIZE){
-        return worldBuffer[i*TOTAL_REGION_SIZE+j];
-    }
-    return Tile::EMPTY;
+    return toTile<uint64_t>(map->getAtCoordinate(i,j));
 
 }
 
@@ -86,9 +81,11 @@ void TileWorld::updateRegion(float x, float y){
         return;
     }
 
-    if (ix==tilePosX && iy == tilePosY){
+    if (!forceUpdate && ix==tilePosX && iy == tilePosY){
         return;
     }
+
+    forceUpdate = false;
 
     int wi, wj;
     int k = 0;
@@ -96,7 +93,7 @@ void TileWorld::updateRegion(float x, float y){
         for (int j = 0; j < DYNAMICS_REGION_SIZE; j++){
 
             tileToIdCoord(ix+i,iy+j,wi,wj);
-            int id = static_cast<std::underlying_type<Tile>::type>(worldBuffer[wi*TOTAL_REGION_SIZE+wj]);
+            uint64_t id = map->getAtCoordinate(wi,wj); 
             renderIds[k] = float(id);
             k++;
 

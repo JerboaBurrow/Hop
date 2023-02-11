@@ -13,10 +13,10 @@ public:
     virtual ~MapSource(){}
 
     virtual uint64_t getAtCoordinate(int i, int j) = 0;
-    virtual void save(std::string filename) = 0;
-    virtual void load(std::string filename) = 0;
+    virtual void save(std::string fileNameWithoutExtension, bool compressed = true);
+    virtual void load(std::string fileNameWithoutExtension, bool compressed = true);
 
-private:
+protected:
 
     MapData data;
 

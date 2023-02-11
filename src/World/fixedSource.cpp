@@ -1,6 +1,5 @@
 #include <World/fixedSource.h>
 
-uint64_t getAtCoordinate(int i, int j){}
-
-void save(std::string filename){}
-void load(std::string filename){}
+uint64_t FixedSource::getAtCoordinate(int i, int j){
+    return data[ivec2(i,j)];
+}

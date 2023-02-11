@@ -23,6 +23,19 @@ enum class Tile : uint_fast8_t {
     FULL                        = 15
 };
 
+template <class T>
+Tile toTile(T i){
+    
+    if (i >= 0 && i <= 15){
+        
+        return Tile(i);
+
+    }
+
+    return Tile::EMPTY;
+
+}
+
 std::ostream & operator<<(std::ostream & os, Tile const & t);
 
 const int MAX_TILE = static_cast<int>(Tile::FULL);
