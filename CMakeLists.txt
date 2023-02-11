@@ -123,8 +123,13 @@ IF (TEST_SUITE)
     "src/World/mapFile.cpp"
 )
 
-  target_link_libraries(testSuite stduuid zlibstatic freetype glm)
-
+  target_link_libraries(testSuite stduuid freetype glm)
+  
+  include(CTest)
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)
+  include(Catch)
+  catch_discover_tests(testSuite)
+  
 ENDIF(TEST_SUITE)
 
 endif()
