@@ -18,6 +18,6 @@ mkdir build && cd build
 cmake .. -D BUILD_SHARED_LIBS=FALSE && make
 export SFML_DIR="../../SFML-2.5.1/build"
 
-cd ..
-mkdir build-windows && cd build-windows
-cmake .. -D BUILD_SHARED_LIBS=FALSE -D CMAKE_TOOLCHAIN_FILE=../../../windows.cmake && make
+# cd ..
+# mkdir build-windows && cd build-windows
+# cmake .. -D BUILD_SHARED_LIBS=FALSE -D CMAKE_TOOLCHAIN_FILE=../../../windows.cmake && make
