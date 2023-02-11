@@ -3,9 +3,10 @@ project(Jerboa)
 
 option(SYNTAX_ONLY "only check syntax" OFF)
 option(TEST_SUITE "test" OFF)
-
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 option(RELEASE On)
+option(SANITISE OFF)
+
 set(CMAKE_CXX_STANDARD 17)
 if (RELEASE)
     set(CMAKE_BUILD_TYPE Release)
@@ -42,6 +43,10 @@ else ()
     add_compile_definitions(BUILD_TYPE="Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g3")
 endif ()
+
+if (SANITISE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+endif()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")

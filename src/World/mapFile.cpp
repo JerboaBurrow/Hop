@@ -33,13 +33,12 @@ void MapFile::loadUncompressed(std::string fileNameWithoutExtension, MapData & d
 
             char c = rawData[i];
             stringData = "";
-            while (c != '\n'){
+            while (c != '\n' && i < rawData.size()){
                 c = rawData[i];
                 if (c == '\n'){break;}
                 stringData += c;
                 i += 1;
             }
-
 
             size_t p = stringData.find(",");
             int ix = std::stoi(stringData.substr(0,p));
@@ -58,7 +57,6 @@ void MapFile::loadUncompressed(std::string fileNameWithoutExtension, MapData & d
             i += 1;
 
         }
-
     }
     else{
         throw MapFileIOError("file "+fileName+" not openned");
@@ -169,7 +167,7 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
 
             char c = rawData[i];
             stringData = "";
-            while (c != '\n'){
+            while (c != '\n' && i < rawData.size()){
                 c = rawData[i];
                 if (c == '\n'){break;}
                 stringData += c;

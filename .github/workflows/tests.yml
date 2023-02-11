@@ -17,7 +17,7 @@ jobs:
 
     - name: linux-linux
       # Build your program with the given configuration
-      run: ./dependencies.sh && ./build.sh -r -t
+      run: ./dependencies.sh && ./build.sh -t
 
     - name: Test
       working-directory: ${{github.workspace}}/build

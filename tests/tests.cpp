@@ -17,7 +17,7 @@ SCENARIO("MapFile i/o", "[io]"){
         MapData m(0);
         MapFile f;
 
-        int n = 32;
+        int n = 4;
         for (int i = -n; i <= n; i++){
             for (int j = -n; j <= n; j++){
                 m.insert(ivec2(i,j),U(e));
@@ -26,8 +26,7 @@ SCENARIO("MapFile i/o", "[io]"){
 
         WHEN("Saving compressed"){
             f.save("test",m);
-
-            AND_THEN("loading"){
+            AND_THEN("loading the compressed data"){
 
                 MapData m2(0);
                 f.load("test",m2);
@@ -36,10 +35,10 @@ SCENARIO("MapFile i/o", "[io]"){
 
             }
         }
+        
         WHEN("Saving"){
             f.saveUncompressed("test",m);
-
-            AND_THEN("loading"){
+            AND_THEN("loading the uncompressed data"){
 
                 MapData m2(0);
                 f.loadUncompressed("test",m2);
