@@ -58,7 +58,6 @@ add_subdirectory(include/vendored/freetype)
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 add_subdirectory(include/vendored/glm)
 add_subdirectory(include/vendored/stduuid)
-add_subdirectory(include/vendored/zlib)
 
 find_package(OpenGL REQUIRED)
 # let sources know glew is static
@@ -124,7 +123,7 @@ IF (TEST_SUITE)
     "src/World/mapFile.cpp"
 )
 
-  target_link_libraries(testSuite stduuid freetype glm)
+  target_link_libraries(testSuite stduuid zlibstatic freetype glm)
   
   include(CTest)
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)
