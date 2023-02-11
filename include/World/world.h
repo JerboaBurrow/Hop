@@ -11,6 +11,8 @@
 #include <exception>
 #include <orthoCam.h>
 #include <World/boundary.h>
+#include <World/mapSource.h>
+#include <World/fixedSource.h>
 
 class CollisionDetector;
 
@@ -46,13 +48,14 @@ public:
         OrthoCam & c, 
         uint64_t renderRegion, 
         uint64_t dynamicsRegion,
+        MapSource * f,
         Boundary * b
     );
 
     virtual void draw(Shader & s);
 
-    virtual void save(std::string filename) = 0;
-    virtual void load(std::string filename) = 0;
+    virtual void save(std::string fileNameWithoutExtension, bool compressed = true){map->save(fileNameWithoutExtension, compressed); forceUpdate = true;}
+    virtual void load(std::string fileNameWithoutExtension, bool compressed = true){map->load(fileNameWithoutExtension, compressed); forceUpdate = true;}
 
     float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
 
@@ -101,9 +104,13 @@ protected:
 
     int tilePosX, tilePosY;
 
+    bool forceUpdate;
+
     GLuint VBOquad, VBOoffset, VBOid, VAO;
 
     Boundary * boundary;
+
+    MapSource * map;
 
     float quad[6*4] = {
     // positions  / texture coords

@@ -96,15 +96,19 @@ int main(){
   sf::Clock timer;
   timer.restart();
 
-  PerlinSource perlin(2,0.07,5.0,5.0,256);
-  perlin.setThreshold(0.2);
-  perlin.setSize(16*3+1);
+  // PerlinSource perlin(2,0.07,5.0,5.0,256);
+  // perlin.setThreshold(0.2);
+  // perlin.setSize(16*3+1);
 
-  InfiniteBoundary bounds;
-  MarchingWorld map(2,camera,16,16*3,&perlin,&bounds);
+  //InfiniteBoundary bounds;
+  //MarchingWorld map(2,camera,16,16*3,&perlin,&bounds);
 
-  //FiniteBoundary bounds(0,0,16,16);
-  //TileWorld map(2,camera,16,16,"t.map",&bounds);
+  FixedSource();
+
+  FiniteBoundary bounds(0,0,16,16);
+  FixedSource mapSource;
+  mapSource.load("tile",false);
+  TileWorld map(2,camera,16,16,&mapSource,&bounds);
 
   float posX = 0.0;
   float posY = 0.0;

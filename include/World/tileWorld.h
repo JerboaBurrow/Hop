@@ -11,21 +11,9 @@ public:
         OrthoCam & c, 
         uint64_t renderRegion, 
         uint64_t dynamicsRegion,
-        uint64_t totalRegion,
+        MapSource * f,
         Boundary * b
     );
-
-    TileWorld(
-        uint64_t s, 
-        OrthoCam & c, 
-        uint64_t renderRegion, 
-        uint64_t dynamicsRegion,
-        std::string worldFile,
-        Boundary * b
-    );
-
-    void save(std::string filename);
-    void load(std::string filename);
 
     void updateRegion(float x, float y);
 
@@ -35,14 +23,6 @@ public:
     void tileToIdCoord(int ix, int iy, int & i, int & j);
 
 private:
-
-    std::unique_ptr<Tile[]> worldBuffer;
-
-    unsigned getWorldSizeFromFile(std::string filename);
-
-    uint64_t periodicX, periodicY;
-
-    const uint64_t TOTAL_REGION_SIZE, WORLD_HALF_SIZE;
 
 };
 
