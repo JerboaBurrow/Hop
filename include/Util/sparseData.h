@@ -1,6 +1,9 @@
 #ifndef SparseData_H
 #define SparseData_H
 
+#include <cstdint>
+#include <string>
+
 #include <map>
 #include <iterator>
 
