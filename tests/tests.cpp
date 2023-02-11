@@ -1,48 +1,51 @@
 #include <stdint.h>
 #include <iostream>
+#include <random>
 const double tol = 1e-6;
+#include <cmath>
+#include <World/mapFile.h>
+
+std::default_random_engine e;
+std::uniform_int_distribution<uint64_t> U(0,-1);
 
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-template <class T>
-T pointLineSegmentDistanceSquared(
-    T px, T py,
-    T ax, T ay,
-    T bx, T by
-){
+SCENARIO("MapFile i/o", "[io]"){
+    GIVEN("MapData"){
+        
+        MapData m(0);
+        MapFile f;
 
-    T rx = bx-ax; T ry = by-ay;
+        int n = 4;
+        for (int i = -n; i <= n; i++){
+            for (int j = -n; j <= n; j++){
+                m.insert(ivec2(i,j),U(e));
+            }
+        }
 
-    T length2 = rx*rx+ry*ry;
+        WHEN("Saving compressed"){
+            f.save("test",m);
+            AND_THEN("loading the compressed data"){
 
-    T pMINUSaDOTrOVERlength2 = ((px-ax)*rx + (py-ay)*ry)/length2;
+                MapData m2(0);
+                f.load("test",m2);
 
-    pMINUSaDOTrOVERlength2 = std::max(static_cast<T>(0.0),std::min(static_cast<T>(1.0),pMINUSaDOTrOVERlength2));
+                REQUIRE(m==m2);
 
-    T tx = ax + pMINUSaDOTrOVERlength2 * rx;
-    T ty = ay + pMINUSaDOTrOVERlength2 * ry;
+            }
+        }
+        
+        WHEN("Saving"){
+            f.saveUncompressed("test",m);
+            AND_THEN("loading the uncompressed data"){
 
-    T dx = px-tx;
-    T dy = py-ty;
+                MapData m2(0);
+                f.loadUncompressed("test",m2);
 
-    return dx*dx+dy*dy;
-}
+                REQUIRE(m==m2);
 
-SCENARIO("Point Line Distance", "[geometry]"){
-    GIVEN("A point (5,5) and a line (5,-2),(5,2)"){
-        float x = 5; float y = 5;
-        float ax,ay,bx,by;
-        ax = 5; ay = -2; bx = 5; by = 2;
-        THEN("The point line segement distance is 3"){
-            float d = pointLineSegmentDistanceSquared(
-                x,y,
-                ax,ay,
-                bx,by
-            );
-
-
-            REQUIRE(d == 9);
+            }
         }
     }
 }

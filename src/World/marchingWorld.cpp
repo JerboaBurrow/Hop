@@ -8,11 +8,10 @@ MarchingWorld::MarchingWorld(
     MapSource * f,
     Boundary * b
 )
-: World(s,c,renderRegion,dynamicsRegion,b),
+: World(s,c,renderRegion,dynamicsRegion,f,b),
   RENDER_REGION_BUFFER_SIZE(renderRegion+1),
-  DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1),
-  map(f)
-{
+  DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1)
+  {
 
     renderRegionBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);
     renderRegionBackBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);
@@ -57,9 +56,12 @@ void MarchingWorld::updateRegion(float x, float y){
 
     int oy = iy-tilePosY;
     int ox = ix-tilePosX;
-    if (oy == 0 && ox == 0){
+    if (!forceUpdate && oy == 0 && ox == 0){
         return;
     }
+    
+    forceUpdate = false;
+
 
     for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE; i++){
         renderRegionBackBuffer[i] = renderRegionBuffer[i];

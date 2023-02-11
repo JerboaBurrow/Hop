@@ -2,9 +2,8 @@
 #define MARCHINGWORLD_H
 
 #include <World/world.h>
-#include <World/mapSource.h>
+
 #include <World/perlinSource.h>
-#include <World/fixedSource.h>
 
 class MarchingWorld : public World {
     public:
@@ -34,8 +33,6 @@ private:
     std::unique_ptr<bool[]> renderRegionBackBuffer;
 
     void processBufferToOffsets();
-
-    MapSource * map;
 
 };
 

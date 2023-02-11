@@ -25,9 +25,6 @@ public:
     
     uint64_t getAtCoordinate(int ix, int iy);
 
-    void save(std::string filename){/*TODO*/}
-    void load(std::string filename){/*TODO*/}
-
 private:
 
     uint64_t seed;

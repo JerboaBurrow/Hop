@@ -3,9 +3,10 @@ project(Jerboa)
 
 option(SYNTAX_ONLY "only check syntax" OFF)
 option(TEST_SUITE "test" OFF)
-
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 option(RELEASE On)
+option(SANITISE OFF)
+
 set(CMAKE_CXX_STANDARD 17)
 if (RELEASE)
     set(CMAKE_BUILD_TYPE Release)
@@ -43,6 +44,10 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g3")
 endif ()
 
+if (SANITISE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+endif()
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
@@ -51,7 +56,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 # without setting this, seemed to work in terminal though!
 set(CMAKE_BUILD_RPATH ".")
 
+add_subdirectory(include/vendored/zlib)
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+# force freetype to use the static zlib build
 add_subdirectory(include/vendored/freetype)
+SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 add_subdirectory(include/vendored/glm)
 add_subdirectory(include/vendored/stduuid)
 
@@ -61,7 +70,7 @@ add_compile_definitions(GLEW_STATIC)
 set(GLEW_SOURCE include/vendored/glew/src/glew.c)
 set(GLEW_INCLUDE include/vendored/glew/include/)
 
-include_directories(include ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE})
+include_directories(include ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
 add_library(glew STATIC ${GLEW_SOURCE} ${GLEW_INCLUDE})
 
@@ -107,16 +116,19 @@ add_executable(Jerboa
     ${WORLD_SRC}
 )
 
-target_link_libraries(Jerboa glew freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(Jerboa glew zlibstatic freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 IF (TEST_SUITE)
 
   file(GLOB TEST_SRC "tests/*.cpp")
   include_directories(include "tests/")
 
-  add_executable(testSuite ${TEST_SRC})
+  add_executable(testSuite 
+    ${TEST_SRC}
+    "src/World/mapFile.cpp"
+)
 
-  target_link_libraries(testSuite stduuid freetype glm)
+  target_link_libraries(testSuite stduuid zlibstatic freetype glm)
   
   include(CTest)
   set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)

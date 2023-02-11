@@ -1,11 +1,7 @@
 #ifndef MAPSOURCE_H
 #define MAPSOURCE_H
 
-#include <Util/sparseData.h>
-#include <utility>
-
-using ivec2 = std::pair<int,int>;
-using MapData = SparseData<ivec2,uint64_t>;
+#include <World/mapFile.h>
 
 class MapSource {
 public:
@@ -17,10 +13,10 @@ public:
     virtual ~MapSource(){}
 
     virtual uint64_t getAtCoordinate(int i, int j) = 0;
-    virtual void save(std::string filename) = 0;
-    virtual void load(std::string filename) = 0;
+    virtual void save(std::string fileNameWithoutExtension, bool compressed = true);
+    virtual void load(std::string fileNameWithoutExtension, bool compressed = true);
 
-private:
+protected:
 
     MapData data;
 
