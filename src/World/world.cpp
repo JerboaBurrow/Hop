@@ -1,16 +1,28 @@
 #include <World/world.h>
 
+uint64_t dynamicsRegionSize(uint64_t renderRegion, uint64_t dynamicsShell){
+
+    if (dynamicsShell == 0){
+        return renderRegion;
+    }
+    else{
+        return (2*dynamicsShell+1) * renderRegion;
+    }
+
+}
+
 World::World(
     uint64_t s, 
     OrthoCam & c, 
     uint64_t renderRegion, 
-    uint64_t dynamicsRegion,
+    uint64_t dynamicsShell,
     MapSource * f,
     Boundary * b
 )
 : seed(s), camera(c), projection(c.getVP()),
   RENDER_REGION_SIZE(renderRegion), 
-  DYNAMICS_REGION_SIZE(dynamicsRegion),
+  DYNAMICS_REGION_SIZE(dynamicsRegionSize(renderRegion,dynamicsShell)),
+  dynamicsShell(dynamicsShell),
   boundary(b), map(f)
 {
     tilePosX = 0;

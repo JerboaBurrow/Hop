@@ -10,7 +10,7 @@ public:
         uint64_t s, 
         OrthoCam & c, 
         uint64_t renderRegion, 
-        uint64_t dynamicsRegion,
+        uint64_t dynamicsShell,
         MapSource * f,
         Boundary * b
     );

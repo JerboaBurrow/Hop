@@ -100,15 +100,17 @@ int main(){
   // perlin.setThreshold(0.2);
   // perlin.setSize(16*3+1);
 
-  //InfiniteBoundary bounds;
-  //MarchingWorld map(2,camera,16,16*3,&perlin,&bounds);
+  // InfiniteBoundary bounds;
+  // MarchingWorld map(2,camera,16,1,&perlin,&bounds);
 
   FixedSource();
 
   FiniteBoundary bounds(0,0,16,16);
   FixedSource mapSource;
   mapSource.load("tile",false);
-  TileWorld map(2,camera,16,16,&mapSource,&bounds);
+ 
+  MarchingWorld map(2,camera,16,0,&mapSource,&bounds);
+  // TileWorld map(2,camera,16,1,&mapSource,&bounds);
 
   float posX = 0.0;
   float posY = 0.0;

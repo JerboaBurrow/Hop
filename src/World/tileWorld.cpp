@@ -4,11 +4,11 @@ TileWorld::TileWorld(
     uint64_t s, 
     OrthoCam & c, 
     uint64_t renderRegion, 
-    uint64_t dynamicsRegion,
+    uint64_t dynamicsShell,
     MapSource * f,
     Boundary * b    
 )
-:   World(s,c,renderRegion,dynamicsRegion,f,b)
+:   World(s,c,renderRegion,dynamicsShell,f,b)
 {
 
     forceUpdate = true;

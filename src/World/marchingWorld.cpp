@@ -4,21 +4,30 @@ MarchingWorld::MarchingWorld(
     uint64_t s, 
     OrthoCam & c, 
     uint64_t renderRegion, 
-    uint64_t dynamicsRegion,
+    uint64_t dynamicsShell,
     MapSource * f,
     Boundary * b
 )
-: World(s,c,renderRegion,dynamicsRegion,f,b),
+: World(s,c,renderRegion,dynamicsShell,f,b),
   RENDER_REGION_BUFFER_SIZE(renderRegion+1),
-  DYNAMICS_REGION_BUFFER_SIZE(dynamicsRegion+1)
+  RENDER_REGION_START(dynamicsShell*renderRegion),
+  DYNAMICS_REGION_BUFFER_SIZE(DYNAMICS_REGION_SIZE+1)
   {
+
+    std::cout << RENDER_REGION_SIZE << ", " << RENDER_REGION_START << ", " << DYNAMICS_REGION_SIZE << "\n";
 
     renderRegionBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);
     renderRegionBackBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);
 
     for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE; i++){
         for (int j = 0; j < DYNAMICS_REGION_BUFFER_SIZE; j++){
-            renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] = map->getAtCoordinate(i,j);
+            // s = 2, - nr
+            // s = 1, - 0
+            // s = 0, + nr
+            // o = (1-s)*(nr)
+
+            renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] = map->getAtCoordinate(i-int(RENDER_REGION_START),j-int(RENDER_REGION_START)) > 0;
+            //std::cout << i << ", " << j << ", " << renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] << "\n";
         }
     }
 
@@ -77,7 +86,7 @@ void MarchingWorld::updateRegion(float x, float y){
             }
             else{
                 // need to sample new value
-                renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] = map->getAtCoordinate(newIx+tilePosX,newIy+tilePosY);
+                renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] = map->getAtCoordinate(newIx+tilePosX-int(RENDER_REGION_START),newIy+tilePosY-int(RENDER_REGION_START)) > 0;
             }
         }
     }
@@ -107,20 +116,25 @@ void MarchingWorld::updateRegion(float x, float y){
 void MarchingWorld::processBufferToOffsets(){
     int k = 0;
     float w = 1.0/RENDER_REGION_SIZE;
-    for (int i = RENDER_REGION_SIZE; i < RENDER_REGION_SIZE*2; i++){
-        for (int j = RENDER_REGION_SIZE; j < RENDER_REGION_SIZE*2; j++){
+    unsigned wi = 0;
+    unsigned wj = 0;
+    for (int i = RENDER_REGION_START; i < RENDER_REGION_START+RENDER_REGION_SIZE; i++){
+        wj = 0;
+        for (int j = RENDER_REGION_START; j < RENDER_REGION_START+RENDER_REGION_SIZE; j++){
             uint8_t ul = renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j+1];
             uint8_t ur = renderRegionBuffer[(i+1)*DYNAMICS_REGION_BUFFER_SIZE+j+1];
             uint8_t lr = renderRegionBuffer[(i+1)*DYNAMICS_REGION_BUFFER_SIZE+j];
             uint8_t ll = renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j];
             uint8_t hash = ll | (lr<<1) | (ur<<2) | (ul<<3);
-           
-            renderOffsets[k*3] = (i-RENDER_REGION_SIZE)*w;
-            renderOffsets[k*3+1] = (j-RENDER_REGION_SIZE)*w;
+
+            renderOffsets[k*3] = wi*w;
+            renderOffsets[k*3+1] = wj*w;
             renderOffsets[k*3+2] = w;
             renderIds[k] = float(hash);
             k++;
+            wj++;
         }
+        wi++;
     }
 
     k = 0;
@@ -193,8 +207,9 @@ Tile MarchingWorld::tileType(int & i, int & j){
 }
 
 void MarchingWorld::tileToIdCoord(int ix, int iy, int & i, int & j){
-    int ox = tilePosX-RENDER_REGION_SIZE;
-    int oy = tilePosY-RENDER_REGION_SIZE;
+    // make sure render region is always in centre given a dyanmics shell
+    int ox = tilePosX-int(dynamicsShell*RENDER_REGION_SIZE);
+    int oy = tilePosY-int(dynamicsShell*RENDER_REGION_SIZE);
 
     i = ix - ox;
     j = iy - oy;
