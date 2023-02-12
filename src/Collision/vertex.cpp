@@ -15,6 +15,7 @@ Vertex operator+(Vertex const lhs, Vertex const rhs){
 Vertex & operator+=( Vertex & lhs, Vertex const & rhs ){
     lhs.x += rhs.x;
     lhs.y += rhs.y;
+    return lhs;
 }
 
 Vertex operator-(Vertex const lhs, Vertex const rhs){

@@ -12,7 +12,7 @@ class MarchingWorld : public World {
         uint64_t s, 
         OrthoCam & c, 
         uint64_t renderRegion, 
-        uint64_t dynamicsRegion,
+        uint64_t dynamicsShell,
         MapSource * f,
         Boundary * b
     );
@@ -28,6 +28,7 @@ class MarchingWorld : public World {
 private:
 
     const uint64_t RENDER_REGION_BUFFER_SIZE, DYNAMICS_REGION_BUFFER_SIZE;
+    const uint64_t RENDER_REGION_START;
 
     std::unique_ptr<bool[]> renderRegionBuffer;
     std::unique_ptr<bool[]> renderRegionBackBuffer;

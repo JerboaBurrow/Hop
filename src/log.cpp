@@ -16,6 +16,8 @@ std::string operator+ (std::string s, const ERRORCODE e){
     case ERRORCODE::UNSPECIFIED:
       return s+std::string("UNSPECIFIED");
       break;
+    default:
+      return s+std::string("UNSPECIFIED");
   }
 }
 

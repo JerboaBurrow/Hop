@@ -71,7 +71,7 @@ private:
 
 template <class INDEX, class VALUE>
 bool operator==(SparseData<INDEX,VALUE> const & lhs, SparseData<INDEX,VALUE> const & rhs){
-    lhs.getElements() == rhs.getElements();
+    return lhs.getElements() == rhs.getElements();
 }
 
 #endif /* SparseData_H */
