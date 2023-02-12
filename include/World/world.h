@@ -47,7 +47,7 @@ public:
         uint64_t s, 
         OrthoCam & c, 
         uint64_t renderRegion, 
-        uint64_t dynamicsRegion,
+        uint64_t dynamicsShell,
         MapSource * f,
         Boundary * b
     );
@@ -88,6 +88,8 @@ protected:
     uint64_t seed;
     
     const uint64_t RENDER_REGION_SIZE, DYNAMICS_REGION_SIZE;
+
+    const uint64_t dynamicsShell;
 
     OrthoCam & camera;
 
