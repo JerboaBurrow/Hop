@@ -25,3 +25,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest
 
+    - name: linux-X-windows
+      # Build your program with the given configuration
+      run: ./dependencies.sh && ./build.sh -w -t
+

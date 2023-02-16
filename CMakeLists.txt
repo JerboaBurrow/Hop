@@ -56,7 +56,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 # without setting this, seemed to work in terminal though!
 set(CMAKE_BUILD_RPATH ".")
 
-add_subdirectory(include/vendored/zlib)
+add_subdirectory(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
+include_directories(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 # force freetype to use the static zlib build
 add_subdirectory(include/vendored/freetype)
@@ -119,6 +120,11 @@ add_executable(Jerboa
 target_link_libraries(Jerboa glew zlibstatic freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 IF (TEST_SUITE)
+
+  IF (WINDOWS)
+    ## ask nicely for big objs (gnu assembler flag)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wa,-mbig-obj")
+  endif()
 
   file(GLOB TEST_SRC "tests/*.cpp")
   include_directories(include "tests/")

@@ -129,7 +129,8 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
             throw MapFileIOError("EOF when reading uncompressed size for "+fileNameWithoutExtension);
         }
 
-        uint64_t uncompressedSize = std::stoull(size);
+        // long unsigned int for windows rather than uint64_t
+        long unsigned int uncompressedSize = std::stoull(size);
 
         rawData.reserve(uncompressedSize);
         for (unsigned i = 0; i < uncompressedSize; i++){
@@ -230,7 +231,8 @@ void MapFile::save(std::string fileNameWithoutExtension, MapData & data){
     }
 
     uint64_t dataSize = rawData.size();
-    uint64_t bufferSize = compressedData.size();
+    // long unsigned int for windows rather than uint64_t
+    long unsigned int bufferSize = compressedData.size();
 
     int result = compress(
 
