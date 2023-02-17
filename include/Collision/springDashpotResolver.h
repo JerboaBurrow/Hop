@@ -7,7 +7,8 @@
 
 const double WALL_MASS_MULTIPLIER = 10.0;
 
-class SpringDashpot : public CollisionResolver {
+class SpringDashpot : public CollisionResolver 
+{
 public:
     SpringDashpot(
         double tc,
@@ -20,8 +21,8 @@ public:
     }
 
     void handleObjectCollision(
-        std::string & oi, std::string & oj,
-        uint64_t pi, uint64_t pj,
+        std::string & objectI, std::string & objectJ,
+        uint64_t particleI, uint64_t particleJ,
         ObjectManager * manager
     );
 
