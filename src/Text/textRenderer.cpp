@@ -1,12 +1,15 @@
 #include <Text/textRenderer.h>
 
-TextRenderer::TextRenderer(glm::mat4 p){
+TextRenderer::TextRenderer(glm::mat4 p)
+{
   projection = p;
-  // text buffers
+
   glGenVertexArrays(1,&VAO);
   glGenBuffers(1,&VBO);
+
   glBindVertexArray(VAO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
   glBufferData(GL_ARRAY_BUFFER,sizeof(float)*6*4,NULL,GL_DYNAMIC_DRAW);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0,4,GL_FLOAT,GL_FALSE,4*sizeof(float),0);
@@ -24,6 +27,7 @@ TextRenderer::TextRenderer(glm::mat4 p){
     GL_FALSE,
     &projection[0][0]
   );
+
 }
 
 void TextRenderer::renderText(
@@ -34,7 +38,8 @@ void TextRenderer::renderText(
   float scale,
   glm::vec3 colour,
   float alpha,
-  bool centre){
+  bool centre)
+  {
     // have a look at this https://learnopengl.com/In-Practice/Text-Rendering
     // Some modifications have been made, e.g to render \n characters as line breaks
 
@@ -54,11 +59,13 @@ void TextRenderer::renderText(
     float centreX = 0;
     float centreY = 0;
     std::string::const_iterator c;
-    if (centre){
+    if (centre)
+    {
 
       // iterate through all characters
      
-      for (c = text.begin(); c != text.end(); c++){
+      for (c = text.begin(); c != text.end(); c++/*ayy lmao*/)
+      {
           Glyph ch = type[*c];
           float h = ch.size.y * scale;
           if (*c == '\n') {
@@ -75,7 +82,8 @@ void TextRenderer::renderText(
     }
 
     // iterate through all characters
-    for (c = text.begin(); c != text.end(); c++){
+    for (c = text.begin(); c != text.end(); c++/*ayy lmao*/)
+    {
         Glyph ch = type[*c];
 
         float xpos = x + ch.bearing.x * scale;
@@ -85,7 +93,8 @@ void TextRenderer::renderText(
         float h = ch.size.y * scale;
 
                 // quick and dirty line break
-        if (*c == '\n'){
+        if (*c == '\n')
+        {
             y -= h*1.1;
             x = initialX;
             continue;
@@ -101,6 +110,7 @@ void TextRenderer::renderText(
             { xpos + w, ypos,       1.0f, 1.0f },
             { xpos + w, ypos + h,   1.0f, 0.0f }
         };
+
         // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.textureID);
         // update content of VBO memory
@@ -113,6 +123,8 @@ void TextRenderer::renderText(
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         x += (ch.offset >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
     }
+
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    
 }
