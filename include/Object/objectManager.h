@@ -175,7 +175,6 @@ public:
         if (!componentRegistered(handle)){
             throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
         }
-        const char * handle = typeid(T).name();
         return (std::static_pointer_cast<ComponentArray<T>>(componentData[handle]))->get(i);
     }
 

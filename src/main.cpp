@@ -115,7 +115,7 @@ int main(){
   float posX = 0.0;
   float posY = 0.0;
 
-  ObjectManager manager(0);
+  ObjectManager manager(4);
 
   shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
   shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");

@@ -15,7 +15,7 @@ void sRender::processThreaded(ObjectManager * m, Shaders * s, size_t threadId)
         offsets[handle].second[start*4] = dataT.x;
         offsets[handle].second[start*4+1] = dataT.y;
         offsets[handle].second[start*4+2] = dataT.theta;
-        offsets[handle].second[start*4+3] = dataT.scale;
+        offsets[handle].second[start*4+3] = dataT.scale*2.0;
     }
 }
 

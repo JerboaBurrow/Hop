@@ -1,7 +1,11 @@
 #include <Collision/cellList.h>
 #include <iostream>
 
-CellList::CellList(uint64_t n,tupled lx = tupled(0.0,1.0), tupled ly = tupled(0.0,1.0))
+CellList::CellList(
+    uint64_t n,
+    tupled lx, 
+    tupled ly
+)
 : CollisionDetector(lx,ly),rootNCells(n), nCells(n*n)
 {
     lX = limX.second-limX.first;

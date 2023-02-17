@@ -7,8 +7,9 @@ using namespace std::chrono;
 
 void sPhysics::processThreaded(ObjectManager * m, size_t threadId)
 {
-    double nx, ny, ntheta;
-    double D = std::sqrt(2.0*0.1*dt);
+    double nx, ny, ntheta, ar, br, cr, at, bt, ct;
+    double D = std::sqrt(2.0*0.5*dt);
+    unsigned k = 0;
 
     for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++)
     {
