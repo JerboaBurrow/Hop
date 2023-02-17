@@ -3,8 +3,11 @@
 
 #include <Object/id.h>
 
-class Object {
+class Object 
+{
+
 public:
+
     Object()
     {}
 
