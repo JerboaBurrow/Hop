@@ -1,6 +1,7 @@
 #include <Object/objectManager.h>
 
-Id ObjectManager::createObject(){
+Id ObjectManager::createObject()
+{
     std::shared_ptr<Object> o = std::make_shared<Object>();
 
     objects[o->id] = o;
@@ -10,7 +11,8 @@ Id ObjectManager::createObject(){
     return o->id;
 }
 
-Id ObjectManager::createObject(std::string handle){
+Id ObjectManager::createObject(std::string handle)
+{
     std::shared_ptr<Object> o = std::make_shared<Object>();
 
     objects[o->id] = o;
@@ -28,7 +30,8 @@ void ObjectManager::remove(std::string handle){}
 // do nothing callback
 void identityCallback(Id & i, Id & j){return;}
 
-void ObjectManager::initialiseBaseECS(){
+void ObjectManager::initialiseBaseECS()
+{
 
     registerComponent<cTransform>();
     registerComponent<cRenderable>();

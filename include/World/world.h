@@ -16,31 +16,46 @@
 
 class CollisionDetector;
 
-class MapReadException: public std::exception {
+class MapReadException: public std::exception 
+{
+
 public:
+
     MapReadException(std::string msg)
     : msg(msg)
     {}
+
 private:
-    virtual const char * what() const throw(){
+
+    virtual const char * what() const throw()
+    {
         return msg.c_str();
     }
+
     std::string msg;
 };
 
-class MapWriteException: public std::exception {
+class MapWriteException: public std::exception 
+{
 public:
+
     MapWriteException(std::string msg)
     : msg(msg)
     {}
+
 private:
-    virtual const char * what() const throw(){
+
+    virtual const char * what() const throw()
+    {
         return msg.c_str();
     }
+
     std::string msg;
 };
 
-class World {
+class World 
+{
+
 public:
 
     World(
@@ -71,12 +86,15 @@ public:
     virtual void updateRegion(float x, float y) = 0;
 
     std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
-    std::pair<float,float> getMapCenter(){
+
+    std::pair<float,float> getMapCenter()
+    {
         float u = worldUnitLength(); 
         return std::pair<float,float>(u*(tilePosX+RENDER_REGION_SIZE/2.0),u*(tilePosY+RENDER_REGION_SIZE/2.0));
     }
 
-    ~World(){
+    ~World()
+    {
         glDeleteBuffers(1,&VBOquad);
         glDeleteBuffers(1,&VBOoffset);
         glDeleteBuffers(1,&VBOid);

@@ -3,11 +3,15 @@
 
 #include <Text/type.h>
 
-class TextRenderer {
+class TextRenderer 
+{
+
 public:
 
   TextRenderer(glm::mat4 p);
-  ~TextRenderer(){
+
+  ~TextRenderer()
+  {
     glDeleteBuffers(1,&VBO);
     glDeleteVertexArrays(1,&VAO);
     glDeleteProgram(shader);
@@ -24,6 +28,7 @@ public:
     bool centre = false);
 
 private:
+
   GLuint shader;
   GLuint VAO;
   GLuint VBO;
@@ -34,7 +39,8 @@ private:
     "layout(location=0) in vec4 postex;\n"
     "out vec2 texCoords;\n"
     "uniform mat4 proj;\n"
-    "void main(){\n"
+    "void main()\n"
+    "{\n"
     " gl_Position = proj*vec4(postex.xy,0.0,1.0);\n"
     " texCoords = postex.zw;\n"
     "}";
@@ -44,7 +50,8 @@ private:
     "uniform sampler2D glyph;\n"
     "uniform vec3 textColour;\n"
     "uniform float alpha;\n"
-    "void main(){\n"
+    "void main()\n"
+    "{\n"
     " vec4 sample = vec4(1.0,1.0,1.0,texture(glyph,texCoords).r);\n"
     " colour = vec4(textColour,alpha)*sample;\n"
     "}";

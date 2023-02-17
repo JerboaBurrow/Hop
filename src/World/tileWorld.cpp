@@ -15,8 +15,10 @@ TileWorld::TileWorld(
 
     float w = 1.0 / RENDER_REGION_SIZE;
     int k = 0;
-    for (int i = RENDER_REGION_SIZE; i < RENDER_REGION_SIZE*2; i++){
-        for (int j = RENDER_REGION_SIZE; j < RENDER_REGION_SIZE*2; j++){
+    for (int i = RENDER_REGION_SIZE; i < RENDER_REGION_SIZE*2; i++)
+    {
+        for (int j = RENDER_REGION_SIZE; j < RENDER_REGION_SIZE*2; j++)
+        {
             renderOffsets[k*3] = (i-RENDER_REGION_SIZE)*w;
             renderOffsets[k*3+1] = (j-RENDER_REGION_SIZE)*w;
             renderOffsets[k*3+2] = w;
@@ -36,21 +38,25 @@ TileWorld::TileWorld(
 
 }
 
-void TileWorld::tileToIdCoord(int ix, int iy, int & i, int & j){
+void TileWorld::tileToIdCoord(int ix, int iy, int & i, int & j)
+{
     i = ix;
     j = iy;
 }
 
-void TileWorld::worldToTile(float x, float y, int & ix, int & iy){
+void TileWorld::worldToTile(float x, float y, int & ix, int & iy)
+{
     ix = int(std::floor(x*float(RENDER_REGION_SIZE)));
     iy = int(std::floor(y*float(RENDER_REGION_SIZE)));
 }
 
-void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s){
+void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s)
+{
 
     int ix,iy,i,j;
     worldToTile(x,y,ix,iy);
-    if (boundary->outOfBounds(ix,iy)){
+    if (boundary->outOfBounds(ix,iy))
+    {
         h = Tile::EMPTY;
         s = 0.0; x0 = 0.0; y0 = 0.0;
         return;
@@ -66,22 +72,26 @@ void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & 
 
 }
 
-Tile TileWorld::tileType(int & i, int & j){
+Tile TileWorld::tileType(int & i, int & j)
+{
 
     return toTile<uint64_t>(map->getAtCoordinate(i,j));
 
 }
 
 
-void TileWorld::updateRegion(float x, float y){
+void TileWorld::updateRegion(float x, float y)
+{
     int ix, iy;
     worldToTile(x,y,ix,iy);
 
-    if (cameraOutOfBounds(ix,iy)){
+    if (cameraOutOfBounds(ix,iy))
+    {
         return;
     }
 
-    if (!forceUpdate && ix==tilePosX && iy == tilePosY){
+    if (!forceUpdate && ix==tilePosX && iy == tilePosY)
+    {
         return;
     }
 
@@ -89,8 +99,10 @@ void TileWorld::updateRegion(float x, float y){
 
     int wi, wj;
     int k = 0;
-    for (int i = 0; i < DYNAMICS_REGION_SIZE; i++){
-        for (int j = 0; j < DYNAMICS_REGION_SIZE; j++){
+    for (int i = 0; i < DYNAMICS_REGION_SIZE; i++)
+    {
+        for (int j = 0; j < DYNAMICS_REGION_SIZE; j++)
+        {
 
             tileToIdCoord(ix+i,iy+j,wi,wj);
             uint64_t id = map->getAtCoordinate(wi,wj); 

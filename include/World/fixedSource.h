@@ -3,7 +3,9 @@
 
 #include <World/mapSource.h>
 
-class FixedSource : public MapSource {
+class FixedSource : public MapSource 
+{
+
 public:
 
     FixedSource(){}
@@ -11,6 +13,7 @@ public:
     uint64_t getAtCoordinate(int i, int j);
 
 private:
+
 };
 
 #endif /* FIXEDSOURCE_H */

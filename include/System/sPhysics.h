@@ -9,7 +9,9 @@ class sPhysics;
 /*
     System to update cPhysics components given forces
 */
-class sPhysics : public System {
+class sPhysics : public System 
+{
+    
 public:
 
     sPhysics(){dt=1.0/300.0;gravity=9.81;dtdt=dt*dt;}

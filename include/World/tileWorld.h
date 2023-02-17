@@ -3,7 +3,9 @@
 
 #include <World/world.h>
 
-class TileWorld : public World {
+class TileWorld : public World 
+{
+    
 public:
 
     TileWorld(

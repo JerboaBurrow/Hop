@@ -11,8 +11,10 @@ std::string get_time()
   return std::string(time_buf);
 }
 
-std::string operator+ (std::string s, const ERRORCODE e){
-  switch (e) {
+std::string operator+ (std::string s, const ERRORCODE e)
+{
+  switch (e) 
+  {
     case ERRORCODE::UNSPECIFIED:
       return s+std::string("UNSPECIFIED");
       break;
@@ -21,7 +23,8 @@ std::string operator+ (std::string s, const ERRORCODE e){
   }
 }
 
-std::ostream & operator<<(std::ostream & o, Log & l){
+std::ostream & operator<<(std::ostream & o, Log & l)
+{
   o << l.get();
   return o;
 }

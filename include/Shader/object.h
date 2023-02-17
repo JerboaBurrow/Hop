@@ -11,7 +11,8 @@ static const char * objectVertexShader = "#version 330 core\n"
     "out vec2 texCoord;\n"
     "out vec2 atlasTexCoord;\n"
     "out vec4 oColour;\n"
-    "void main(){\n"
+    "void main()\n"
+    "{\n"
         "gl_Position = proj*vec4(a_offset.w*a_position.xy+a_offset.xy,0.0,1.0);\n"
         "texCoord = a_position.zw;\n"
         "vec2 tileCoord = (texCoord / atlasN);\n"
@@ -26,10 +27,11 @@ static const char * circleObjectFragmentShader = "#version 330 core\n"
     "in vec2 atlasTexCoord;\n"
     "in vec4 oColour;\n"
     "uniform sampler2D tex; out vec4 colour;\n"
-    "void main(){"
+    "void main()"
+    "{\n"
     "   vec2 c = texCoord-vec2(0.5,0.5);\n"
     "   if (dot(c,c) > 0.5*0.5) {discard;}\n"
     "   colour = oColour;\n"
-    "\n}";
+    "}";
 
 #endif /* OBJECT */

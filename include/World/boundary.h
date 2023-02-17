@@ -1,7 +1,9 @@
 #ifndef BOUNDARY_H
 #define BOUNDARY_H
 
-class Boundary {
+class Boundary 
+{
+
 public:
 
     Boundary() = default;
@@ -10,11 +12,13 @@ public:
 
 };
 
-class InfiniteBoundary : public Boundary {
+class InfiniteBoundary : public Boundary 
+{
     bool outOfBounds(int ix, int iy){return false;}
 };
 
-class FiniteBoundary : public Boundary {
+class FiniteBoundary : public Boundary 
+{
 
 public:
 
@@ -35,13 +39,15 @@ public:
     {}
 
 
-    bool outOfBounds(int ix, int iy){
+    bool outOfBounds(int ix, int iy)
+    {
         if (
             ix < minX ||
             ix >= maxX ||
             iy < minY ||
             iy >= maxY
-        ){
+        )
+        {
             return true;
         }
         return false;

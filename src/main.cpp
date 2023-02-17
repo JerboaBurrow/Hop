@@ -45,7 +45,8 @@ Shaders shaderPool;
 
 const double deltaPhysics = 1.0/300.0;
 
-int main(){
+int main()
+{
 
   sf::ContextSettings contextSettings;
   contextSettings.depthBits = 24;
@@ -115,7 +116,7 @@ int main(){
   float posX = 0.0;
   float posY = 0.0;
 
-  ObjectManager manager(0);
+  ObjectManager manager(4);
 
   shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
   shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
@@ -130,7 +131,8 @@ int main(){
   double t2 = 0.0;
   timer.restart();
   Id pid;
-  for (int i = 0; i < n; i++){
+  for (int i = 0; i < n; i++)
+  {
     timer2.restart();
     pid = manager.createObject();
     t1 += timer2.getElapsedTime().asSeconds();
@@ -193,56 +195,72 @@ int main(){
 
   rendering.update(&manager, &shaderPool, true);
 
-  while (window.isOpen()){
+  while (window.isOpen())
+  {
 
     sf::Event event;
-    while (window.pollEvent(event)){
-      if (event.type == sf::Event::Closed){
+    while (window.pollEvent(event))
+    {
+      if (event.type == sf::Event::Closed)
+      {
         return 0;
       }
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape){
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+      {
         return 0;
       }
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F1){
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F1)
+      {
         debug = !debug;
       }
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M){
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
+      {
         manager.addThread();
       }
 
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L){
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L)
+      {
         manager.releaseThread();
       }
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space){
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+      {
         posX = 0.0; posY = 0.0;
       }
     }
 
-    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W)){
+    if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+    {
       if (!map.cameraOutOfBounds(
         posX,posY+MAX_SPEED
-      )){
+      ))
+      {
         posY += MAX_SPEED;
       }
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+    {
       if (!map.cameraOutOfBounds(
         posX,posY-MAX_SPEED
-      )){
+      ))
+      {
         posY -= MAX_SPEED;
       }
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+    {
       if (!map.cameraOutOfBounds(
         posX-MAX_SPEED,posY
-      )){
+      ))
+      {
         posX -= MAX_SPEED;
       }
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+    {
       if (!map.cameraOutOfBounds(
         posX+MAX_SPEED,posY
-      )){
+      ))
+      {
         posX += MAX_SPEED;
       }
     }
@@ -278,13 +296,16 @@ int main(){
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;
 
-    if (frameId == 59){
+    if (frameId == 59)
+    {
       std::cout << manager.getLog();
     }
 
-    if (debug){
+    if (debug)
+    {
       double delta = 0.0;
-      for (int n = 0; n < 60; n++){
+      for (int n = 0; n < 60; n++)
+      {
         delta += deltas[n];
       }
       delta /= 60.0;

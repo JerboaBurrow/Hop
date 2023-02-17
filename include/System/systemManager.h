@@ -9,20 +9,30 @@
 const uint32_t MAX_COMPONENTS = 64;
 typedef std::bitset<MAX_COMPONENTS> Signature;
 
-class SystemNotRegistered: public std::exception {
+class SystemNotRegistered: public std::exception 
+{
+
 public:
+
     SystemNotRegistered(std::string msg)
     : msg(msg)
     {}
+
 private:
-    virtual const char * what() const throw(){
+
+    virtual const char * what() const throw()
+    {
         return msg.c_str();
     }
+
     std::string msg;
+
 };
 
 
-class SystemManager {
+class SystemManager 
+{
+
 public:
 
     SystemManager(size_t n)
@@ -30,9 +40,11 @@ public:
     {}
 
     template<typename T>
-    void registerSystem(){
+    void registerSystem()
+    {
         const char * handle = typeid(T).name();
-        if (isRegistered(handle)){
+        if (isRegistered(handle))
+        {
 
         }
 
@@ -42,9 +54,11 @@ public:
     }
 
     template <class T>
-    void setSignature(Signature signature){
+    void setSignature(Signature signature)
+    {
         const char * handle = typeid(T).name();
-        if (!isRegistered(handle)){
+        if (!isRegistered(handle))
+        {
             throw SystemNotRegistered("setSignature");
             return;
         }
@@ -52,9 +66,11 @@ public:
     }
 
     template <class T>
-    T & getSystem(){
+    T & getSystem()
+    {
         const char * handle = typeid(T).name();
-        if (!isRegistered(handle)){
+        if (!isRegistered(handle))
+        {
             throw SystemNotRegistered("getSystem");
         }
 

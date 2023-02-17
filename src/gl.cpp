@@ -2,22 +2,32 @@
 #include <gl.h>
 #include <iostream>
 
-class GLRuntimeException: public std::exception {
+class GLRuntimeException: public std::exception 
+{
+
 public:
+
     GLRuntimeException(std::string msg)
     : msg(msg)
     {}
+
 private:
-    virtual const char * what() const throw(){
+
+    virtual const char * what() const throw()
+    {
         return msg.c_str();
     }
+
     std::string msg;
+
 };
 
 // print buffer status errors
-GLuint glBufferStatus(const std::string msg){
+GLuint glBufferStatus(const std::string msg)
+{
     GLuint e = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    switch(e){
+    switch(e)
+    {
         case GL_FRAMEBUFFER_UNDEFINED:
         throw( GLRuntimeException(msg+" GLERROR: GL_FRAMEBUFFER_UNDEFINED\n") );
             break;
@@ -41,9 +51,11 @@ GLuint glBufferStatus(const std::string msg){
 }
 
 // print gl error codes
-GLuint glError(const std::string msg){
+GLuint glError(const std::string msg)
+{
     GLuint e = glGetError();
-    switch(e){
+    switch(e)
+    {
         case GL_NO_ERROR:
          break;
         case GL_INVALID_ENUM:
@@ -66,7 +78,8 @@ GLuint glError(const std::string msg){
 }
 
 // compile a gl shader given a program and source code as const char *
-void compileShader(GLuint & shaderProgram, const char * vert, const char * frag){
+void compileShader(GLuint & shaderProgram, const char * vert, const char * frag)
+{
     GLuint vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader,1,&vert,NULL);
@@ -102,7 +115,8 @@ void compileShader(GLuint & shaderProgram, const char * vert, const char * frag)
 
     // check it linked
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if(!success) {
+    if(!success)
+    {
         glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
         throw( GLRuntimeException( std::string("GLSL (LINK) ERROR: \n") + infoLog + "\n"+vert+"\n"+frag+"\n") );
     }

@@ -7,7 +7,8 @@
 const uuids::uuid generateId();
 const uuids::uuid NULL_ID;
 
-struct Id {
+struct Id 
+{
     Id()
     : id(gen()),idStr(uuids::to_string(id))
     {}
@@ -23,17 +24,17 @@ struct Id {
 
     bool operator==( Id const & rhs ) const {return this->id == rhs.id;}
     
-    bool operator<(const Id & rhs) const {
-        return this->id < rhs.id;
-    }
+    bool operator<(const Id & rhs) const {return this->id < rhs.id;}
 
-    Id & operator=(const Id & j){
+    Id & operator=(const Id & j)
+    {
         id = j.id;
         idStr = j.idStr;
         return *this;
     }
 
 private:
+
     static std::random_device rd;
     static std::mt19937 generator;
     static uuids::uuid_random_generator gen;
@@ -41,7 +42,8 @@ private:
 
 std::ostream & operator<<(std::ostream & os, Id const & value);
 
-template<> struct std::hash<Id> {
+template<> struct std::hash<Id> 
+{
     std::size_t operator()(const Id & i) const {return i.hash();}
 };
 

@@ -5,8 +5,10 @@
 
 #include <World/perlinSource.h>
 
-class MarchingWorld : public World {
-    public:
+class MarchingWorld : public World 
+{
+
+public:
 
     MarchingWorld(
         uint64_t s, 

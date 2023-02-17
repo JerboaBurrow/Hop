@@ -3,7 +3,8 @@
 
 #include <Collision/collisionMesh.h>
 
-struct cCollideable {
+struct cCollideable 
+{
     CollisionMesh mesh;
 
     cCollideable(std::vector<CollisionVertex> v)

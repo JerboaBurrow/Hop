@@ -6,7 +6,9 @@
 #include <vector>
 #include <algorithm>
 
-class FadingText {
+class FadingText 
+{
+
 public:
 
   friend class Popup;
@@ -22,13 +24,15 @@ public:
   : text(t), fadeTime(time), x(x), y(y), colour(colour), clock(0.0), tag(tag)
   {}
 
-  void increment(float dt){
+  void increment(float dt)
+  {
     clock += dt;
   }
 
   std::string getTag(){return tag;}
 
-  float alpha(){
+  float alpha()
+  {
 
     if (clock < fadeTime/2.0){return 1.0;}
 
@@ -37,6 +41,7 @@ public:
     if (a < 0){ return 0; }
     else if (a > 1){ return 1; }
     else { return a; }
+
   }
 
   bool done(){return clock > fadeTime;}
@@ -53,7 +58,8 @@ private:
 
 };
 
-class Popup {
+class Popup 
+{
 public:
 
   Popup(){}

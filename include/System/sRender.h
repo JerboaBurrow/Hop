@@ -43,7 +43,9 @@ class sRender;
                     dimension (square grid)
 
 */
-class sRender : public System {
+class sRender : public System 
+{
+    
 public:
 
     sRender()

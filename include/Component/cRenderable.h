@@ -3,7 +3,8 @@
 
 #include <string>
 
-struct cRenderable {
+struct cRenderable 
+{
     // offset in transform
 
     // colour
