@@ -1,9 +1,11 @@
 #include <World/tile.h>
 
-std::ostream & operator<<(std::ostream & os, Tile const & t){
+std::ostream & operator<<(std::ostream & os, Tile const & t)
+{
     int h = static_cast<int>(t);
     os << "Tile: code " << h << " geometry: ";
-    switch (t){
+    switch (t)
+    {
         case Tile::EMPTY: os << "EMPTY"; break;
         case Tile::BOTTOM_LEFT: os << "BOTTOM_LEFT"; break;
         case Tile::BOTTOM_RIGHT: os << "BOTTOM_RIGHT"; break;

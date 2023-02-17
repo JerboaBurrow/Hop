@@ -15,7 +15,8 @@
 
 */
 template <class INDEX, class VALUE>
-class SparseData {
+class SparseData 
+{
 
 public:
     
@@ -23,9 +24,11 @@ public:
     : NULL_ELEMENT(nullElement)
     {}
 
-    virtual VALUE operator[](INDEX index){
+    virtual VALUE operator[](INDEX index)
+    {
 
-        if (elements.find(index) != elements.end()){
+        if (elements.find(index) != elements.end())
+        {
             return elements[index];
         }
     
@@ -33,25 +36,29 @@ public:
         
     }
 
-    bool notNull(INDEX index){
+    bool notNull(INDEX index)
+    {
         
         return elements.find(index) != elements.end();
     
     }
 
-    void insert(INDEX index, VALUE value){
+    void insert(INDEX index, VALUE value)
+    {
 
         elements[index] = value;
 
     }
 
-    void clear(INDEX index){
+    void clear(INDEX index)
+    {
 
         elements.erase(index);
 
     }
 
-    void clear(){
+    void clear()
+    {
 
         elements.clear();
 
@@ -67,10 +74,12 @@ private:
     VALUE NULL_ELEMENT;
 
     std::map<INDEX,VALUE> elements;
+
 };
 
 template <class INDEX, class VALUE>
-bool operator==(SparseData<INDEX,VALUE> const & lhs, SparseData<INDEX,VALUE> const & rhs){
+bool operator==(SparseData<INDEX,VALUE> const & lhs, SparseData<INDEX,VALUE> const & rhs)
+{
     return lhs.getElements() == rhs.getElements();
 }
 

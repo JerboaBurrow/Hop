@@ -7,7 +7,8 @@
 */
 const double PARTICLE_MASS = 1.0;
 
-struct cPhysics {
+struct cPhysics 
+{
     double lastX;
     double lastY;
     double lastTheta;

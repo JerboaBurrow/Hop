@@ -10,8 +10,11 @@
 
 typedef std::map<char,Glyph> GlyphMap;
 
-class Type {
+class Type 
+{
+
 public:
+
   Type(
     std::string path,
     std::string font,
@@ -19,10 +22,13 @@ public:
   );
 
   Glyph & operator[](char c);
+
 private:
+
   GlyphMap glyphs;
   uint8_t width;
   std::string name;
+  
 };
 
 #endif

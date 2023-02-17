@@ -21,19 +21,27 @@ const char * const MAP_FILE_EXTENSION_COMPRESSED = ".hmap.z";
 const char * const MAP_FILE_HEADER = "Hop map file 0.0.1";
 const char * const COMPRESSED_MAP_FILE_HEADER = "Hop compressed map file 0.0.1 using Zlib 1.2.13 next line is the uncompressed file size";
 
-class MapFileIOError: public std::exception {
+class MapFileIOError: public std::exception 
+{
+
 public:
+
     MapFileIOError(std::string msg)
     : msg(msg)
     {}
+
 private:
-    virtual const char * what() const throw(){
+
+    virtual const char * what() const throw()
+    {
         return msg.c_str();
     }
     std::string msg;
 };
 
-class MapFile {
+class MapFile 
+{
+    
 public:
 
     MapFile() = default;

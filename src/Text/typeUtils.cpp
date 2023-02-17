@@ -1,11 +1,14 @@
 #include <Text/typeUtils.h>
 
-void loadASCIIGlyphs(const FT_Face & face, GlyphMap & g){
+void loadASCIIGlyphs(const FT_Face & face, GlyphMap & g)
+{
   // have a look at this https://learnopengl.com/In-Practice/Text-Rendering
   // Some modifications have been made, e.g to render \n characters as line breaks
 
-  for (unsigned char c = 0; c < 128; c++/*ayy lmao*/){
-    if (FT_Load_Char(face, c, FT_LOAD_RENDER)){
+  for (unsigned char c = 0; c < 128; c++/*ayy lmao*/)
+  {
+    if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+    {
       std::cout << "Failed to load glyph " << c << " from ASCII charset\n";
       continue;
     }
@@ -39,10 +42,12 @@ void loadASCIIGlyphs(const FT_Face & face, GlyphMap & g){
 }
 
 // forces the number x to be rendered in exactly length characters as a string
-std::string fixedLengthNumber(double x, unsigned length){
+std::string fixedLengthNumber(double x, unsigned length)
+{
   std::string d = std::to_string(x);
   std::string dtrunc(length,' ');
-  for (int c = 0; c < dtrunc.length(); c++){
+  for (int c = 0; c < dtrunc.length(); c++/*ayy lmao*/)
+  {
     dtrunc[c] = d[c];
   }
   return dtrunc;

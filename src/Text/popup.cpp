@@ -1,7 +1,9 @@
 #include <Text/popup.h>
 
-void Popup::draw(TextRenderer & text, Type & type, float dt){
-  for (int i = 0; i < popups.size(); i++){
+void Popup::draw(TextRenderer & text, Type & type, float dt)
+{
+  for (int i = 0; i < popups.size(); i++)
+  {
 
     text.renderText(
       type,
@@ -20,14 +22,15 @@ void Popup::draw(TextRenderer & text, Type & type, float dt){
     std::remove_if(
         popups.begin(),
         popups.end(),
-        [](FadingText & f) { return f.done(); }
+        [](FadingText & f) { return f.done();}
     ),
     popups.end()
   );
 
 }
 
-void Popup::clear(std::string tag){
+void Popup::clear(std::string tag)
+{
   popups.erase(
     std::remove_if(
         popups.begin(),

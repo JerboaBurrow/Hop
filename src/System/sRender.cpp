@@ -1,7 +1,9 @@
 #include <System/sRender.h>
 
-void sRender::processThreaded(ObjectManager * m, Shaders * s, size_t threadId){
-    for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++){
+void sRender::processThreaded(ObjectManager * m, Shaders * s, size_t threadId)
+{
+    for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++)
+    {
         cRenderable & dataR = m->getComponent<cRenderable>(*it);
         cTransform & dataT = m->getComponent<cTransform>(*it);
 
@@ -13,14 +15,16 @@ void sRender::processThreaded(ObjectManager * m, Shaders * s, size_t threadId){
         offsets[handle].second[start*4] = dataT.x;
         offsets[handle].second[start*4+1] = dataT.y;
         offsets[handle].second[start*4+2] = dataT.theta;
-        offsets[handle].second[start*4+3] = dataT.scale;
+        offsets[handle].second[start*4+3] = dataT.scale*2.0;
     }
 }
 
-void sRender::updateThreaded(ObjectManager * m, Shaders * s){
+void sRender::updateThreaded(ObjectManager * m, Shaders * s)
+{
 
 
-    for (int j = 0; j < threadJobs.size(); j++){
+    for (int j = 0; j < threadJobs.size(); j++)
+    {
         m->postJob(
             std::bind(
                 &sRender::processThreaded,
@@ -34,7 +38,8 @@ void sRender::updateThreaded(ObjectManager * m, Shaders * s){
     
     m->waitForJobs();
 
-    for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++){
+    for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++)
+    {
         glBindVertexArray(it->second.first);
 
         std::shared_ptr<Shader> shader = s->get(it->first);
@@ -45,13 +50,10 @@ void sRender::updateThreaded(ObjectManager * m, Shaders * s){
 }
 
 
-void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
-    // 10k static objects gives ~ 0.001 sec update, 50k 0.01
-    // 10k update # 0.007-0.0092
-    // that ecs 3d box example got 5k objects in 30 fps
-    //  float-double cast not the issue
-
-    if (m->isThreaded() && !refresh){
+void sRender::update(ObjectManager * m, Shaders * s, bool refresh)
+{
+    if (m->isThreaded() && !refresh)
+    {
         updateThreaded(m,s);
         return;
     }
@@ -60,19 +62,22 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
     bool staleData = false;
     std::string handle;
     std::size_t start, offset;
-    for (auto it = objects.begin(); it != objects.end(); it++){
+    for (auto it = objects.begin(); it != objects.end(); it++)
+    {
         cRenderable & dataR = m->getComponent<cRenderable>(*it);
         cTransform & dataT = m->getComponent<cTransform>(*it);
 
         if(refresh){
-            if (offsets.find(dataR.shaderHandle) == offsets.end()){
+            if (offsets.find(dataR.shaderHandle) == offsets.end())
+            {
                 // new shader
                 addNewShader(dataR.shaderHandle);
                 newData = true;
             }
             glError("add new shader");
 
-            if (idToIndex.find(*it) == idToIndex.end()){
+            if (idToIndex.find(*it) == idToIndex.end())
+            {
                 // new object
                 addNewObject(*it,dataR.shaderHandle);
                 newData = true;           
@@ -80,7 +85,8 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
             glError("add new object");
 
             // handle shader change
-            if (idToIndex[*it].first != dataR.shaderHandle){
+            if (idToIndex[*it].first != dataR.shaderHandle)
+            {
                 moveOffsets(*it,idToIndex[*it].first,dataR.shaderHandle);
                 newData = true;
             }
@@ -96,7 +102,8 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
         offsets[handle].second[start+2] = dataT.theta;
         offsets[handle].second[start+3] = dataT.scale*2.0;
 
-        if (newData){
+        if (newData)
+        {
             offset = 4*MAX_OBJECTS_PER_SHADER;
             offsets[handle].second[start+offset] = dataR.r;
             offsets[handle].second[start+1+offset] = dataR.g;
@@ -111,7 +118,8 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
         }
     }
 
-    for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++){
+    for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++)
+    {
         glBindVertexArray(it->second.first);
 
         std::shared_ptr<Shader> shader = s->get(it->first);
@@ -127,7 +135,8 @@ void sRender::update(ObjectManager * m, Shaders * s, bool refresh){
 
 }
 
-void sRender::updateOffsets(std::string handle){
+void sRender::updateOffsets(std::string handle)
+{
     size_t cnt = offsets[handle].first+1;
     GLuint oBuffer = shaderBufferObjects[handle].second[0];
     glBindBuffer(GL_ARRAY_BUFFER,oBuffer);
@@ -140,7 +149,8 @@ void sRender::updateOffsets(std::string handle){
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-void sRender::updateColours(std::string handle){
+void sRender::updateColours(std::string handle)
+{
     size_t cnt = offsets[handle].first+1;
     GLuint cBuffer = shaderBufferObjects[handle].second[1];
     glBindBuffer(GL_ARRAY_BUFFER,cBuffer);
@@ -153,7 +163,8 @@ void sRender::updateColours(std::string handle){
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-void sRender::updateTexOffsets(std::string handle){
+void sRender::updateTexOffsets(std::string handle)
+{
     size_t cnt = offsets[handle].first+1;
     GLuint tBuffer = shaderBufferObjects[handle].second[2];
     glBindBuffer(GL_ARRAY_BUFFER,tBuffer);
@@ -166,11 +177,13 @@ void sRender::updateTexOffsets(std::string handle){
     glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-void sRender::addNewShader(std::string handle){
+void sRender::addNewShader(std::string handle)
+{
     offsets[handle] = std::pair(-1,std::vector<float>());
     offsets[handle].second.reserve(3*MAX_OBJECTS_PER_SHADER*4);
 
-    for (int i = 0; i < 3*MAX_OBJECTS_PER_SHADER*4; i++){
+    for (int i = 0; i < 3*MAX_OBJECTS_PER_SHADER*4; i++)
+    {
         offsets[handle].second.push_back(0.0);
     }
 
@@ -266,22 +279,26 @@ void sRender::addNewShader(std::string handle){
     glError("add new shader");
 }
 
-void sRender::addNewObject(Id i,std::string handle){
+void sRender::addNewObject(Id i,std::string handle)
+{
     std::size_t lastComponent = offsets[handle].first;
     idToIndex[i] = std::pair(handle,lastComponent+1);
     indexToId[idToIndex[i]] = i;
     offsets[handle].first++;
 }
 
-void sRender::moveOffsets(Id i, std::string oldShader, std::string newShader){
+void sRender::moveOffsets(Id i, std::string oldShader, std::string newShader)
+{
     
     std::size_t start = idToIndex[i].second;
     std::size_t lastComponentOld = offsets[oldShader].first;
 
-    if (start != lastComponentOld){
+    if (start != lastComponentOld)
+    {
         // not at end of array replace data
         // with last component
-        for (int k = 0; k < 4; k++){
+        for (int k = 0; k < 4; k++)
+        {
             offsets[oldShader].second[start*4+k] = offsets[oldShader].second[lastComponentOld*4+k];
         }
         Id movedId = indexToId[std::pair(oldShader,lastComponentOld)];
@@ -289,7 +306,8 @@ void sRender::moveOffsets(Id i, std::string oldShader, std::string newShader){
         indexToId.erase(std::pair(oldShader,lastComponentOld));
         indexToId[std::pair(oldShader,start)] = movedId;
     }
-    else{
+    else
+    {
         // at end simply erase
         indexToId.erase(std::pair(oldShader,start));
     }
@@ -302,22 +320,27 @@ void sRender::moveOffsets(Id i, std::string oldShader, std::string newShader){
 
 }
 
-void sRender::initialise(){
+void sRender::initialise()
+{
     glGenBuffers(1,&quadVBO);
 }
 
-sRender::~sRender(){
+sRender::~sRender()
+{
     glDeleteBuffers(1,&quadVBO);
-    for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++){
+    for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++)
+    {
         glDeleteVertexArrays(1,&(it->second.first));
-        for (auto jt = it->second.second.begin(); jt != it->second.second.end(); jt++){
+        for (auto jt = it->second.second.begin(); jt != it->second.second.end(); jt++)
+        {
             glDeleteBuffers(1,&(*jt));
         }
     }
 }
 
 void sRender::draw(Shaders * s, bool debug){
-    for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++){
+    for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++)
+    {
         glBindVertexArray(it->second.first);
         //glError("sRender draw vao");
         std::shared_ptr<Shader> shader = s->get(it->first);

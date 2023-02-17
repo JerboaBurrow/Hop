@@ -10,18 +10,22 @@
     System to detect collisions and apply forces
 */
 
-class sCollision : public System {
+class sCollision : public System 
+{
+
 public:
 
     sCollision(){}
 
     void update(ObjectManager * m, World * w);
 
-    void setDetector(std::unique_ptr<CollisionDetector> d){
+    void setDetector(std::unique_ptr<CollisionDetector> d)
+    {
         detector = std::move(d);
     }
 
-    void setResolver(std::unique_ptr<CollisionResolver> r){
+    void setResolver(std::unique_ptr<CollisionResolver> r)
+    {
         resolver = std::move(r);
     }
 
@@ -37,6 +41,7 @@ private:
 
     std::unique_ptr<CollisionDetector> detector;
     std::unique_ptr<CollisionResolver> resolver;
+    
 };
 
 #endif /* SCOLLISION_H */

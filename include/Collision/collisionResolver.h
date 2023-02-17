@@ -7,19 +7,16 @@
 class ObjectManager;
 class World;
 
-class CollisionResolver {
-public:
-    CollisionResolver()
-    {}
+class CollisionResolver 
+{
 
-    // takes two object indices oi and oj
-    //  and two object collision vertex ids
-    //  pi and pj
-    //  handles collision between pi and pj
-    //  and updates each object via the manager
+public:
+
+    CollisionResolver(){}
+    
     virtual void handleObjectCollision(
-        std::string & oi, std::string & oj,
-        uint64_t pi, uint64_t pj,
+        std::string & objectI, std::string & objectJ,
+        uint64_t particleI, uint64_t particleJ,
         ObjectManager * manager
     ) = 0;
 

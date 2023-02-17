@@ -3,7 +3,9 @@
 
 #include <World/mapFile.h>
 
-class MapSource {
+class MapSource 
+{
+    
 public:
 
     MapSource()

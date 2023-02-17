@@ -10,28 +10,40 @@
 #include <memory>
 
 
-class ShaderSourceNotFound: public std::exception {
+class ShaderSourceNotFound: public std::exception 
+{
+
 public:
+
     ShaderSourceNotFound(std::string msg)
     : msg(msg)
     {}
+
 private:
-    virtual const char * what() const throw(){
+
+    virtual const char * what() const throw()
+    {
         return msg.c_str();
     }
+
     std::string msg;
+
 };
 
 
-struct Shader {
+struct Shader 
+{
     const char * vertex;
     const char * fragment;
+
     Shader(const char * v, const char * f)
     : vertex(v), fragment(f), compiled(false), used(false)
     {}
+
     Shader()
     : vertex(""),fragment(""),compiled(false),used(false)
     {}
+
     Shader(std::string path, std::string name);
 
     ~Shader(){if(compiled){glDeleteProgram(program);}}
@@ -49,20 +61,26 @@ struct Shader {
 
     void setMatrix4x4(glm::mat4 & m, const char * name, bool transpose = false);
 
-    bool operator==(const Shader & s){
+    bool operator==(const Shader & s)
+    {
         return this->vertex == s.vertex && this->fragment == s.fragment;
     }
 
 private:
+
     GLuint program;
     bool compiled;
     bool used;
 
     const char * parseShaderSource(std::ifstream & file);
+
 };
 
-class Shaders {
+class Shaders 
+{
+
 public:
+
     Shaders(){}
 
     void makeShader(
@@ -76,7 +94,9 @@ public:
     void setProjection(glm::mat4 proj);
     
 private:
+
     std::unordered_map<std::string,std::shared_ptr<Shader>> shaders;
+    
 };
 
 #include <Shader/marchingQuad.h>

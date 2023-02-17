@@ -27,13 +27,19 @@
 
 #include <log.h>
 
-class ComponentNotRegistered: public std::exception {
+class ComponentNotRegistered: public std::exception 
+{
+
 public:
+
     ComponentNotRegistered(std::string msg)
     : msg(msg)
     {}
+
 private:
-    virtual const char * what() const throw(){
+
+    virtual const char * what() const throw()
+    {
         return msg.c_str();
     }
     std::string msg;
@@ -66,7 +72,9 @@ void identityCallback(Id & i, Id & j);
 
 const uint32_t MAX_OBJECTS = 100000;
 
-class ObjectManager {
+class ObjectManager 
+{
+
 public:
 
     ObjectManager(
@@ -89,8 +97,10 @@ public:
     void remove(Id id);
     void remove(std::string handle);
 
-    Id & idFromHandle(std::string handle){
-        if (handleToId.find(handle) == handleToId.end()){
+    Id & idFromHandle(std::string handle)
+    {
+        if (handleToId.find(handle) == handleToId.end())
+        {
             WARN("Tried to access id with non-existent handle "+handle)>>log;
         }
         return handleToId[handle];
@@ -102,14 +112,17 @@ public:
     // component interface
 
     template <class T>
-    void registerComponent(){
+    void registerComponent()
+    {
         const char * handle = typeid(T).name();
 
-        if (componentRegistered(handle)){
+        if (componentRegistered(handle))
+        {
             return;
         }
 
-        if (nextComponentIndex >= MAX_COMPONENTS){
+        if (nextComponentIndex >= MAX_COMPONENTS)
+        {
             return;
         }
 
@@ -119,10 +132,12 @@ public:
     }
 
     template <class T>
-    void addComponent(Id i, T component){
+    void addComponent(Id i, T component)
+    {
         const char * handle = typeid(T).name();
 
-        if (!componentRegistered(handle)){
+        if (!componentRegistered(handle))
+        {
             return;
         }
 
@@ -135,10 +150,12 @@ public:
     }
 
     template <class T>
-    void removeComponent(Id i){
+    void removeComponent(Id i)
+    {
         const char * handle = typeid(T).name();
 
-        if (!componentRegistered(handle)){
+        if (!componentRegistered(handle))
+        {
             return;
         }
 
@@ -151,26 +168,30 @@ public:
     }
 
     template <class T>
-    inline T & getComponent(const Id & i){
-        // const char * handle = typeid(T).name();
-
-        // if (!componentRegistered(handle)){
-        //     throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
-        // }
+    inline T & getComponent(const Id & i)
+    {
         const char * handle = typeid(T).name();
+
+        if (!componentRegistered(handle)){
+            throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
+        }
         return (std::static_pointer_cast<ComponentArray<T>>(componentData[handle]))->get(i);
     }
 
-    void objectFreed(Id i){
-        for (auto const& pair : componentData){
+    void objectFreed(Id i)
+    {
+        for (auto const& pair : componentData)
+        {
             pair.second.get()->objectFreed(i);
         }
     }
 
     template <class T>
-    uint32_t getComponentId(){
+    uint32_t getComponentId()
+    {
         const char * handle = typeid(T).name();
-        if (!componentRegistered(handle)){
+        if (!componentRegistered(handle))
+        {
             throw ComponentNotRegistered(" Attempt to getComponent<"+std::string(handle)+">()");
         }
         return registeredComponents[handle];
@@ -190,25 +211,30 @@ public:
 
     void postJob(
         const std::function<void(void)> & job
-    ){
+    )
+    {
         workers.queueJob(job);
     }
 
-    void waitForJobs(){
+    void waitForJobs()
+    {
         workers.wait();
     }
 
-    bool isThreaded(){
+    bool isThreaded()
+    {
         return workers.size()>0;
     }
 
-    void releaseThread(){
+    void releaseThread()
+    {
         INFO("releaseing a thread (nThreads): "+std::to_string(workers.size()))>>log;
         workers.joinThread();
         INFO("join called (nThreads): "+std::to_string(workers.size()))>>log;
     }
 
-    void addThread(){
+    void addThread()
+    {
         INFO("adding a thread (nThreads): "+std::to_string(workers.size()))>>log;
         workers.createThread();
         INFO("create called (nThreads): "+std::to_string(workers.size()))>>log;

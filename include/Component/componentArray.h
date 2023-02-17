@@ -2,15 +2,40 @@
 #define COMONENTARRAY_H
 
 #include <Object/id.h>
+#include <exception>
 
-class AbstractComponentArray {
+class NoComponentForId: public std::exception 
+{
+
 public:
+
+    NoComponentForId(std::string msg)
+    : msg(msg)
+    {}
+
+private:
+
+    virtual const char * what() const throw()
+    {
+        return msg.c_str();
+    }
+    
+    std::string msg;
+};
+
+class AbstractComponentArray 
+{
+
+public:
+
     virtual ~AbstractComponentArray() = default;
     virtual void objectFreed(Id i) = 0;
+
 };
 
 template <class T>
-class ComponentArray : public AbstractComponentArray {
+class ComponentArray : public AbstractComponentArray 
+{
 
 public:
 
@@ -23,15 +48,18 @@ public:
     void insert(Id & i, T component);
     void remove(Id & i);
 
-    inline T & get(const Id & i){
-        // if (!idTaken(i)){
-        
-        // }
+    inline T & get(const Id & i)
+    {
+        if (!idTaken(i)){
+            throw NoComponentForId("In ComponentArray.get(i)");
+        }
         return componentData[idToIndex[i]];
     }
 
-    inline void objectFreed(Id i){
-        if (!idTaken(i)){
+    inline void objectFreed(Id i)
+    {
+        if (!idTaken(i))
+        {
             return;
         }
         remove(i);
@@ -52,8 +80,10 @@ private:
 };
 
 template <class T>
-void ComponentArray<T>::insert(Id & i, T component){
-    if (idTaken(i)){
+void ComponentArray<T>::insert(Id & i, T component)
+{
+    if (idTaken(i))
+    {
         return;
     }
 
@@ -66,13 +96,15 @@ void ComponentArray<T>::insert(Id & i, T component){
 
 template <class T>
 void ComponentArray<T>::remove(Id & i){
-    if (!idTaken(i)){
+    if (!idTaken(i))
+    {
         return;
     }
 
     size_t index = idToIndex[i];
     
-    if (index != nextIndex-1){
+    if (index != nextIndex-1)
+    {
         componentData[index] = componentData[nextIndex-1];
         Id moved = indexToId[nextIndex-1];
         idToIndex[moved] = index;
@@ -80,7 +112,8 @@ void ComponentArray<T>::remove(Id & i){
 
         indexToId.erase(nextIndex-1);
     }
-    else{
+    else
+    {
         idToIndex.erase(i);
         indexToId.erase(index);
     }

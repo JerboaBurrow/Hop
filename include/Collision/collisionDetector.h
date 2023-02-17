@@ -9,8 +9,11 @@ class ObjectManager;
 
 typedef std::pair<double,double> tupled;
 
-class CollisionDetector {
+class CollisionDetector 
+{
+
 public:
+
     CollisionDetector(tupled lx = tupled(0.0,1.0), tupled ly = tupled(0.0,1.0))
     : limX(lx), limY(ly),
       lX(limX.second-limX.first),
@@ -30,7 +33,8 @@ public:
         std::set<Id>
     ) = 0;
 
-    virtual void centreOn(double x, double y){
+    virtual void centreOn(double x, double y)
+    {
         limX = tupled(
             x-lX/2.0,
             x+lX/2.0
@@ -42,6 +46,7 @@ public:
     }
 
 protected:
+
     double lX, lY;
     tupled limX, limY;
 };

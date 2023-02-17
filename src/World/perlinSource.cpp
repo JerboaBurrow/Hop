@@ -3,16 +3,19 @@
 std::vector<uint64_t> generateTable(
     uint64_t length, 
     std::default_random_engine gen
-){
+)
+{
     std::vector<uint64_t> ret = std::vector<uint64_t>(length);
     std::vector<uint64_t> table = std::vector<uint64_t>(length);
 
-    for (int i = 0; i < length; i++){
+    for (int i = 0; i < length; i++)
+    {
         table[i] = i;
     }
 
     int i = 0;
-    while (table.size() > 0){
+    while (table.size() > 0)
+    {
         std::uniform_int_distribution<uint64_t> U(0,table.size()-1);
         uint64_t idx = U(gen);
         ret[i] = table[idx];
@@ -30,7 +33,8 @@ PerlinSource::PerlinSource(
     float yPeriod,
     uint64_t repeat,
     float detailThreshold
-){
+)
+{
     this->seed = seed;
     generator.seed(seed);
     this->xPeriod = xPeriod;
@@ -46,9 +50,11 @@ PerlinSource::PerlinSource(
 
 }
 
-void PerlinSource::gradient(uint64_t value, float & cx, float & cy){
+void PerlinSource::gradient(uint64_t value, float & cx, float & cy)
+{
     uint8_t h = value % 4;
-    switch (h){
+    switch (h)
+    {
         case 0:
             cx = 1.; cy=1.; break;
         case 1:
@@ -60,7 +66,8 @@ void PerlinSource::gradient(uint64_t value, float & cx, float & cy){
     }
 }
 
-float PerlinSource::getValue(float x, float y, uint8_t t){
+float PerlinSource::getValue(float x, float y, uint8_t t)
+{
 
     float xf = std::floor(x);
     float yf = std::floor(y);
@@ -113,25 +120,33 @@ float PerlinSource::getValue(float x, float y, uint8_t t){
     )*0.5+0.5;
 }
 
-float PerlinSource::getTurbulence(float x, float y, uint64_t size, uint8_t table){
+float PerlinSource::getTurbulence(float x, float y, uint64_t size, uint8_t table)
+{
     float t = 0.0;
     float scale = size;
-    while (scale > 1.0) {
+    while (scale > 1.0)
+    {
         t += std::abs(scale*getValue(x/scale,y/scale,table));
         scale /= 2.0;
     }
     return t;
 }
 
-uint64_t  PerlinSource::getAtCoordinate(int ix, int iy){
+uint64_t  PerlinSource::getAtCoordinate(int ix, int iy)
+{
     uint64_t value = false;
+
     float u = ix*xPeriod / size;
     float v = iy*yPeriod / size;
+
     float t = u+v+turbulence*getTurbulence(ix,iy,size,0);
+
     bool a = std::sin(t) > threshold;
     if (!a){value = false; return value;}
+
     float s = u+v+4.0*turbulence*getTurbulence(ix,iy,size,1);
     bool b = std::sin(s) > detailThreshold;
+    
     value = a & (!b);
     return value;
 }
