@@ -3,13 +3,16 @@
 #include <algorithm>
 #include <sstream>
 
-void MapFile::loadUncompressed(std::string fileNameWithoutExtension, MapData & data){
+void MapFile::loadUncompressed(std::string fileNameWithoutExtension, MapData & data)
+{
+
     std::string fileName = fileNameWithoutExtension+MAP_FILE_EXTENSION;
     std::ifstream in(fileName,std::ios::binary);
 
     std::vector<uint8_t> rawData;
 
-    if (in.is_open()){
+    if (in.is_open())
+    {
 
         data.clear();
 
@@ -18,22 +21,26 @@ void MapFile::loadUncompressed(std::string fileNameWithoutExtension, MapData & d
         std::string header;
         std::string size;
 
-        if (!std::getline(in,header)){
+        if (!std::getline(in,header))
+        {
             throw MapFileIOError("EOF when reading header for "+fileNameWithoutExtension);
         }
 
-        while (in.get(c)){
+        while (in.get(c))
+        {
             rawData.push_back(c);
         }
 
         std::string stringData;
 
         unsigned i = 0;
-        while (i < rawData.size()){
+        while (i < rawData.size())
+        {
 
             char c = rawData[i];
             stringData = "";
-            while (c != '\n' && i < rawData.size()){
+            while (c != '\n' && i < rawData.size())
+            {
                 c = rawData[i];
                 if (c == '\n'){break;}
                 stringData += c;
@@ -58,18 +65,21 @@ void MapFile::loadUncompressed(std::string fileNameWithoutExtension, MapData & d
 
         }
     }
-    else{
+    else
+    {
         throw MapFileIOError("file "+fileName+" not openned");
     }
 
     in.close();
 }
 
-void MapFile::saveUncompressed(std::string fileNameWithoutExtension, MapData & data){
+void MapFile::saveUncompressed(std::string fileNameWithoutExtension, MapData & data)
+{
     std::vector<uint8_t> rawData;
     std::string stringData;
 
-    for (auto citer = data.cbegin(); citer != data.cend(); citer++){
+    for (auto citer = data.cbegin(); citer != data.cend(); citer++)
+    {
 
         ivec2 coord = citer->first;
 
@@ -77,7 +87,8 @@ void MapFile::saveUncompressed(std::string fileNameWithoutExtension, MapData & d
 
         stringData = std::to_string(coord.first) + "," + std::to_string(coord.second) + "," + std::to_string(datum) + "\n";
 
-        for (unsigned i = 0; i < stringData.size(); i++){
+        for (unsigned i = 0; i < stringData.size(); i++)
+        {
             rawData.push_back(stringData[i]);
         }
 
@@ -85,7 +96,8 @@ void MapFile::saveUncompressed(std::string fileNameWithoutExtension, MapData & d
 
     std::string fileName = fileNameWithoutExtension + MAP_FILE_EXTENSION;
     std::ofstream out(fileName,std::ios::binary);
-    if (out.is_open()){
+    if (out.is_open())
+    {
         
         out << MAP_FILE_HEADER << "\n";
 
@@ -96,7 +108,8 @@ void MapFile::saveUncompressed(std::string fileNameWithoutExtension, MapData & d
         }
 
     }
-    else{
+    else
+    {
         throw MapFileIOError("file "+fileName+" not openned");
     }
 
@@ -104,7 +117,8 @@ void MapFile::saveUncompressed(std::string fileNameWithoutExtension, MapData & d
 }
 
 
-void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
+void MapFile::load(std::string fileNameWithoutExtension, MapData & data)
+{
 
     std::vector<uint8_t> compressedData;
     std::vector<uint8_t> rawData;
@@ -112,7 +126,8 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
     std::string fileName = fileNameWithoutExtension+MAP_FILE_EXTENSION_COMPRESSED;
     std::ifstream in(fileName,std::ios::binary);
 
-    if (in.is_open()){
+    if (in.is_open())
+    {
 
         data.clear();
 
@@ -121,11 +136,13 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
         std::string header;
         std::string size;
 
-        if (!std::getline(in,header)){
+        if (!std::getline(in,header))
+        {
             throw MapFileIOError("EOF when reading header for "+fileNameWithoutExtension);
         }
 
-        if (!std::getline(in,size)){
+        if (!std::getline(in,size))
+        {
             throw MapFileIOError("EOF when reading uncompressed size for "+fileNameWithoutExtension);
         }
 
@@ -133,11 +150,13 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
         long unsigned int uncompressedSize = std::stoull(size);
 
         rawData.reserve(uncompressedSize);
-        for (unsigned i = 0; i < uncompressedSize; i++){
+        for (unsigned i = 0; i < uncompressedSize; i++)
+        {
             rawData.push_back(0);
         }
 
-        while (in.get(c)){
+        while (in.get(c))
+        {
             compressedData.push_back(c);
         }
 
@@ -150,7 +169,8 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
 
         );
 
-        switch (result){
+        switch (result)
+        {
             case Z_OK:
                 break;
             case Z_MEM_ERROR:
@@ -164,11 +184,13 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
         std::string stringData;
 
         unsigned i = 0;
-        while (i < rawData.size()){
+        while (i < rawData.size())
+        {
 
             char c = rawData[i];
             stringData = "";
-            while (c != '\n' && i < rawData.size()){
+            while (c != '\n' && i < rawData.size())
+            {
                 c = rawData[i];
                 if (c == '\n'){break;}
                 stringData += c;
@@ -195,7 +217,8 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
         }
 
     }
-    else{
+    else
+    {
         throw MapFileIOError("file "+fileName+" not openned");
     }
 
@@ -204,13 +227,15 @@ void MapFile::load(std::string fileNameWithoutExtension, MapData & data){
 
 }
 
-void MapFile::save(std::string fileNameWithoutExtension, MapData & data){
+void MapFile::save(std::string fileNameWithoutExtension, MapData & data)
+{
 
     std::vector<uint8_t> rawData;
     std::vector<uint8_t> compressedData;
     std::string stringData;
 
-    for (auto citer = data.cbegin(); citer != data.cend(); citer++){
+    for (auto citer = data.cbegin(); citer != data.cend(); citer++)
+    {
 
         ivec2 coord = citer->first;
 
@@ -218,7 +243,8 @@ void MapFile::save(std::string fileNameWithoutExtension, MapData & data){
 
         stringData = std::to_string(coord.first) + "," + std::to_string(coord.second) + "," + std::to_string(datum) + "\n";
 
-        for (unsigned i = 0; i < stringData.size(); i++){
+        for (unsigned i = 0; i < stringData.size(); i++)
+        {
             rawData.push_back(stringData[i]);
             compressedData.push_back(0);
         }
@@ -226,7 +252,8 @@ void MapFile::save(std::string fileNameWithoutExtension, MapData & data){
     }
 
     unsigned buffer = compressedData.size()*0.1+12;
-    for (unsigned i = 0; i < buffer; i++){
+    for (unsigned i = 0; i < buffer; i++)
+    {
         compressedData.push_back(0);
     }
 
@@ -245,25 +272,29 @@ void MapFile::save(std::string fileNameWithoutExtension, MapData & data){
 
     std::string fileName = fileNameWithoutExtension + MAP_FILE_EXTENSION_COMPRESSED;
     std::ofstream out(fileName,std::ios::binary);
-    if (out.is_open()){
+    if (out.is_open())
+    {
         
         out << COMPRESSED_MAP_FILE_HEADER << "\n";
         out << dataSize << "\n";
 
-        for (unsigned c = 0; c < bufferSize; c++){
+        for (unsigned c = 0; c < bufferSize; c++/*ayy lamao*/)
+        {
 
             out << compressedData[c];
 
         }
 
     }
-    else{
+    else
+    {
         throw MapFileIOError("file "+fileName+" not openned");
     }
 
     out.close();
 
-    switch (result){
+    switch (result)
+    {
         case Z_OK:
             break;
         case Z_MEM_ERROR:

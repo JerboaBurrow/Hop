@@ -1,11 +1,14 @@
 #include <World/world.h>
 
-uint64_t dynamicsRegionSize(uint64_t renderRegion, uint64_t dynamicsShell){
+uint64_t dynamicsRegionSize(uint64_t renderRegion, uint64_t dynamicsShell)
+{
 
-    if (dynamicsShell == 0){
+    if (dynamicsShell == 0)
+    {
         return renderRegion;
     }
-    else{
+    else
+    {
         return (2*dynamicsShell+1) * renderRegion;
     }
 
@@ -102,7 +105,8 @@ World::World(
     glBufferStatus("World constructor");
 }
 
-void World::draw(Shader & s){
+void World::draw(Shader & s)
+{
     glBindVertexArray(VAO);
     s.use();
     s.setMatrix4x4(projection, "proj");
@@ -118,18 +122,21 @@ void World::draw(Shader & s){
     glError("World::draw()");
 }
 
-void World::worldToTile(float x, float y, int & ix, int & iy){
+void World::worldToTile(float x, float y, int & ix, int & iy)
+{
     ix = int(std::floor(x*float(RENDER_REGION_SIZE)));
     iy = int(std::floor(y*float(RENDER_REGION_SIZE)));
 }
 
-bool World::pointOutOfBounds(float x, float y){
+bool World::pointOutOfBounds(float x, float y)
+{
     int ix, iy;
     worldToTile(x,y,ix,iy);
     return boundary->outOfBounds(ix,iy);
 }
 
-bool World::cameraOutOfBounds(float x, float y){
+bool World::cameraOutOfBounds(float x, float y)
+{
     int ix, iy;
     worldToTile(x,y,ix,iy);
     return boundary->outOfBounds(ix,iy) || boundary->outOfBounds(ix+int(RENDER_REGION_SIZE)-1,iy+int(RENDER_REGION_SIZE)-1);

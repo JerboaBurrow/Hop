@@ -6,7 +6,9 @@
 
 #include <World/mapSource.h>
 
-class PerlinSource : public MapSource {
+class PerlinSource : public MapSource 
+{
+    
 public:
     
     PerlinSource(

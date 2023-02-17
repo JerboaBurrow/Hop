@@ -4,7 +4,8 @@
 #include <cstdint>
 #include <ostream>
 
-enum class Tile : uint_fast8_t {
+enum class Tile : uint_fast8_t 
+{
     EMPTY                       = 0,
     BOTTOM_LEFT                 = 1,
     BOTTOM_RIGHT                = 2,
@@ -24,9 +25,11 @@ enum class Tile : uint_fast8_t {
 };
 
 template <class T>
-Tile toTile(T i){
+Tile toTile(T i)
+{
     
-    if (i >= 0 && i <= 15){
+    if (i >= 0 && i <= 15)
+    {
         
         return Tile(i);
 
