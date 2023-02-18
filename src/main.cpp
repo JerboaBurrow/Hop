@@ -43,7 +43,7 @@ double deltas[60];
 
 Shaders shaderPool;
 
-const double deltaPhysics = 1.0/300.0;
+const double deltaPhysics = 1.0/600.0;
 
 int main()
 {
@@ -116,7 +116,7 @@ int main()
   float posX = 0.0;
   float posY = 0.0;
 
-  ObjectManager manager(4);
+  ObjectManager manager(8);
 
   shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
   shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
@@ -124,13 +124,16 @@ int main()
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 100;
+  int n = 10000;
 
   sf::Clock timer2;
   double t1 = 0.0;
   double t2 = 0.0;
   timer.restart();
   Id pid;
+
+  double radius = 0.1*map.worldUnitLength();
+
   for (int i = 0; i < n; i++)
   {
     timer2.restart();
@@ -145,7 +148,7 @@ int main()
     manager.addComponent<cTransform>(
       pid,
       cTransform(
-        x,y,0.0,0.1*map.worldUnitLength()
+        x,y,0.0,radius
       )
     );
 
@@ -188,7 +191,9 @@ int main()
   physics.setGravity(9.81);
   physics.stabaliseObjectParameters(&manager);
 
-  auto cellList = std::make_unique<CellList>(64,tupled(-1.0,1.0),tupled(-1.0,1.0));
+  unsigned L = std::ceil(1.0/(2.0*radius));
+  std::cout << L << "\n";
+  auto cellList = std::make_unique<CellList>(L,tupled(0.0,1.0),tupled(0.0,1.0));
   auto res = std::make_unique<SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
   collisions.setDetector(std::move(cellList));
   collisions.setResolver(std::move(res));
@@ -275,23 +280,33 @@ int main()
     
     double udt = timer.getElapsedTime().asSeconds();
 
-    map.draw(*shaderPool.get("mapShader").get());
-
     timer.restart();
 
+    map.draw(*shaderPool.get("mapShader").get());
     shaderPool.setProjection(camera.getVP());
     
     rendering.update(&manager, &shaderPool,false);
 
+    double rdt = timer.getElapsedTime().asSeconds();
+
+    timer.restart();
+
     collisions.centreOn(map.getMapCenter());
+
     collisions.update(&manager, &map);
-  
+
+    double cdt = timer.getElapsedTime().asSeconds();
+
+    timer.restart();
+
     physics.update(&manager);
     
     double rudt = timer.getElapsedTime().asSeconds();
+
     timer.restart();
     rendering.draw(&shaderPool);
-    double rdt = timer.getElapsedTime().asSeconds();
+
+    rdt += timer.getElapsedTime().asSeconds();
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;
@@ -338,7 +353,7 @@ int main()
         "\n" << 
         "update time: " << fixedLengthNumber(udt,6) <<
         "\n" <<
-        "sRender update/draw time: " << fixedLengthNumber(rudt,6) << "/" << fixedLengthNumber(rdt,6);
+        "Phys update / col /draw time: " << fixedLengthNumber(rudt,6) << "/" << fixedLengthNumber(cdt,6) << "/" << fixedLengthNumber(rdt,6);
 
       textRenderer.renderText(
         OD,

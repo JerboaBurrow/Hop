@@ -49,6 +49,12 @@ private:
         CollisionResolver * resolver,
         std::set<Id> objects
     );
+
+    void cellCollisionsThreaded(
+        ObjectManager * manager,
+        CollisionResolver * resolver,
+        int a
+    );
     
     void handleWorldCollisions(
         ObjectManager * manager,
