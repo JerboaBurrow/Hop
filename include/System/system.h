@@ -11,7 +11,7 @@ class System
 public:
 
     std::set<Id> objects;
-    std::vector<std::vector<Id>> threadJobs;
+    std::vector<std::set<Id>> threadJobs;
     
 };
 

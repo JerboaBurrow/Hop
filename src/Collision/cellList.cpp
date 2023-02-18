@@ -1,5 +1,7 @@
 #include <Collision/cellList.h>
 #include <iostream>
+#include <chrono>
+using namespace std::chrono;
 
 CellList::CellList(
     uint64_t n,
@@ -85,7 +87,6 @@ void CellList::populate(ObjectManager * manager, std::set<Id> objects)
     {
 
         cCollideable & data = manager->getComponent<cCollideable>(*it);
-        cTransform & dataT = manager->getComponent<cTransform>(*it);
 
         uint64_t meshSize = data.mesh.size();
 
@@ -130,26 +131,23 @@ void CellList::cellCollisions(
     CollisionResolver * resolver
 )
 {
-    if (a1 < 0 || b1 < 0 || a2 < 0 || b2 < 0 || a1 >= rootNCells || b1  >= rootNCells || b2  >= rootNCells || a2  >= rootNCells)
-    {
+    if (a1 < 0 || a1 >= rootNCells || b1 < 0 || b2 >= rootNCells || a2 < 0 || a2 >= rootNCells || b2 < 0 || b2 >= rootNCells){
         return;
     }
 
     uint64_t c1 = (a1*rootNCells+b1)*MAX_PARTICLES_PER_CELL;
     uint64_t c2 = (a2*rootNCells+b2)*MAX_PARTICLES_PER_CELL;
 
-    if (cells[c1] == NULL_INDEX || cells[c2] == NULL_INDEX){return;}
-
     uint64_t p1 = 0;
-    uint64_t p2;
+    uint64_t p2, i, j;
 
     while (cells[c1+p1] != NULL_INDEX)
     {
         p2 = 0;
+        i = cells[c1+p1]; 
         while (cells[c2+p2] != NULL_INDEX)
         {
-            uint64_t i,j;
-            i = cells[c1+p1]; j = cells[c2+p2];
+            j = cells[c2+p2];
             resolver->handleObjectCollision(
                 id[i].first,id[j].first,
                 id[i].second,id[j].second,
@@ -161,25 +159,74 @@ void CellList::cellCollisions(
     }
 }
 
+void CellList::cellCollisionsThreaded(
+    ObjectManager * manager,
+    CollisionResolver * resolver,
+    int a
+)
+{
+    unsigned a1, b1;
+    a1 = a+1;
+    for (int b = 0; b < rootNCells; b++)
+    {
+        b1 = b+1;
+        // takes advantage of symmetry
+        //  i.e cell a-1,b-1 will collide with
+        //  cell a,b so no need to double up!
+        
+        cellCollisions(a,b,a,b,manager,resolver);
+        cellCollisions(a,b,a1,b1,manager,resolver);
+        cellCollisions(a,b,a,b1,manager,resolver);
+        cellCollisions(a,b,a1,b,manager,resolver);
+        cellCollisions(a,b,a1,b-1,manager,resolver);
+    }
+}
+
 void CellList::handleObjectCollisions(
     ObjectManager * manager,
     CollisionResolver * resolver,
     std::set<Id> objects
 )
 {
+
     populate(manager,objects);
+
+    int a1, b1;
+    unsigned thread = 0;
+    unsigned nThreads = manager->nThreads();
+
+    if (nThreads>0){
+        for (int a = 0; a < rootNCells; a++)
+        {
+            manager->postJob(
+                std::bind(
+                    &CellList::cellCollisionsThreaded,
+                    this,
+                    manager,
+                    resolver,
+                    a
+                )
+            );
+        }
+        manager->waitForJobs();
+        return;
+    }
+
     for (int a = 0; a < rootNCells; a++)
     {
+        a1 = a+1;
         for (int b = 0; b < rootNCells; b++)
         {
+            b1 = b+1;
             // takes advantage of symmetry
             //  i.e cell a-1,b-1 will collide with
             //  cell a,b so no need to double up!
+            
             cellCollisions(a,b,a,b,manager,resolver);
-            cellCollisions(a,b,a+1,b+1,manager,resolver);
-            cellCollisions(a,b,a+1,b-1,manager,resolver);
-            cellCollisions(a,b,a+1,b,manager,resolver);
-            cellCollisions(a,b,a,b+1,manager,resolver);
+            cellCollisions(a,b,a1,b1,manager,resolver);
+            cellCollisions(a,b,a,b1,manager,resolver);
+            cellCollisions(a,b,a1,b,manager,resolver);
+            cellCollisions(a,b,a1,b-1,manager,resolver);
         }
     }
 }
