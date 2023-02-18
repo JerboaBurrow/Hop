@@ -21,7 +21,7 @@ void SystemManager::objectSignatureChanged(Id i, Signature es)
         {
             for (int j = 0; j < threads; j++)
             {
-                system->threadJobs.push_back(std::vector<Id>());
+                system->threadJobs.push_back(std::set<Id>());
             }
         }
 
@@ -32,7 +32,16 @@ void SystemManager::objectSignatureChanged(Id i, Signature es)
             size_t n = system->objects.size();
             if (threads != 0)
             {
-                system->threadJobs[n%threads].push_back(i);
+                bool isAccounted = false;
+                for (unsigned j = 0; j < system->threadJobs.size(); j++){
+                    if (system->threadJobs[j].find(i) != system->threadJobs[j].end()){
+                        isAccounted = true;
+                        break;
+                    }
+                }
+                if (!isAccounted){
+                    system->threadJobs[n%threads].insert(i);
+                }
             }
             system->objects.insert(i);
         }

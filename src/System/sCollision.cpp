@@ -1,5 +1,9 @@
 #include <System/sCollision.h>
 
+#include <iostream>
+#include <chrono>
+using namespace std::chrono;
+
 void sCollision::update(ObjectManager * m, World * w)
 {
     detector->handleObjectCollisions(

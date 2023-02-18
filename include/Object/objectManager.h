@@ -226,6 +226,8 @@ public:
         return workers.size()>0;
     }
 
+    size_t nThreads(){ return workers.size(); }
+
     void releaseThread()
     {
         INFO("releaseing a thread (nThreads): "+std::to_string(workers.size()))>>log;

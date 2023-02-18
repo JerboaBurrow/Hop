@@ -9,7 +9,6 @@ void sPhysics::processThreaded(ObjectManager * m, size_t threadId)
 {
     double nx, ny, ntheta, ar, br, cr, at, bt, ct;
     double D = std::sqrt(2.0*0.5*dt);
-    unsigned k = 0;
 
     for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++)
     {
@@ -103,6 +102,8 @@ void sPhysics::update(ObjectManager * m)
         cPhysics & dataP = m->getComponent<cPhysics>(*it);
 
         dataP.fy += -gravity*PARTICLE_MASS;
+        //dataP.fx += dt*std::cos(dataT.theta);
+        //dataP.fy += dt*std::sin(dataT.theta);
         dataP.omega += D*normal(e);
 
         ct = dt * dataP.translationalDrag / (2.0*PARTICLE_MASS);

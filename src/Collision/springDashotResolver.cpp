@@ -10,7 +10,7 @@ void SpringDashpot::handleObjectCollision(
 {
     if (objectI == objectJ){return;}
 
-    double ix, iy, jx, jy, rx, ry, dd, rc, meff, kr, kd, d;
+    double ix, iy, jx, jy, rx, ry, dd, rc, meff, kr, kd, d, dinv;
     double nx, ny, nxt, nyt, ddot, mag, vnorm, fx, fy;
     double vrx, vry;
 
@@ -18,59 +18,58 @@ void SpringDashpot::handleObjectCollision(
     Id idj = manager->idFromHandle(objectJ);
 
     cCollideable & datai = manager->getComponent<cCollideable>(idi);
-    cCollideable & dataj = manager->getComponent<cCollideable>(idj);
-
-    CollisionVertex ci = datai.mesh[particleI];
-    CollisionVertex cj = dataj.mesh[particleJ];
-
     cPhysics & dataPi = manager->getComponent<cPhysics>(idi);
-    cPhysics & dataPj = manager->getComponent<cPhysics>(idj);
-
+    CollisionVertex ci = datai.mesh[particleI];
     ix = ci.x;
     iy = ci.y;
+
+    cCollideable & dataj = manager->getComponent<cCollideable>(idj);
+    cPhysics & dataPj = manager->getComponent<cPhysics>(idj);
+    CollisionVertex cj = dataj.mesh[particleJ];
     jx = cj.x;
     jy = cj.y;
+
+    rc = ci.r+cj.r;
 
     rx = jx-ix;
     ry = jy-iy;
     dd = rx*rx+ry*ry;
-    rc = ci.r+cj.r;
+
+    meff = 1.0 / (2.0/PARTICLE_MASS); // mass defined as 1
+    kr = meff*alpha;
+    kd = 2.0*meff*beta;
 
     if (dd < rc*rc)
     {
-        
-        meff = 1.0 / (2.0/PARTICLE_MASS); // mass defined as 1
-        kr = meff*alpha;
-        kd = 2.0*meff*beta;
-
+    
         d = std::sqrt(dd);
-        nx = rx / d;
-        ny = ry / d;
+        dinv = 1.0 / d;
+        nx = rx * dinv;
+        ny = ry * dinv;
 
         vrx = dataPi.vx-dataPj.vx;
         vry = dataPi.vy-dataPj.vy;
 
-        nxt = ny;
-        nyt = -nx;
+        // nxt = ny;
+        // nyt = -nx;
         ddot = nx*vrx+ny*vry;
 
-        vnorm = vrx*vrx+vry*vry;
+        // vnorm = vrx*vrx+vry*vry;
 
-        if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) )
-        {
-            nxt *= -1.0;
-            nyt *= -1.0;
-        }
+        // if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) )
+        // {
+        //     nxt *= -1.0;
+        //     nyt *= -1.0;
+        // }
 
-        mag = -kr*(rc-d)-kd*ddot;
+        mag = (-kr*(rc-d)-kd*ddot)*std::min(3.0,dinv);
 
-        fx = mag*nx+friction*std::abs(mag)*nxt;
-        fy = mag*ny+friction*std::abs(mag)*nyt;
-
+        fx = mag*nx;//+friction*std::abs(mag)*nxt;
         dataPi.fx += fx;
-        dataPi.fy += fy;
-        
         dataPj.fx -= fx;
+
+        fy = mag*ny;//+friction*std::abs(mag)*nyt;
+        dataPi.fy += fy;
         dataPj.fy -= fy;
 
         manager->collisionCallback(idi,idj);
@@ -538,7 +537,7 @@ void SpringDashpot::handleObjectWorldCollisions(
         {
             d = std::sqrt(d2);
 
-            mag = std::min(1.0/d,10.0)*kr*(c.r-d)-kd*ddot;
+            mag = std::min(1.0/d,10.0)*(kr*(c.r-d)-kd*ddot);
 
             fx = mag*nx;//+friction*std::abs(mag)*nxt;
             fy = mag*ny;//+friction*std::abs(mag)*nyt;
