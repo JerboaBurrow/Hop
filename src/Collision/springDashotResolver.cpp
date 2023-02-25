@@ -74,62 +74,13 @@ void SpringDashpot::handleObjectObjectCollision(
     }
 }
 
-template <class T>
-T pointLineSegmentDistanceSquared(
-    T px, T py,
-    T ax, T ay,
-    T bx, T by
-)
-{
-
-    T rx = bx-ax; T ry = by-ay;
-
-    T length2 = rx*rx+ry*ry;
-
-    T pMINUSaDOTrOVERlength2 = ((px-ax)*rx + (py-ay)*ry)/length2;
-
-    pMINUSaDOTrOVERlength2 = std::max(static_cast<T>(0.0),std::min(static_cast<T>(1.0),pMINUSaDOTrOVERlength2));
-
-    T tx = ax + pMINUSaDOTrOVERlength2 * rx;
-    T ty = ay + pMINUSaDOTrOVERlength2 * ry;
-
-    T dx = px-tx;
-    T dy = py-ty;
-
-    return dx*dx+dy*dy;
-}
-
-template <class T>
-int pointLineHandedness(
-    T x, T y,
-    T ax, T ay,
-    T bx, T by
-)
-{
-    T sx = (bx-ax);
-    T sy = (by-ay);
-    T tx = (x-ax);
-    T ty = (y-ay);
-
-    T d = sx*ty-sy*tx;
-    if (d < 0.0)
-    {
-        return -1;
-    }
-    else if (d > 0)
-    {
-        return 1;
-    }
-    else return 0;
-}
-
 void SpringDashpot::handleObjectWorldCollisions(
     Id id,
     ObjectManager * manager,
     TileWorld * world
 )
 {
-    
+
 }
 
 void SpringDashpot::handleObjectWorldCollisions(

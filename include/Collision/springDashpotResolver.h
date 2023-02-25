@@ -10,6 +10,9 @@
 #include <World/tileWorld.h>
 #include <World/marchingWorld.h>
 
+#include <Maths/topology.h>
+#include <Maths/distance.h>
+
 const double WALL_MASS_MULTIPLIER = 10.0;
 
 class SpringDashpot : public CollisionResolver 
