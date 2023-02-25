@@ -4,6 +4,10 @@
 #include <string>
 #include <Object/id.h>
 
+#include <World/tileWorld.h>
+#include <World/marchingWorld.h>
+
+
 class ObjectManager;
 class World;
 
@@ -14,7 +18,7 @@ public:
 
     CollisionResolver(){}
     
-    virtual void handleObjectCollision(
+    virtual void handleObjectObjectCollision(
         std::string & objectI, std::string & objectJ,
         uint64_t particleI, uint64_t particleJ,
         ObjectManager * manager
@@ -23,7 +27,13 @@ public:
     virtual void handleObjectWorldCollisions(
         Id id,
         ObjectManager * manager,
-        World * world
+        TileWorld * world
+    ) = 0;
+
+    virtual void handleObjectWorldCollisions(
+        Id id,
+        ObjectManager * manager,
+        MarchingWorld * world
     ) = 0;
 
 };

@@ -124,7 +124,7 @@ int main()
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 10000;
+  int n = 100;
 
   sf::Clock timer2;
   double t1 = 0.0;
@@ -192,7 +192,6 @@ int main()
   physics.stabaliseObjectParameters(&manager);
 
   unsigned L = std::ceil(1.0/(2.0*radius));
-  std::cout << L << "\n";
   auto cellList = std::make_unique<CellList>(L,tupled(0.0,1.0),tupled(0.0,1.0));
   auto res = std::make_unique<SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
   collisions.setDetector(std::move(cellList));

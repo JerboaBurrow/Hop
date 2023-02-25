@@ -1,8 +1,6 @@
 #include <Collision/springDashpotResolver.h>
-#include <Collision/collisionMesh.h>
-#include <Collision/vertex.h>
 
-void SpringDashpot::handleObjectCollision(
+void SpringDashpot::handleObjectObjectCollision(
     std::string & objectI, std::string & objectJ,
     uint64_t particleI, uint64_t particleJ,
     ObjectManager * manager
@@ -128,10 +126,18 @@ int pointLineHandedness(
 void SpringDashpot::handleObjectWorldCollisions(
     Id id,
     ObjectManager * manager,
-    World * world
+    TileWorld * world
 )
 {
+    
+}
 
+void SpringDashpot::handleObjectWorldCollisions(
+    Id id,
+    ObjectManager * manager,
+    MarchingWorld * world
+)
+{
     float x0, y0, s;
     Tile h;
     double nx, ny, d2, d2p, halfS, S, hx, hy, lx, ly;
