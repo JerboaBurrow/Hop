@@ -41,5 +41,5 @@ jobs:
 
     - name: linux-X-windows
       # Build your program with the given configuration
-      run: ./dependencies.sh && ./build.sh -w -t
+      run: ./dependencies.sh -w && ./build.sh -w -t
 
