@@ -7,7 +7,7 @@ on:
 
 jobs:
   linuxXlinux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v3
@@ -29,10 +29,9 @@ jobs:
       with:
         name: linuxbuild
         path: linuxbuild/
-        retention-dyas: 5
     
   linuxXwindows:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v3
