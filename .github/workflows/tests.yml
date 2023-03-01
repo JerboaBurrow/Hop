@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  linuxXlinux:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,13 +17,28 @@ jobs:
 
     - name: linux-linux
       # Build your program with the given configuration
-      run: ./dependencies.sh && ./build.sh -t
+      run: ./dependencies.sh && ./build.sh -t && mkdir linuxbuild && cp build/Jerboa linuxbuild/ && cp -r resources linuxbuild/ && cp tile.hmap linuxbuild/
 
-    - name: Test
+    - name: Tests
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest
+    - name: buildArtifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: linuxbuild
+        path: linuxbuild/
+        retention-dyas: 5
+    
+  linuxXwindows:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix
 
     - name: linux-X-windows
       # Build your program with the given configuration
