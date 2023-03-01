@@ -185,11 +185,6 @@ endif ()
 
 
 # Find dependencies
-if (FT_WITH_HARFBUZZ)
-  find_package(HarfBuzz 1.3.0 REQUIRED)
-else ()
-  find_package(HarfBuzz 1.3.0)
-endif ()
 
 if (FT_WITH_PNG)
   find_package(PNG REQUIRED)
@@ -201,12 +196,6 @@ if (FT_WITH_ZLIB)
   find_package(ZLIB REQUIRED)
 else ()
   find_package(ZLIB)
-endif ()
-
-if (FT_WITH_BZIP2)
-  find_package(BZip2 REQUIRED)
-else ()
-  find_package(BZip2)
 endif ()
 
 # Create the configuration file
