@@ -58,7 +58,6 @@ jobs:
 
       - name: launch and screenshot
         run: |
-          cd linuxbuild
           chmod +x Jerboa
           Xvfb :1 -screen 5 1024x768x8 &
           DISPLAY=:1 xterm 2>/dev/null &
