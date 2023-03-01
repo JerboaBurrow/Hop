@@ -59,9 +59,8 @@ jobs:
       - name: launch and screenshot
         run: |
           chmod +x Jerboa
-          export DISPLAY=:0
-          sudo Xvfb -ac :0 -screen 0 1024x768x8 &
-          DISPLAY=:0 ./Jerboa
+          export DISPLAY=:99
+          sudo Xvfb :99 -screen 0 1024x768x8 
           
       
     
