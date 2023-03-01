@@ -60,7 +60,7 @@ jobs:
         run: |
           chmod +x Jerboa
           export DISPLAY=:0
-          Xvfb :0 -screen 5 1024x768x8 &
+          sudo Xvfb -ac :0 -screen 0 1024x768x8 &
           DISPLAY=:0 ./Jerboa
           
       
