@@ -60,7 +60,8 @@ jobs:
         run: |
           chmod +x Jerboa
           export DISPLAY=:99
-          sudo Xvfb :99 -screen 0 1024x768x8 
+          sudo Xvfb :99 -screen 0 1024x768x8 &
+          xwd -root -silent | convert xwd:- png:screenshot.png
           
       
     
