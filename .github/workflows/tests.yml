@@ -42,4 +42,28 @@ jobs:
     - name: linux-X-windows
       # Build your program with the given configuration
       run: ./dependencies.sh -w && ./build.sh -w -t
+      
+  linuxRun:
+    runs-on: ubuntu-18.04
+    
+    steps:
+      - name: Install dependencies
+        run: sudo apt-get install -y xvfb x11-apps imagemagick
+
+      - name: get linux build
+        uses: actions/download-artifact@v3
+        with:
+          name: linuxbuild
+
+      - name: launch and screenshot
+        run: |
+          cd linuxbuild
+          chmod +x Jerboa
+          Xvfb :1 -screen 5 1024x768x8 &
+          DISPLAY=:1 xterm 2>/dev/null &
+          DISPLAY=:1 xwd -root -silent | convert xwd:- png:screenshot.png
+          
+          
+      
+    
 
