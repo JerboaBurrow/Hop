@@ -61,7 +61,7 @@ jobs:
           chmod +x Jerboa
           export DISPLAY=:1
           Xvfb :1 -screen 5 1024x768x8 &
-          
+          DISPLAY=:1 Jerboa 2>/dev/null &
           
       
     
