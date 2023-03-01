@@ -44,6 +44,7 @@ jobs:
       run: ./dependencies.sh -w && ./build.sh -w -t
       
   linuxRun:
+    needs: linuxXlinux
     runs-on: ubuntu-18.04
     
     steps:
