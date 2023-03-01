@@ -61,7 +61,14 @@ jobs:
           chmod +x Jerboa
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 1024x768x8 &
+          sleep 5
           xwd -root -silent | convert xwd:- png:screenshot.png
+          
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshot
+          path: screenshot.png
           
       
     
