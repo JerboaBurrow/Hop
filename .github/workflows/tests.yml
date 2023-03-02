@@ -63,7 +63,7 @@ jobs:
           sudo Xvfb :99 -screen 0 1024x768x8 &
           sleep 5
           ./Jerboa 2>/dev/null &
-          sleep 5
+          sleep 30
           xwd -root -silent | convert xwd:- png:screenshot.png
           
       - name: upload artifact
