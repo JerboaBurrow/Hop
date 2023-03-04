@@ -134,7 +134,13 @@ float PerlinSource::getTurbulence(float x, float y, uint64_t size, uint8_t table
 
 uint64_t  PerlinSource::getAtCoordinate(int ix, int iy)
 {
-    uint64_t value = false;
+    uint64_t value = data[ivec2(ix,iy)];
+    if (value != MAP_DATA_NULL)
+    {
+        return value;
+    }
+
+    value = false;
 
     float u = ix*xPeriod / size;
     float v = iy*yPeriod / size;
