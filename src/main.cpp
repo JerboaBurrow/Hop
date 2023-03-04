@@ -97,21 +97,21 @@ int main()
   sf::Clock timer;
   timer.restart();
 
-  // PerlinSource perlin(2,0.07,5.0,5.0,256);
-  // perlin.setThreshold(0.2);
-  // perlin.setSize(16*3+1);
+  PerlinSource perlin(2,0.07,5.0,5.0,256);
+  perlin.setThreshold(0.2);
+  perlin.setSize(16*3+1);
 
-  // InfiniteBoundary bounds;
-  // MarchingWorld map(2,camera,16,1,&perlin,&bounds);
+  InfiniteBoundary bounds;
+  MarchingWorld map(2,camera,16,1,&perlin,&bounds);
 
-  FixedSource();
+  //FixedSource();
 
-  FiniteBoundary bounds(0,0,16,16);
-  FixedSource mapSource;
-  mapSource.load("tile",false);
+  //FiniteBoundary bounds(0,0,16,16);
+  //FixedSource mapSource;
+  //mapSource.load("tile",false);
  
   //MarchingWorld map(2,camera,16,0,&mapSource,&bounds);
-  TileWorld map(2,camera,16,0,&mapSource,&bounds);
+  //TileWorld map(2,camera,16,0,&mapSource,&bounds);
 
   float posX = 0.0;
   float posY = 0.0;
@@ -132,7 +132,7 @@ int main()
   timer.restart();
   Id pid;
 
-  double radius = 0.1*map.worldUnitLength();
+  double radius = 0.5*map.worldUnitLength();
 
   for (int i = 0; i < n; i++)
   {

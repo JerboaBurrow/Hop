@@ -9,7 +9,7 @@ class MapSource
 public:
 
     MapSource()
-    : data(0)
+    : data(MAP_DATA_NULL)
     {}
 
     virtual ~MapSource(){}
