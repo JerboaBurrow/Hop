@@ -43,7 +43,7 @@ jobs:
       # Build your program with the given configuration
       run: |
         ./dependencies.sh -w && ./build.sh -w -t 
-        mkdir windowbuild 
+        mkdir windowsbuild 
         cp build/Jerboa.exe windowsbuild/ 
         cp -r resources windowsbuild/ 
         cp tile.hmap windowsbuild/ 
@@ -74,7 +74,7 @@ jobs:
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
           sleep 5
-          ./Jerboa
+          MESA_GL_VERSION_OVERRIDE=3.3 ./Jerboa
           
       - name: upload artifact
         uses: actions/upload-artifact@v3
