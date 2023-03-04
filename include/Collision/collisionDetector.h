@@ -5,6 +5,9 @@
 #include <Object/objectManager.h>
 #include <Object/id.h>
 
+#include <World/tileWorld.h>
+#include <World/marchingWorld.h>
+
 class ObjectManager;
 
 typedef std::pair<double,double> tupled;
@@ -20,17 +23,31 @@ public:
       lY(limY.second-limY.first)
     {}
 
-    virtual void handleObjectCollisions(
+    virtual void handleObjectObjectCollisions(
         ObjectManager * manager,
         CollisionResolver * resolver,
         std::set<Id>
     ) = 0;
 
-    virtual void handleWorldCollisions(
+    virtual void handleObjectWorldCollisions(
         ObjectManager * manager,
         CollisionResolver * resolver,
         World * world,
-        std::set<Id>
+        std::set<Id> objects
+    ) = 0;
+
+    virtual void handleObjectWorldCollisions(
+        ObjectManager * manager,
+        CollisionResolver * resolver,
+        TileWorld * world,
+        std::set<Id> objects
+    ) = 0;
+
+    virtual void handleObjectWorldCollisions(
+        ObjectManager * manager,
+        CollisionResolver * resolver,
+        MarchingWorld * world,
+        std::set<Id> objects
     ) = 0;
 
     virtual void centreOn(double x, double y)

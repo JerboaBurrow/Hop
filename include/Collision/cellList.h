@@ -44,7 +44,7 @@ private:
         CollisionResolver * resolver
     );
 
-    void handleObjectCollisions(
+    void handleObjectObjectCollisions(
         ObjectManager * manager,
         CollisionResolver * resolver,
         std::set<Id> objects
@@ -56,10 +56,26 @@ private:
         int a
     );
     
-    void handleWorldCollisions(
+    void handleObjectWorldCollisions(
         ObjectManager * manager,
         CollisionResolver * resolver,
         World * world,
+        std::set<Id> objects
+    );
+
+
+    void handleObjectWorldCollisions(
+        ObjectManager * manager,
+        CollisionResolver * resolver,
+        TileWorld * world,
+        std::set<Id> objects
+    );
+
+
+    void handleObjectWorldCollisions(
+        ObjectManager * manager,
+        CollisionResolver * resolver,
+        MarchingWorld * world,
         std::set<Id> objects
     );
 
