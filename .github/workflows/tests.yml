@@ -41,7 +41,19 @@ jobs:
 
     - name: linux-X-windows
       # Build your program with the given configuration
-      run: ./dependencies.sh -w && ./build.sh -w -t
+      run: |
+        ./dependencies.sh -w && ./build.sh -w -t 
+        mkdir windowbuild 
+        cp build/Jerboa windowsbuild/ 
+        cp -r resources windowsbuild/ 
+        cp tile.hmap windowsbuild/ 
+        cp -r include/lib/windows/* windowsbuild
+    
+    - name: buildArtifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: windowsbuild
+        path: windowsbuild/
       
   linuxRun:
     needs: linuxXlinux
@@ -62,9 +74,7 @@ jobs:
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 1024x768x8 &
           sleep 5
-          ./Jerboa 2>/dev/null &
-          sleep 30
-          xwd -root -silent | convert xwd:- png:screenshot.png
+          ./Jerboa
           
       - name: upload artifact
         uses: actions/upload-artifact@v3
