@@ -198,7 +198,6 @@ else ()
   find_package(ZLIB)
 endif ()
 
-
 # Create the configuration file
 if (UNIX)
   check_include_file("unistd.h" HAVE_UNISTD_H)

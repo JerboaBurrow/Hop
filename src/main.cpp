@@ -124,7 +124,7 @@ int main()
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 1;
+  int n = 10;
 
   sf::Clock timer2;
   double t1 = 0.0;

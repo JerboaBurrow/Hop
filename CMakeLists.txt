@@ -59,6 +59,8 @@ set(CMAKE_BUILD_RPATH ".")
 add_subdirectory(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
 include_directories(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+SET(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=TRUE)
+SET(CMAKE_DISABLE_FIND_PACKAGE_BZip2=TRUE)
 # force freetype to use the static zlib build
 SET(FT_WITH_HARFBUZZ OFF)
 SET(FT_WITH_BZIP2 OFF)
