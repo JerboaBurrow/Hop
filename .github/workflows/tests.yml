@@ -74,7 +74,10 @@ jobs:
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
           sleep 5
-          MESA_GL_VERSION_OVERRIDE=3.3 ./Jerboa
+          MESA_GL_VERSION_OVERRIDE=3.3 ./Jerboa &
+          sleep 10
+          xwd -root -silent | convert xwd:- png:screenshot.png
+          
           
       - name: upload artifact
         uses: actions/upload-artifact@v3
