@@ -6,20 +6,18 @@ using namespace std::chrono;
 
 void sCollision::update(ObjectManager * m, World * w)
 {
-    detector->handleObjectCollisions(
+    detector->handleObjectObjectCollisions(
         m,
         resolver.get(),
         objects
     );
 
-    for (auto it = objects.begin(); it != objects.end(); it++)
-    {
-        resolver->handleObjectWorldCollisions(
-            *it,
-            m,
-            w
-        );
-    }
+    detector->handleObjectWorldCollisions(
+        m,
+        resolver.get(),
+        w,
+        objects
+    );
 }
 
 void sCollision::centreOn(double x, double y)

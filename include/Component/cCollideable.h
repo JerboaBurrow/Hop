@@ -7,8 +7,15 @@ struct cCollideable
 {
     CollisionMesh mesh;
 
-    cCollideable(std::vector<CollisionVertex> v)
-    : mesh(CollisionMesh(v))
+    cCollideable
+    (
+        std::vector<CollisionVertex> v,
+        double x,
+        double y, 
+        double theta, 
+        double scale
+    )
+    : mesh(CollisionMesh(v,x,y,theta,scale))
     {}
 
     cCollideable(){}

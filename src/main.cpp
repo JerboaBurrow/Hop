@@ -110,8 +110,8 @@ int main()
   FixedSource mapSource;
   mapSource.load("tile",false);
  
-  MarchingWorld map(2,camera,16,0,&mapSource,&bounds);
-  // TileWorld map(2,camera,16,1,&mapSource,&bounds);
+  //MarchingWorld map(2,camera,16,0,&mapSource,&bounds);
+  TileWorld map(2,camera,16,0,&mapSource,&bounds);
 
   float posX = 0.0;
   float posY = 0.0;
@@ -170,7 +170,8 @@ int main()
     manager.addComponent<cCollideable>(
       pid,
       cCollideable(
-        std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)}
+        std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)},
+        x,y,0.0,radius
       )
     );
 
@@ -192,7 +193,6 @@ int main()
   physics.stabaliseObjectParameters(&manager);
 
   unsigned L = std::ceil(1.0/(2.0*radius));
-  std::cout << L << "\n";
   auto cellList = std::make_unique<CellList>(L,tupled(0.0,1.0),tupled(0.0,1.0));
   auto res = std::make_unique<SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
   collisions.setDetector(std::move(cellList));

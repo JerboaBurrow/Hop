@@ -148,7 +148,7 @@ void CellList::cellCollisions(
         while (cells[c2+p2] != NULL_INDEX)
         {
             j = cells[c2+p2];
-            resolver->handleObjectCollision(
+            resolver->handleObjectObjectCollision(
                 id[i].first,id[j].first,
                 id[i].second,id[j].second,
                 manager
@@ -182,7 +182,7 @@ void CellList::cellCollisionsThreaded(
     }
 }
 
-void CellList::handleObjectCollisions(
+void CellList::handleObjectObjectCollisions(
     ObjectManager * manager,
     CollisionResolver * resolver,
     std::set<Id> objects
@@ -231,12 +231,70 @@ void CellList::handleObjectCollisions(
     }
 }
 
-void CellList::handleWorldCollisions(
+void CellList::handleObjectWorldCollisions(
     ObjectManager * manager,
     CollisionResolver * resolver,
     World * world,
-    std::set<Id>
+    std::set<Id> objects
 )
 {
+    TileWorld * tw = dynamic_cast<TileWorld*>(world);
 
+    if (tw != nullptr)
+    {
+        handleObjectWorldCollisions(
+            manager,
+            resolver,
+            tw,
+            objects
+        );
+        return;
+    }
+    
+    MarchingWorld * mw = dynamic_cast<MarchingWorld*>(world);
+
+    if (mw != nullptr)
+    {
+        handleObjectWorldCollisions(
+            manager,
+            resolver,
+            mw,
+            objects
+        );
+        return;
+    }
+}
+
+void CellList::handleObjectWorldCollisions(
+    ObjectManager * manager,
+    CollisionResolver * resolver,
+    TileWorld * world,
+    std::set<Id> objects
+)
+{
+    for (auto it = objects.begin(); it != objects.end(); it++)
+    {
+        resolver->handleObjectWorldCollisions(
+            *it,
+            manager,
+            world
+        );
+    }
+}
+
+void CellList::handleObjectWorldCollisions(
+    ObjectManager * manager,
+    CollisionResolver * resolver,
+    MarchingWorld * world,
+    std::set<Id> objects
+)
+{
+    for (auto it = objects.begin(); it != objects.end(); it++)
+    {
+        resolver->handleObjectWorldCollisions(
+            *it,
+            manager,
+            world
+        );
+    }
 }

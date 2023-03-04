@@ -36,7 +36,24 @@ struct CollisionMesh
     //   radius r in model space
     CollisionMesh(std::vector<Vertex> v, double r = 0.01);
     // construct a mesh from given points
-    CollisionMesh(std::vector<CollisionVertex> v)
+    CollisionMesh
+    (
+        std::vector<CollisionVertex> v,
+        double x,
+        double y, 
+        double theta, 
+        double scale
+    )
+    {
+        vertices=v;
+        worldVertices=v;
+        updateWorldMesh(x,y,theta,scale);
+    }
+
+    CollisionMesh
+    (
+        std::vector<CollisionVertex> v
+    )
     {
         vertices=v;
         worldVertices=v;
