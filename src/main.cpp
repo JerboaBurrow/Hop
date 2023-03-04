@@ -110,8 +110,8 @@ int main()
   FixedSource mapSource;
   mapSource.load("tile",false);
  
-  MarchingWorld map(2,camera,16,0,&mapSource,&bounds);
-  // TileWorld map(2,camera,16,1,&mapSource,&bounds);
+  //MarchingWorld map(2,camera,16,0,&mapSource,&bounds);
+  TileWorld map(2,camera,16,0,&mapSource,&bounds);
 
   float posX = 0.0;
   float posY = 0.0;
@@ -124,7 +124,7 @@ int main()
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 100;
+  int n = 1;
 
   sf::Clock timer2;
   double t1 = 0.0;
@@ -170,7 +170,8 @@ int main()
     manager.addComponent<cCollideable>(
       pid,
       cCollideable(
-        std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)}
+        std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)},
+        x,y,0.0,radius
       )
     );
 

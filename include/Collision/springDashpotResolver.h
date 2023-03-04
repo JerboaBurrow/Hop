@@ -57,6 +57,36 @@ public:
         double cor
     );
 
+    void tileCollision
+    (
+        Tile & h,
+        double x0,
+        double y0,
+        CollisionVertex & c,
+        cPhysics & dataP,
+        double & hx,
+        double & hy,
+        double & lx,
+        double & ly,
+        bool & inside
+    );
+
+    void tileBoundariesCollision
+    (
+        CollisionVertex & c,
+        cPhysics & dataP,
+        TileBoundsData & tileBounds
+    );
+
+    void applyForce
+    (
+        double nx,
+        double ny,
+        double d2,
+        double c,
+        cPhysics & dataP
+    );
+
 private:
 
     double collisionTime, coefficientOfRestitution;
