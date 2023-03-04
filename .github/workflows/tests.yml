@@ -44,7 +44,7 @@ jobs:
       run: |
         ./dependencies.sh -w && ./build.sh -w -t 
         mkdir windowbuild 
-        cp build/Jerboa windowsbuild/ 
+        cp build/Jerboa.exe windowsbuild/ 
         cp -r resources windowsbuild/ 
         cp tile.hmap windowsbuild/ 
         cp -r include/lib/windows/* windowsbuild
