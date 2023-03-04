@@ -1,95 +1,100 @@
 #include <Object/objectManager.h>
 
-Id ObjectManager::createObject()
-{
-    std::shared_ptr<Object> o = std::make_shared<Object>();
-
-    objects[o->id] = o;
-    idToSignature[o->id] = Signature();
-    handleToId[o->id.idStr] = o->id;
-
-    return o->id;
-}
-
-Id ObjectManager::createObject(std::string handle)
-{
-    std::shared_ptr<Object> o = std::make_shared<Object>();
-
-    objects[o->id] = o;
-    idToSignature[o->id] = Signature();
-
-    handleToId[handle] = o->id;
-
-    return o->id;
-}
-
-void ObjectManager::remove(Id id){}
-
-void ObjectManager::remove(std::string handle){}
-
-// do nothing callback
-void identityCallback(Id & i, Id & j){return;}
-
-void ObjectManager::initialiseBaseECS()
+namespace Hop::Object
 {
 
-    registerComponent<cTransform>();
-    registerComponent<cRenderable>();
-    registerComponent<cPhysics>();
-    registerComponent<cCollideable>();
+    Id ObjectManager::createObject()
+    {
+        std::shared_ptr<Object> o = std::make_shared<Object>();
 
-    registerSystem<sRender>();
-    registerSystem<sPhysics>();
-    registerSystem<sCollision>();
+        objects[o->id] = o;
+        idToSignature[o->id] = Signature();
+        handleToId[o->id.idStr] = o->id;
 
-    uint32_t tId = getComponentId<cTransform>();
-    uint32_t rId = getComponentId<cRenderable>();
-    uint32_t pId = getComponentId<cPhysics>();
-    uint32_t cId = getComponentId<cCollideable>();
+        return o->id;
+    }
 
-    Signature sRenderSig = Signature();
+    Id ObjectManager::createObject(std::string handle)
+    {
+        std::shared_ptr<Object> o = std::make_shared<Object>();
 
-    sRenderSig.set(
-        rId,
-        true
-    );
+        objects[o->id] = o;
+        idToSignature[o->id] = Signature();
 
-    sRenderSig.set(
-        tId,
-        true
-    );
+        handleToId[handle] = o->id;
 
-    systemManager.setSignature<sRender>(sRenderSig);
+        return o->id;
+    }
 
-    Signature sPhysicsSig = Signature();
+    void ObjectManager::remove(Id id){}
 
-    sPhysicsSig.set(
-        pId,
-        true
-    );
-    sPhysicsSig.set(
-        tId,
-        true
-    );
+    void ObjectManager::remove(std::string handle){}
 
-    systemManager.setSignature<sPhysics>(sPhysicsSig);
-    
-    Signature sCollisionSig = Signature();
+    // do nothing callback
+    void identityCallback(Id & i, Id & j){return;}
 
-    sCollisionSig.set(
-        pId,
-        true
-    );
-    sCollisionSig.set(
-        cId,
-        true
-    );
+    void ObjectManager::initialiseBaseECS()
+    {
 
-    systemManager.setSignature<sCollision>(sCollisionSig);
+        registerComponent<cTransform>();
+        registerComponent<cRenderable>();
+        registerComponent<cPhysics>();
+        registerComponent<cCollideable>();
 
-    INFO("Registered rendering with signature"+sRenderSig.to_string())>>log;
-    INFO("Registered physics with signature"+sPhysicsSig.to_string())>>log;
-    INFO("Registered collisions with signature"+sCollisionSig.to_string())>>log;
+        registerSystem<sRender>();
+        registerSystem<sPhysics>();
+        registerSystem<sCollision>();
 
+        uint32_t tId = getComponentId<cTransform>();
+        uint32_t rId = getComponentId<cRenderable>();
+        uint32_t pId = getComponentId<cPhysics>();
+        uint32_t cId = getComponentId<cCollideable>();
+
+        Signature sRenderSig = Signature();
+
+        sRenderSig.set(
+            rId,
+            true
+        );
+
+        sRenderSig.set(
+            tId,
+            true
+        );
+
+        systemManager.setSignature<sRender>(sRenderSig);
+
+        Signature sPhysicsSig = Signature();
+
+        sPhysicsSig.set(
+            pId,
+            true
+        );
+        sPhysicsSig.set(
+            tId,
+            true
+        );
+
+        systemManager.setSignature<sPhysics>(sPhysicsSig);
+        
+        Signature sCollisionSig = Signature();
+
+        sCollisionSig.set(
+            pId,
+            true
+        );
+        sCollisionSig.set(
+            cId,
+            true
+        );
+
+        systemManager.setSignature<sCollision>(sCollisionSig);
+
+        INFO("Registered rendering with signature"+sRenderSig.to_string())>>log;
+        INFO("Registered physics with signature"+sPhysicsSig.to_string())>>log;
+        INFO("Registered collisions with signature"+sCollisionSig.to_string())>>log;
+
+
+    }
 
 }

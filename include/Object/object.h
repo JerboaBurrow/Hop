@@ -2,16 +2,19 @@
 #define OBJECT_H
 
 #include <Object/id.h>
-
-class Object 
+namespace Hop::Object
 {
 
-public:
+    class Object 
+    {
 
-    Object()
-    {}
+    public:
 
-    const Id id;
-};
+        Object()
+        {}
 
+        const Id id;
+    };
+
+}
 #endif /* OBJECT_H */

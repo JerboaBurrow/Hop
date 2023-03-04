@@ -8,6 +8,8 @@ const double tol = 1e-6;
 #include <Maths/topology.h>
 #include <Maths/distance.h>
 
+using namespace Hop::Maths;
+
 std::default_random_engine e;
 std::uniform_int_distribution<uint64_t> U(0,-1);
 

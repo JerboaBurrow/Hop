@@ -14,7 +14,12 @@
 #include <World/mapSource.h>
 #include <World/fixedSource.h>
 
-class CollisionDetector;
+namespace Hop::System::Physics
+{
+    class CollisionDetector;
+}
+
+using Hop::System::Physics::CollisionDetector;
 
 class MapReadException: public std::exception 
 {

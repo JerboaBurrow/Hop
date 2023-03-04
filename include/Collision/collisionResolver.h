@@ -7,35 +7,46 @@
 #include <World/tileWorld.h>
 #include <World/marchingWorld.h>
 
+namespace Hop::Object
+{
+    class ObjectManager;
+}
 
-class ObjectManager;
 class World;
 
-class CollisionResolver 
+namespace Hop::System::Physics
 {
+        
+    using Hop::Object::ObjectManager;
+    using Hop::Object::Id;
 
-public:
+    class CollisionResolver 
+    {
 
-    CollisionResolver(){}
-    
-    virtual void handleObjectObjectCollision(
-        std::string & objectI, std::string & objectJ,
-        uint64_t particleI, uint64_t particleJ,
-        ObjectManager * manager
-    ) = 0;
+    public:
 
-    virtual void handleObjectWorldCollisions(
-        Id id,
-        ObjectManager * manager,
-        TileWorld * world
-    ) = 0;
+        CollisionResolver(){}
+        
+        virtual void handleObjectObjectCollision(
+            std::string & objectI, std::string & objectJ,
+            uint64_t particleI, uint64_t particleJ,
+            ObjectManager * manager
+        ) = 0;
 
-    virtual void handleObjectWorldCollisions(
-        Id id,
-        ObjectManager * manager,
-        MarchingWorld * world
-    ) = 0;
+        virtual void handleObjectWorldCollisions(
+            Id id,
+            ObjectManager * manager,
+            TileWorld * world
+        ) = 0;
 
-};
+        virtual void handleObjectWorldCollisions(
+            Id id,
+            ObjectManager * manager,
+            MarchingWorld * world
+        ) = 0;
+
+    };
+
+}
 
 #endif /* COLLISIONRESOLVER_H */

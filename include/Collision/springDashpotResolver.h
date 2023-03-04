@@ -11,88 +11,91 @@
 
 #include <Maths/topology.h>
 #include <Maths/distance.h>
-#include <Maths/vertex.h>
 
-const double WALL_MASS_MULTIPLIER = 10.0;
-
-class SpringDashpot : public CollisionResolver 
+namespace Hop::System::Physics
 {
-public:
-    SpringDashpot(
-        double tc,
-        double cor,
-        double f
-    )
+
+    const double WALL_MASS_MULTIPLIER = 10.0;
+
+    class SpringDashpot : public CollisionResolver 
     {
-        updateParameters(tc,cor);
-        friction = f;
-    }
+    public:
+        SpringDashpot(
+            double tc,
+            double cor,
+            double f
+        )
+        {
+            updateParameters(tc,cor);
+            friction = f;
+        }
 
-    void handleObjectObjectCollision(
-        std::string & objectI, std::string & objectJ,
-        uint64_t particleI, uint64_t particleJ,
-        ObjectManager * manager
-    );
+        void handleObjectObjectCollision(
+            std::string & objectI, std::string & objectJ,
+            uint64_t particleI, uint64_t particleJ,
+            ObjectManager * manager
+        );
 
-    void handleObjectWorldCollisions(
-        Id id,
-        ObjectManager * manager,
-        World * world
-    );
+        void handleObjectWorldCollisions(
+            Id id,
+            ObjectManager * manager,
+            World * world
+        );
 
-    void handleObjectWorldCollisions(
-        Id id,
-        ObjectManager * manager,
-        TileWorld * world
-    );
+        void handleObjectWorldCollisions(
+            Id id,
+            ObjectManager * manager,
+            TileWorld * world
+        );
 
-    void handleObjectWorldCollisions(
-        Id id,
-        ObjectManager * manager,
-        MarchingWorld * world
-    );
-    
-    void updateParameters(
-        double tc,
-        double cor
-    );
+        void handleObjectWorldCollisions(
+            Id id,
+            ObjectManager * manager,
+            MarchingWorld * world
+        );
+        
+        void updateParameters(
+            double tc,
+            double cor
+        );
 
-    void tileCollision
-    (
-        Tile & h,
-        double x0,
-        double y0,
-        CollisionVertex & c,
-        cPhysics & dataP,
-        double & hx,
-        double & hy,
-        double & lx,
-        double & ly,
-        bool & inside
-    );
+        void tileCollision
+        (
+            Tile & h,
+            double x0,
+            double y0,
+            CollisionVertex & c,
+            cPhysics & dataP,
+            double & hx,
+            double & hy,
+            double & lx,
+            double & ly,
+            bool & inside
+        );
 
-    void tileBoundariesCollision
-    (
-        CollisionVertex & c,
-        cPhysics & dataP,
-        TileBoundsData & tileBounds
-    );
+        void tileBoundariesCollision
+        (
+            CollisionVertex & c,
+            cPhysics & dataP,
+            TileBoundsData & tileBounds
+        );
 
-    void applyForce
-    (
-        double nx,
-        double ny,
-        double d2,
-        double c,
-        cPhysics & dataP
-    );
+        void applyForce
+        (
+            double nx,
+            double ny,
+            double d2,
+            double c,
+            cPhysics & dataP
+        );
 
-private:
+    private:
 
-    double collisionTime, coefficientOfRestitution;
+        double collisionTime, coefficientOfRestitution;
 
-    // pre-calculated collision parameters
-    double alpha, beta, friction;
-};
+        // pre-calculated collision parameters
+        double alpha, beta, friction;
+    };
 
+}
 #endif /* SPRINGDASHPOTRESOLVER_H */

@@ -4,61 +4,69 @@
 #include <Object/objectManager.h>
 #include <Component/cPhysics.h>
 
-class ObjectManager;
-class sPhysics;
-/*
-    System to update cPhysics components given forces
-*/
-class sPhysics : public System 
+namespace Hop::Object
 {
-    
-public:
+    class ObjectManager;
+}
 
-    sPhysics(){dt=1.0/300.0;gravity=9.81;dtdt=dt*dt;}
 
-    void update(ObjectManager * m);
-    
-    void applyForce(
-        ObjectManager * m,
-        Id i,
-        double x,
-        double y,
-        double fx,
-        double fy
-    );
+namespace Hop::System::Physics
+{
+    using Hop::Object::ObjectManager;
+    /*
+        System to update cPhysics components given forces
+    */
+    class sPhysics : public System 
+    {
+        
+    public:
 
-    void applyForce(
-        ObjectManager * m,
-        double fx,
-        double fy
-    );
+        sPhysics(){dt=1.0/300.0;gravity=9.81;dtdt=dt*dt;}
 
-    // automatically compute stable simulation parameters
-    // updating all objects
-    void stabaliseObjectParameters(ObjectManager * m);
-    void setTimeStep(double delta){dt = delta; dtdt = dt*dt;}
-    void setGravity(double g){gravity=g;}
+        void update(ObjectManager * m);
+        
+        void applyForce(
+            ObjectManager * m,
+            Id i,
+            double x,
+            double y,
+            double fx,
+            double fy
+        );
 
-private:
+        void applyForce(
+            ObjectManager * m,
+            double fx,
+            double fy
+        );
 
-    void processThreaded(ObjectManager * m, size_t threadId);
+        // automatically compute stable simulation parameters
+        // updating all objects
+        void stabaliseObjectParameters(Hop::Object::ObjectManager * m);
+        void setTimeStep(double delta){dt = delta; dtdt = dt*dt;}
+        void setGravity(double g){gravity=g;}
 
-    void updateThreaded(ObjectManager * m);
+    private:
 
-    std::default_random_engine e;
-    std::normal_distribution<double> normal;
+        void processThreaded(ObjectManager * m, size_t threadId);
 
-    double dt;
-    double dtdt;
-    double gravity;
+        void updateThreaded(ObjectManager * m);
 
-    // see implementation for details
-    double stableDragUnderdampedLangevinWithGravityUnitMass(
-        double dt,
-        double gravity,
-        double radius
-    );
+        std::default_random_engine e;
+        std::normal_distribution<double> normal;
 
-};
+        double dt;
+        double dtdt;
+        double gravity;
 
+        // see implementation for details
+        double stableDragUnderdampedLangevinWithGravityUnitMass(
+            double dt,
+            double gravity,
+            double radius
+        );
+
+    };
+
+}
 #endif /* SPHYSICS_H */

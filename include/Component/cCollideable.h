@@ -3,6 +3,9 @@
 
 #include <Collision/collisionMesh.h>
 
+using Hop::System::Physics::CollisionMesh;
+using Hop::System::Physics::CollisionVertex;
+
 struct cCollideable 
 {
     CollisionMesh mesh;

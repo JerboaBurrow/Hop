@@ -32,7 +32,6 @@
 #include <chrono>
 using namespace std::chrono;
 
-
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
@@ -44,6 +43,10 @@ double deltas[60];
 Shaders shaderPool;
 
 const double deltaPhysics = 1.0/600.0;
+
+using namespace Hop::Object;
+using namespace Hop::System;
+using Hop::System::Physics::CellList;
 
 int main()
 {
@@ -193,8 +196,11 @@ int main()
   physics.stabaliseObjectParameters(&manager);
 
   unsigned L = std::ceil(1.0/(2.0*radius));
-  auto cellList = std::make_unique<CellList>(L,tupled(0.0,1.0),tupled(0.0,1.0));
-  auto res = std::make_unique<SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
+
+  auto cellList = std::make_unique<CellList>(L,Hop::Util::tupled(0.0,1.0),Hop::Util::tupled(0.0,1.0));
+
+  auto res = std::make_unique<Hop::System::Physics::SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
+
   collisions.setDetector(std::move(cellList));
   collisions.setResolver(std::move(res));
 

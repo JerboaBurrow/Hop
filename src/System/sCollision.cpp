@@ -4,23 +4,28 @@
 #include <chrono>
 using namespace std::chrono;
 
-void sCollision::update(ObjectManager * m, World * w)
+namespace Hop::System::Physics
 {
-    detector->handleObjectObjectCollisions(
-        m,
-        resolver.get(),
-        objects
-    );
 
-    detector->handleObjectWorldCollisions(
-        m,
-        resolver.get(),
-        w,
-        objects
-    );
-}
+    void sCollision::update(ObjectManager * m, World * w)
+    {
+        detector->handleObjectObjectCollisions(
+            m,
+            resolver.get(),
+            objects
+        );
 
-void sCollision::centreOn(double x, double y)
-{
-    detector->centreOn(x,y);
+        detector->handleObjectWorldCollisions(
+            m,
+            resolver.get(),
+            w,
+            objects
+        );
+    }
+
+    void sCollision::centreOn(double x, double y)
+    {
+        detector->centreOn(x,y);
+    }
+
 }
