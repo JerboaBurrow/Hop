@@ -12,6 +12,8 @@
 #include <Util/sparseData.h>
 #include <utility>
 
+const uint64_t MAP_DATA_NULL = 0;
+
 using ivec2 = std::pair<int32_t,int32_t>;
 using MapData = SparseData<ivec2,uint64_t>;
 

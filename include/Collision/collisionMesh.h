@@ -3,10 +3,8 @@
 
 #include <vector>
 #include <cmath>
-#include <Collision/vertex.h>
+#include <Maths/vertex.h>
 #include <limits>
-
-#include <iostream>
 
 struct CollisionVertex 
 {

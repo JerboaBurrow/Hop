@@ -5,13 +5,13 @@
 #include <cmath>
 #include <Object/objectManager.h>
 #include <Collision/collisionMesh.h>
-#include <Collision/vertex.h>
 
 #include <World/tileWorld.h>
 #include <World/marchingWorld.h>
 
 #include <Maths/topology.h>
 #include <Maths/distance.h>
+#include <Maths/vertex.h>
 
 const double WALL_MASS_MULTIPLIER = 10.0;
 

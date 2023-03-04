@@ -1,4 +1,4 @@
-#include <Collision/vertex.h>
+#include <Maths/vertex.h>
 
 Vertex operator/(Vertex const lhs, double const rhs)
 {
