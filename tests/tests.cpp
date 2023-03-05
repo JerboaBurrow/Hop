@@ -9,6 +9,7 @@ const double tol = 1e-6;
 #include <Maths/distance.h>
 
 using namespace Hop::Maths;
+using namespace Hop::World;
 
 std::default_random_engine e;
 std::uniform_int_distribution<uint64_t> U(0,-1);
