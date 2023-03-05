@@ -3,6 +3,7 @@ name: Hop
 on:
   push:
     branches: [ "main" ]
+    tags:     'v*'
   pull_request:
 
 jobs:
@@ -85,6 +86,51 @@ jobs:
           name: screenshot
           path: screenshot.png
           
+  release:
+    needs: [linuxXlinux, linuxXwindows]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-18.04
+    
+    steps:
+      - name: get linux build
+        uses: actions/download-artifact@v3
+        with:
+          name: linuxbuild
+          
+      - name: get windows build
+        uses: actions/download-artifact@v3
+        with:
+          name: windowsbuild     
+        
+      - name: create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: true
+          prerelease: false
+          release_name: "release-${{ github.ref_name }}"
+          tag_name: ${{ github.ref }}
       
+      - name: upload linux release artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: linuxbuild/
+          asset_name: linux
+          asset_content_type: application/zip
+          
+      - name: upload windows release artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: windowsbuild/
+          asset_name: windows
+          asset_content_type: application/zip
+
     
 
