@@ -15,6 +15,9 @@
 namespace Hop::System::Physics
 {
 
+    using namespace Hop::Object::Component;
+    using Hop::World::World;
+
     const double WALL_MASS_MULTIPLIER = 10.0;
 
     class SpringDashpot : public CollisionResolver 

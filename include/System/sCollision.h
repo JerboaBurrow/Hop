@@ -8,6 +8,8 @@
 
 namespace Hop::System::Physics
 {
+
+    using Hop::World::World;
     /*
         System to detect collisions and apply forces
     */

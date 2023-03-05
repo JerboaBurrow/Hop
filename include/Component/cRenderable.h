@@ -3,56 +3,60 @@
 
 #include <string>
 
-struct cRenderable 
+namespace Hop::Object::Component
 {
-    // offset in transform
 
-    // colour
-    float r;
-    float g;
-    float b;
-    float a;
+  struct cRenderable 
+  {
+      // offset in transform
 
-    // atlas coord
-    float ux;
-    float uy;
-    
-    // extra?
-    float vx;
-    float vy;
-    std::string shaderHandle;
+      // colour
+      float r;
+      float g;
+      float b;
+      float a;
 
-    bool stale;
+      // atlas coord
+      float ux;
+      float uy;
+      
+      // extra?
+      float vx;
+      float vy;
+      std::string shaderHandle;
 
-    cRenderable(std::string shader)
-    : r(1.0),g(0.0),b(0.0),a(1.0),
-      ux(0.0),uy(0.0),vx(0.0),vy(0.0),
-      shaderHandle(shader),stale(true)
-    {}
+      bool stale;
 
-    cRenderable(
-    )
-    : r(1.0),g(0.0),b(0.0),a(1.0),
-      ux(0.0),uy(0.0),vx(0.0),vy(0.0),
-      shaderHandle(""),stale(true)
-    {}
+      cRenderable(std::string shader)
+      : r(1.0),g(0.0),b(0.0),a(1.0),
+        ux(0.0),uy(0.0),vx(0.0),vy(0.0),
+        shaderHandle(shader),stale(true)
+      {}
 
-    cRenderable(
-      std::string shader, float r, float g, float b, float a
-    )
-    : r(r),g(g),b(b),a(a),
-      ux(0.0),uy(0.0),vx(0.0),vy(0.0),
-      shaderHandle(shader),stale(true)
-    {}
+      cRenderable(
+      )
+      : r(1.0),g(0.0),b(0.0),a(1.0),
+        ux(0.0),uy(0.0),vx(0.0),vy(0.0),
+        shaderHandle(""),stale(true)
+      {}
 
-    cRenderable(
-      float r, float g, float b, float a
-    )
-    : r(r),g(g),b(b),a(a),
-      ux(0.0),uy(0.0),vx(0.0),vy(0.0),
-      shaderHandle(""),stale(true)
-    {}
-     
-};
+      cRenderable(
+        std::string shader, float r, float g, float b, float a
+      )
+      : r(r),g(g),b(b),a(a),
+        ux(0.0),uy(0.0),vx(0.0),vy(0.0),
+        shaderHandle(shader),stale(true)
+      {}
 
+      cRenderable(
+        float r, float g, float b, float a
+      )
+      : r(r),g(g),b(b),a(a),
+        ux(0.0),uy(0.0),vx(0.0),vy(0.0),
+        shaderHandle(""),stale(true)
+      {}
+      
+  };
+
+}
 #endif /* CRENDERABLE_H */

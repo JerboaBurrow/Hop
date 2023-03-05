@@ -19,6 +19,9 @@ namespace Hop::System::Rendering
 {
     using Hop::Object::ObjectManager;
     
+    using Hop::Object::Component::cRenderable;
+    using Hop::Object::Component::cTransform;
+    
     const int MAX_OBJECTS_PER_SHADER = 100000; // 0.4 megabytes per shader
     /*
 

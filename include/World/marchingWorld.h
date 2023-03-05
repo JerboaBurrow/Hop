@@ -5,38 +5,43 @@
 
 #include <World/perlinSource.h>
 
-class MarchingWorld : public World 
+namespace Hop::World 
 {
 
-public:
+    class MarchingWorld : public World 
+    {
 
-    MarchingWorld(
-        uint64_t s, 
-        OrthoCam & c, 
-        uint64_t renderRegion, 
-        uint64_t dynamicsShell,
-        MapSource * f,
-        Boundary * b
-    );
+    public:
 
-    void save(std::string filename){}
-    void load(std::string filename){}
+        MarchingWorld(
+            uint64_t s, 
+            OrthoCam & c, 
+            uint64_t renderRegion, 
+            uint64_t dynamicsShell,
+            MapSource * f,
+            Boundary * b
+        );
 
-    void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
-    Tile tileType(int & i, int & j);
-    void tileToIdCoord(int ix, int iy, int & i, int & j);
-    void updateRegion(float x, float y);
+        void save(std::string filename){}
+        void load(std::string filename){}
 
-private:
+        void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
+        Tile tileType(int & i, int & j);
+        void tileToIdCoord(int ix, int iy, int & i, int & j);
+        void updateRegion(float x, float y);
 
-    const uint64_t RENDER_REGION_BUFFER_SIZE, DYNAMICS_REGION_BUFFER_SIZE;
-    const uint64_t RENDER_REGION_START;
+    private:
 
-    std::unique_ptr<bool[]> renderRegionBuffer;
-    std::unique_ptr<bool[]> renderRegionBackBuffer;
+        const uint64_t RENDER_REGION_BUFFER_SIZE, DYNAMICS_REGION_BUFFER_SIZE;
+        const uint64_t RENDER_REGION_START;
 
-    void processBufferToOffsets();
+        std::unique_ptr<bool[]> renderRegionBuffer;
+        std::unique_ptr<bool[]> renderRegionBackBuffer;
 
-};
+        void processBufferToOffsets();
+
+    };
+
+}
 
 #endif /* MARCHINGWORLD_H */

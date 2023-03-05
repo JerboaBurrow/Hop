@@ -19,6 +19,7 @@ namespace Hop::System::Physics
 
     using Hop::Object::ObjectManager;
     using Hop::Util::tupled;
+    using Hop::World::World;
 
     class CollisionDetector 
     {

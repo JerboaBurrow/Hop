@@ -40,7 +40,7 @@ const float MAX_SPEED = 1.0/60.0;
 uint8_t frameId = 0;
 double deltas[60];
 
-Shaders shaderPool;
+Hop::System::Rendering::Shaders shaderPool;
 
 const double deltaPhysics = 1.0/600.0;
 
@@ -100,12 +100,12 @@ int main()
   sf::Clock timer;
   timer.restart();
 
-  PerlinSource perlin(2,0.07,5.0,5.0,256);
+  Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
   perlin.setThreshold(0.2);
   perlin.setSize(16*3+1);
 
-  InfiniteBoundary bounds;
-  MarchingWorld map(2,camera,16,1,&perlin,&bounds);
+  Hop::World::InfiniteBoundary bounds;
+  Hop::World::MarchingWorld map(2,camera,16,1,&perlin,&bounds);
 
   //FixedSource();
 
@@ -121,8 +121,19 @@ int main()
 
   ObjectManager manager(8);
 
-  shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
-  shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
+  shaderPool.makeShader
+  (
+    Hop::System::Rendering::marchingQuadVertexShader,
+    Hop::System::Rendering::marchingQuadFragmentShader,
+    "mapShader"
+  );
+
+  shaderPool.makeShader
+  (
+    Hop::System::Rendering::objectVertexShader,
+    Hop::System::Rendering::circleObjectFragmentShader,
+    "circleObjectShader"
+  );
 
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
@@ -338,7 +349,7 @@ int main()
       float cameraY = camera.getPosition().y;
 
       glm::vec4 world = camera.screenToWorld(mouse.x,mouse.y);
-      Tile h;
+      Hop::World::Tile h;
       
       float x0, y0, s;
       

@@ -12,54 +12,59 @@
 #include <Util/sparseData.h>
 #include <utility>
 
-const uint64_t MAP_DATA_NULL = 0;
-
-using ivec2 = std::pair<int32_t,int32_t>;
-using MapData = SparseData<ivec2,uint64_t>;
-
-const char * const MAP_FILE_EXTENSION = ".hmap";
-const char * const MAP_FILE_EXTENSION_COMPRESSED = ".hmap.z";
-
-const char * const MAP_FILE_HEADER = "Hop map file 0.0.1";
-const char * const COMPRESSED_MAP_FILE_HEADER = "Hop compressed map file 0.0.1 using Zlib 1.2.13 next line is the uncompressed file size";
-
-class MapFileIOError: public std::exception 
+namespace Hop::World 
 {
 
-public:
+    const uint64_t MAP_DATA_NULL = 0;
 
-    MapFileIOError(std::string msg)
-    : msg(msg)
-    {}
+    using ivec2 = std::pair<int32_t,int32_t>;
+    using MapData = SparseData<ivec2,uint64_t>;
 
-private:
+    const char * const MAP_FILE_EXTENSION = ".hmap";
+    const char * const MAP_FILE_EXTENSION_COMPRESSED = ".hmap.z";
 
-    virtual const char * what() const throw()
+    const char * const MAP_FILE_HEADER = "Hop map file 0.0.1";
+    const char * const COMPRESSED_MAP_FILE_HEADER = "Hop compressed map file 0.0.1 using Zlib 1.2.13 next line is the uncompressed file size";
+
+    class MapFileIOError: public std::exception 
     {
-        return msg.c_str();
-    }
-    std::string msg;
-};
 
-class MapFile 
-{
-    
-public:
+    public:
 
-    MapFile() = default;
+        MapFileIOError(std::string msg)
+        : msg(msg)
+        {}
 
-    void load(std::string fileNameWithoutExtension, MapData & data);
+    private:
 
-    void save(std::string fileNameWithoutExtension, MapData & data);
+        virtual const char * what() const throw()
+        {
+            return msg.c_str();
+        }
+        std::string msg;
+    };
 
-    void loadUncompressed(std::string fileNameWithoutExtension, MapData & data);
+    class MapFile 
+    {
+        
+    public:
 
-    void saveUncompressed(std::string fileNameWithoutExtension, MapData & data);
+        MapFile() = default;
 
-private:
+        void load(std::string fileNameWithoutExtension, MapData & data);
 
-    double compressionRatio;
+        void save(std::string fileNameWithoutExtension, MapData & data);
 
-};
+        void loadUncompressed(std::string fileNameWithoutExtension, MapData & data);
+
+        void saveUncompressed(std::string fileNameWithoutExtension, MapData & data);
+
+    private:
+
+        double compressionRatio;
+
+    };
+
+}
 
 #endif /* MAPFILE_H */
