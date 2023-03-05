@@ -79,6 +79,7 @@ jobs:
       - name: launch and screenshot
         run: |
           unzip linuxbuild.zip
+          cd linuxbuild
           chmod +x Jerboa
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
