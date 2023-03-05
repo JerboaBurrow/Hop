@@ -1,6 +1,9 @@
 #ifndef TOPOLOGY_H
 #define TOPOLOGY_H
 
+#include <Maths/triangle.h>
+#include <Maths/vertex.h>
+
 namespace Hop::Maths
 {
 

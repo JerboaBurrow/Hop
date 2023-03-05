@@ -47,6 +47,7 @@ const double deltaPhysics = 1.0/600.0;
 using namespace Hop::Object;
 using namespace Hop::System;
 using Hop::System::Physics::CellList;
+using Hop::System::Rendering::fixedLengthNumber;
 
 int main()
 {
@@ -87,11 +88,11 @@ int main()
   glm::mat4 textProj = glm::ortho(0.0,double(resX),0.0,double(resY));
 
   // must be initialised before so the shader is in use..?
-  TextRenderer textRenderer(textProj);
+  Hop::System::Rendering::TextRenderer textRenderer(textProj);
 
-  Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
+  Hop::System::Rendering::Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
 
-  OrthoCam camera(resX,resY,glm::vec2(0.0,0.0));
+  Hop::System::Rendering::OrthoCam camera(resX,resY,glm::vec2(0.0,0.0));
 
   glViewport(0,0,resX,resY);
 

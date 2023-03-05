@@ -21,9 +21,12 @@ namespace Hop::System::Physics
 
 namespace Hop::World 
 {
+      
+    using namespace Hop::GL;
 
     using Hop::System::Physics::CollisionDetector;
     using Hop::System::Rendering::Shader;
+    using Hop::System::Rendering::OrthoCam;
 
     class MapReadException: public std::exception 
     {

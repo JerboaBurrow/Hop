@@ -11,6 +11,8 @@
 
 namespace Hop::System::Rendering
 {
+   
+    using namespace Hop::GL;
 
     class ShaderSourceNotFound: public std::exception 
     {

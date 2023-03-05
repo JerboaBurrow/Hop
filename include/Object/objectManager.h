@@ -43,10 +43,13 @@ namespace Hop::Object
 {
 
     using namespace Hop::Object::Component;
+    
     using namespace Hop::System;
     using Hop::System::Physics::sPhysics;
     using Hop::System::Physics::sCollision;
     using Hop::System::Rendering::sRender;
+
+    using namespace Hop::Logging;
 
 
     /*
