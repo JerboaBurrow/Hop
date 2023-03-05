@@ -3,25 +3,30 @@
 
 #include <World/mapFile.h>
 
-class MapSource 
+namespace Hop::World 
 {
-    
-public:
 
-    MapSource()
-    : data(MAP_DATA_NULL)
-    {}
+    class MapSource 
+    {
+        
+    public:
 
-    virtual ~MapSource(){}
+        MapSource()
+        : data(MAP_DATA_NULL)
+        {}
 
-    virtual uint64_t getAtCoordinate(int i, int j) = 0;
-    virtual void save(std::string fileNameWithoutExtension, bool compressed = true);
-    virtual void load(std::string fileNameWithoutExtension, bool compressed = true);
+        virtual ~MapSource(){}
 
-protected:
+        virtual uint64_t getAtCoordinate(int i, int j) = 0;
+        virtual void save(std::string fileNameWithoutExtension, bool compressed = true);
+        virtual void load(std::string fileNameWithoutExtension, bool compressed = true);
 
-    MapData data;
+    protected:
 
-};
+        MapData data;
+
+    };
+
+}
 
 #endif /* MAPSOURCE_H */

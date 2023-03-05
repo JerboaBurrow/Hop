@@ -7,28 +7,29 @@
 #include FT_FREETYPE_H
 
 #include <Text/glyph.h>
-
-typedef std::map<char,Glyph> GlyphMap;
-
-class Type 
+namespace Hop::System::Rendering
 {
+  typedef std::map<char,Glyph> GlyphMap;
 
-public:
+  class Type 
+  {
 
-  Type(
-    std::string path,
-    std::string font,
-    uint8_t w
-  );
+  public:
 
-  Glyph & operator[](char c);
+    Type(
+      std::string path,
+      std::string font,
+      uint8_t w
+    );
 
-private:
+    Glyph & operator[](char c);
 
-  GlyphMap glyphs;
-  uint8_t width;
-  std::string name;
-  
-};
+  private:
 
+    GlyphMap glyphs;
+    uint8_t width;
+    std::string name;
+    
+  };
+}
 #endif

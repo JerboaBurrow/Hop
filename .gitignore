@@ -13,3 +13,4 @@ callgrind*
 *.hmap
 *.hmap.z
 !zlib.map
+zlib_build/*

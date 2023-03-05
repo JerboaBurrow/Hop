@@ -3,22 +3,29 @@
 
 #include <Collision/collisionMesh.h>
 
-struct cCollideable 
+namespace Hop::Object::Component
 {
-    CollisionMesh mesh;
+    using Hop::System::Physics::CollisionMesh;
+    using Hop::System::Physics::CollisionVertex;
 
-    cCollideable
-    (
-        std::vector<CollisionVertex> v,
-        double x,
-        double y, 
-        double theta, 
-        double scale
-    )
-    : mesh(CollisionMesh(v,x,y,theta,scale))
-    {}
+    struct cCollideable 
+    {
+        CollisionMesh mesh;
 
-    cCollideable(){}
-};
+        cCollideable
+        (
+            std::vector<CollisionVertex> v,
+            double x,
+            double y, 
+            double theta, 
+            double scale
+        )
+        : mesh(CollisionMesh(v,x,y,theta,scale))
+        {}
+
+        cCollideable(){}
+    };
+
+}
 
 #endif /* CCOLLIDEABLE_H */

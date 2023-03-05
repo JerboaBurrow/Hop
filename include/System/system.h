@@ -5,14 +5,19 @@
 
 #include <set>
 
-class System 
+namespace Hop::System
 {
+    using Hop::Object::Id;
 
-public:
+    class System 
+    {
 
-    std::set<Id> objects;
-    std::vector<std::set<Id>> threadJobs;
-    
-};
+    public:
 
+        std::set<Id> objects;
+        std::vector<std::set<Id>> threadJobs;
+        
+    };
+
+}
 #endif /* SYSTEM_H */

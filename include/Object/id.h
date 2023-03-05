@@ -4,47 +4,51 @@
 #include "uuid.h"
 #include <ostream>
 
-const uuids::uuid generateId();
-const uuids::uuid NULL_ID;
-
-struct Id 
+namespace Hop::Object
 {
-    Id()
-    : id(gen()),idStr(uuids::to_string(id))
-    {}
 
-    Id(uuids::uuid i)
-    : id(i),idStr(uuids::to_string(id))
-    {}
+    const uuids::uuid generateId();
+    const uuids::uuid NULL_ID;
 
-    size_t hash() const {return std::hash<uuids::uuid>{}(id);}
-
-    uuids::uuid id;
-    std::string idStr;
-
-    bool operator==( Id const & rhs ) const {return this->id == rhs.id;}
-    
-    bool operator<(const Id & rhs) const {return this->id < rhs.id;}
-
-    Id & operator=(const Id & j)
+    struct Id 
     {
-        id = j.id;
-        idStr = j.idStr;
-        return *this;
-    }
+        Id()
+        : id(gen()),idStr(uuids::to_string(id))
+        {}
 
-private:
+        Id(uuids::uuid i)
+        : id(i),idStr(uuids::to_string(id))
+        {}
 
-    static std::random_device rd;
-    static std::mt19937 generator;
-    static uuids::uuid_random_generator gen;
-};
+        size_t hash() const {return std::hash<uuids::uuid>{}(id);}
 
-std::ostream & operator<<(std::ostream & os, Id const & value);
+        uuids::uuid id;
+        std::string idStr;
 
-template<> struct std::hash<Id> 
+        bool operator==( Id const & rhs ) const {return this->id == rhs.id;}
+        
+        bool operator<(const Id & rhs) const {return this->id < rhs.id;}
+
+        Id & operator=(const Id & j)
+        {
+            id = j.id;
+            idStr = j.idStr;
+            return *this;
+        }
+
+    private:
+
+        static std::random_device rd;
+        static std::mt19937 generator;
+        static uuids::uuid_random_generator gen;
+    };
+
+    std::ostream & operator<<(std::ostream & os, Id const & value);
+
+}
+
+template<> struct std::hash<Hop::Object::Id> 
 {
-    std::size_t operator()(const Id & i) const {return i.hash();}
+    std::size_t operator()(const Hop::Object::Id & i) const {return i.hash();}
 };
-
 #endif /* ID_H */

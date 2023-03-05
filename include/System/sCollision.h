@@ -6,42 +6,47 @@
 #include <Collision/cellList.h>
 #include <Collision/springDashpotResolver.h>
 
-/*
-    System to detect collisions and apply forces
-*/
-
-class sCollision : public System 
+namespace Hop::System::Physics
 {
 
-public:
+    using Hop::World::World;
+    /*
+        System to detect collisions and apply forces
+    */
 
-    sCollision(){}
-
-    void update(ObjectManager * m, World * w);
-
-    void setDetector(std::unique_ptr<CollisionDetector> d)
+    class sCollision : public System 
     {
-        detector = std::move(d);
-    }
 
-    void setResolver(std::unique_ptr<CollisionResolver> r)
-    {
-        resolver = std::move(r);
-    }
+    public:
 
-    void centreOn(std::pair<float,float> p){centreOn(p.first,p.second);}
+        sCollision(){}
 
-    void centreOn(double x, double y);
+        void update(ObjectManager * m, World * w);
 
-private:
+        void setDetector(std::unique_ptr<CollisionDetector> d)
+        {
+            detector = std::move(d);
+        }
 
-    void processThreaded(ObjectManager * m, size_t threadId);
+        void setResolver(std::unique_ptr<CollisionResolver> r)
+        {
+            resolver = std::move(r);
+        }
 
-    void updateThreaded(ObjectManager * m);
+        void centreOn(std::pair<float,float> p){centreOn(p.first,p.second);}
 
-    std::unique_ptr<CollisionDetector> detector;
-    std::unique_ptr<CollisionResolver> resolver;
-    
-};
+        void centreOn(double x, double y);
 
+    private:
+
+        void processThreaded(ObjectManager * m, size_t threadId);
+
+        void updateThreaded(ObjectManager * m);
+
+        std::unique_ptr<CollisionDetector> detector;
+        std::unique_ptr<CollisionResolver> resolver;
+        
+    };
+
+}
 #endif /* SCOLLISION_H */

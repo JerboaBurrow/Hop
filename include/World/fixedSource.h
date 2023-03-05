@@ -3,17 +3,19 @@
 
 #include <World/mapSource.h>
 
-class FixedSource : public MapSource 
+namespace Hop::World 
 {
+    class FixedSource : public MapSource 
+    {
 
-public:
+    public:
 
-    FixedSource(){}
+        FixedSource(){}
 
-    uint64_t getAtCoordinate(int i, int j);
+        uint64_t getAtCoordinate(int i, int j);
 
-private:
+    private:
 
-};
-
+    };
+}
 #endif /* FIXEDSOURCE_H */

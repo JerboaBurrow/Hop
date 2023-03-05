@@ -1,6 +1,11 @@
 #include <World/fixedSource.h>
 
-uint64_t FixedSource::getAtCoordinate(int i, int j)
+namespace Hop::World 
 {
-    return data[ivec2(i,j)];
+
+    uint64_t FixedSource::getAtCoordinate(int i, int j)
+    {
+        return data[ivec2(i,j)];
+    }
+
 }
