@@ -32,7 +32,6 @@
 #include <chrono>
 using namespace std::chrono;
 
-
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
@@ -41,9 +40,14 @@ const float MAX_SPEED = 1.0/60.0;
 uint8_t frameId = 0;
 double deltas[60];
 
-Shaders shaderPool;
+Hop::System::Rendering::Shaders shaderPool;
 
 const double deltaPhysics = 1.0/600.0;
+
+using namespace Hop::Object;
+using namespace Hop::System;
+using Hop::System::Physics::CellList;
+using Hop::System::Rendering::fixedLengthNumber;
 
 int main()
 {
@@ -84,11 +88,11 @@ int main()
   glm::mat4 textProj = glm::ortho(0.0,double(resX),0.0,double(resY));
 
   // must be initialised before so the shader is in use..?
-  TextRenderer textRenderer(textProj);
+  Hop::System::Rendering::TextRenderer textRenderer(textProj);
 
-  Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
+  Hop::System::Rendering::Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
 
-  OrthoCam camera(resX,resY,glm::vec2(0.0,0.0));
+  Hop::System::Rendering::OrthoCam camera(resX,resY,glm::vec2(0.0,0.0));
 
   glViewport(0,0,resX,resY);
 
@@ -97,12 +101,12 @@ int main()
   sf::Clock timer;
   timer.restart();
 
-  PerlinSource perlin(2,0.07,5.0,5.0,256);
+  Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
   perlin.setThreshold(0.2);
   perlin.setSize(16*3+1);
 
-  InfiniteBoundary bounds;
-  MarchingWorld map(2,camera,16,1,&perlin,&bounds);
+  Hop::World::InfiniteBoundary bounds;
+  Hop::World::MarchingWorld map(2,camera,16,1,&perlin,&bounds);
 
   //FixedSource();
 
@@ -118,8 +122,19 @@ int main()
 
   ObjectManager manager(8);
 
-  shaderPool.makeShader(marchingQuadVertexShader,marchingQuadFragmentShader,"mapShader");
-  shaderPool.makeShader(objectVertexShader,circleObjectFragmentShader,"circleObjectShader");
+  shaderPool.makeShader
+  (
+    Hop::System::Rendering::marchingQuadVertexShader,
+    Hop::System::Rendering::marchingQuadFragmentShader,
+    "mapShader"
+  );
+
+  shaderPool.makeShader
+  (
+    Hop::System::Rendering::objectVertexShader,
+    Hop::System::Rendering::circleObjectFragmentShader,
+    "circleObjectShader"
+  );
 
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
@@ -193,8 +208,11 @@ int main()
   physics.stabaliseObjectParameters(&manager);
 
   unsigned L = std::ceil(1.0/(2.0*radius));
-  auto cellList = std::make_unique<CellList>(L,tupled(0.0,1.0),tupled(0.0,1.0));
-  auto res = std::make_unique<SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
+
+  auto cellList = std::make_unique<CellList>(L,Hop::Util::tupled(0.0,1.0),Hop::Util::tupled(0.0,1.0));
+
+  auto res = std::make_unique<Hop::System::Physics::SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
+
   collisions.setDetector(std::move(cellList));
   collisions.setResolver(std::move(res));
 
@@ -332,7 +350,7 @@ int main()
       float cameraY = camera.getPosition().y;
 
       glm::vec4 world = camera.screenToWorld(mouse.x,mouse.y);
-      Tile h;
+      Hop::World::Tile h;
       
       float x0, y0, s;
       

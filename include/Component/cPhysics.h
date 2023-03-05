@@ -1,40 +1,43 @@
 #ifndef CPHYSICS_H
 #define CPHYSICS_H
 
-/*
-    Component for dynamics, i.e applying forces
-     and moving.
-*/
-const double PARTICLE_MASS = 1.0;
-
-struct cPhysics 
+namespace Hop::Object::Component
 {
-    double lastX;
-    double lastY;
-    double lastTheta;
+  /*
+      Component for dynamics, i.e applying forces
+      and moving.
+  */
+  const double PARTICLE_MASS = 1.0;
 
-    double vx;
-    double vy;
-    double phi;
+  struct cPhysics 
+  {
+      double lastX;
+      double lastY;
+      double lastTheta;
 
-    // double mass = 1.0;         mass defined as one
-    double momentOfInertia;
+      double vx;
+      double vy;
+      double phi;
 
-    double fx;
-    double fy;
-    double omega;
+      // double mass = 1.0;         mass defined as one
+      double momentOfInertia;
 
-    double translationalDrag;
-    double rotationalDrag;
+      double fx;
+      double fy;
+      double omega;
 
-    cPhysics(double x, double y, double t)
-    : lastX(x), lastY(y), lastTheta(t),
-      vx(0.0),vy(0.0),momentOfInertia(0.01),
-      phi(0.0),fx(0.0),fy(0.0),omega(0.0),
-      translationalDrag(1.0), rotationalDrag(0.01)
-    {}
+      double translationalDrag;
+      double rotationalDrag;
 
-    cPhysics() = default;
-};
+      cPhysics(double x, double y, double t)
+      : lastX(x), lastY(y), lastTheta(t),
+        vx(0.0),vy(0.0),momentOfInertia(0.01),
+        phi(0.0),fx(0.0),fy(0.0),omega(0.0),
+        translationalDrag(1.0), rotationalDrag(0.01)
+      {}
+
+      cPhysics() = default;
+  };
+}
 
 #endif /* CPHYSICS_H */

@@ -3,30 +3,35 @@
 
 #include <cmath>
 
-struct Vertex {
-    Vertex(double x, double y)
-    : x(x), y(y)
-    {}
-    double x;
-    double y;
-};
+namespace Hop::Maths
+{
 
-Vertex operator/(Vertex const lhs, double const rhs);
+    struct Vertex {
+        Vertex(double x, double y)
+        : x(x), y(y)
+        {}
+        double x;
+        double y;
+    };
 
-Vertex operator*(Vertex const lhs, double const rhs);
+    Vertex operator/(Vertex const lhs, double const rhs);
 
-Vertex operator+(Vertex const lhs, Vertex const rhs);
+    Vertex operator*(Vertex const lhs, double const rhs);
 
-Vertex & operator+=( Vertex & lhs, Vertex const & rhs );
+    Vertex operator+(Vertex const lhs, Vertex const rhs);
 
-Vertex operator-(Vertex const lhs, Vertex const rhs);
+    Vertex & operator+=( Vertex & lhs, Vertex const & rhs );
 
-double dot(Vertex v, Vertex u);
+    Vertex operator-(Vertex const lhs, Vertex const rhs);
 
-double norm(Vertex v);
+    double dot(Vertex v, Vertex u);
 
-Vertex angleBisectorRay(Vertex a, Vertex b, Vertex c);
+    double norm(Vertex v);
 
-double angle(Vertex a, Vertex b, Vertex c);
+    Vertex angleBisectorRay(Vertex a, Vertex b, Vertex c);
+
+    double angle(Vertex a, Vertex b, Vertex c);
+
+}
 
 #endif /* VERTEX_H */

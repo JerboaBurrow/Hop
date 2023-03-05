@@ -18,14 +18,17 @@
 #include <exception>
 #include <string>
 
-class GLRuntimeException;
-// print buffer status errors
-GLuint glBufferStatus(const std::string msg = "");
-// print gl error codes
-GLuint glError(const std::string msg = "");
+namespace Hop::GL
+{
 
-// compile a gl shader given a program and source code as const char *
-void compileShader(GLuint & shaderProgram, const char * vert, const char * frag);
+    class GLRuntimeException;
+    // print buffer status errors
+    GLuint glBufferStatus(const std::string msg = "");
+    // print gl error codes
+    GLuint glError(const std::string msg = "");
 
+    // compile a gl shader given a program and source code as const char *
+    void compileShader(GLuint & shaderProgram, const char * vert, const char * frag);
 
+}
 #endif

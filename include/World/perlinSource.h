@@ -6,47 +6,51 @@
 
 #include <World/mapSource.h>
 
-class PerlinSource : public MapSource 
+namespace Hop::World 
 {
-    
-public:
-    
-    PerlinSource(
-        uint64_t seed,
-        float turbulence,
-        float xPeriod,
-        float yPeriod,
-        uint64_t repeat = 256,
-        float detailThreshold = 0.5
-    );
 
-    ~PerlinSource(){}
+    class PerlinSource : public MapSource 
+    {
+        
+    public:
+        
+        PerlinSource(
+            uint64_t seed,
+            float turbulence,
+            float xPeriod,
+            float yPeriod,
+            uint64_t repeat = 256,
+            float detailThreshold = 0.5
+        );
 
-    void setThreshold(float t){threshold=t;}
-    void setSize(uint64_t s){size = s;}
-    
-    uint64_t getAtCoordinate(int ix, int iy);
+        ~PerlinSource(){}
 
-private:
+        void setThreshold(float t){threshold=t;}
+        void setSize(uint64_t s){size = s;}
+        
+        uint64_t getAtCoordinate(int ix, int iy);
 
-    uint64_t seed;
-    float turbulence;
-    float xPeriod;
-    float yPeriod;
-    uint64_t repeat;
-    float detailThreshold;
-    float threshold;
-    uint64_t size;
+    private:
 
-    std::vector<std::vector<uint64_t>> tables;
+        uint64_t seed;
+        float turbulence;
+        float xPeriod;
+        float yPeriod;
+        uint64_t repeat;
+        float detailThreshold;
+        float threshold;
+        uint64_t size;
 
-    void gradient(uint64_t value, float & cx, float & cy);
-    float smooth(float x) {return ((6.0*x-15.0)*x+10.0)*x*x*x;}
-    float lerp(float x,float a1, float a2) {return a1+x*(a2-a1);}
-    float getValue(float x, float y, uint8_t t);
-    float getTurbulence(float x, float y, uint64_t size, uint8_t table);
+        std::vector<std::vector<uint64_t>> tables;
 
-    std::default_random_engine generator;
-};
+        void gradient(uint64_t value, float & cx, float & cy);
+        float smooth(float x) {return ((6.0*x-15.0)*x+10.0)*x*x*x;}
+        float lerp(float x,float a1, float a2) {return a1+x*(a2-a1);}
+        float getValue(float x, float y, uint8_t t);
+        float getTurbulence(float x, float y, uint64_t size, uint8_t table);
 
+        std::default_random_engine generator;
+    };
+
+}
 #endif /* PERLINSOURCE_H */
