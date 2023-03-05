@@ -24,7 +24,7 @@ jobs:
         cp build/Jerboa linuxbuild/ 
         cp -r resources linuxbuild/ 
         cp tile.hmap linuxbuild/
-        zip linuxbuild.zip linuxbuild
+        cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
 
     - name: Tests
       working-directory: ${{github.workspace}}/build
@@ -55,7 +55,7 @@ jobs:
         cp -r resources windowsbuild/ 
         cp tile.hmap windowsbuild/ 
         cp -r include/lib/windows/* windowsbuild
-        zip windowsbuild.zip windowsbuild
+        cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
     
     - name: buildArtifact
       uses: actions/upload-artifact@v3
