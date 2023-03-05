@@ -18,7 +18,13 @@ jobs:
 
     - name: linux-linux
       # Build your program with the given configuration
-      run: ./dependencies.sh && ./build.sh -t && mkdir linuxbuild && cp build/Jerboa linuxbuild/ && cp -r resources linuxbuild/ && cp tile.hmap linuxbuild/
+      run: |
+        ./dependencies.sh && ./build.sh -t 
+        mkdir linuxbuild 
+        cp build/Jerboa linuxbuild/ 
+        cp -r resources linuxbuild/ 
+        cp tile.hmap linuxbuild/
+        zip linuxbuild.zip linuxbuild
 
     - name: Tests
       working-directory: ${{github.workspace}}/build
@@ -29,7 +35,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: linuxbuild
-        path: linuxbuild/
+        path: linuxbuild.zip
     
   linuxXwindows:
     runs-on: ubuntu-22.04
@@ -49,12 +55,13 @@ jobs:
         cp -r resources windowsbuild/ 
         cp tile.hmap windowsbuild/ 
         cp -r include/lib/windows/* windowsbuild
+        zip windowsbuild.zip windowsbuild
     
     - name: buildArtifact
       uses: actions/upload-artifact@v3
       with:
         name: windowsbuild
-        path: windowsbuild/
+        path: windowsbuild.zip
       
   linuxRun:
     needs: linuxXlinux
@@ -71,6 +78,7 @@ jobs:
 
       - name: launch and screenshot
         run: |
+          unzip linuxbuild.zip
           chmod +x Jerboa
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
@@ -100,9 +108,10 @@ jobs:
       - name: get windows build
         uses: actions/download-artifact@v3
         with:
-          name: windowsbuild     
+          name: windowsbuild
         
       - name: create release
+        id: createRelease
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -117,8 +126,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: linuxbuild/
+          upload_url: ${{ steps.createRelease.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: linuxbuild.zip
           asset_name: linux
           asset_content_type: application/zip
           
@@ -127,8 +136,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: windowsbuild/
+          upload_url: ${{ steps.createRelease.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: windowsbuild.zip
           asset_name: windows
           asset_content_type: application/zip
 
