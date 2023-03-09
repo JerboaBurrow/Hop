@@ -2,6 +2,12 @@
 
 If in doubt follow the [C++ Core Guidelines (Stroustrup and Sutter)](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
 
+# Code
+
+### Code is documentation
+
+- Write code that describes itself clearly when possible
+
 ### Bracing 
 
 - Use Allman style
@@ -95,3 +101,10 @@ using no spacing, compared with setting ```value``` and ```t```
 
     }
  ```
+ 
+ # Project Layout
+ 
+ ### Namespace
+ 
+ - Use desciptive namespaces
+ - Do not use namespace names that clash with class/method/variable names
