@@ -4,6 +4,9 @@ on:
   push:
     branches: [ "main" ]
     tags:     'v*'
+    paths-ignore:
+      - 'doc/**'
+      - '.github/**'
   pull_request:
 
 jobs:
