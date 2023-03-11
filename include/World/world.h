@@ -6,13 +6,19 @@
 #include <string>
 #include <fstream>
 #include <memory>
+
 #include <Shader/shaders.h>
 #include <World/tile.h>
+
 #include <exception>
+
 #include <orthoCam.h>
+
 #include <World/boundary.h>
 #include <World/mapSource.h>
 #include <World/fixedSource.h>
+
+#include <Util/util.h>
 
 namespace Hop::System::Physics
 {
@@ -21,8 +27,21 @@ namespace Hop::System::Physics
 
 namespace Hop::World 
 {
+
+    struct TileData 
+    {
+        TileData(Tile h, float x, float y, float l)
+        : tileType(h), x(x), y(y), length(l)
+        {}
+
+        Tile tileType;
+        float x;
+        float y;
+        float length;
+    };
       
     using namespace Hop::GL;
+    using Hop::Util::tupled;
 
     using Hop::System::Physics::CollisionDetector;
     using Hop::System::Rendering::Shader;
@@ -65,12 +84,12 @@ namespace Hop::World
         std::string msg;
     };
 
-    class World 
+    class AbstractWorld 
     {
 
     public:
 
-        World(
+        AbstractWorld(
             uint64_t s, 
             OrthoCam & c, 
             uint64_t renderRegion, 
@@ -88,6 +107,8 @@ namespace Hop::World
 
         void worldToTile(float x, float y, int & ix, int & iy);
 
+        TileData getTileData(float x, float y);
+
         virtual void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s) = 0;
         virtual Tile tileType(int & i, int & j) = 0;
         virtual void tileToIdCoord(int ix, int iy, int & i, int & j) = 0;
@@ -95,7 +116,7 @@ namespace Hop::World
         virtual bool pointOutOfBounds(float x, float y);
         virtual bool cameraOutOfBounds(float x, float y);
 
-        virtual void updateRegion(float x, float y) = 0;
+        virtual bool updateRegion(float x, float y) = 0;
 
         std::pair<float,float> getPos(){float u = worldUnitLength(); return std::pair<float,float>(u*tilePosX,u*tilePosY);}
 
@@ -105,7 +126,16 @@ namespace Hop::World
             return std::pair<float,float>(u*(tilePosX+RENDER_REGION_SIZE/2.0),u*(tilePosY+RENDER_REGION_SIZE/2.0));
         }
 
-        ~World()
+        tupled getWorldWidth(){
+            if (dynamicsShell == 0)
+            {
+                return tupled(0.0,1.0);
+            }
+
+            return tupled(-double(dynamicsShell),double(dynamicsShell));
+        }
+
+        virtual ~AbstractWorld()
         {
             glDeleteBuffers(1,&VBOquad);
             glDeleteBuffers(1,&VBOoffset);

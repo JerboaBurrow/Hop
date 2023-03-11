@@ -237,6 +237,13 @@ namespace Hop::Object
             INFO("join called (nThreads): "+std::to_string(workers.size()))>>log;
         }
 
+        void releaseAllThreads()
+        {
+            INFO("releasing all threads (nThreads): "+std::to_string(workers.size()))>>log;
+            workers.joinAll();
+            INFO("joinAll called (nThreads): "+std::to_string(workers.size()))>>log;
+        }
+
         void addThread()
         {
             INFO("adding a thread (nThreads): "+std::to_string(workers.size()))>>log;

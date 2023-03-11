@@ -17,7 +17,7 @@ namespace Hop::World
 
     }
 
-    World::World(
+    AbstractWorld::AbstractWorld(
         uint64_t s, 
         OrthoCam & c, 
         uint64_t renderRegion, 
@@ -108,7 +108,7 @@ namespace Hop::World
         glBufferStatus("World constructor");
     }
 
-    void World::draw(Shader & s)
+    void AbstractWorld::draw(Shader & s)
     {
         glBindVertexArray(VAO);
         s.use();
@@ -125,24 +125,34 @@ namespace Hop::World
         glError("World::draw()");
     }
 
-    void World::worldToTile(float x, float y, int & ix, int & iy)
+    void AbstractWorld::worldToTile(float x, float y, int & ix, int & iy)
     {
         ix = int(std::floor(x*float(RENDER_REGION_SIZE)));
         iy = int(std::floor(y*float(RENDER_REGION_SIZE)));
     }
 
-    bool World::pointOutOfBounds(float x, float y)
+    bool AbstractWorld::pointOutOfBounds(float x, float y)
     {
         int ix, iy;
         worldToTile(x,y,ix,iy);
         return boundary->outOfBounds(ix,iy);
     }
 
-    bool World::cameraOutOfBounds(float x, float y)
+    bool AbstractWorld::cameraOutOfBounds(float x, float y)
     {
         int ix, iy;
         worldToTile(x,y,ix,iy);
         return boundary->outOfBounds(ix,iy) || boundary->outOfBounds(ix+int(RENDER_REGION_SIZE)-1,iy+int(RENDER_REGION_SIZE)-1);
+    }
+
+    TileData AbstractWorld::getTileData(float x, float y)
+    {
+        Tile h;
+        float x0, y0, s;
+
+        worldToTileData(x,y,h,x0,y0,s);
+
+        return TileData(h,x0,y0,s);
     }
 
 }

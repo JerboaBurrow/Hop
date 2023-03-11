@@ -89,12 +89,7 @@ namespace Hop::Object
         );
 
         systemManager.setSignature<sCollision>(sCollisionSig);
-
-        INFO("Registered rendering with signature"+sRenderSig.to_string())>>log;
-        INFO("Registered physics with signature"+sPhysicsSig.to_string())>>log;
-        INFO("Registered collisions with signature"+sCollisionSig.to_string())>>log;
-
-
+        
     }
 
 }

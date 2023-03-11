@@ -5,6 +5,12 @@ namespace Hop::System::Rendering
 
   TextRenderer::TextRenderer(glm::mat4 p)
   {
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glEnable( GL_BLEND );
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+
     projection = p;
 
     glGenVertexArrays(1,&VAO);

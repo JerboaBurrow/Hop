@@ -11,7 +11,7 @@ namespace Hop::World
         MapSource * f,
         Boundary * b    
     )
-    :   World(s,c,renderRegion,dynamicsShell,f,b)
+    :   AbstractWorld(s,c,renderRegion,dynamicsShell,f,b)
     {
 
         forceUpdate = true;
@@ -319,19 +319,19 @@ namespace Hop::World
     }
 
 
-    void TileWorld::updateRegion(float x, float y)
+    bool TileWorld::updateRegion(float x, float y)
     {
         int ix, iy;
         worldToTile(x,y,ix,iy);
 
         if (cameraOutOfBounds(ix,iy))
         {
-            return;
+            return false;
         }
 
         if (!forceUpdate && ix==tilePosX && iy == tilePosY)
         {
-            return;
+            return false;
         }
 
         forceUpdate = false;
@@ -365,6 +365,8 @@ namespace Hop::World
         
         std::pair<float,float> p = getPos();
         camera.setPosition(p.first,p.second);
+
+        return true;
     }
 
 }

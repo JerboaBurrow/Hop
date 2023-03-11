@@ -19,7 +19,7 @@ namespace Hop::System::Physics
 
     using Hop::Object::ObjectManager;
     using Hop::Util::tupled;
-    using Hop::World::World;
+    using Hop::World::AbstractWorld;
 
     class CollisionDetector 
     {
@@ -32,6 +32,8 @@ namespace Hop::System::Physics
         lY(limY.second-limY.first)
         {}
 
+        CollisionDetector(AbstractWorld * world){}
+
         virtual void handleObjectObjectCollisions(
             ObjectManager * manager,
             CollisionResolver * resolver,
@@ -41,7 +43,7 @@ namespace Hop::System::Physics
         virtual void handleObjectWorldCollisions(
             ObjectManager * manager,
             CollisionResolver * resolver,
-            World * world,
+            AbstractWorld * world,
             std::set<Id> objects
         ) = 0;
 

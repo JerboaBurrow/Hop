@@ -28,12 +28,12 @@ namespace Hop::System::Rendering
     "uniform int u_transparentBackground;\n"
     "uniform vec3 u_background;\n"
     "vec4 bk = vec4(u_background,1.0);"
+    "float line = 0.04;\n"
     "out vec4 colour;\n"
     "void background(){if(u_transparentBackground==1){discard;}else{colour=bk;}}\n"
     "void main()\n"
       "{\n"
       "colour=vec4(1.,0.,0.,u_alpha);"
-      //"if (id == 6){bk = vec4(0.,1.0,0.,0.5);}"
       "if (id == 0){background();}\n"
       "if (id == 1 && texCoord.x+texCoord.y > 0.5) {background();}"
       "if (id == 2 && (1.0-texCoord.x)+texCoord.y > 0.5) {background();}"
@@ -50,6 +50,7 @@ namespace Hop::System::Rendering
       "if (id == 13 && (1.0-texCoord.x)+texCoord.y < 0.5) {background();}"
       "if (id == 14 && texCoord.x+texCoord.y < 0.5) {background();}"
       "if (id == 15) {true;}"
+      //"if (texCoord.x <line || texCoord.y < line || texCoord.x > (1.0-line) || texCoord.y > (1.0-line)){colour=vec4(0.,0.,0.,1.);}"
     "\n}";
 }
 

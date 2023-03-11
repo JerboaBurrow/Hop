@@ -9,7 +9,7 @@
 namespace Hop::System::Physics
 {
 
-    using Hop::World::World;
+    using Hop::World::AbstractWorld;
     /*
         System to detect collisions and apply forces
     */
@@ -21,7 +21,7 @@ namespace Hop::System::Physics
 
         sCollision(){}
 
-        void update(ObjectManager * m, World * w);
+        void update(ObjectManager * m, AbstractWorld * w);
 
         void setDetector(std::unique_ptr<CollisionDetector> d)
         {
