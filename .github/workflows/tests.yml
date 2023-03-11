@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Install dependencies
-      run: sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev 
+      run: sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev 
 
     - name: linux-linux
       # Build your program with the given configuration
@@ -47,7 +47,7 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Install dependencies
-      run: sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix
+      run: sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix
 
     - name: linux-X-windows
       # Build your program with the given configuration
@@ -72,7 +72,7 @@ jobs:
     
     steps:
       - name: Install dependencies
-        run: sudo apt-get install -y xvfb x11-apps imagemagick
+        run: sudo apt-get update && sudo apt-get install -y xvfb x11-apps imagemagick
 
       - name: get linux build
         uses: actions/download-artifact@v3

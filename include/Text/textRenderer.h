@@ -1,6 +1,6 @@
 #ifndef TEXTRENDERER_H
 #define TEXTRENDERER_H
-
+#include <iostream>
 #include <Text/type.h>
 namespace Hop::System::Rendering
 {

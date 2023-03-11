@@ -16,41 +16,45 @@ namespace Hop::System::Rendering
 
   public:
 
-    OrthoCam(int x, int y)
-    : resolution(x,y), zoomLevel(1.0f), position(glm::vec2(0.0,0.0)) 
+    OrthoCam(int resx, int resy)
+    : resolution(resx,resy), zoomLevel(1.0f), position(glm::vec2(0.0,0.0)) 
     {
+      viewPort = glm::vec4(0,resx,0,resy);
       update();
+      glViewport(0,0,resx,resy);
     }
 
-    OrthoCam(int x, int y, glm::vec2 pos)
-    : resolution(x,y), zoomLevel(1.0f), position(pos) 
+    OrthoCam(int resx, int resy, glm::vec2 pos)
+    : resolution(resx,resy), zoomLevel(1.0f), position(pos) 
     {
+      viewPort = glm::vec4(0,resx,0,resy);
       update();
+      glViewport(0,0,resx,resy);
     }
 
     // assumes pos.y is inverted in screen coordinates
-    glm::vec4 screenToWorld(float x, float y)
+    glm::vec4 screenToWorld(float x, float y) const
     {
-      glm::vec4 nvd(
+      glm::vec4 ndc(
         2.0*x/resolution.x-1.0,
         2.0*(resolution.y-y)/resolution.y-1.0,
         0.0,
         1.0
       );
 
-      return invProjection*nvd;
+      return invProjection*ndc;
     }
 
     glm::mat4 & getVP(){return vp;}
 
-    glm::mat4 getProjection(){return projection;}
+    glm::mat4 getProjection() const {return projection;}
     void setProjection(glm::mat4 newProjection){projection=newProjection; update();}
 
-    float getZoomLevel(){return zoomLevel;}
+    float getZoomLevel() const {return zoomLevel;}
 
-    glm::vec2 getPosition(){return position;}
+    glm::vec2 getPosition() const {return position;}
 
-    void setView(glm::mat4 newView){view=newView; update();}
+    void setView(glm::mat4 newView){modelView=newView; update();}
 
     void incrementZoom(float dz)
     {
@@ -75,18 +79,21 @@ namespace Hop::System::Rendering
     void update()
     {
 
-      view = glm::scale(glm::mat4(1.0),glm::vec3(resolution.x,resolution.y,1.0)) *
+      // scale equally by screen width (all length relative to this)
+      modelView = glm::scale(glm::mat4(1.0),glm::vec3(resolution.x,resolution.x,1.0)) *
+      // move to position and look at x-y plane from z=1, with up = y axis
         glm::lookAt(
           glm::vec3(position.x,position.y,1.0),
           glm::vec3(position.x,position.y,0.0),
           glm::vec3(0.0,1.0,0.0)
         );
 
-      glm::vec3 center(position.x+0.5,position.y+0.5, 1.0);
-      view *= glm::translate(glm::mat4(1.0), center) *
-            glm::scale(glm::mat4(1.0),glm::vec3(zoomLevel,zoomLevel,1.0))*
-            glm::translate(glm::mat4(1.0), -center);
+      // glm::vec3 center(position.x+0.5,position.y+0.5, 1.0);
+      // modelView *= glm::translate(glm::mat4(1.0), center) *
+      //       glm::scale(glm::mat4(1.0),glm::vec3(zoomLevel,zoomLevel,1.0))*
+      //       glm::translate(glm::mat4(1.0), -center);
 
+      // finally, project to the screen (ndc)
       projection = glm::ortho(
         0.0,
         double(resolution.x),
@@ -95,15 +102,17 @@ namespace Hop::System::Rendering
       );
 
 
-      vp = projection*view;
+      vp = projection*modelView;
       invProjection = glm::inverse(vp);
     }
 
     glm::vec2 resolution;
-    glm::mat4 view;
+    glm::mat4 modelView;
     glm::mat4 projection;
     glm::mat4 invProjection;
     glm::mat4 vp;
+
+    glm::vec4 viewPort;
 
     float zoomLevel;
 

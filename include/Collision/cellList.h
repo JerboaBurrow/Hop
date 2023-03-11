@@ -15,6 +15,8 @@ namespace Hop::System::Physics
     {
     public:
 
+        CellList(AbstractWorld * world);
+        
         CellList(uint64_t n, tupled lx = tupled(0.0,1.0), tupled ly = tupled(0.0,1.0));
 
     private:
@@ -61,7 +63,7 @@ namespace Hop::System::Physics
         void handleObjectWorldCollisions(
             ObjectManager * manager,
             CollisionResolver * resolver,
-            World * world,
+            AbstractWorld * world,
             std::set<Id> objects
         );
 

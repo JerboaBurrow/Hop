@@ -33,7 +33,7 @@ namespace Hop::World
         bool sw;
     };
 
-    class TileWorld : public World 
+    class TileWorld : public AbstractWorld 
     {
         
     public:
@@ -47,7 +47,7 @@ namespace Hop::World
             Boundary * b
         );
 
-        void updateRegion(float x, float y);
+        bool updateRegion(float x, float y);
 
         void worldToTile(float x, float y, int & ix, int & iy);
         void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);

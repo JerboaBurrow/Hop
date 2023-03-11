@@ -9,27 +9,18 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 
-#include <orthoCam.h>
-#include <Text/textRenderer.h>
-
 #include <time.h>
 #include <random>
 #include <math.h>
 #include <vector>
 
-#include <Text/typeUtils.h>
-#include <World/marchingWorld.h>
-#include <World/tileWorld.h>
-
-#include <Object/objectManager.h>
-
-#include <System/sRender.h>
-
-#include <log.h>
+#include <chrono>
 
 #include <logo.h>
 
-#include <chrono>
+#include <engine.h>
+#include <orthoCam.h>
+
 using namespace std::chrono;
 
 const int resX = 1000;
@@ -40,14 +31,21 @@ const float MAX_SPEED = 1.0/60.0;
 uint8_t frameId = 0;
 double deltas[60];
 
-Hop::System::Rendering::Shaders shaderPool;
+bool debug = false;
 
 const double deltaPhysics = 1.0/600.0;
 
-using namespace Hop::Object;
-using namespace Hop::System;
-using Hop::System::Physics::CellList;
-using Hop::System::Rendering::fixedLengthNumber;
+using Hop::Object::Component::cTransform;
+using Hop::Object::Component::cPhysics;
+using Hop::Object::Component::cRenderable;
+using Hop::Object::Component::cCollideable;
+
+using Hop::System::Physics::CollisionVertex;
+
+using Hop::Logging::INFO;
+using Hop::Logging::WARN;
+
+using Hop::Util::fixedLengthNumber;
 
 int main()
 {
@@ -73,68 +71,34 @@ int main()
 
   glewInit();
 
-  uint8_t debug = 0;
+  float posX = 0.0;
+  float posY = 0.0;
 
-  glEnable(GL_PROGRAM_POINT_SIZE);
-  glEnable(GL_POINT_SPRITE);
+  Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
+  perlin.setThreshold(0.2);
+  perlin.setSize(64*3+1);
 
-  // for freetype rendering
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glEnable( GL_BLEND );
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glDisable(GL_DEPTH_TEST);
-
-  glm::mat4 defaultProj = glm::ortho(0.0,double(resX),0.0,double(resY),0.1,100.0);
+  Hop::World::InfiniteBoundary bounds;
+  
   glm::mat4 textProj = glm::ortho(0.0,double(resX),0.0,double(resY));
-
-  // must be initialised before so the shader is in use..?
+  Hop::System::Rendering::Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
   Hop::System::Rendering::TextRenderer textRenderer(textProj);
 
-  Hop::System::Rendering::Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
-
-  Hop::System::Rendering::OrthoCam camera(resX,resY,glm::vec2(0.0,0.0));
-
-  glViewport(0,0,resX,resY);
+  Hop::Engine hop
+  (
+    resX,
+    resY,
+    &perlin,
+    &bounds,
+    WorldOptions(2,16,1,true),
+    PhysicsOptions(deltaPhysics,9.81,0.5,true),
+    0
+  );
 
   sf::Clock clock;
 
   sf::Clock timer;
   timer.restart();
-
-  Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
-  perlin.setThreshold(0.2);
-  perlin.setSize(16*3+1);
-
-  Hop::World::InfiniteBoundary bounds;
-  Hop::World::MarchingWorld map(2,camera,16,1,&perlin,&bounds);
-
-  //FixedSource();
-
-  //FiniteBoundary bounds(0,0,16,16);
-  //FixedSource mapSource;
-  //mapSource.load("tile",false);
- 
-  //MarchingWorld map(2,camera,16,0,&mapSource,&bounds);
-  //TileWorld map(2,camera,16,0,&mapSource,&bounds);
-
-  float posX = 0.0;
-  float posY = 0.0;
-
-  ObjectManager manager(8);
-
-  shaderPool.makeShader
-  (
-    Hop::System::Rendering::marchingQuadVertexShader,
-    Hop::System::Rendering::marchingQuadFragmentShader,
-    "mapShader"
-  );
-
-  shaderPool.makeShader
-  (
-    Hop::System::Rendering::objectVertexShader,
-    Hop::System::Rendering::circleObjectFragmentShader,
-    "circleObjectShader"
-  );
 
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
@@ -145,14 +109,15 @@ int main()
   double t1 = 0.0;
   double t2 = 0.0;
   timer.restart();
-  Id pid;
 
-  double radius = 0.5*map.worldUnitLength();
+  Hop::Object::Id pid;
+
+  double radius = hop.getCollisionPrimitiveMaxSize();
 
   for (int i = 0; i < n; i++)
   {
     timer2.restart();
-    pid = manager.createObject();
+    pid = hop.createObject();
     t1 += timer2.getElapsedTime().asSeconds();
 
     double x = U(e);
@@ -160,14 +125,14 @@ int main()
 
     timer2.restart();
 
-    manager.addComponent<cTransform>(
+    hop.addComponent<cTransform>(
       pid,
       cTransform(
         x,y,0.0,radius
       )
     );
 
-    manager.addComponent<cRenderable>(
+    hop.addComponent<cRenderable>(
       pid,
       cRenderable(
        "circleObjectShader",
@@ -175,14 +140,14 @@ int main()
       )
     );
 
-    manager.addComponent<cPhysics>(
+    hop.addComponent<cPhysics>(
       pid,
       cPhysics(
         x,y,0.0
       )
     );
 
-    manager.addComponent<cCollideable>(
+    hop.addComponent<cCollideable>(
       pid,
       cCollideable(
         std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)},
@@ -193,30 +158,10 @@ int main()
     t2 += timer2.getElapsedTime().asSeconds();
   }
   double ct = timer.getElapsedTime().asSeconds();
-  Log & log = manager.getLog();
 
-  INFO("object creation time/ per object " + std::to_string(ct) + ", " + std::to_string(ct/float(n))) >> log;
-  INFO("createObject time "+std::to_string(t1/float(n))) >> log;
-  INFO("addComponents time "+std::to_string(t2/float(n))) >> log;
-
-  sRender & rendering = manager.getSystem<sRender>();
-  sPhysics & physics = manager.getSystem<sPhysics>();
-  sCollision & collisions = manager.getSystem<sCollision>();
-
-  physics.setTimeStep(deltaPhysics);
-  physics.setGravity(9.81);
-  physics.stabaliseObjectParameters(&manager);
-
-  unsigned L = std::ceil(1.0/(2.0*radius));
-
-  auto cellList = std::make_unique<CellList>(L,Hop::Util::tupled(0.0,1.0),Hop::Util::tupled(0.0,1.0));
-
-  auto res = std::make_unique<Hop::System::Physics::SpringDashpot>(deltaPhysics*10.0,0.75,0.0);
-
-  collisions.setDetector(std::move(cellList));
-  collisions.setResolver(std::move(res));
-
-  rendering.update(&manager, &shaderPool, true);
+  hop.log<INFO>("object creation time/ per object " + std::to_string(ct) + ", " + std::to_string(ct/float(n)));
+  hop.log<INFO>("createObject time "+std::to_string(t1/float(n)));
+  hop.log<INFO>("addComponents time "+std::to_string(t2/float(n)));
 
   while (window.isOpen())
   {
@@ -238,12 +183,12 @@ int main()
       }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
       {
-        manager.addThread();
+        hop.requestAddThread();
       }
 
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L)
       {
-        manager.releaseThread();
+        hop.requestDeleteThread();
       }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
       {
@@ -253,85 +198,52 @@ int main()
 
     if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-      if (!map.cameraOutOfBounds(
-        posX,posY+MAX_SPEED
-      ))
-      {
+
         posY += MAX_SPEED;
-      }
+      
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-      if (!map.cameraOutOfBounds(
-        posX,posY-MAX_SPEED
-      ))
-      {
+
         posY -= MAX_SPEED;
-      }
+      
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
-      if (!map.cameraOutOfBounds(
-        posX-MAX_SPEED,posY
-      ))
-      {
+
         posX -= MAX_SPEED;
-      }
+      
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
-      if (!map.cameraOutOfBounds(
-        posX+MAX_SPEED,posY
-      ))
-      {
+
         posX += MAX_SPEED;
-      }
+      
     }
 
+    hop.tryMoveWorld(posX,posY);
 
     glClearColor(1.0f,1.0f,1.0f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     timer.restart();
 
-    map.updateRegion(posX,posY);
-    
-    double udt = timer.getElapsedTime().asSeconds();
+    hop.stepPhysics();
+
+    double pdt = timer.getElapsedTime().asSeconds();
 
     timer.restart();
 
-    map.draw(*shaderPool.get("mapShader").get());
-    shaderPool.setProjection(camera.getVP());
-    
-    rendering.update(&manager, &shaderPool,false);
+    hop.render();
 
     double rdt = timer.getElapsedTime().asSeconds();
-
-    timer.restart();
-
-    collisions.centreOn(map.getMapCenter());
-
-    collisions.update(&manager, &map);
-
-    double cdt = timer.getElapsedTime().asSeconds();
-
-    timer.restart();
-
-    physics.update(&manager);
-    
-    double rudt = timer.getElapsedTime().asSeconds();
-
-    timer.restart();
-    rendering.draw(&shaderPool);
-
-    rdt += timer.getElapsedTime().asSeconds();
 
     deltas[frameId] = clock.getElapsedTime().asSeconds();
     frameId = (frameId+1) % 60;
 
     if (frameId == 59)
     {
-      std::cout << manager.getLog();
+      hop.outputLog(std::cout);
     }
 
     if (debug)
@@ -346,17 +258,14 @@ int main()
 
       sf::Vector2i mouse = sf::Mouse::getPosition(window);
 
+      const Hop::System::Rendering::OrthoCam & camera = hop.getCamera();
+
       float cameraX = camera.getPosition().x;
       float cameraY = camera.getPosition().y;
 
       glm::vec4 world = camera.screenToWorld(mouse.x,mouse.y);
-      Hop::World::Tile h;
-      
-      float x0, y0, s;
-      
-      map.worldToTileData(
-        world[0],world[1],h,x0,y0,s
-      );
+
+      Hop::World::TileData tile = hop.getTileData(world[0],world[1]);
 
       debugText << "Delta: " << fixedLengthNumber(delta,6) <<
         " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
@@ -365,13 +274,13 @@ int main()
         "\n" <<
         "Mouse [world] (" << fixedLengthNumber(world[0],4) << "," << fixedLengthNumber(world[1],4) << ")" <<
         "\n" <<
-        "Mouse cell (" << fixedLengthNumber(x0,4) << ", " << fixedLengthNumber(y0,4) << ", " << h <<
+        "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
         "\n" <<
         "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
         "\n" << 
-        "update time: " << fixedLengthNumber(udt,6) <<
+        "update time: " << fixedLengthNumber(pdt+rdt,6) <<
         "\n" <<
-        "Phys update / col /draw time: " << fixedLengthNumber(rudt,6) << "/" << fixedLengthNumber(cdt,6) << "/" << fixedLengthNumber(rdt,6);
+        "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
 
       textRenderer.renderText(
         OD,

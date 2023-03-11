@@ -105,6 +105,14 @@ public:
       }
     }
 
+    void joinAll()
+    {
+      while (size() > 0)
+      {
+        joinThread();
+      }
+    }
+
     void createThread()
     {
       size_t n = size();
