@@ -5,6 +5,7 @@ RELEASE=0
 TEST=0
 SYNTAX=0
 SANITISE=0
+DEMO=0
 while [[ $# -gt 0 ]]; do
   case $1 in
     -w|--windows)
@@ -25,6 +26,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -s|--syntax)
       SYNTAX=1
+      shift
+      ;;
+    -d|--demo)
+      DEMO=1
       shift
       ;;
     --sanitise)
@@ -60,12 +65,12 @@ echo "release ${RELEASE}"
 if [[ $WINDOWS -eq 0 ]];
 then 
   cmake -E make_directory build
-  cmake -E chdir build cmake .. -D WINDOWS=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8 -C build
+  cmake -E chdir build cmake .. -D WINDOWS=ON -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8 -C build
 elif [[ $OSX -eq 0 ]];
 then
   cmake -E make_directory build
-  cmake -E chdir build cmake .. -D OSX=ON -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8 -C build
+  cmake -E chdir build cmake .. -D OSX=ON -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8 -C build
 else
   cmake -E make_directory build
-  cmake -E chdir build cmake -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8 -C build
+  cmake -E chdir build cmake -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8 -C build
 fi
