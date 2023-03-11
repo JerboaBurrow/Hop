@@ -16,7 +16,7 @@ namespace Hop::System::Physics
 {
 
     using namespace Hop::Object::Component;
-    using Hop::World::World;
+    using Hop::World::AbstractWorld;
 
     const double WALL_MASS_MULTIPLIER = 10.0;
 
@@ -42,7 +42,7 @@ namespace Hop::System::Physics
         void handleObjectWorldCollisions(
             Id id,
             ObjectManager * manager,
-            World * world
+            AbstractWorld * world
         );
 
         void handleObjectWorldCollisions(

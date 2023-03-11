@@ -6,6 +6,11 @@ namespace Hop::System::Rendering
 
   Type::Type(std::string path, std::string font, uint8_t w)
   {
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glEnable( GL_BLEND );
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
 
     width = w;
     name = font;

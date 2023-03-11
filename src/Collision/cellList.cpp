@@ -5,6 +5,47 @@ using namespace std::chrono;
 
 namespace Hop::System::Physics
 {
+    
+    CellList::CellList(AbstractWorld * world)
+    {
+        tupled dynamicsCoords = world->getWorldWidth();
+        double width = (dynamicsCoords.second-dynamicsCoords.first)/2.0;
+        
+        double unit = 0.5*world->worldUnitLength();
+        unsigned n = std::ceil(width/(2.0*unit));
+
+        limX = dynamicsCoords;
+        limY = dynamicsCoords;
+        
+        rootNCells = n;
+        nCells = n*n;
+
+        lX = limX.second-limX.first;
+        lY = limY.second-limY.first;
+
+        dx = lX / double(rootNCells);
+        dy = lY / double(rootNCells);
+
+        cells = std::make_unique<uint64_t[]>(nCells*MAX_PARTICLES_PER_CELL);
+        lastElementInCell = std::make_unique<uint64_t[]>(nCells);
+        id = std::make_unique<std::pair<std::string,uint64_t>[]>(MAX_PARTICLES);
+
+        lastElement = NULL_INDEX;
+        for (int i = 0; i < nCells; i++)
+        {
+            for (int j = 0; j < MAX_PARTICLES_PER_CELL; j++)
+            {
+                cells[i*MAX_PARTICLES_PER_CELL+j] = NULL_INDEX;
+            }
+            
+            lastElementInCell[i] = NULL_INDEX;
+        }
+        for (int i = 0; i < MAX_PARTICLES; i++)
+        {
+            id[i] = std::pair("",NULL_INDEX);
+        }
+
+    }
 
     CellList::CellList(
         uint64_t n,
@@ -237,7 +278,7 @@ namespace Hop::System::Physics
     void CellList::handleObjectWorldCollisions(
         ObjectManager * manager,
         CollisionResolver * resolver,
-        World * world,
+        AbstractWorld * world,
         std::set<Id> objects
     )
     {

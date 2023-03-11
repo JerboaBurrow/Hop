@@ -113,6 +113,7 @@ file(GLOB COMPONENT_SRC "src/Component/*.cpp")
 file(GLOB COLLISION_SRC "src/Collision/*.cpp")
 file(GLOB WORLD_SRC "src/World/*.cpp") 
 file(GLOB MATHS_SRC "src/Maths/*.cpp")
+file(GLOB UTIL_SRC "src/Util/*.cpp")
 add_executable(Jerboa 
     ${SHADER_SRC} 
     ${SRC} 
@@ -123,6 +124,7 @@ add_executable(Jerboa
     ${COLLISION_SRC}
     ${WORLD_SRC}
     ${MATHS_SRC}
+    ${UTIL_SRC}
 )
 
 target_link_libraries(Jerboa glew zlibstatic freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})

@@ -8,7 +8,7 @@
 namespace Hop::World 
 {
 
-    class MarchingWorld : public World 
+    class MarchingWorld : public AbstractWorld 
     {
 
     public:
@@ -28,7 +28,7 @@ namespace Hop::World
         void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
         Tile tileType(int & i, int & j);
         void tileToIdCoord(int ix, int iy, int & i, int & j);
-        void updateRegion(float x, float y);
+        bool updateRegion(float x, float y);
 
     private:
 

@@ -11,7 +11,7 @@ namespace Hop::World
         MapSource * f,
         Boundary * b
     )
-    : World(s,c,renderRegion,dynamicsShell,f,b),
+    : AbstractWorld(s,c,renderRegion,dynamicsShell,f,b),
     RENDER_REGION_BUFFER_SIZE(renderRegion+1),
     RENDER_REGION_START(dynamicsShell*renderRegion),
     DYNAMICS_REGION_BUFFER_SIZE(DYNAMICS_REGION_SIZE+1)
@@ -54,21 +54,22 @@ namespace Hop::World
         glBufferStatus("World constructor");
     }
 
-    void MarchingWorld::updateRegion(float x, float y)
+    bool MarchingWorld::updateRegion(float x, float y)
     {
         int ix, iy;
         worldToTile(x,y,ix,iy);
 
         if (cameraOutOfBounds(ix,iy))
         {
-            return;
+
+            return false;
         }
 
         int oy = iy-tilePosY;
         int ox = ix-tilePosX;
         if (!forceUpdate && oy == 0 && ox == 0)
         {
-            return;
+            return false;
         }
         
         forceUpdate = false;
@@ -119,6 +120,8 @@ namespace Hop::World
         
         std::pair<float,float> p = getPos();
         camera.setPosition(p.first,p.second);
+
+        return true;
     }
 
     void MarchingWorld::processBufferToOffsets()

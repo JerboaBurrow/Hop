@@ -7,7 +7,7 @@ using namespace std::chrono;
 namespace Hop::System::Physics
 {
 
-    void sCollision::update(ObjectManager * m, World * w)
+    void sCollision::update(ObjectManager * m, AbstractWorld * w)
     {
         detector->handleObjectObjectCollisions(
             m,
