@@ -96,7 +96,7 @@ jobs:
       - name: get linux demos
         uses: actions/download-artifact@v3
         with:
-          name: linuxDemo
+          name: demoLinux
 
       - name: launch and screenshot
         run: |
