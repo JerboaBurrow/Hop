@@ -102,7 +102,7 @@ jobs:
       - name: launch and screenshot
         run: |
           unzip demos.zip
-          cd demos/sfml
+          cd sfml
           chmod +x sfmlPerlinWorld
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
