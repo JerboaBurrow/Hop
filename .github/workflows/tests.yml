@@ -24,12 +24,13 @@ jobs:
         ./dependencies.sh && ./build.sh -t -d -r
         mkdir linuxbuild 
         cp build/libHop.a linuxbuild/
+        cp -r include linuxbuild/
         cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
-        mkdir demo && mkdir demo/sfml
-        cp build/sfmlPerlinWorld demo/sfml
-        cp -r resources demo/sfml/
-        cp tile.hmap demo/sfml/
-        cd demo && zip -r ../demo.zip * && cd ..
+        mkdir demos && mkdir demos/sfml
+        cp build/sfmlPerlinWorld demos/sfml
+        cp -r resources demos/sfml/
+        cp tile.hmap demos/sfml/
+        cd demos && zip -r ../demos.zip * && cd ..
 
     - name: Tests
       working-directory: ${{github.workspace}}/build
@@ -47,7 +48,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: demoLinux
-        path: demo.zip
+        path: demos.zip
     
   linuxXwindows:
     runs-on: ubuntu-22.04
@@ -63,12 +64,13 @@ jobs:
         ./dependencies.sh -w && ./build.sh -w -t -d -r
         mkdir windowsbuild
         cp build/libHop.a windowsbuild/
+        cp -r include windowsbuild/
         cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
-        mkdir demo && mkdir demo/sfml
-        cp build/sfmlPerlinWorld demo/sfml
-        cp -r resources demo/sfml/
-        cp tile.hmap demo/sfml/
-        cd demo && zip -r ../demo.zip * && cd ..
+        mkdir demos && mkdir demos/sfml
+        cp build/sfmlPerlinWorld demos/sfml
+        cp -r resources demos/sfml/
+        cp tile.hmap demos/sfml/
+        cd demos && zip -r ../demos.zip * && cd ..
     
     - name: buildArtifact
       uses: actions/upload-artifact@v3
@@ -80,7 +82,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: demoWindows
-        path: demo.zip
+        path: demos.zip
     
       
   linuxRun:
@@ -91,15 +93,15 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y xvfb x11-apps imagemagick
 
-      - name: get linux demo
+      - name: get linux demos
         uses: actions/download-artifact@v3
         with:
           name: linuxDemo
 
       - name: launch and screenshot
         run: |
-          unzip demo.zip
-          cd demo/sfml
+          unzip demos.zip
+          cd demos/sfml
           chmod +x sfmlPerlinWorld
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
