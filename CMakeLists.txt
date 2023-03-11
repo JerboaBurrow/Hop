@@ -6,30 +6,30 @@ option(TEST_SUITE "test" OFF)
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 option(RELEASE On)
 option(SANITISE OFF)
+option(BUILD_DEMOS OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 if (RELEASE)
-    set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE MinSizeRel)
 else()
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 if (SYNTAX_ONLY)
-    add_compile_options(-fsyntax-only)
-    # graphics for sf::RenderWindow (window is in sfml-window)
-    find_package(OpenGL REQUIRED)
-    set(GLEW_INCLUDE include/vendored/glew/include/)
-    include_directories(
-        include 
-        ${OPENGL_INCLUDE_DIRS} 
-        ${GLEW_INCLUDE} 
-        include/vendored/freetype/include 
-        include/vendored/glm
-        include/SFML-2.5.1/include
-    )
-    file(GLOB SRC "src/*.cpp")
-    file(GLOB TEXT_SRC "src/Text/*.cpp")
-    add_executable(Jerboa ${SRC} ${TEXT_SRC})
+#     add_compile_options(-fsyntax-only)
+#     # graphics for sf::RenderWindow (window is in sfml-window)
+#     find_package(OpenGL REQUIRED)
+#     set(GLEW_INCLUDE include/vendored/glew/include/)
+#     include_directories(
+#         include 
+#         ${OPENGL_INCLUDE_DIRS} 
+#         ${GLEW_INCLUDE} 
+#         include/vendored/freetype/include 
+#         include/vendored/glm
+#     )
+#     file(GLOB SRC "src/*.cpp")
+#     file(GLOB TEXT_SRC "src/Text/*.cpp")
+#     add_executable(Jerboa ${SRC} ${TEXT_SRC})
 
 else()
 
@@ -85,25 +85,6 @@ target_link_libraries(glew
 	${OPENGL_LIBRARY}
 )
 
-if (WINDOWS)
-    add_compile_definitions(WINDOWS)
-    if (RELEASE)
-        # launch as windows, not console app - so cmd does not open as well
-        add_link_options(-mwindows)
-    endif ()
-    set(SFML_USE_STATIC_STD_LIBS FALSE)
-    set(SFML_STATIC_LIBRARIES FALSE)
-    set(SFML_DIR "include/SFML-2.5.1-mingw64/lib/cmake/SFML")
-
-else ()
-    set(SFML_STATIC_LIBRARIES TRUE)
-    set(SFML_DIR "include/SFML-2.5.1/build")
-    # so nautilus etc recognise target as executable rather than .so
-    add_link_options(-no-pie)
-endif()
-
-# graphics for sf::RenderWindow (window is in sfml-window)
-find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 file(GLOB SRC "src/*.cpp")
 file(GLOB TEXT_SRC "src/Text/*.cpp")
 file(GLOB OBJECT_SRC "src/Object/*.cpp")
@@ -114,7 +95,7 @@ file(GLOB COLLISION_SRC "src/Collision/*.cpp")
 file(GLOB WORLD_SRC "src/World/*.cpp") 
 file(GLOB MATHS_SRC "src/Maths/*.cpp")
 file(GLOB UTIL_SRC "src/Util/*.cpp")
-add_executable(Jerboa 
+add_library(Hop STATIC
     ${SHADER_SRC} 
     ${SRC} 
     ${TEXT_SRC} 
@@ -127,7 +108,13 @@ add_executable(Jerboa
     ${UTIL_SRC}
 )
 
-target_link_libraries(Jerboa glew zlibstatic freetype glm stduuid sfml-graphics ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(Hop glew zlibstatic freetype glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+
+IF (BUILD_DEMOS)
+
+    add_subdirectory(demo)
+
+ENDIF()
 
 IF (TEST_SUITE)
 
@@ -142,7 +129,7 @@ IF (TEST_SUITE)
   add_executable(testSuite 
     ${TEST_SRC}
     "src/World/mapFile.cpp"
-)
+  )
 
   target_link_libraries(testSuite stduuid zlibstatic freetype glm)
   
