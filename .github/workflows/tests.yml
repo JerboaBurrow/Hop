@@ -67,7 +67,7 @@ jobs:
         cp -r include windowsbuild/
         cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
         mkdir demos && mkdir demos/sfml
-        cp build/sfmlPerlinWorld demos/sfml
+        cp build/sfmlPerlinWorld.exe demos/sfml
         cp -r resources demos/sfml/
         cp tile.hmap demos/sfml/
         cd demos && zip -r ../demos.zip * && cd ..
