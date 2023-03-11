@@ -70,6 +70,7 @@ jobs:
         cp build/sfmlPerlinWorld.exe demos/sfml
         cp -r resources demos/sfml/
         cp tile.hmap demos/sfml/
+        cp -r include/lib/windows/* demos/sfml
         cd demos && zip -r ../demos.zip * && cd ..
     
     - name: buildArtifact
