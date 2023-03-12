@@ -71,6 +71,11 @@ jobs:
         cp -r resources demos/sfml/
         cp tile.hmap demos/sfml/
         cp -r build/*.dll demos/sfml
+        echo -e "\n\n"
+        echo $(ls build)
+        echo -e "\n\n"
+        echo $(ls demos)
+        echo -e "\n\n"
         cd demos && zip -r ../demos.zip * && cd ..
     
     - name: buildArtifact

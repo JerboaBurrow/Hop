@@ -106,9 +106,9 @@ then
     "libwinpthread-1.dll"
   )
 
-  for i in "${dll[@]}"
+  for j in "${dll[@]}"
   do
-    findAndCopyDLL $i || echo "Could not find $i"
+    findAndCopyDLL $j || echo "Could not find $j"
   done
 
   if [[ $RELEASE -eq 1 ]];
