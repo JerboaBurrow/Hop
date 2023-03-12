@@ -1,4 +1,18 @@
 #!/bin/bash
+
+function findAndCopyDLL() {
+    for i in "${paths[@]}"
+    do
+        FILE="$i/$1"
+        if [ -f $FILE ]; then
+           cp $FILE build/
+           return 0
+        fi
+    done
+
+    return 1
+}
+
 WINDOWS=1
 OSX=1
 RELEASE=0
@@ -66,6 +80,39 @@ if [[ $WINDOWS -eq 0 ]];
 then 
   cmake -E make_directory build
   cmake -E chdir build cmake .. -D WINDOWS=ON -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8 -C build
+  # now copy dlls
+  PREFIX="x86_64-w64-mingw32"
+
+  paths=("/usr/local/mingw64/bin"
+    "/usr/local/mingw64/bin/x64"
+     "/usr/$PREFIX/bin"
+    "/usr/lib/gcc/$PREFIX/7.3-posix"
+    "/usr/$PREFIX/lib"
+  )
+
+  dll=("libgcc_s_seh-1.dll"
+    "libstdc++-6.dll"
+    "libwinpthread-1.dll"
+  )
+
+  for i in "${dll[@]}"
+  do
+    findAndCopyDLL $i || echo "Could not find $i"
+  done
+
+  if [[ $RELEASE -eq 1 ]];
+  then
+      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-system-2.dll build/
+      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-window-2.dll build/
+      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-graphics-2.dll build/
+  else
+      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-system-d-2.dll build/
+      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
+      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
+  fi
+
+
+
 elif [[ $OSX -eq 0 ]];
 then
   cmake -E make_directory build

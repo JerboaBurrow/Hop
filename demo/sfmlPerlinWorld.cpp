@@ -79,10 +79,12 @@ int main()
   perlin.setSize(64*3+1);
 
   Hop::World::InfiniteBoundary bounds;
+
+  Hop::GL::glError("before text");
   
   glm::mat4 textProj = glm::ortho(0.0,double(resX),0.0,double(resY));
-  Hop::System::Rendering::Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
   Hop::System::Rendering::TextRenderer textRenderer(textProj);
+  Hop::System::Rendering::Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
 
   Hop::Engine hop
   (

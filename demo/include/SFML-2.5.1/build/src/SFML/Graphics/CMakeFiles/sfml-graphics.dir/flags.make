@@ -6,7 +6,7 @@ CXX_DEFINES = -DSFML_STATIC -DSTBI_FAILURE_USERMSG
 
 CXX_INCLUDES = -I/media/harvey/ExtraFiles/Jerboa/Hop/demo/include/SFML-2.5.1/include -I/media/harvey/ExtraFiles/Jerboa/Hop/demo/include/SFML-2.5.1/src -I/media/harvey/ExtraFiles/Jerboa/Hop/demo/include/SFML-2.5.1/extlibs/headers/stb_image -I/usr/include/freetype2
 
-CXX_FLAGS = -O3 -DNDEBUG -fvisibility=hidden
+CXX_FLAGS = -Os -DNDEBUG -fvisibility=hidden
 
 # Custom flags: src/SFML/Graphics/CMakeFiles/sfml-graphics.dir/ImageLoader.cpp.o_FLAGS = -fno-strict-aliasing
 

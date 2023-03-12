@@ -39,8 +39,8 @@ namespace Hop::System::Rendering
 
     glm::mat4 projection;
 
-    const char * defaultVertexShader = "#version 330 core\n"
-      "layout(location=0) in vec4 postex;\n"
+    const char * defaultVertexShader = "#version " GLSL_VERSION "\n"
+      "in vec4 postex;\n"
       "out vec2 texCoords;\n"
       "uniform mat4 proj;\n"
       "void main()\n"
@@ -49,7 +49,7 @@ namespace Hop::System::Rendering
       " texCoords = postex.zw;\n"
       "}";
 
-    const char * defaultFragmentShader = "#version 330 core\n"
+    const char * defaultFragmentShader = "#version " GLSL_VERSION "\n"
       "in vec2 texCoords; out vec4 colour;\n"
       "uniform sampler2D glyph;\n"
       "uniform vec3 textColour;\n"

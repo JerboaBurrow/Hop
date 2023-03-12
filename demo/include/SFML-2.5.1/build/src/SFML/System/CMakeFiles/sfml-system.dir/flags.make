@@ -6,5 +6,5 @@ CXX_DEFINES = -DSFML_STATIC
 
 CXX_INCLUDES = -I/media/harvey/ExtraFiles/Jerboa/Hop/demo/include/SFML-2.5.1/include -I/media/harvey/ExtraFiles/Jerboa/Hop/demo/include/SFML-2.5.1/src
 
-CXX_FLAGS = -O3 -DNDEBUG -fvisibility=hidden
+CXX_FLAGS = -Os -DNDEBUG -fvisibility=hidden
 
