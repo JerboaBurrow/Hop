@@ -30,7 +30,6 @@ jobs:
         cp build/sfmlPerlinWorld demos/sfml
         cp -r resources demos/sfml/
         cp tile.hmap demos/sfml/
-        cd demos && zip -r ../demos.zip * && cd ..
 
     - name: Tests
       working-directory: ${{github.workspace}}/build
@@ -48,7 +47,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: demoLinux
-        path: demos.zip
+        path: demos
     
   linuxXwindows:
     runs-on: ubuntu-22.04
@@ -71,12 +70,6 @@ jobs:
         cp -r resources demos/sfml/
         cp tile.hmap demos/sfml/
         cp -r build/*.dll demos/sfml
-        echo -e "\n\n"
-        echo $(ls build)
-        echo -e "\n\n"
-        echo $(ls demos)
-        echo -e "\n\n"
-        cd demos && zip -r ../demos.zip * && cd ..
     
     - name: buildArtifact
       uses: actions/upload-artifact@v3
@@ -88,7 +81,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: demoWindows
-        path: demos.zip
+        path: demos
     
       
   linuxRun:
@@ -120,8 +113,8 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: screenshot
-          path: screenshot.png
+          name: screenshot-sfml
+          path: afml/screenshot.png
           
   release:
     needs: [linuxXlinux, linuxXwindows]
