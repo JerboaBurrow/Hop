@@ -70,7 +70,7 @@ jobs:
         cp build/sfmlPerlinWorld.exe demos/sfml
         cp -r resources demos/sfml/
         cp tile.hmap demos/sfml/
-        cp -r include/lib/windows/* demos/sfml
+        cp -r build/*.dll demos/sfml
         cd demos && zip -r ../demos.zip * && cd ..
     
     - name: buildArtifact
@@ -115,8 +115,8 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: screenshot
-          path: screenshot.png
+          name: screenshot-sfml
+          path: sfml/screenshot.png
           
   release:
     needs: [linuxXlinux, linuxXwindows]
