@@ -25,10 +25,12 @@ jobs:
         mkdir linuxbuild 
         cp build/libHop.a linuxbuild/
         cp -r include linuxbuild/
+        cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
         mkdir demos && mkdir demos/sfml
         cp build/sfmlPerlinWorld demos/sfml
         cp -r resources demos/sfml/
         cp tile.hmap demos/sfml/
+        cd demos && zip -r ../demos.zip * && cd ..
 
     - name: Tests
       working-directory: ${{github.workspace}}/build
@@ -40,13 +42,13 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: linuxbuild
-        path: linuxbuild
+        path: linuxbuild.zip
 
     - name: demoArtifact
       uses: actions/upload-artifact@v3
       with:
         name: demoLinux
-        path: demos
+        path: demos.zip
     
   linuxXwindows:
     runs-on: ubuntu-22.04
@@ -63,23 +65,25 @@ jobs:
         mkdir windowsbuild
         cp build/libHop.a windowsbuild/
         cp -r include windowsbuild/
+        cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
         mkdir demos && mkdir demos/sfml
         cp build/sfmlPerlinWorld.exe demos/sfml
         cp -r resources demos/sfml/
         cp tile.hmap demos/sfml/
         cp -r build/*.dll demos/sfml
+        cd demos && zip -r ../demos.zip * && cd ..
     
     - name: buildArtifact
       uses: actions/upload-artifact@v3
       with:
         name: windowsbuild
-        path: windowsbuild
+        path: windowsbuild.zip
 
     - name: demoArtifact
       uses: actions/upload-artifact@v3
       with:
         name: demoWindows
-        path: demos
+        path: demos.zip
     
       
   linuxRun:
@@ -97,6 +101,7 @@ jobs:
 
       - name: launch and screenshot
         run: |
+          unzip demos.zip
           cd sfml
           chmod +x sfmlPerlinWorld
           export DISPLAY=:99
@@ -146,7 +151,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.createRelease.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: linuxbuild
+          asset_path: linuxbuild.zip
           asset_name: linux
           asset_content_type: application/zip
           
@@ -156,7 +161,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.createRelease.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: windowsbuild
+          asset_path: windowsbuild.zip
           asset_name: windows
           asset_content_type: application/zip
 

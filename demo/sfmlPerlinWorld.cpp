@@ -94,7 +94,7 @@ int main()
     &bounds,
     WorldOptions(2,16,1,true),
     PhysicsOptions(deltaPhysics,9.81,0.5,true),
-    0
+    2
   );
 
   sf::Clock clock;
