@@ -1,11 +1,15 @@
-
 include_directories(include/SFML-2.5.1/include)
+
+
 if (WINDOWS)
     add_compile_definitions(WINDOWS)
-if (RELEASE)
-    # launch as windows, not console app - so cmd does not open as well
-    add_link_options(-mwindows)
-endif ()
+
+    message(${CMAKE_CURRENT_SOURCE_DIR}/include/SFML-2.5.1/extlibs/libs-mingw/x86/)
+
+    if (RELEASE)
+        # launch as windows, not console app - so cmd does not open as well
+        add_link_options(-mwindows)
+    endif ()
     set(SFML_USE_STATIC_STD_LIBS FALSE)
     set(SFML_STATIC_LIBRARIES FALSE)
     set(SFML_DIR "include/SFML-2.5.1-mingw64/lib/cmake/SFML")
@@ -16,12 +20,19 @@ else ()
     add_link_options(-no-pie)
 endif()
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/include/SFML-2.5.1/cmake)
+
 # graphics for sf::RenderWindow (window is in sfml-window)
+
+add_library(FreeType ALIAS freetype)
+
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 
 add_executable(sfmlPerlinWorld
     "sfmlPerlinWorld.cpp"
 )
+
+target_compile_definitions(sfmlPerlinWorld PUBLIC GLSL_VERSION="140")
 
 target_link_libraries(sfmlPerlinWorld
     Hop

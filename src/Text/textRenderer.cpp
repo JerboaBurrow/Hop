@@ -37,6 +37,8 @@ namespace Hop::System::Rendering
       &projection[0][0]
     );
 
+     Hop::GL::glError("construct text renderer");
+
   }
 
   void TextRenderer::renderText(

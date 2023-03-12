@@ -10,7 +10,7 @@ option(BUILD_DEMOS OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 if (RELEASE)
-    set(CMAKE_BUILD_TYPE MinSizeRel)
+    set(CMAKE_BUILD_TYPE Release)
 else()
     set(CMAKE_BUILD_TYPE Debug)
 endif()
@@ -67,6 +67,7 @@ SET(FT_WITH_BZIP2 OFF)
 SET(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=TRUE)
 SET(CMAKE_DISABLE_FIND_PACKAGE_BZip2=TRUE)
 add_subdirectory(include/vendored/freetype)
+include_directories(include/vendored/freetype/include)
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 add_subdirectory(include/vendored/glm)
 add_subdirectory(include/vendored/stduuid)
@@ -108,7 +109,9 @@ add_library(Hop STATIC
     ${UTIL_SRC}
 )
 
-target_link_libraries(Hop glew zlibstatic freetype glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+target_compile_definitions(Hop PUBLIC GLSL_VERSION="140")
+
+target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 
 IF (BUILD_DEMOS)
 

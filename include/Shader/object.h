@@ -4,11 +4,11 @@
 
 namespace Hop::System::Rendering
 {
-    static const char * objectVertexShader = "#version 330 core\n"
-        "layout(location=0) in vec4 a_position;\n"
-        "layout(location=1) in vec4 a_offset;\n"
-        "layout(location=2) in vec4 a_colour;\n"
-        "layout(location=3) in vec4 a_texOffset;\n"
+    static const char * objectVertexShader = "#version " GLSL_VERSION "\n"
+        "in vec4 a_position;\n"
+        "in vec4 a_offset;\n"
+        "in vec4 a_colour;\n"
+        "in vec4 a_texOffset;\n"
         "uniform mat4 proj;\n"
         "uniform float atlasN;\n"
         "out vec2 texCoord;\n"
@@ -25,7 +25,7 @@ namespace Hop::System::Rendering
 
     // circle
 
-    static const char * circleObjectFragmentShader = "#version 330 core\n"
+    static const char * circleObjectFragmentShader = "#version " GLSL_VERSION "\n"
         "in vec2 texCoord;\n"
         "in vec2 atlasTexCoord;\n"
         "in vec4 oColour;\n"

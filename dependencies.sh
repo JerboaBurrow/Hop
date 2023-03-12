@@ -33,7 +33,7 @@ rm -rf SFML-2.5.1
 tar -xvf SFML-2.5.1.tar.gz
 cd SFML-2.5.1
 mkdir build && cd build
-cmake .. -D BUILD_SHARED_LIBS=FALSE && make
+cmake .. -D BUILD_SHARED_LIBS=FALSE -D CMAKE_BUILD_TYPE=MinSizeRel && make
 export SFML_DIR="../../SFML-2.5.1/build"
 
 
@@ -42,5 +42,5 @@ export SFML_DIR="../../SFML-2.5.1/build"
 # then 
 # 	cd ..
 # 	mkdir build-windows && cd build-windows
-# 	cmake .. -D BUILD_SHARED_LIBS=TRUE -D CMAKE_TOOLCHAIN_FILE=../../../windows.cmake && make
+# 	cmake .. -D BUILD_SHARED_LIBS=TRUE -D CMAKE_BUILD_TYPE=MinSizeRel -D CMAKE_TOOLCHAIN_FILE=../../windows.cmake && make
 # fi

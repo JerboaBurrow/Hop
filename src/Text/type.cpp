@@ -33,6 +33,8 @@ namespace Hop::System::Rendering
 
     glyphs.clear();
 
+     Hop::GL::glError("before load glyphs");
+
     loadASCIIGlyphs(ftFace,glyphs);
 
     FT_Done_Face(ftFace);

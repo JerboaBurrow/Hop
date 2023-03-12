@@ -4,10 +4,10 @@
 
 namespace Hop::System::Rendering
 {
-  static const char * marchingQuadVertexShader = "#version 330 core\n"
-    "layout(location=0) in vec4 a_position;\n"
-    "layout(location=1) in vec3 a_offset;\n"
-    "layout(location=2) in float a_id;\n"
+  static const char * marchingQuadVertexShader = "#version " GLSL_VERSION "\n"
+    "in vec4 a_position;\n"
+    "in vec3 a_offset;\n"
+    "in float a_id;\n"
     "uniform float u_scale;\n"
     "out vec2 texCoord;\n"
     "flat out int id;\n"
@@ -21,7 +21,7 @@ namespace Hop::System::Rendering
     " texCoord = a_position.zw;\n"
     "}";
 
-  static const char * marchingQuadFragmentShader = "#version 330 core\n"
+  static const char * marchingQuadFragmentShader = "#version " GLSL_VERSION "\n"
     "in vec2 texCoord;\n"
     "flat in int id;\n"
     "uniform float u_alpha;\n"
