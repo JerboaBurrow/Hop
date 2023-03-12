@@ -86,9 +86,20 @@ then
   paths=("/usr/local/mingw64/bin"
     "/usr/local/mingw64/bin/x64"
      "/usr/$PREFIX/bin"
-    "/usr/lib/gcc/$PREFIX/7.3-posix"
     "/usr/$PREFIX/lib"
   )
+
+  for p in /usr/lib/gcc/$PREFIX/*
+  do 
+    paths+=($p)
+  done
+
+  echo -e "\n###############\nChecking Paths: \n"
+  for p in "${paths[@]}"
+  do
+    echo -e "$p\n"
+  done 
+  echo -e "###############\n"
 
   dll=("libgcc_s_seh-1.dll"
     "libstdc++-6.dll"
