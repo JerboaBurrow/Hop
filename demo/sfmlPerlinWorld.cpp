@@ -196,6 +196,12 @@ int main()
       {
         posX = 0.0; posY = 0.0;
       }
+
+      if (event.type == sf::Event::MouseWheelScrolled)
+      {
+        double z = event.mouseWheelScroll.delta;
+        hop.incrementZoom(z);
+      }
     }
 
     if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W))
