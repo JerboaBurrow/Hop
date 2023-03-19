@@ -153,7 +153,9 @@ namespace Hop::World
 
         OrthoCam & camera;
 
-        glm::mat4 projection;
+        glm::mat4 modelView, projection, invProjection, vp;
+
+        void updateProjection();
 
         std::unique_ptr<float[]> dynamicsOffsets;
         std::unique_ptr<float[]> dynamicsIds;

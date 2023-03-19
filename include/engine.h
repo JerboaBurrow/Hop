@@ -198,6 +198,7 @@ namespace Hop
         // Camera
 
         const OrthoCam & getCamera() const {return camera;}
+        void incrementZoom(double z){camera.incrementZoom(z);}
 
     private:
 
