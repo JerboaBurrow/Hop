@@ -25,7 +25,7 @@ namespace Hop::World
         MapSource * f,
         Boundary * b
     )
-    : seed(s), camera(c), projection(c.getVP()),
+    : seed(s), camera(c),
     RENDER_REGION_SIZE(renderRegion), 
     DYNAMICS_REGION_SIZE(dynamicsRegionSize(renderRegion,dynamicsShell)),
     dynamicsShell(dynamicsShell),
@@ -108,11 +108,52 @@ namespace Hop::World
         glBufferStatus("World constructor");
     }
 
+    /*
+    
+        Due to the optimisation of the world types
+         there is a special projection matrix, rather
+         than using the orthoCam's one directly.
+
+         I.e the world is always "at" [0,0]x[1,1] in space
+         regardless as to scale, or actual world position.
+
+    */
+    void AbstractWorld::updateProjection()
+    {
+        glm::vec2 resolution = camera.getResolution();
+        double zoomLevel = camera.getZoomLevel();
+        // scale equally by screen width (all lengths relative to this)
+        modelView = glm::scale(glm::mat4(1.0),glm::vec3(resolution.x,resolution.x,1.0)) *
+        // move to position and look at x-y plane from z=1, with up = y axis
+        glm::lookAt(
+            glm::vec3(0.0,0.0,1.0),
+            glm::vec3(0.0,0.0,0.0),
+            glm::vec3(0.0,1.0,0.0)
+        );
+
+        glm::vec3 center(0.5,0.5, 1.0);
+        modelView *= glm::translate(glm::mat4(1.0), center) *
+            glm::scale(glm::mat4(1.0),glm::vec3(zoomLevel,zoomLevel,1.0))*
+            glm::translate(glm::mat4(1.0), -center);
+
+        // finally, project to the screen (ndc)
+        projection = glm::ortho(
+        0.0,
+        double(resolution.x),
+        0.0,
+        double(resolution.y)
+        );
+
+        vp = projection*modelView;
+        invProjection = glm::inverse(vp);
+    }
+
     void AbstractWorld::draw(Shader & s)
     {
         glBindVertexArray(VAO);
         s.use();
-        s.setMatrix4x4(projection, "proj");
+        updateProjection();
+        s.setMatrix4x4(vp,"proj");
         s.set1f(1.0f,"u_alpha");
         s.set1f(1.0f,"u_scale");
         s.set1i(0,"u_transparentBackground");
