@@ -79,13 +79,7 @@ int main()
   perlin.setSize(64*3+1);
 
   Hop::World::InfiniteBoundary bounds;
-
-  Hop::GL::glError("before text");
   
-  glm::mat4 textProj = glm::ortho(0.0,double(resX),0.0,double(resY));
-  Hop::System::Rendering::TextRenderer textRenderer(textProj);
-  Hop::System::Rendering::Type OD("resources/fonts/","OpenDyslexic-Regular.otf",48);
-
   Hop::Engine hop
   (
     resX,
@@ -290,8 +284,7 @@ int main()
         "\n" <<
         "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
 
-      textRenderer.renderText(
-        OD,
+      hop.renderText(
         debugText.str(),
         64.0f,resY-64.0f,
         0.5f,

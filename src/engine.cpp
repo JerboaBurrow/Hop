@@ -13,7 +13,10 @@ namespace Hop
         unsigned maxThreads
     )
         :   camera(resX,resY,glm::vec2(0.0,0.0)),
-            manager(maxThreads)
+            manager(maxThreads),
+            textRenderer(glm::ortho(0.0,double(resX),0.0,double(resY))),
+            font("resources/fonts/","OpenDyslexic-Regular.otf",48)
+
     {
         // make world
         if (worldOptions.marching)
@@ -97,7 +100,6 @@ namespace Hop
 
         // first pass to setup shaders
         needToRefreshRenderer = true;
-
     }
 
     void Engine::setCollisionDetector
