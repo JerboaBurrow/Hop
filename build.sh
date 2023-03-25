@@ -21,6 +21,7 @@ SYNTAX=0
 SANITISE=0
 DEMO=0
 ANDROID_NDK=""
+
 while [[ $# -gt 0 ]]; do
   case $1 in
     -w|--windows)
