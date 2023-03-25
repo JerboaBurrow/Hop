@@ -85,7 +85,7 @@ jobs:
         name: demoWindows
         path: demos.zip
     
-    linuxXandroid:
+  linuxXandroid:
     runs-on: ubuntu-18.04
 
     steps:
