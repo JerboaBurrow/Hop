@@ -72,19 +72,24 @@ SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 add_subdirectory(include/vendored/glm)
 add_subdirectory(include/vendored/stduuid)
 
-find_package(OpenGL REQUIRED)
-# let sources know glew is static
-add_compile_definitions(GLEW_STATIC)
-set(GLEW_SOURCE include/vendored/glew/src/glew.c)
-set(GLEW_INCLUDE include/vendored/glew/include/)
+if (ANDROID)
+    find_library(GLES-lib GLESv3 REQUIRED)
+else()
+    find_package(OpenGL REQUIRED)
+    # let sources know glew is static
+    add_compile_definitions(GLEW_STATIC)
+    set(GLEW_SOURCE include/vendored/glew/src/glew.c)
+    set(GLEW_INCLUDE include/vendored/glew/include/)
+
+    add_library(glew STATIC ${GLEW_SOURCE} ${GLEW_INCLUDE})
+
+    target_link_libraries(glew
+        ${OPENGL_LIBRARY}
+    )
+
+endif()
 
 include_directories(include ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
-
-add_library(glew STATIC ${GLEW_SOURCE} ${GLEW_INCLUDE})
-
-target_link_libraries(glew
-	${OPENGL_LIBRARY}
-)
 
 file(GLOB SRC "src/*.cpp")
 file(GLOB TEXT_SRC "src/Text/*.cpp")
@@ -111,35 +116,46 @@ add_library(Hop STATIC
 
 target_compile_definitions(Hop PUBLIC GLSL_VERSION="140")
 
-target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+if (ANDROID)
+    target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid)
+else()
+    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+endif()
+
 
 IF (BUILD_DEMOS)
 
-    add_subdirectory(demo)
+    IF (ANDROID)
+    else()
+        add_subdirectory(demo/desktop)
+    endif()
 
 ENDIF()
 
 IF (TEST_SUITE)
 
-  IF (WINDOWS)
-    ## ask nicely for big objs (gnu assembler flag)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wa,-mbig-obj")
-  endif()
+    IF (ANDROID)
+    else()
+        IF (WINDOWS)
+            ## ask nicely for big objs (gnu assembler flag)
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wa,-mbig-obj")
+        endif()
 
-  file(GLOB TEST_SRC "tests/*.cpp")
-  include_directories(include "tests/")
+        file(GLOB TEST_SRC "tests/*.cpp")
+        include_directories(include "tests/")
 
-  add_executable(testSuite 
-    ${TEST_SRC}
-    "src/World/mapFile.cpp"
-  )
+        add_executable(testSuite 
+            ${TEST_SRC}
+            "src/World/mapFile.cpp"
+        )
 
-  target_link_libraries(testSuite stduuid zlibstatic freetype glm)
-  
-  include(CTest)
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)
-  include(Catch)
-  catch_discover_tests(testSuite)
+        target_link_libraries(testSuite stduuid zlibstatic freetype glm)
+        
+        include(CTest)
+        set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)
+        include(Catch)
+        catch_discover_tests(testSuite)
+    endif()
   
 ENDIF(TEST_SUITE)
 

@@ -3,6 +3,7 @@
 
 #include <Object/id.h>
 #include <exception>
+#include <unordered_map>
 
 namespace Hop::Object::Component
 {

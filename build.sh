@@ -20,6 +20,7 @@ TEST=0
 SYNTAX=0
 SANITISE=0
 DEMO=0
+ANDROID_NDK=""
 while [[ $# -gt 0 ]]; do
   case $1 in
     -w|--windows)
@@ -50,6 +51,11 @@ while [[ $# -gt 0 ]]; do
       SANITISE=1
       shift
       ;;
+    --android)
+      ANDROID_NDK=$2
+      shift
+      shift
+      ;;
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -60,7 +66,6 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
-
 
 for file in build CMakeFiles cmake_install.cmake CMakeCache.txt Makefile Jerboa
 do
@@ -121,13 +126,21 @@ then
       cp demo/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
       cp demo/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
   fi
-
-
-
 elif [[ $OSX -eq 0 ]];
 then
   cmake -E make_directory build
   cmake -E chdir build cmake .. -D OSX=ON -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8 -C build
+elif [[ ! -z "$ANDROID_NDK" ]]
+then
+  TOOL_CHAIN="$ANDROID_NDK/build/cmake/android.toolchain.cmake"
+  if [[ ! -f "$TOOL_CHAIN" ]]
+  then
+    echo -e "\nCould not find tool chain file at $TOOL_CHAIN\n"
+    exit 1
+  fi
+  echo -e "\nFound Android tool chain $TOOL_CHAIN\n"
+  cmake -E make_directory build
+  cmake -E chdir build cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=21 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 8 -C build
 else
   cmake -E make_directory build
   cmake -E chdir build cmake -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8 -C build

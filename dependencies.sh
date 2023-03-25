@@ -17,7 +17,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-cd demo/include
+cd demo/desktop/include
 if [ -d SFML-2.5.1 ];
 then
 	echo "Directory $DEP exists, overwrite?"

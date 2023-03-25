@@ -64,8 +64,8 @@ namespace Hop
         // initialise default gl setup
 
         // for circular particles
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glEnable(GL_POINT_SPRITE);
+        // glEnable(GL_PROGRAM_POINT_SIZE);
+        // glEnable(GL_POINT_SPRITE);
 
         // projection matrix
         defaultProj = glm::ortho(0.0,double(resX),0.0,double(resY),0.1,100.0);
