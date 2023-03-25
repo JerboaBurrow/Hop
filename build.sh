@@ -119,13 +119,13 @@ then
 
   if [[ $RELEASE -eq 1 ]];
   then
-      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-system-2.dll build/
-      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-window-2.dll build/
-      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-graphics-2.dll build/
+      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-system-2.dll build/
+      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-2.dll build/
+      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-2.dll build/
   else
-      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-system-d-2.dll build/
-      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
-      cp demo/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
+      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-system-d-2.dll build/
+      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
+      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
   fi
 elif [[ $OSX -eq 0 ]];
 then
