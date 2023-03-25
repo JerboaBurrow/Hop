@@ -28,11 +28,13 @@ namespace Hop::System::Physics
 
         CollisionDetector(tupled lx = tupled(0.0,1.0), tupled ly = tupled(0.0,1.0))
         : limX(lx), limY(ly),
-        lX(limX.second-limX.first),
-        lY(limY.second-limY.first)
+          lX(lx.second-lx.first),
+          lY(ly.second-ly.first)
         {}
 
         CollisionDetector(AbstractWorld * world){}
+
+        virtual ~CollisionDetector() = default;
 
         virtual void handleObjectObjectCollisions(
             ObjectManager * manager,
@@ -77,6 +79,7 @@ namespace Hop::System::Physics
 
         double lX, lY;
         tupled limX, limY;
+
     };
 
 }

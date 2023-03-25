@@ -130,6 +130,7 @@ namespace Hop::Logging
       if (progress < length){
         progress++;
         o << '\t' << sequence[progress % sequence.size()];
+        return false;
       }
       else {
         return true;
