@@ -1,6 +1,7 @@
 #!/bin/bash
 
-function findAndCopyDLL() {
+function findAndCopyDLL() 
+{
     for i in "${paths[@]}"
     do
         FILE="$i/$1"
@@ -11,6 +12,36 @@ function findAndCopyDLL() {
     done
 
     return 1
+}
+
+function mergeLibs()
+{
+  cd $1
+
+  for lib in *.a
+  do
+      mkdir "$lib-o"
+      ar -x $lib
+      mv *.o "$lib-o"
+      ar -r libHopMerged.a "$lib-o/"*
+      rm -rf "$lib-o"
+  done
+
+  mv libHopMerged.a libHop.a
+
+  cd ..
+}
+
+function buildAndroid()
+{
+
+  cmake -E make_directory build-$1
+  cmake -E chdir build-$1 cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=21 -D ANDROID_ABI=$1 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 8 -C build-$1
+
+  mergeLibs "build-$1"
+  mv build-$1/libHop.a build/libHop-$1.a
+  rm -rf build-$1
+
 }
 
 WINDOWS=1
@@ -140,9 +171,20 @@ then
     exit 1
   fi
   echo -e "\nFound Android tool chain $TOOL_CHAIN\n"
-  cmake -E make_directory build
-  cmake -E chdir build cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=21 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 8 -C build
+  mkdir build
+
+  buildAndroid arm64-v8a
+  buildAndroid armeabi-v7a
+  buildAndroid x86
+  buildAndroid x86_64
+
 else
   cmake -E make_directory build
   cmake -E chdir build cmake -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8 -C build
+fi
+
+
+if [[ -z "$ANDROID_NDK" ]]
+then 
+  mergeLibs "build"
 fi

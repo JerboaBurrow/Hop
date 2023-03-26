@@ -15,7 +15,7 @@ namespace Hop::World
         : data(MAP_DATA_NULL)
         {}
 
-        virtual ~MapSource(){}
+        virtual ~MapSource() = default;
 
         virtual uint64_t getAtCoordinate(int i, int j) = 0;
         virtual void save(std::string fileNameWithoutExtension, bool compressed = true);
