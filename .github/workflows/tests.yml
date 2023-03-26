@@ -101,7 +101,7 @@ jobs:
       run: |
         ./build.sh -r --android android-ndk-r25c
         mkdir androidbuild 
-        cp build/libHop.a androidbuild/
+        cp build/libHop* androidbuild/
         cp -r include androidbuild/
         cd androidbuild  && zip -r ../androidbuild.zip * && cd ..
 
