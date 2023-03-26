@@ -1,4 +1,5 @@
 #!/bin/bash
+
 function findAndCopyDLL() 
 {
     for i in "${paths[@]}"
