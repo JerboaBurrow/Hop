@@ -56,8 +56,8 @@ namespace Hop::System::Rendering
       "uniform float alpha;\n"
       "void main()\n"
       "{\n"
-      " vec4 sample = vec4(1.0,1.0,1.0,texture(glyph,texCoords).r);\n"
-      " colour = vec4(textColour,alpha)*sample;\n"
+      " vec4 glpyhSample = vec4(1.0,1.0,1.0,texture(glyph,texCoords).r);\n"
+      " colour = vec4(textColour,alpha)*glpyhSample;\n"
       "}";
   };
 }

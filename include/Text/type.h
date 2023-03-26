@@ -22,6 +22,8 @@ namespace Hop::System::Rendering
       uint8_t w
     );
 
+    Type(uint8_t w);
+
     Glyph & operator[](char c);
 
   private:

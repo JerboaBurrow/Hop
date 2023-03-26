@@ -114,11 +114,11 @@ add_library(Hop STATIC
     ${UTIL_SRC}
 )
 
-target_compile_definitions(Hop PUBLIC GLSL_VERSION="140")
-
 if (ANDROID)
+    target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
     target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid)
 else()
+    target_compile_definitions(Hop PUBLIC GLSL_VERSION="140")
     target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 endif()
 
