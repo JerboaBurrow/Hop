@@ -121,9 +121,10 @@ namespace Hop::World
     void AbstractWorld::updateProjection()
     {
         glm::vec2 resolution = camera.getResolution();
+        double maxRes = std::max(resolution.x,resolution.y);
         double zoomLevel = camera.getZoomLevel();
         // scale equally by screen width (all lengths relative to this)
-        modelView = glm::scale(glm::mat4(1.0),glm::vec3(resolution.x,resolution.x,1.0)) *
+        modelView = glm::scale(glm::mat4(1.0),glm::vec3(maxRes,maxRes,1.0)) *
         // move to position and look at x-y plane from z=1, with up = y axis
         glm::lookAt(
             glm::vec3(0.0,0.0,1.0),
