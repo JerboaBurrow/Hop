@@ -217,6 +217,10 @@ namespace Hop
 
         void outputLog(std::ostream & o){o << manager.getLog();}
 
+        #if defined(ANDROID)
+            void outputLogAndroid(){manager.getLog().androidLog();}
+        #endif
+
         // Thread
 
         void requestAddThread(){manager.addThread();}
