@@ -98,6 +98,10 @@ namespace Hop
         // first pass to setup shaders
         needToRefreshRenderer = true;
 
+        collisionTimeOO = 0.0;
+        collisionTimeOW = 0.0;
+        frame = 0;
+
     }
 
     void Engine::setCollisionDetector
@@ -159,7 +163,22 @@ namespace Hop
             sCollision & collisions = manager.getSystem<sCollision>();
 
             collisions.centreOn(world.get()->getMapCenter());
-            collisions.update(&manager, world.get());
+            
+            double oot, owt;
+            collisions.update(&manager, world.get(), oot, owt);
+
+            collisionTimeOO += oot;
+            collisionTimeOW += owt;
+            
+            if (frame == 60)
+            {
+                frame = 0;
+                std::string msg = "Collision time (o-o, o-w): " + std::to_string(collisionTimeOO/60.0) + ", " + std::to_string(collisionTimeOW/60.0);
+                log<Hop::Logging::INFO>(msg);
+                collisionTimeOO = 0.0;
+                collisionTimeOW = 0.0;
+            }
+            frame++;
         }
 
         manager.getSystem<sPhysics>().update(&manager);

@@ -6,6 +6,10 @@
 #include <Collision/cellList.h>
 #include <Collision/springDashpotResolver.h>
 
+#include <chrono>
+using namespace std::chrono;
+
+
 namespace Hop::System::Physics
 {
 
@@ -21,7 +25,7 @@ namespace Hop::System::Physics
 
         sCollision(){}
 
-        void update(ObjectManager * m, AbstractWorld * w);
+        void update(ObjectManager * m, AbstractWorld * w, double & oot, double & owt);
 
         void setDetector(std::unique_ptr<CollisionDetector> d)
         {

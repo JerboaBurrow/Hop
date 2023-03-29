@@ -1,5 +1,5 @@
-#ifndef SPRINGDASHPOTRESOLVER_H
-#define SPRINGDASHPOTRESOLVER_H
+#ifndef SPRINGDASHPOTRESOLVER
+#define SPRINGDASHPOTRESOLVER
 
 #include <Collision/collisionResolver.h>
 #include <cmath>
@@ -34,8 +34,8 @@ namespace Hop::System::Physics
         }
 
         void handleObjectObjectCollision(
-            std::string & objectI, std::string & objectJ,
-            uint64_t particleI, uint64_t particleJ,
+            Id & objectI, uint64_t particleI,
+            Id & objectJ, uint64_t particleJ,
             ObjectManager * manager
         );
 
@@ -101,4 +101,4 @@ namespace Hop::System::Physics
     };
 
 }
-#endif /* SPRINGDASHPOTRESOLVER_H */
+#endif /* SPRINGDASHPOTRESOLVER */

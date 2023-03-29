@@ -85,6 +85,8 @@ namespace Hop::System
 
         void objectSignatureChanged(Id i, Signature s);
 
+        void optimiseJobAllocation();
+
         
     private:
 

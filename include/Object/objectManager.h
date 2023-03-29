@@ -254,6 +254,8 @@ namespace Hop::Object
         template<class T>
         bool hasComponent(const Id & i){return idToSignature[i][getComponentId<T>()];}
 
+        void optimiseJobAllocation(){systemManager.optimiseJobAllocation();}
+
     private:
 
         std::unordered_map<std::string,Id> handleToId;
