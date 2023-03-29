@@ -5,6 +5,9 @@
 #include <memory>
 #include <utility>
 
+#include <chrono>
+using namespace std::chrono;
+
 namespace Hop::System::Physics
 {
     const uint64_t MAX_PARTICLES = 100000;
@@ -27,7 +30,7 @@ namespace Hop::System::Physics
 
         std::unique_ptr<uint64_t[]> cells;
         std::unique_ptr<uint64_t[]> lastElementInCell;
-        std::unique_ptr<std::pair<std::string,uint64_t>[]> id;
+        std::unique_ptr<std::pair<Id,uint64_t>[]> id;
         uint64_t lastElement;
 
         uint64_t hash(double x, double y)
@@ -54,12 +57,19 @@ namespace Hop::System::Physics
             std::set<Id> objects
         );
 
+        // void cellCollisionsThreaded(
+        //     ObjectManager * manager,
+        //     CollisionResolver * resolver,
+        //     int a
+        // );
+        
         void cellCollisionsThreaded(
             ObjectManager * manager,
             CollisionResolver * resolver,
-            int a
+            std::pair<unsigned,unsigned> * jobs,
+            unsigned njobs
         );
-        
+
         void handleObjectWorldCollisions(
             ObjectManager * manager,
             CollisionResolver * resolver,

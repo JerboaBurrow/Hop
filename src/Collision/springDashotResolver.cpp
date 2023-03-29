@@ -7,8 +7,8 @@ namespace Hop::System::Physics
     using Hop::Maths::pointLineHandedness;
 
     void SpringDashpot::handleObjectObjectCollision(
-        std::string & objectI, std::string & objectJ,
-        uint64_t particleI, uint64_t particleJ,
+        Id & objectI, uint64_t particleI,
+        Id & objectJ, uint64_t particleJ,
         ObjectManager * manager
     )
     {
@@ -18,25 +18,22 @@ namespace Hop::System::Physics
         double nx, ny, nxt, nyt, ddot, mag, vnorm, fx, fy;
         double vrx, vry;
 
-        Id idi = manager->idFromHandle(objectI);
-        Id idj = manager->idFromHandle(objectJ);
+        rx = 0.0; ry = 0.0; rc = 0.0;
 
-        cCollideable & datai = manager->getComponent<cCollideable>(idi);
-        cPhysics & dataPi = manager->getComponent<cPhysics>(idi);
+        cCollideable & datai = manager->getComponent<cCollideable>(objectI);
+        cPhysics & dataPi = manager->getComponent<cPhysics>(objectI);
         CollisionVertex ci = datai.mesh[particleI];
-        ix = ci.x;
-        iy = ci.y;
+        rx -= ci.x;
+        ry -= ci.y;
+        rc += ci.r;
 
-        cCollideable & dataj = manager->getComponent<cCollideable>(idj);
-        cPhysics & dataPj = manager->getComponent<cPhysics>(idj);
+        cCollideable & dataj = manager->getComponent<cCollideable>(objectJ);
+        cPhysics & dataPj = manager->getComponent<cPhysics>(objectJ);
         CollisionVertex cj = dataj.mesh[particleJ];
-        jx = cj.x;
-        jy = cj.y;
+        rx += cj.x;
+        ry += cj.y;
+        rc += cj.r;
 
-        rc = ci.r+cj.r;
-
-        rx = jx-ix;
-        ry = jy-iy;
         dd = rx*rx+ry*ry;
 
         meff = 1.0 / (2.0/PARTICLE_MASS); // mass defined as 1
@@ -49,7 +46,12 @@ namespace Hop::System::Physics
             d = std::sqrt(dd);
             dinv = 1.0 / d;
             nx = rx * dinv;
+            fx = nx;
             ny = ry * dinv;
+            fy = ny;
+            dinv = std::min(3.0,dinv);
+
+            mag -= kr*(rc-d)*dinv;
 
             vrx = dataPi.vx-dataPj.vx;
             vry = dataPi.vy-dataPj.vy;
@@ -66,17 +68,17 @@ namespace Hop::System::Physics
             //     nyt *= -1.0;
             // }
 
-            mag = (-kr*(rc-d)-kd*ddot)*std::min(3.0,dinv);
+            mag -= kd*ddot*dinv;
 
-            fx = mag*nx;//+friction*std::abs(mag)*nxt;
+            fx *= mag;//+friction*std::abs(mag)*nxt;
             dataPi.fx += fx;
             dataPj.fx -= fx;
 
-            fy = mag*ny;//+friction*std::abs(mag)*nyt;
+            fy *= mag;//+friction*std::abs(mag)*nyt;
             dataPi.fy += fy;
             dataPj.fy -= fy;
 
-            manager->collisionCallback(idi,idj);
+            manager->collisionCallback(objectI,objectJ);
         }
     }
 
