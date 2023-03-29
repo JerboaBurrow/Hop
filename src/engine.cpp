@@ -13,7 +13,10 @@ namespace Hop
         unsigned maxThreads
     )
         :   camera(resX,resY,glm::vec2(0.0,0.0)),
-            manager(maxThreads)
+            manager(maxThreads),
+            textRenderer(glm::ortho(0.0,double(resX),0.0,double(resY))),
+            font("resources/fonts/","OpenDyslexic-Regular.otf",48)
+
     {
         // make world
         if (worldOptions.marching)
@@ -61,8 +64,8 @@ namespace Hop
         // initialise default gl setup
 
         // for circular particles
-        glEnable(GL_PROGRAM_POINT_SIZE);
-        glEnable(GL_POINT_SPRITE);
+        // glEnable(GL_PROGRAM_POINT_SIZE);
+        // glEnable(GL_POINT_SPRITE);
 
         // projection matrix
         defaultProj = glm::ortho(0.0,double(resX),0.0,double(resY),0.1,100.0);
@@ -101,7 +104,6 @@ namespace Hop
         collisionTimeOO = 0.0;
         collisionTimeOW = 0.0;
         frame = 0;
-
     }
 
     void Engine::setCollisionDetector

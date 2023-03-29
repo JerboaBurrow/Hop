@@ -34,6 +34,8 @@ namespace Hop::System::Physics
     public:
 
         CollisionResolver(){}
+
+        virtual ~CollisionResolver() = default;
         
         virtual void handleObjectObjectCollision(
             Id & objectI, uint64_t particleI,

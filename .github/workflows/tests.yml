@@ -85,6 +85,31 @@ jobs:
         name: demoWindows
         path: demos.zip
     
+  linuxXandroid:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev 
+        wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+        unzip android-ndk-r25c-linux.zip
+
+    - name: linux-android
+      run: |
+        ./build.sh -r --android android-ndk-r25c
+        mkdir androidbuild 
+        cp build/libHop* androidbuild/
+        cp -r include androidbuild/
+        cd androidbuild  && zip -r ../androidbuild.zip * && cd ..
+
+    - name: buildArtifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: androidbuild
+        path: androidbuild.zip
       
   linuxRun:
     needs: linuxXlinux

@@ -182,6 +182,23 @@ namespace Hop
             bool refreshObjectShaders = false
         );
 
+        void renderText
+        (
+            std::string text,
+            float x,
+            float y,
+            float scale,
+            glm::vec3 colour,
+            float alpha = 1.0f,
+            bool centre = false
+        )
+        {
+            textRenderer.renderText
+            (
+                font,text,x,y,scale,colour,alpha,centre
+            );
+        }
+
         // Logging
 
         template <class T>
@@ -202,6 +219,7 @@ namespace Hop
         // Camera
 
         const OrthoCam & getCamera() const {return camera;}
+        void incrementZoom(double z){camera.incrementZoom(z);}
 
     private:
 
@@ -219,6 +237,9 @@ namespace Hop
 
         unsigned frame;
         double collisionTimeOO, collisionTimeOW;
+
+        TextRenderer textRenderer;
+        Type font;
 
     };
 

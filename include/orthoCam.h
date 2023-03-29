@@ -52,6 +52,8 @@ namespace Hop::System::Rendering
 
     float getZoomLevel() const {return zoomLevel;}
 
+    glm::vec2 getResolution() const {return resolution;}
+
     glm::vec2 getPosition() const {return position;}
 
     void setView(glm::mat4 newView){modelView=newView; update();}
@@ -78,8 +80,7 @@ namespace Hop::System::Rendering
 
     void update()
     {
-
-      // scale equally by screen width (all length relative to this)
+      // scale equally by screen width (all lengths relative to this)
       modelView = glm::scale(glm::mat4(1.0),glm::vec3(resolution.x,resolution.x,1.0)) *
       // move to position and look at x-y plane from z=1, with up = y axis
         glm::lookAt(
@@ -88,10 +89,10 @@ namespace Hop::System::Rendering
           glm::vec3(0.0,1.0,0.0)
         );
 
-      // glm::vec3 center(position.x+0.5,position.y+0.5, 1.0);
-      // modelView *= glm::translate(glm::mat4(1.0), center) *
-      //       glm::scale(glm::mat4(1.0),glm::vec3(zoomLevel,zoomLevel,1.0))*
-      //       glm::translate(glm::mat4(1.0), -center);
+      glm::vec3 center(position.x+0.5,position.y+0.5, 1.0);
+      modelView *= glm::translate(glm::mat4(1.0), center) *
+            glm::scale(glm::mat4(1.0),glm::vec3(zoomLevel,zoomLevel,1.0))*
+            glm::translate(glm::mat4(1.0), -center);
 
       // finally, project to the screen (ndc)
       projection = glm::ortho(
