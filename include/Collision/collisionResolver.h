@@ -38,8 +38,8 @@ namespace Hop::System::Physics
         virtual ~CollisionResolver() = default;
         
         virtual void handleObjectObjectCollision(
-            std::string & objectI, std::string & objectJ,
-            uint64_t particleI, uint64_t particleJ,
+            Id & objectI, uint64_t particleI,
+            Id & objectJ, uint64_t particleJ,
             ObjectManager * manager
         ) = 0;
 

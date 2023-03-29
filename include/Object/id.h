@@ -7,13 +7,18 @@
 namespace Hop::Object
 {
 
+    class Object;
+
     const uuids::uuid generateId();
-    const uuids::uuid NULL_ID;
+    const uuids::uuid NULL_UUID;
 
     struct Id 
     {
+
+        friend class Hop::Object::Object;
+
         Id()
-        : id(gen()),idStr(uuids::to_string(id))
+        : id(NULL_UUID),idStr(uuids::to_string(id))
         {}
 
         Id(uuids::uuid i)
@@ -36,12 +41,14 @@ namespace Hop::Object
             return *this;
         }
 
-    private:
+    protected:
 
         static std::random_device rd;
         static std::mt19937 generator;
         static uuids::uuid_random_generator gen;
     };
+
+    static const Id NULL_ID = Id(NULL_UUID);
 
     std::ostream & operator<<(std::ostream & os, Id const & value);
 

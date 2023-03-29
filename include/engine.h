@@ -2,6 +2,8 @@
 #define ENGINE_H
 
 #include <memory>
+#include <chrono>
+using namespace std::chrono;
 
 #include <gl.h>
 
@@ -118,6 +120,8 @@ namespace Hop
         void remove(Id id){manager.remove(id); needToRefreshRenderer = true;}
         void remove(std::string handle){manager.remove(handle); needToRefreshRenderer = true;}
 
+        void optimiseJobAllocation(){manager.optimiseJobAllocation();}
+
         // component management
 
         template <class T>
@@ -210,7 +214,7 @@ namespace Hop
 
         // Misc 
 
-        double getCollisionPrimitiveMaxSize(){return 0.5*world.get()->worldUnitLength();}
+        double getCollisionPrimitiveMaxSize(){return 0.1*world.get()->worldUnitLength();}
 
         // Camera
 
@@ -230,6 +234,9 @@ namespace Hop
         Shaders shaderPool;
 
         bool needToRefreshRenderer;
+
+        unsigned frame;
+        double collisionTimeOO, collisionTimeOW;
 
         TextRenderer textRenderer;
         Type font;

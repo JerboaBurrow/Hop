@@ -5,13 +5,15 @@ using namespace std::chrono;
 
 namespace Hop::System::Physics
 {
+
+    using Hop::Object::NULL_ID;
     
     CellList::CellList(AbstractWorld * world)
     {
         tupled dynamicsCoords = world->getWorldWidth();
         double width = (dynamicsCoords.second-dynamicsCoords.first)/2.0;
         
-        double unit = 0.5*world->worldUnitLength();
+        double unit = 0.1*world->worldUnitLength();
         unsigned n = std::ceil(width/(2.0*unit));
 
         limX = dynamicsCoords;
@@ -28,7 +30,7 @@ namespace Hop::System::Physics
 
         cells = std::make_unique<uint64_t[]>(nCells*MAX_PARTICLES_PER_CELL);
         lastElementInCell = std::make_unique<uint64_t[]>(nCells);
-        id = std::make_unique<std::pair<std::string,uint64_t>[]>(MAX_PARTICLES);
+        id = std::make_unique<std::pair<Id,uint64_t>[]>(MAX_PARTICLES);
 
         lastElement = NULL_INDEX;
         for (int i = 0; i < nCells; i++)
@@ -42,7 +44,7 @@ namespace Hop::System::Physics
         }
         for (int i = 0; i < MAX_PARTICLES; i++)
         {
-            id[i] = std::pair("",NULL_INDEX);
+            id[i] = std::pair(NULL_ID,NULL_INDEX);
         }
 
     }
@@ -62,7 +64,7 @@ namespace Hop::System::Physics
 
         cells = std::make_unique<uint64_t[]>(nCells*MAX_PARTICLES_PER_CELL);
         lastElementInCell = std::make_unique<uint64_t[]>(nCells);
-        id = std::make_unique<std::pair<std::string,uint64_t>[]>(MAX_PARTICLES);
+        id = std::make_unique<std::pair<Id,uint64_t>[]>(MAX_PARTICLES);
 
         lastElement = NULL_INDEX;
         for (int i = 0; i < nCells; i++)
@@ -76,7 +78,7 @@ namespace Hop::System::Physics
         }
         for (int i = 0; i < MAX_PARTICLES; i++)
         {
-            id[i] = std::pair("",NULL_INDEX);
+            id[i] = std::pair(NULL_ID,NULL_INDEX);
         }
     }
 
@@ -115,7 +117,7 @@ namespace Hop::System::Physics
         {
             for (int i = 0; i < last; i++)
             {
-                id[i] = std::pair("",NULL_INDEX);
+                id[i] = std::pair(NULL_ID,NULL_INDEX);
             }
         }
 
@@ -154,7 +156,7 @@ namespace Hop::System::Physics
                         else {nextId = lastElement+1;} 
 
                         cells[h*MAX_PARTICLES_PER_CELL+next]=nextId;
-                        id[nextId] = std::pair(it->idStr,i);
+                        id[nextId] = std::pair(*it,i);
 
                         lastElement = nextId;
                         lastElementInCell[h] = next;
@@ -189,12 +191,14 @@ namespace Hop::System::Physics
         {
             p2 = 0;
             i = cells[c1+p1]; 
+            auto idi = id[i];
             while (cells[c2+p2] != NULL_INDEX)
             {
                 j = cells[c2+p2];
+                auto idj = id[j];
                 resolver->handleObjectObjectCollision(
-                    id[i].first,id[j].first,
-                    id[i].second,id[j].second,
+                    idi.first,idi.second,
+                    idj.first,idj.second,
                     manager
                 );
                 p2++;
@@ -206,14 +210,18 @@ namespace Hop::System::Physics
     void CellList::cellCollisionsThreaded(
         ObjectManager * manager,
         CollisionResolver * resolver,
-        int a
+        std::pair<unsigned,unsigned> * jobs,
+        unsigned njobs
     )
     {
-        unsigned a1, b1;
-        a1 = a+1;
-        for (int b = 0; b < rootNCells; b++)
+        for (unsigned j = 0; j < njobs; j++)
         {
+            unsigned a, b, a1, b1;
+            a = jobs[j].first;
+            a1 = a+1;
+            b = jobs[j].second;
             b1 = b+1;
+
             // takes advantage of symmetry
             //  i.e cell a-1,b-1 will collide with
             //  cell a,b so no need to double up!
@@ -232,15 +240,39 @@ namespace Hop::System::Physics
         std::set<Id> objects
     )
     {
-
+        
         populate(manager,objects);
-
+   
         int a1, b1;
         unsigned thread = 0;
         unsigned nThreads = manager->nThreads();
 
         if (nThreads>0){
-            for (int a = 0; a < rootNCells; a++)
+            
+            unsigned jobsPerThread = std::floor(nCells / nThreads);
+            std::pair<unsigned,unsigned> threadJobs[nThreads][jobsPerThread];
+            std::pair<unsigned,unsigned> jobs[nCells];
+
+            unsigned k = 0;
+            for (unsigned i = 0; i < rootNCells; i++){
+                for (unsigned j = 0; j < rootNCells; j++)
+                {
+                    jobs[k] = std::pair<unsigned,unsigned>(i,j);
+                    k++;
+                }
+            }
+
+            for (unsigned t = 0; t < nThreads; t++)
+            {
+                unsigned k = 0;
+                for (unsigned j = t*jobsPerThread; j < (t+1)*jobsPerThread; j++)
+                {
+                    threadJobs[t][k] = jobs[j];
+                    k++;
+                }
+            }
+
+            for (int t = 0; t < nThreads; t++)
             {
                 manager->postJob(
                     std::bind(
@@ -248,29 +280,31 @@ namespace Hop::System::Physics
                         this,
                         manager,
                         resolver,
-                        a
+                        &threadJobs[t][0],
+                        jobsPerThread
                     )
                 );
             }
             manager->waitForJobs();
-            return;
         }
-
-        for (int a = 0; a < rootNCells; a++)
+        else
         {
-            a1 = a+1;
-            for (int b = 0; b < rootNCells; b++)
+            for (int a = 0; a < rootNCells; a++)
             {
-                b1 = b+1;
-                // takes advantage of symmetry
-                //  i.e cell a-1,b-1 will collide with
-                //  cell a,b so no need to double up!
-                
-                cellCollisions(a,b,a,b,manager,resolver);
-                cellCollisions(a,b,a1,b1,manager,resolver);
-                cellCollisions(a,b,a,b1,manager,resolver);
-                cellCollisions(a,b,a1,b,manager,resolver);
-                cellCollisions(a,b,a1,b-1,manager,resolver);
+                a1 = a+1;
+                for (int b = 0; b < rootNCells; b++)
+                {
+                    b1 = b+1;
+                    // takes advantage of symmetry
+                    //  i.e cell a-1,b-1 will collide with
+                    //  cell a,b so no need to double up!
+                    
+                    cellCollisions(a,b,a,b,manager,resolver);
+                    cellCollisions(a,b,a1,b1,manager,resolver);
+                    cellCollisions(a,b,a,b1,manager,resolver);
+                    cellCollisions(a,b,a1,b,manager,resolver);
+                    cellCollisions(a,b,a1,b-1,manager,resolver);
+                }
             }
         }
     }

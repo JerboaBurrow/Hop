@@ -44,7 +44,7 @@ namespace Hop::System
                         }
                     }
                     if (!isAccounted){
-                        system->threadJobs[n%threads].insert(i);
+                       system->threadJobs[(n+1)%threads].insert(i);
                     }
                 }
                 system->objects.insert(i);
@@ -62,6 +62,40 @@ namespace Hop::System
                     }
                 }
             }
+        }
+    }
+
+    void SystemManager::optimiseJobAllocation()
+    {
+        for (auto const& pair : systems)
+        {
+            std::shared_ptr<System> system = pair.second;
+            
+            unsigned n = system->objects.size();
+
+            if (n < threads*threads)
+            {
+                return;    
+            }
+
+            for (unsigned j = 0; j < threads; j++)
+            {
+                system->threadJobs[j].clear();
+            }
+
+            unsigned jobsPerThread = n / threads;
+
+            for (unsigned t = 0; t < threads; t++)
+            {
+                std::cout << "Thread " << t << ": ";
+                for (unsigned j = jobsPerThread*t; j < jobsPerThread*(t+1); j++)
+                {
+                    std::cout << j << " ";
+                    system->threadJobs[t].insert(*std::next(system->objects.begin(),j));
+                }
+                std::cout << "\n";
+            }
+
         }
     }
 }
