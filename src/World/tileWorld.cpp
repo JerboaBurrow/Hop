@@ -47,12 +47,6 @@ namespace Hop::World
         j = iy;
     }
 
-    void TileWorld::worldToTile(float x, float y, int & ix, int & iy)
-    {
-        ix = int(std::floor(x*float(RENDER_REGION_SIZE)));
-        iy = int(std::floor(y*float(RENDER_REGION_SIZE)));
-    }
-
     void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s)
     {
 
@@ -338,13 +332,14 @@ namespace Hop::World
 
         int wi, wj;
         int k = 0;
-        for (int i = 0; i < DYNAMICS_REGION_SIZE; i++)
+        for (int i = 0; i < RENDER_REGION_SIZE; i++)
         {
-            for (int j = 0; j < DYNAMICS_REGION_SIZE; j++)
+            for (int j = 0; j < RENDER_REGION_SIZE; j++)
             {
 
-                tileToIdCoord(ix+i,iy+j,wi,wj);
-                uint64_t id = map->getAtCoordinate(wi,wj); 
+
+                //tileToIdCoord(ix+i,iy+j,wi,wj);
+                uint64_t id = map->getAtCoordinate(i,j); 
                 renderIds[k] = float(id);
                 k++;
 

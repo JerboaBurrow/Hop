@@ -185,14 +185,31 @@ namespace Hop::System::Physics
         uint64_t c2 = (a2*rootNCells+b2)*MAX_PARTICLES_PER_CELL;
 
         uint64_t p1 = 0;
-        uint64_t p2, i, j;
+        uint64_t p2 = 0;
+        uint64_t i, j;
 
-        while (cells[c1+p1] != NULL_INDEX)
+        uint64_t n1 = 0;
+        uint64_t n2 = 0;
+
+        while(cells[c1+p1] != NULL_INDEX)
+        {
+            n1++;
+            p1++;
+        }
+        while(cells[c2+p2] != NULL_INDEX)
+        {
+            n2++;
+            p2++;
+        }
+
+        p1 = 0; p2 = 0;
+
+        while (p1 < n1)
         {
             p2 = 0;
             i = cells[c1+p1]; 
             auto idi = id[i];
-            while (cells[c2+p2] != NULL_INDEX)
+            while (p2 < n2)
             {
                 j = cells[c2+p2];
                 auto idj = id[j];
@@ -214,12 +231,12 @@ namespace Hop::System::Physics
         unsigned njobs
     )
     {
+        unsigned a, b, a1, b1;
         for (unsigned j = 0; j < njobs; j++)
         {
-            unsigned a, b, a1, b1;
             a = jobs[j].first;
-            a1 = a+1;
             b = jobs[j].second;
+            a1 = a+1;
             b1 = b+1;
 
             // takes advantage of symmetry
@@ -248,7 +265,8 @@ namespace Hop::System::Physics
         unsigned nThreads = manager->nThreads();
 
         if (nThreads>0){
-            
+            //high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
             unsigned jobsPerThread = std::floor(nCells / nThreads);
             std::pair<unsigned,unsigned> threadJobs[nThreads][jobsPerThread];
             std::pair<unsigned,unsigned> jobs[nCells];
@@ -271,6 +289,8 @@ namespace Hop::System::Physics
                     k++;
                 }
             }
+            //high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
 
             for (int t = 0; t < nThreads; t++)
             {
@@ -286,6 +306,10 @@ namespace Hop::System::Physics
                 );
             }
             manager->waitForJobs();
+            //high_resolution_clock::time_point t3 = high_resolution_clock::now();
+
+            //std::cout << "Thread collisions: " << duration_cast<duration<double>>(t2-t1).count() << ", " << duration_cast<duration<double>>(t3-t2).count() << "\n";
+
         }
         else
         {

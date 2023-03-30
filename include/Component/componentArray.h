@@ -54,9 +54,9 @@ namespace Hop::Object::Component
 
         inline T & get(const Id & i)
         {
-            if (!idTaken(i)){
-                throw NoComponentForId("In ComponentArray.get(i)");
-            }
+            // if (!idTaken(i)){
+            //     throw NoComponentForId("In ComponentArray.get(i)");
+            // }
             return componentData[idToIndex[i]];
         }
 
@@ -110,7 +110,7 @@ namespace Hop::Object::Component
         if (index != nextIndex-1)
         {
             componentData[index] = componentData[nextIndex-1];
-            Id moved = indexToId[nextIndex-1];
+            Id & moved = indexToId[nextIndex-1];
             idToIndex[moved] = index;
             indexToId[index] = moved;
 

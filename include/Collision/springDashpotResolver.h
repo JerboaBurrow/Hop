@@ -98,6 +98,7 @@ namespace Hop::System::Physics
 
         // pre-calculated collision parameters
         double alpha, beta, friction;
+        double kr, kd;
     };
 
 }
