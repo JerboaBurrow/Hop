@@ -1,6 +1,10 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include <chrono>
+using namespace std::chrono;
+#include <iostream>
+
 #include <typeinfo>
 #include <exception>
 #include <bitset>
@@ -86,7 +90,6 @@ namespace Hop::Object::Component
             // if (!componentRegistered(handle)){
             //     throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
             // }
-
             return getComponentArray<T>()->get(i);
         }
 

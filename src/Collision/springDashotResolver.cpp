@@ -1,4 +1,6 @@
 #include <Collision/springDashpotResolver.h>
+#include <chrono>
+using namespace std::chrono;
 
 namespace Hop::System::Physics
 {
@@ -12,9 +14,16 @@ namespace Hop::System::Physics
         ObjectManager * manager
     )
     {
+
+        // the branched code appears marginally faster (avoids? )
+
+        //float objectsNotEqual = !(objectI == objectJ);
         if (objectI == objectJ){return;}
 
-        double ix, iy, jx, jy, rx, ry, dd, rc, meff, kr, kd, d, dinv;
+        //high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+
+        double ix, iy, jx, jy, rx, ry, dd, rc, d, dinv;
         double nx, ny, nxt, nyt, ddot, mag, vnorm, fx, fy;
         double vrx, vry;
 
@@ -34,12 +43,11 @@ namespace Hop::System::Physics
         ry += cj.y;
         rc += cj.r;
 
-        dd = rx*rx+ry*ry;
+        dd = rx*rx+ry*ry+1e-15;
 
-        meff = 1.0 / (2.0/PARTICLE_MASS); // mass defined as 1
-        kr = meff*alpha;
-        kd = 2.0*meff*beta;
+        //high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
+        //float isContact = dd < rc*rc;
         if (dd < rc*rc)
         {
         
@@ -70,15 +78,25 @@ namespace Hop::System::Physics
 
             mag -= kd*ddot*dinv;
 
-            fx *= mag;//+friction*std::abs(mag)*nxt;
-            dataPi.fx += fx;
-            dataPj.fx -= fx;
+            //mag *= isContact*objectsNotEqual;
 
+            fx *= mag;//+friction*std::abs(mag)*nxt;
             fy *= mag;//+friction*std::abs(mag)*nyt;
+
+            dataPi.fx += fx;
             dataPi.fy += fy;
+
+            
+            dataPj.fx -= fx;
             dataPj.fy -= fy;
 
-            manager->collisionCallback(objectI,objectJ);
+            //manager->collisionCallback(objectI,objectJ);
+
+            //high_resolution_clock::time_point t3 = high_resolution_clock::now();
+
+            //std::cout << "resolver: " << duration_cast<duration<double>>(t2-t1).count() << ", " << duration_cast<duration<double>>(t3-t2).count() << "\n";
+
+            //std::cout << mag << ", " << isContact << ", " << objectsNotEqual << "\n";
         }
     }
 
@@ -213,6 +231,9 @@ namespace Hop::System::Physics
         coefficientOfRestitution = cor;
         alpha = (std::log(cor) + M_PI*M_PI) / (tc * tc);
         beta = -std::log(cor) / tc;
+
+        kr = EFFECTIVE_MASS*alpha;
+        kd = 2.0*EFFECTIVE_MASS*beta;
     }
 
 
@@ -361,7 +382,7 @@ namespace Hop::System::Physics
         else if (h == Tile::EMPTY_TOP_RIGHT)
         {
             /*
-            _____
+             _____
             x   \ |
             |    \|
             x_____x

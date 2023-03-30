@@ -242,4 +242,15 @@ namespace Hop::World
         j = iy - oy;
     }
 
+    void MarchingWorld::neighourTileData(
+        double x, 
+        double y, 
+        Tile & h, 
+        TileBoundsData & bounds, 
+        double & x0, 
+        double & y0, 
+        double & s
+    )
+    {
+    }
 }
