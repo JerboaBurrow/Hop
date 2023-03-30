@@ -16,6 +16,7 @@
 #include <System/sCollision.h>
 
 #include <unordered_map>
+#include <map>
 #include <string>
 
 #include <typeinfo>
@@ -174,9 +175,9 @@ namespace Hop::Object
         {
             const char * handle = typeid(T).name();
 
-            if (!componentRegistered(handle)){
-                throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
-            }
+            // if (!componentRegistered(handle)){
+            //     throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
+            // }
             return (std::static_pointer_cast<ComponentArray<T>>(componentData[handle]))->get(i);
         }
 
