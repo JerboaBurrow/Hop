@@ -8,6 +8,7 @@ on:
       - 'doc/**'
       - '.github/**'
   pull_request:
+  workflow_dispatch:
 
 jobs:
   linuxXlinux:
