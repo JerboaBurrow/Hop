@@ -23,9 +23,10 @@ namespace Hop::World
         bool updateRegion(float x, float y);
         
         void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
-        void neighourTileData(double x, double y, Tile & h, TileBoundsData & bounds, double & x0, double & y0, double & s);
+        void boundsTileData(double x, double y, Tile & h, TileBoundsData & bounds, double & x0, double & y0, double & s);
+        void neighourTileData(float x, float y, TileNeighbourData & nData, Tile & h, float & x0, float & y0, float & s);
         
-        Tile tileType(int & i, int & j);
+        Tile tileType(int i, int j);
         void tileToIdCoord(int ix, int iy, int & i, int & j);
 
     private:

@@ -121,7 +121,7 @@ namespace Hop::System::Physics
 
             TileBoundsData tileBounds;
 
-            world->neighourTileData
+            world->boundsTileData
             (
                 c.x,
                 c.y,
@@ -187,10 +187,13 @@ namespace Hop::System::Physics
         {
 
             CollisionVertex c = data.mesh[p];
+            
+            TileNeighbourData neighbours;
 
-            world->worldToTileData(
+            world->neighourTileData(
                 c.x,
                 c.y,
+                neighbours,
                 h,
                 x0,
                 y0,
@@ -218,9 +221,17 @@ namespace Hop::System::Physics
                 ly,
                 inside
             );
+
+            neighbourTilesCollision
+            (
+                c,
+                dataP,
+                neighbours
+            );
         }
 
     }
+
 
     void SpringDashpot::updateParameters(
         double tc,
@@ -237,11 +248,136 @@ namespace Hop::System::Physics
     }
 
 
-        /*
-            Find the correct normal vector and distance for a possible force
-                op indicates also applying the opposing vector in
-                cases with two lines, id in (5,10)
-        */
+    void SpringDashpot::neighbourTilesCollision
+    (
+        CollisionVertex & c,
+        cPhysics & dataP,
+        TileNeighbourData & tileNeighbours
+    )
+    {
+        double hy, hx, lx, ly, x, y;
+        bool inside;
+        float s = tileNeighbours.west.length;
+        double halfS = double(s)*0.5;
+        double S = double(s);
+        // WEST
+
+        float d = c.x - (tileNeighbours.west.x+s);
+
+        if (d < c.r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        {
+            inside = false;
+            hx = tileNeighbours.west.x+halfS;
+            hy = tileNeighbours.west.y+halfS;
+            lx = tileNeighbours.west.x+S;
+            ly = tileNeighbours.west.y+S;
+            x = tileNeighbours.west.x;
+            y = tileNeighbours.west.y;
+    
+            tileCollision(
+                tileNeighbours.west.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+        }
+
+        // NORTH
+
+        d = tileNeighbours.north.y-c.y;
+
+        if (d < c.r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        {
+            inside = false;
+            hx = tileNeighbours.north.x+halfS;
+            hy = tileNeighbours.north.y+halfS;
+            lx = tileNeighbours.north.x+S;
+            ly = tileNeighbours.north.y+S;
+            x = tileNeighbours.north.x;
+            y = tileNeighbours.north.y;
+    
+           tileCollision(
+                tileNeighbours.north.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+        }
+
+        // EAST
+
+        d = tileNeighbours.east.x-c.x;
+
+        if (d < c.r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        {
+            inside = false;
+            hx = tileNeighbours.east.x+halfS;
+            hy = tileNeighbours.east.y+halfS;
+            lx = tileNeighbours.east.x+S;
+            ly = tileNeighbours.east.y+S;
+            x = tileNeighbours.east.x;
+            y = tileNeighbours.east.y;
+    
+           tileCollision(
+                tileNeighbours.east.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+        }
+
+        // SOUTH
+
+        d = c.y-(tileNeighbours.south.y+s);
+
+        if (d < c.r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        {
+            inside = false;
+            hx = tileNeighbours.south.x+halfS;
+            hy = tileNeighbours.south.y+halfS;
+            lx = tileNeighbours.south.x+S;
+            ly = tileNeighbours.south.y+S;
+            x = tileNeighbours.south.x;
+            y = tileNeighbours.south.y;
+    
+           tileCollision(
+                tileNeighbours.south.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+        }
+    }
+
+    /*
+        Find the correct normal vector and distance for a possible force
+            op indicates also applying the opposing vector in
+            cases with two lines, id in (5,10)
+    */
     void SpringDashpot::tileCollision
     (
         Tile & h,

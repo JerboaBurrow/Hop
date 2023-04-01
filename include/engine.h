@@ -214,7 +214,7 @@ namespace Hop
 
         // Misc 
 
-        double getCollisionPrimitiveMaxSize(){return 0.1*world.get()->worldUnitLength();}
+        double getCollisionPrimitiveMaxSize(){return world.get()->worldMaxCollisionPrimitiveSize();}
 
         // Camera
 

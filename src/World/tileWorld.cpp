@@ -69,7 +69,20 @@ namespace Hop::World
 
     }
 
-    void TileWorld::neighourTileData(
+    void TileWorld::neighourTileData
+    (
+        float x, 
+        float y, 
+        TileNeighbourData & nData,
+        Tile & h,
+        float & x0,
+        float & y0,
+        float & s
+    )
+    {
+    }
+
+    void TileWorld::boundsTileData(
         double x, 
         double y, 
         Tile & h, 
@@ -305,7 +318,7 @@ namespace Hop::World
         }
     }
 
-    Tile TileWorld::tileType(int & i, int & j)
+    Tile TileWorld::tileType(int i, int j)
     {
 
         return toTile<uint64_t>(map->getAtCoordinate(i,j));

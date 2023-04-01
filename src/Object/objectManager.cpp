@@ -9,7 +9,7 @@ namespace Hop::Object
 
         objects[o->id] = o;
         idToSignature[o->id] = Signature();
-        handleToId[o->id.idStr] = o->id;
+        //handleToId[Hop::Object::to_string(o->id)] = o->id;
 
         return o->id;
     }
