@@ -71,13 +71,13 @@ namespace Hop::World
 
     void TileWorld::neighourTileData
     (
-        float x, 
-        float y, 
+        double x, 
+        double y, 
         TileNeighbourData & nData,
         Tile & h,
-        float & x0,
-        float & y0,
-        float & s
+        double & x0,
+        double & y0,
+        double & s
     )
     {
     }

@@ -30,6 +30,7 @@ namespace Hop::System::Physics
 
         std::unique_ptr<uint64_t[]> cells;
         std::unique_ptr<uint64_t[]> lastElementInCell;
+        std::unique_ptr<bool[]> notEmpty;
         std::unique_ptr<std::pair<Id,uint64_t>[]> id;
         uint64_t lastElement;
 

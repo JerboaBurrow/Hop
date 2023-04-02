@@ -119,53 +119,80 @@ namespace Hop::System::Physics
 
             CollisionVertex c = data.mesh[p];
 
-            TileBoundsData tileBounds;
-
-            world->boundsTileData
-            (
-                c.x,
-                c.y,
-                h,
-                tileBounds,
-                x0,
-                y0,
-                s
-            );
-
-            halfS = double(s)*0.5;
-            S = double(s);
-
-            hx = x0+halfS;
-            hy = y0+halfS;
-            lx = x0+S;
-            ly = y0+S;
-
-            tileCollision
-            (
-                h,
-                x0,
-                y0,
-                c,
-                dataP,
-                hx,
-                hy,
-                lx,
-                ly,
-                inside
-            );
-
-            if (!inside)
+            if (data.mesh.recentlyInside(p))
             {
+                data.mesh.decrementInside(p);
+            }
+            else
+            {
+            
+                TileNeighbourData neighbours;
 
-                tileBoundariesCollision
-                (
-                    c,
-                    dataP,
-                    tileBounds
+                world->neighourTileData(
+                    c.x,
+                    c.y,
+                    neighbours,
+                    h,
+                    x0,
+                    y0,
+                    s
                 );
 
+                TileBoundsData tileBounds;
+
+                world->boundsTileData
+                (
+                    c.x,
+                    c.y,
+                    h,
+                    tileBounds,
+                    x0,
+                    y0,
+                    s
+                );  
+
+                halfS = double(s)*0.5;
+                S = double(s);
+
+                hx = x0+halfS;
+                hy = y0+halfS;
+                lx = x0+S;
+                ly = y0+S;
+
+                tileCollision
+                (
+                    h,
+                    x0,
+                    y0,
+                    c,
+                    dataP,
+                    hx,
+                    hy,
+                    lx,
+                    ly,
+                    inside
+                );
+
+                if(inside){ data.mesh.resetInsideCounter(p); }
+                else
+                {
+
+                    tileBoundariesCollision
+                    (
+                        c,
+                        dataP,
+                        tileBounds
+                    );
+
+                    neighbourTilesCollision
+                    (
+                    c,
+                    dataP,
+                    neighbours
+                    );
+
+                }
             }
-            
         }
     }
 
@@ -175,7 +202,7 @@ namespace Hop::System::Physics
         MarchingWorld * world
     )
     {
-        float x0, y0, s;
+        double x0, y0, s;
         Tile h;
         double halfS, S, hx, hy, lx, ly;
         bool inside;
@@ -230,13 +257,15 @@ namespace Hop::System::Physics
                 );
 
                 if(inside){ data.mesh.resetInsideCounter(p); }
-
-                neighbourTilesCollision
-                (
-                    c,
-                    dataP,
-                    neighbours
-                );
+                else
+                {
+                    neighbourTilesCollision
+                    (
+                        c,
+                        dataP,
+                        neighbours
+                    );
+                }
             }
         }
 
