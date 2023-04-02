@@ -147,9 +147,11 @@ namespace Hop::World
         TileData getTileData(float x, float y);
 
         virtual void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s) = 0;
+
         virtual void neighourTileData(double x, double y, TileNeighbourData & nData, Tile & h, double & x0, double & y0, double & s) = 0;
         
         virtual Tile tileType(int i, int j) = 0;
+
         virtual void tileToIdCoord(int ix, int iy, int & i, int & j) = 0;
 
         virtual bool pointOutOfBounds(float x, float y);

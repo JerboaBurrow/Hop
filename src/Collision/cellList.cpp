@@ -298,6 +298,8 @@ namespace Hop::System::Physics
                     k++;
                 }
             }
+            //high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
 
             for (int t = 0; t < nThreads; t++)
             {
@@ -313,6 +315,10 @@ namespace Hop::System::Physics
                 );
             }
             manager->waitForJobs();
+            //high_resolution_clock::time_point t3 = high_resolution_clock::now();
+
+            //std::cout << "Thread collisions: " << duration_cast<duration<double>>(t2-t1).count() << ", " << duration_cast<duration<double>>(t3-t2).count() << "\n";
+
         }
         else
         {
