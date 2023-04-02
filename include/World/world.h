@@ -60,11 +60,20 @@ namespace Hop::World
         TileData(Tile h, float x, float y, float l)
         : tileType(h), x(x), y(y), length(l)
         {}
+        
+        TileData()
+        : tileType(Tile::EMPTY), x(0.0), y(0.0), length(0.0)
+        {}
 
         Tile tileType;
         float x;
         float y;
         float length;
+    };
+
+    struct TileNeighbourData
+    {
+        TileData west, northWest, north, northEast, east, southEast, south, southWest;
     };
       
     using namespace Hop::GL;
@@ -131,15 +140,18 @@ namespace Hop::World
         virtual void load(std::string fileNameWithoutExtension, bool compressed = true){map->load(fileNameWithoutExtension, compressed); forceUpdate = true;}
 
         float worldUnitLength(){return 1.0/RENDER_REGION_SIZE;}
+        float worldMaxCollisionPrimitiveSize(){return 0.5*worldUnitLength();}
 
         void worldToTile(float x, float y, int & ix, int & iy);
 
         TileData getTileData(float x, float y);
 
         virtual void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s) = 0;
-        virtual void neighourTileData(double x, double y, Tile & h, TileBoundsData & bounds, double & x0, double & y0, double & s) = 0;
+
+        virtual void neighourTileData(double x, double y, TileNeighbourData & nData, Tile & h, double & x0, double & y0, double & s) = 0;
         
-        virtual Tile tileType(int & i, int & j) = 0;
+        virtual Tile tileType(int i, int j) = 0;
+
         virtual void tileToIdCoord(int ix, int iy, int & i, int & j) = 0;
 
         virtual bool pointOutOfBounds(float x, float y);

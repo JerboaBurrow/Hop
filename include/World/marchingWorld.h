@@ -26,9 +26,10 @@ namespace Hop::World
         void load(std::string filename){}
 
         void worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s);
-        void neighourTileData(double x, double y, Tile & h, TileBoundsData & bounds, double & x0, double & y0, double & s);
+        void neighourTileData(double x, double y, TileNeighbourData & nData, Tile & h, double & x0, double & y0, double & s);
+        
+        Tile tileType(int i, int j);
 
-        Tile tileType(int & i, int & j);
         void tileToIdCoord(int ix, int iy, int & i, int & j);
         bool updateRegion(float x, float y);
 

@@ -119,53 +119,80 @@ namespace Hop::System::Physics
 
             CollisionVertex c = data.mesh[p];
 
-            TileBoundsData tileBounds;
-
-            world->neighourTileData
-            (
-                c.x,
-                c.y,
-                h,
-                tileBounds,
-                x0,
-                y0,
-                s
-            );
-
-            halfS = double(s)*0.5;
-            S = double(s);
-
-            hx = x0+halfS;
-            hy = y0+halfS;
-            lx = x0+S;
-            ly = y0+S;
-
-            tileCollision
-            (
-                h,
-                x0,
-                y0,
-                c,
-                dataP,
-                hx,
-                hy,
-                lx,
-                ly,
-                inside
-            );
-
-            if (!inside)
+            if (data.mesh.recentlyInside(p))
             {
+                data.mesh.decrementInside(p);
+            }
+            else
+            {
+            
+                TileNeighbourData neighbours;
 
-                tileBoundariesCollision
-                (
-                    c,
-                    dataP,
-                    tileBounds
+                world->neighourTileData(
+                    c.x,
+                    c.y,
+                    neighbours,
+                    h,
+                    x0,
+                    y0,
+                    s
                 );
 
+                TileBoundsData tileBounds;
+
+                world->boundsTileData
+                (
+                    c.x,
+                    c.y,
+                    h,
+                    tileBounds,
+                    x0,
+                    y0,
+                    s
+                );  
+
+                halfS = double(s)*0.5;
+                S = double(s);
+
+                hx = x0+halfS;
+                hy = y0+halfS;
+                lx = x0+S;
+                ly = y0+S;
+
+                tileCollision
+                (
+                    h,
+                    x0,
+                    y0,
+                    c,
+                    dataP,
+                    hx,
+                    hy,
+                    lx,
+                    ly,
+                    inside
+                );
+
+                if(inside){ data.mesh.resetInsideCounter(p); }
+                else
+                {
+
+                    tileBoundariesCollision
+                    (
+                        c,
+                        dataP,
+                        tileBounds
+                    );
+
+                    neighbourTilesCollision
+                    (
+                    c,
+                    dataP,
+                    neighbours
+                    );
+
+                }
             }
-            
         }
     }
 
@@ -175,7 +202,7 @@ namespace Hop::System::Physics
         MarchingWorld * world
     )
     {
-        float x0, y0, s;
+        double x0, y0, s;
         Tile h;
         double halfS, S, hx, hy, lx, ly;
         bool inside;
@@ -186,41 +213,64 @@ namespace Hop::System::Physics
         for (unsigned p = 0; p < data.mesh.size(); p++)
         {
 
-            CollisionVertex c = data.mesh[p];
+            const CollisionVertex & c = data.mesh[p];
 
-            world->worldToTileData(
-                c.x,
-                c.y,
-                h,
-                x0,
-                y0,
-                s
-            );
+            if (data.mesh.recentlyInside(p))
+            {
+                data.mesh.decrementInside(p);
+            }
+            else
+            {
+            
+                TileNeighbourData neighbours;
 
-            halfS = double(s)*0.5;
-            S = double(s);
+                world->neighourTileData(
+                    c.x,
+                    c.y,
+                    neighbours,
+                    h,
+                    x0,
+                    y0,
+                    s
+                );
 
-            hx = x0+halfS;
-            hy = y0+halfS;
-            lx = x0+S;
-            ly = y0+S;
-    
-            tileCollision
-            (
-                h,
-                x0,
-                y0,
-                c,
-                dataP,
-                hx,
-                hy,
-                lx,
-                ly,
-                inside
-            );
+                halfS = double(s)*0.5;
+                S = double(s);
+
+                hx = x0+halfS;
+                hy = y0+halfS;
+                lx = x0+S;
+                ly = y0+S;
+        
+                tileCollision
+                (
+                    h,
+                    x0,
+                    y0,
+                    c,
+                    dataP,
+                    hx,
+                    hy,
+                    lx,
+                    ly,
+                    inside
+                );
+
+                if(inside){ data.mesh.resetInsideCounter(p); }
+                else
+                {
+                    neighbourTilesCollision
+                    (
+                        c,
+                        dataP,
+                        neighbours
+                    );
+                }
+            }
         }
 
     }
+
 
     void SpringDashpot::updateParameters(
         double tc,
@@ -237,17 +287,142 @@ namespace Hop::System::Physics
     }
 
 
-        /*
-            Find the correct normal vector and distance for a possible force
-                op indicates also applying the opposing vector in
-                cases with two lines, id in (5,10)
-        */
+    void SpringDashpot::neighbourTilesCollision
+    (
+        const CollisionVertex & c,
+        cPhysics & dataP,
+        TileNeighbourData & tileNeighbours
+    )
+    {
+        double hy, hx, lx, ly, x, y;
+        bool inside;
+        float s = tileNeighbours.west.length;
+        double halfS = double(s)*0.5;
+        double S = double(s);
+        // WEST
+
+        float d = c.x - (tileNeighbours.west.x+s);
+
+        if (d < c.r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        {
+            inside = false;
+            hx = tileNeighbours.west.x+halfS;
+            hy = tileNeighbours.west.y+halfS;
+            lx = tileNeighbours.west.x+S;
+            ly = tileNeighbours.west.y+S;
+            x = tileNeighbours.west.x;
+            y = tileNeighbours.west.y;
+    
+            tileCollision(
+                tileNeighbours.west.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+        }
+
+        // NORTH
+
+        d = tileNeighbours.north.y-c.y;
+
+        if (d < c.r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        {
+            inside = false;
+            hx = tileNeighbours.north.x+halfS;
+            hy = tileNeighbours.north.y+halfS;
+            lx = tileNeighbours.north.x+S;
+            ly = tileNeighbours.north.y+S;
+            x = tileNeighbours.north.x;
+            y = tileNeighbours.north.y;
+    
+           tileCollision(
+                tileNeighbours.north.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+        }
+
+        // EAST
+
+        d = tileNeighbours.east.x-c.x;
+
+        if (d < c.r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        {
+            inside = false;
+            hx = tileNeighbours.east.x+halfS;
+            hy = tileNeighbours.east.y+halfS;
+            lx = tileNeighbours.east.x+S;
+            ly = tileNeighbours.east.y+S;
+            x = tileNeighbours.east.x;
+            y = tileNeighbours.east.y;
+    
+           tileCollision(
+                tileNeighbours.east.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+        }
+
+        // SOUTH
+
+        d = c.y-(tileNeighbours.south.y+s);
+
+        if (d < c.r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        {
+            inside = false;
+            hx = tileNeighbours.south.x+halfS;
+            hy = tileNeighbours.south.y+halfS;
+            lx = tileNeighbours.south.x+S;
+            ly = tileNeighbours.south.y+S;
+            x = tileNeighbours.south.x;
+            y = tileNeighbours.south.y;
+    
+           tileCollision(
+                tileNeighbours.south.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+        }
+    }
+
+    /*
+        Find the correct normal vector and distance for a possible force
+            op indicates also applying the opposing vector in
+            cases with two lines, id in (5,10)
+    */
     void SpringDashpot::tileCollision
     (
         Tile & h,
         double x0,
         double y0,
-        CollisionVertex & c,
+        const CollisionVertex & c,
         cPhysics & dataP,
         double & hx,
         double & hy,
@@ -277,7 +452,7 @@ namespace Hop::System::Physics
         if (h == Tile::BOTTOM_LEFT)
         {
             /*
-            _____
+             _____
             |     |
             |\    |
             x_\___|
@@ -298,7 +473,7 @@ namespace Hop::System::Physics
         else if (h == Tile::EMPTY_BOTTOM_LEFT)
         {
             /*
-            _____
+             _____
             x     x
             |\    |
             |_\___x
@@ -319,7 +494,7 @@ namespace Hop::System::Physics
         else if (h == Tile::BOTTOM_RIGHT)
         {
             /*
-            _____
+             _____
             |     |
             |    /|
             |___/_x
@@ -340,7 +515,7 @@ namespace Hop::System::Physics
         else if (h == Tile::EMPTY_BOTTOM_RIGHT)
         {
             /*
-            _____
+             _____
             x     x
             |    /|
             x___/_|
@@ -361,7 +536,7 @@ namespace Hop::System::Physics
         else if (h == Tile::TOP_RIGHT)
         {
             /*
-            _____
+             _____
             |   \ x
             |    \|
             |_____|
@@ -403,7 +578,7 @@ namespace Hop::System::Physics
         else if (h == Tile::TOP_LEFT)
         {
             /*
-            _____
+             _____
             x /   |
             |/    |
             |_____|
@@ -424,7 +599,7 @@ namespace Hop::System::Physics
         else if (h == Tile::EMPTY_TOP_LEFT)
         {
             /*
-            _____
+             _____
             | /   x
             |/    |
             x_____x
@@ -445,7 +620,7 @@ namespace Hop::System::Physics
         else if (h == Tile::BOTTOM_HALF)
         {
             /*
-            _____
+             _____
             |     |
             |-----|
             x_____x
@@ -466,7 +641,7 @@ namespace Hop::System::Physics
         else if (h == Tile::TOP_HALF)
         {
             /*
-            _____
+             _____
             x     x
             |-----|
             |_____|
@@ -524,42 +699,43 @@ namespace Hop::System::Physics
         else if (h == Tile::BOTTOM_LEFT_AND_TOP_RIGHT)
         {
             /*
-            _____
-            |   \ x
-            |\   \|
-            X_\___|
+             ____ 
+            | /   x
+            |/   /|
+            x__ /_|
             
             */
-            nx = 1.0; ny = 1.0;
+            bool insideLeft = false; 
+            nx = -1.0; ny = 1.0;
             op = true;
             d2 = pointLineSegmentDistanceSquared<double>(
                 c.x,c.y,
-                hx,y0,
-                x0,hy
+                x0,hy,
+                hx,ly
             );
             
             if (pointLineHandedness<double>(
                     c.x,c.y,
-                    hx,y0,
-                    x0,hy
-                    ) == 1
+                    x0,hy,
+                    hx,ly
+                    ) == -1
             )
             {
-                inside = true;
+                insideLeft = true;
             }
 
 
             d2p = pointLineSegmentDistanceSquared<double>(
                 c.x,c.y,
-                lx,hy,
-                hx,ly
+                hx,y0,
+                lx,hy
             );
 
-            if (!inside && pointLineHandedness<double>(
+            if (insideLeft && pointLineHandedness<double>(
                     c.x,c.y,
-                    lx,hy,
-                    hx,ly
-                    ) == -1
+                    hx,y0,
+                    lx,hy
+                    ) == 1
             )
             {
                 inside = true;
@@ -568,41 +744,41 @@ namespace Hop::System::Physics
         else if (h == Tile::TOP_LEFT_AND_BOTTOM_RIGHT)
         {
             /*
-            _____
-            x /   |
-            |/   /|
-            |___/_x
+            ______
+            x   \ |
+            |\   \|
+            |_\___x
             
             */
-            nx = 1.0; ny = -1.0;
+            bool insideLeft = false;
+            nx = -1.0; ny = -1.0;
             op = true;
             d2 = pointLineSegmentDistanceSquared<double>(
                 c.x,c.y,
-                x0,hy,
-                hx,ly
+                hx,y0,
+                x0,hy
             );
 
             if (pointLineHandedness<double>(
                     c.x,c.y,
-                    x0,hy,
-                    hx,ly
-                    ) == 1
+                    hx,y0,
+                    x0,hy
+                    ) == -1
             )
             {
-                inside = true;
+                insideLeft = true;
             }
-
             d2p = pointLineSegmentDistanceSquared<double>(
                 c.x,c.y,
-                hx,y0,
-                lx,hy
+                lx,hy,
+                hx,ly
             );
 
-            if (!inside && pointLineHandedness<double>(
+            if (insideLeft && pointLineHandedness<double>(
                     c.x,c.y,
-                    hx,y0,
-                    lx,hy
-                    ) == -1
+                    lx,hy,
+                    hx,ly
+                    ) == 1
             )
             {
                 inside = true;
@@ -623,7 +799,7 @@ namespace Hop::System::Physics
 
         if (f2)
         {
-            applyForce(-nx,-ny,d2,c.r,dataP);
+            applyForce(-nx,-ny,d2p,c.r,dataP);
         }
     }
 
@@ -661,7 +837,7 @@ namespace Hop::System::Physics
 
     void SpringDashpot::tileBoundariesCollision
     (
-        CollisionVertex & c,
+        const CollisionVertex & c,
         cPhysics & dataP,
         TileBoundsData & tileBounds
     )

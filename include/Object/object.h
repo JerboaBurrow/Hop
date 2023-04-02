@@ -11,7 +11,7 @@ namespace Hop::Object
     public:
 
         Object()
-        : id(Id::gen())
+        : id(Id::next())
         {}
 
         const Id id;

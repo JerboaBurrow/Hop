@@ -27,6 +27,7 @@ namespace Hop::System::Physics
     using Hop::World::MarchingWorld;
     using Hop::World::Tile;
     using Hop::World::TileBoundsData;
+    using Hop::World::TileNeighbourData;
 
     class CollisionResolver 
     {

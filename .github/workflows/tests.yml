@@ -134,8 +134,15 @@ jobs:
           sudo Xvfb :99 -screen 0 800x600x24 &
           sleep 5
           MESA_GL_VERSION_OVERRIDE=3.3 ./sfmlPerlinWorld &
+          export PID=$!
           sleep 10
           xwd -root -silent | convert xwd:- png:screenshot.png
+          sleep 5 && kill $PID
+          MESA_GL_VERSION_OVERRIDE=3.3 ./sfmlPerlinWorld map &
+          export PID=$!
+          sleep 10
+          xwd -root -silent | convert xwd:- png:screenshot-map.png
+          sleep 5 && kill $PID
           
           
       - name: upload artifact
@@ -143,6 +150,12 @@ jobs:
         with:
           name: screenshot-sfml
           path: sfml/screenshot.png
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshot-map-sfml
+          path: sfml/screenshot-map.png
           
   release:
     needs: [linuxXlinux, linuxXwindows]

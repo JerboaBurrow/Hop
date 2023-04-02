@@ -10,7 +10,6 @@ namespace Hop::Object
     class Object;
 
     const uuids::uuid generateId();
-    const uuids::uuid NULL_UUID;
 
     struct Id 
     {
@@ -18,17 +17,19 @@ namespace Hop::Object
         friend class Hop::Object::Object;
 
         Id()
-        : id(NULL_UUID),idStr(uuids::to_string(id))
+        : id(Id::NULL_ID_CODE)
         {}
 
-        Id(uuids::uuid i)
-        : id(i),idStr(uuids::to_string(id))
+        Id(uint64_t i)
+        : id(i)
         {}
 
-        size_t hash() const {return std::hash<uuids::uuid>{}(id);}
+        static uint64_t next(){uint64_t thisId = nextId; nextId++; return thisId;}
+        static uuids::uuid getRunUUID() {return runUUID;}
 
-        uuids::uuid id;
-        std::string idStr;
+        size_t hash() const {return std::hash<uint64_t>{}(id);}
+
+        uint64_t id;
 
         bool operator==( Id const & rhs ) const {return this->id == rhs.id;}
         
@@ -37,20 +38,26 @@ namespace Hop::Object
         Id & operator=(const Id & j)
         {
             id = j.id;
-            idStr = j.idStr;
             return *this;
         }
 
-    protected:
+        static const uint64_t NULL_ID_CODE = 0;
+
+    private:
 
         static std::random_device rd;
         static std::mt19937 generator;
-        static uuids::uuid_random_generator gen;
+        static uuids::uuid_random_generator genUUID;
+
+        static const uuids::uuid runUUID;
+
+        static uint64_t nextId;
     };
 
-    static const Id NULL_ID = Id(NULL_UUID);
-
     std::ostream & operator<<(std::ostream & os, Id const & value);
+    std::string to_string(const Id & i);
+
+    const Id NULL_ID = Id();
 
 }
 
