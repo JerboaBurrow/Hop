@@ -31,10 +31,12 @@ namespace Hop::System::Physics
         cells = std::make_unique<uint64_t[]>(nCells*MAX_PARTICLES_PER_CELL);
         lastElementInCell = std::make_unique<uint64_t[]>(nCells);
         id = std::make_unique<std::pair<Id,uint64_t>[]>(MAX_PARTICLES);
+        notEmpty = std::make_unique<bool[]>(nCells);
 
         lastElement = NULL_INDEX;
         for (int i = 0; i < nCells; i++)
         {
+            notEmpty[i] = false;
             for (int j = 0; j < MAX_PARTICLES_PER_CELL; j++)
             {
                 cells[i*MAX_PARTICLES_PER_CELL+j] = NULL_INDEX;
@@ -65,10 +67,12 @@ namespace Hop::System::Physics
         cells = std::make_unique<uint64_t[]>(nCells*MAX_PARTICLES_PER_CELL);
         lastElementInCell = std::make_unique<uint64_t[]>(nCells);
         id = std::make_unique<std::pair<Id,uint64_t>[]>(MAX_PARTICLES);
+        notEmpty = std::make_unique<bool[]>(nCells);
 
         lastElement = NULL_INDEX;
         for (int i = 0; i < nCells; i++)
         {
+            notEmpty[i] = false;
             for (int j = 0; j < MAX_PARTICLES_PER_CELL; j++)
             {
                 cells[i*MAX_PARTICLES_PER_CELL+j] = NULL_INDEX;
@@ -87,6 +91,7 @@ namespace Hop::System::Physics
         for (int l = 0; l < nCells; l++)
         {
             uint64_t last;
+            notEmpty[l] = false;
             
             if (full){last = MAX_PARTICLES_PER_CELL;}
             
@@ -160,6 +165,7 @@ namespace Hop::System::Physics
 
                         lastElement = nextId;
                         lastElementInCell[h] = next;
+                        notEmpty[h] = true;
                     }
                 }
             }
@@ -178,6 +184,11 @@ namespace Hop::System::Physics
     )
     {
         if (a1 < 0 || a1 >= rootNCells || b1 < 0 || b2 >= rootNCells || a2 < 0 || a2 >= rootNCells || b2 < 0 || b2 >= rootNCells){
+            return;
+        }
+
+        if (!notEmpty[a1*rootNCells+b1] || !notEmpty[a2*rootNCells+b2])
+        {
             return;
         }
 
@@ -257,7 +268,6 @@ namespace Hop::System::Physics
         std::set<Id> objects
     )
     {
-        
         populate(manager,objects);
    
         int a1, b1;
@@ -265,7 +275,6 @@ namespace Hop::System::Physics
         unsigned nThreads = manager->nThreads();
 
         if (nThreads>0){
-            //high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
             unsigned jobsPerThread = std::floor(nCells / nThreads);
             std::pair<unsigned,unsigned> threadJobs[nThreads][jobsPerThread];
@@ -331,6 +340,7 @@ namespace Hop::System::Physics
                 }
             }
         }
+        
     }
 
     void CellList::handleObjectWorldCollisions(

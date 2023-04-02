@@ -28,6 +28,8 @@ struct PhysicsOptions
     : deltaTime(dt), gravity(g), coefficientResititution(c), stabilise(s)
     {}
 
+    PhysicsOptions() = default;
+
     double deltaTime;
     double gravity;
     double coefficientResititution;
@@ -36,6 +38,9 @@ struct PhysicsOptions
 
 struct WorldOptions 
 {
+
+    WorldOptions() = default;
+
     WorldOptions(uint64_t s, uint64_t r, uint8_t d, bool m)
     : seed(s), regionSize(r), dynamicsShell(d), marching(m)
     {}
@@ -214,7 +219,7 @@ namespace Hop
 
         // Misc 
 
-        double getCollisionPrimitiveMaxSize(){return 0.1*world.get()->worldUnitLength();}
+        double getCollisionPrimitiveMaxSize(){return world.get()->worldMaxCollisionPrimitiveSize();}
 
         // Camera
 

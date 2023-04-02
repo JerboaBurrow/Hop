@@ -33,7 +33,7 @@ double deltas[60];
 
 bool debug = false;
 
-const double deltaPhysics = 1.0/600.0;
+const double deltaPhysics = 1.0/900.0;
 
 using Hop::Object::Component::cTransform;
 using Hop::Object::Component::cPhysics;
@@ -47,7 +47,7 @@ using Hop::Logging::WARN;
 
 using Hop::Util::fixedLengthNumber;
 
-int main()
+int main(int argc, char ** argv)
 {
 
   sf::ContextSettings contextSettings;
@@ -74,21 +74,55 @@ int main()
   float posX = 0.0;
   float posY = 0.0;
 
+  Hop::World::Boundary * bounds;
+  Hop::World::MapSource * source;
+  WorldOptions wOptions;
+  PhysicsOptions phyOptions;
+
+  Hop::World::FiniteBoundary mapBounds(0,0,16,16);
+  Hop::World::FixedSource mapSource;
+  mapSource.load("tile",false);
+
+  WorldOptions mapWOptions(2,16,1,false);
+  PhysicsOptions mapPhyOptions(deltaPhysics,9.81,0.66,true);
+
+  Hop::World::InfiniteBoundary pBounds;
   Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
   perlin.setThreshold(0.2);
   perlin.setSize(64*3+1);
 
-  Hop::World::InfiniteBoundary bounds;
-  
+  WorldOptions pWOptions(2,64,1,true);
+  PhysicsOptions pPhyOptions(deltaPhysics,9.81,0.66,true);
+
+  std::cout << argc << "\n";
+  if (argc > 1 && argv[1] == std::string("map"))
+  {
+    std::cout << "map\n";
+    bounds = &mapBounds;
+    source = &mapSource;
+
+    wOptions = mapWOptions;
+    phyOptions = mapPhyOptions;
+ 
+  }
+  else
+  {
+    bounds = &pBounds;
+    source = &perlin;
+
+    wOptions = pWOptions;
+    phyOptions = pPhyOptions;
+  }
+
   Hop::Engine hop
   (
     resX,
     resY,
-    &perlin,
-    &bounds,
-    WorldOptions(2,16,1,true),
-    PhysicsOptions(deltaPhysics,9.81,0.5,true),
-    2
+    source,
+    bounds,
+    wOptions,
+    phyOptions,
+    0
   );
 
   sf::Clock clock;
@@ -99,7 +133,7 @@ int main()
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 10;
+  int n = 5000;
 
   sf::Clock timer2;
   double t1 = 0.0;
@@ -108,7 +142,7 @@ int main()
 
   Hop::Object::Id pid;
 
-  double radius = hop.getCollisionPrimitiveMaxSize();
+  double radius = 0.2*hop.getCollisionPrimitiveMaxSize();
 
   for (int i = 0; i < n; i++)
   {
