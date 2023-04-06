@@ -9,6 +9,7 @@ namespace Hop::Object::Component
   */
   const double PARTICLE_MASS = 1.0;
   const double EFFECTIVE_MASS = 1.0 / (2.0/PARTICLE_MASS); // mass defined as 1
+  
   struct cPhysics 
   {
       double lastX;

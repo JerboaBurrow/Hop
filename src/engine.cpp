@@ -15,7 +15,7 @@ namespace Hop
         :   camera(resX,resY,glm::vec2(0.0,0.0)),
             manager(maxThreads),
             textRenderer(glm::ortho(0.0,double(resX),0.0,double(resY))),
-            font("resources/fonts/","OpenDyslexic-Regular.otf",48)
+            font(48)
 
     {
         // make world

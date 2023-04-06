@@ -39,10 +39,12 @@ add_compile_definitions(TIMESTAMP="${TODAY}")
 if (RELEASE)
     add_compile_definitions(BUILD_TYPE="Release")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -O3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signaling-nans -fno-signed-zeros -funsafe-math-optimizations")
 else ()
     add_compile_definitions(BUILD_TYPE="Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g")
 endif ()
+
 
 if (SANITISE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
@@ -114,11 +116,11 @@ add_library(Hop STATIC
     ${UTIL_SRC}
 )
 
-target_compile_definitions(Hop PUBLIC GLSL_VERSION="140")
-
 if (ANDROID)
+    target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
     target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid)
 else()
+    target_compile_definitions(Hop PUBLIC GLSL_VERSION="140")
     target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 endif()
 

@@ -100,6 +100,12 @@ namespace Hop
         // World 
 
         std::pair<float,float> getWorldPosition(){return world->getPos();}
+
+        std::pair<float,float> screenToWorld(float x, float y)
+        {
+            glm::vec4 w = camera.screenToWorld(x,y);
+            return std::pair<float,float> (w[0],w[1]);
+        }
         
         bool tryMoveWorld(float x, float y){return world->updateRegion(x,y);}
 
@@ -210,6 +216,10 @@ namespace Hop
         void log(std::string msg){T(msg) >> manager.getLog();}
 
         void outputLog(std::ostream & o){o << manager.getLog();}
+
+        #if defined(ANDROID)
+            void outputLogAndroid(){manager.getLog().androidLog();}
+        #endif
 
         // Thread
 

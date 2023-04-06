@@ -11,7 +11,7 @@ namespace Hop::System::Physics
     void sPhysics::processThreaded(ObjectManager * m, size_t threadId)
     {
         double nx, ny, ntheta, ar, br, cr, at, bt, ct;
-        double D = std::sqrt(2.0*0.5*dt);
+        double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
         for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++)
         {
@@ -20,9 +20,8 @@ namespace Hop::System::Physics
             cPhysics & dataP = m->getComponent<cPhysics>(*it);
             
             dataP.fy += -gravity*PARTICLE_MASS;
-            dataP.omega += D*normal(e);
 
-            ct = dt * dataP.translationalDrag / (2.0*PARTICLE_MASS);
+            ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
             bt = 1.0/(1.0+ct);
             at = (1.0-ct)*bt;
 
@@ -42,9 +41,7 @@ namespace Hop::System::Physics
             br = 1.0/(1.0+cr);
             ar = (1.0-cr)*br;
 
-            D *= normal(e);
-
-            ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia + br*dt/dataP.momentOfInertia * D;
+            ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
 
             dataP.phi = (ntheta-dataP.lastTheta)/2.0;
 
@@ -96,8 +93,9 @@ namespace Hop::System::Physics
         }
 
         double nx, ny, ntheta, ar, br, cr, at, bt, ct;
-        double D = std::sqrt(2.0*0.5*dt);
         unsigned k = 0;
+
+        double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
@@ -105,11 +103,8 @@ namespace Hop::System::Physics
             cPhysics & dataP = m->getComponent<cPhysics>(*it);
 
             dataP.fy += -gravity*PARTICLE_MASS;
-            //dataP.fx += dt*std::cos(dataT.theta);
-            //dataP.fy += dt*std::sin(dataT.theta);
-            dataP.omega += D*normal(e);
 
-            ct = dt * dataP.translationalDrag / (2.0*PARTICLE_MASS);
+            ct = dataP.translationalDrag * DT_OVER_TWICE_MASS;
             bt = 1.0/(1.0+ct);
             at = (1.0-ct)*bt;
 
@@ -129,9 +124,7 @@ namespace Hop::System::Physics
             br = 1.0/(1.0+cr);
             ar = (1.0-cr)*br;
 
-            D *= normal(e);
-
-            ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia + br*dt/dataP.momentOfInertia * D;
+            ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
 
             dataP.phi = (ntheta-dataP.lastTheta)/2.0;
 
@@ -246,7 +239,7 @@ namespace Hop::System::Physics
         double radius
     )
     {
-        return dt*gravity/radius;
+        return (dt*1.05)*gravity/radius;
     }
 
 }

@@ -29,4 +29,5 @@ namespace Hop::Logging
     o << l.get();
     return o;
   }
+
 }

@@ -81,7 +81,8 @@ namespace Hop::System::Rendering
     void update()
     {
       // scale equally by screen width (all lengths relative to this)
-      modelView = glm::scale(glm::mat4(1.0),glm::vec3(resolution.x,resolution.x,1.0)) *
+      double maxRes = std::max(resolution.x,resolution.y);
+      modelView = glm::scale(glm::mat4(1.0),glm::vec3(maxRes,maxRes,1.0)) *
       // move to position and look at x-y plane from z=1, with up = y axis
         glm::lookAt(
           glm::vec3(position.x,position.y,1.0),
