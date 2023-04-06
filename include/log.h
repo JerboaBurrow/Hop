@@ -10,6 +10,11 @@
 
 #include <ctime>
 
+#ifndef ANDROID
+#else
+  #include <android/log.h>
+#endif
+
 namespace Hop::Logging
 {
   std::string get_time();
@@ -24,10 +29,23 @@ namespace Hop::Logging
     Log(){}
     ~Log(){
       if (logStream.size()>0){
-        put("\033[1;33m[WARN] \033[0mDestructor called on non-empty log, contents:\n\n");
-        std::cout << get();
+        #if defined(ANDROID) || defined(WINDOWS)
+          put("Destructor called on non-empty log, contents:\n\n");
+        #else
+          put("\033[1;33m[WARN] \033[0mDestructor called on non-empty log, contents:\n\n");
+        #endif
+
+        #if !defined(ANDROID)
+          std::cout << get();
+        #else
+          __android_log_print(ANDROID_LOG_WARN, "", "%s", get().c_str());
+        #endif
       }
     }
+
+    #if defined(ANDROID)
+      void androidLog(){ if(logStream.size()>0){__android_log_print(ANDROID_LOG_INFO,"Hop","%s",get().c_str());} }
+    #endif
 
     void put(std::string s){
       s = get_time() + " " + s;
@@ -52,7 +70,6 @@ namespace Hop::Logging
     std::vector<std::string> logStream;
   };
 
-
   std::ostream & operator<<(std::ostream & o, Log & l);
 
   class LogType {
@@ -75,7 +92,11 @@ namespace Hop::Logging
     using LogType::LogType; // inherit all constructors
     std::string get()const{return u+msg;}
   private:
-    const char * u = "\033[1;34m[INFO] \033[0m";
+    #if !defined(ANDROID) && !defined(WINDOWS)
+      const char * u = "\033[1;34m[INFO] \033[0m";
+    #else
+      const char * u = "[INFO] ";
+    #endif
   };
 
   /*
@@ -87,7 +108,12 @@ namespace Hop::Logging
     using LogType::LogType; // inherit all constructors
     std::string get()const{return u+msg;}
   private:
-    const char * u = "\033[1;33m[WARN] \033[0m";
+    #if !defined(ANDROID) && !defined(WINDOWS)
+      const char * u = "\033[1;33m[WARN] \033[0m";
+    #else
+      const char * u = "[WARN] ";
+    #endif
+
   };
 
   /*

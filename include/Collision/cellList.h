@@ -30,7 +30,10 @@ namespace Hop::System::Physics
 
         std::unique_ptr<uint64_t[]> cells;
         std::unique_ptr<uint64_t[]> lastElementInCell;
+        
         std::unique_ptr<bool[]> notEmpty;
+        uint64_t countNotEmpty;
+
         std::unique_ptr<std::pair<Id,uint64_t>[]> id;
         uint64_t lastElement;
 
@@ -48,7 +51,8 @@ namespace Hop::System::Physics
             uint64_t b1,
             uint64_t a2,
             uint64_t b2,
-            ObjectManager * manager,
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP,
             CollisionResolver * resolver
         );
 

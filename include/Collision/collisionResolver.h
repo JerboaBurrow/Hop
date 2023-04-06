@@ -7,6 +7,10 @@
 #include <World/tileWorld.h>
 #include <World/marchingWorld.h>
 
+#include <Component/componentArray.h>
+#include <Component/cPhysics.h>
+#include <Component/cCollideable.h>
+
 namespace Hop::Object
 {
     class ObjectManager;
@@ -29,6 +33,10 @@ namespace Hop::System::Physics
     using Hop::World::TileBoundsData;
     using Hop::World::TileNeighbourData;
 
+    using Hop::Object::Component::ComponentArray;
+    using Hop::Object::Component::cCollideable;
+    using Hop::Object::Component::cPhysics;
+
     class CollisionResolver 
     {
 
@@ -41,7 +49,8 @@ namespace Hop::System::Physics
         virtual void handleObjectObjectCollision(
             Id & objectI, uint64_t particleI,
             Id & objectJ, uint64_t particleJ,
-            ObjectManager * manager
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP
         ) = 0;
 
         virtual void handleObjectWorldCollisions(

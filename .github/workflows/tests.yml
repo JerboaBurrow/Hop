@@ -12,7 +12,7 @@ on:
 
 jobs:
   linuxXlinux:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3
@@ -87,7 +87,7 @@ jobs:
         path: demos.zip
     
   linuxXandroid:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3
@@ -114,7 +114,7 @@ jobs:
       
   linuxRun:
     needs: linuxXlinux
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     
     steps:
       - name: Install dependencies
@@ -160,7 +160,7 @@ jobs:
   release:
     needs: [linuxXlinux, linuxXwindows]
     if: github.ref_type == 'tag'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     
     steps:
       - name: get linux build

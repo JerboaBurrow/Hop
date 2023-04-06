@@ -11,7 +11,8 @@ namespace Hop::System::Physics
     void SpringDashpot::handleObjectObjectCollision(
         Id & objectI, uint64_t particleI,
         Id & objectJ, uint64_t particleJ,
-        ObjectManager * manager
+        ComponentArray<cCollideable> & dataC,
+        ComponentArray<cPhysics> & dataP
     )
     {
 
@@ -29,21 +30,21 @@ namespace Hop::System::Physics
 
         rx = 0.0; ry = 0.0; rc = 0.0;
 
-        cCollideable & datai = manager->getComponent<cCollideable>(objectI);
-        cPhysics & dataPi = manager->getComponent<cPhysics>(objectI);
+        cCollideable & datai = dataC.get(objectI);
+        cPhysics & dataPi = dataP.get(objectI);
         CollisionVertex ci = datai.mesh[particleI];
         rx -= ci.x;
         ry -= ci.y;
         rc += ci.r;
 
-        cCollideable & dataj = manager->getComponent<cCollideable>(objectJ);
-        cPhysics & dataPj = manager->getComponent<cPhysics>(objectJ);
+        cCollideable & dataj = dataC.get(objectJ);
+        cPhysics & dataPj = dataP.get(objectJ);
         CollisionVertex cj = dataj.mesh[particleJ];
         rx += cj.x;
         ry += cj.y;
         rc += cj.r;
 
-        dd = rx*rx+ry*ry+1e-15;
+        dd = rx*rx+ry*ry;
 
         //high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
@@ -323,7 +324,8 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
-                inside
+                inside,
+                true
             );
         }
 
@@ -351,7 +353,8 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
-                inside
+                inside,
+                true
             );
         }
 
@@ -379,7 +382,8 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
-                inside
+                inside,
+                true
             );
         }
 
@@ -407,7 +411,8 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
-                inside
+                inside,
+                true
             );
         }
     }
@@ -428,7 +433,8 @@ namespace Hop::System::Physics
         double & hy,
         double & lx,
         double & ly ,
-        bool & inside
+        bool & inside,
+        bool neighbour
     )
     {
         double d2, d2p;
@@ -444,9 +450,97 @@ namespace Hop::System::Physics
         }
         else if (h == Tile::FULL)
         {
-            // within, no boundaries
-            inside = true;
-            return;
+            if (!neighbour)
+            {
+                // within, no boundaries
+                inside = true;
+                return;
+            }
+
+            /*
+             _____
+            x     x
+            |     |
+            x_____x
+            
+            */
+
+            double dw, dn, de, ds;
+            dw = pointLineSegmentDistanceSquared<double>
+            (
+                c.x,c.y,
+                x0, y0,
+                x0, ly
+            );
+
+            dn = pointLineSegmentDistanceSquared<double>
+            (
+                c.x,c.y,
+                x0, ly,
+                lx, ly
+            );
+
+            de = pointLineSegmentDistanceSquared<double>
+            (
+                c.x,c.y,
+                lx, ly,
+                lx, y0
+            );
+
+            ds = pointLineSegmentDistanceSquared<double>
+            (
+                c.x,c.y,
+                x0, y0,
+                lx, ly
+            );
+
+            if (dw < dn && dw < de && dw < ds)
+            {
+                d2 = dw;
+                nx = -1.0; ny = 0.0;
+            }
+            else if(dn < dw && dn < de && dn < ds)
+            {
+                d2 = dn;
+                nx = 0.0; ny = 1.0;
+            }
+            else if(ds < dw && ds < de && ds < dn)
+            {
+                d2 = ds;
+                nx = 0.0; ny = -1.0;
+            }
+            else if(de < dw && de < dn && de < ds)
+            {
+                d2 = de;
+                nx = 1.0; ny = 0.0;
+            }
+            else if (dw == dn)
+            {
+                d2 = d2;
+                nx = -1.0; ny = 1.0;
+            }
+            else if (dn == de)
+            {
+                d2 = dn;
+                nx = 1.0;
+                ny = 1.0;
+            }
+            else if (de == ds)
+            {
+                d2 = de;
+                nx = 1.0;
+                ny = -1.0;
+            }
+            else if (ds == dw)
+            {
+                d2 = ds;
+                nx = -1.0;
+                ny = -1.0;
+            }
+            else
+            {
+                return;
+            }
         }
 
         if (h == Tile::BOTTOM_LEFT)
@@ -648,6 +742,11 @@ namespace Hop::System::Physics
             
             */
             nx = 0.0; ny = -1.0;
+            d2 = pointLineSegmentDistanceSquared<double>(
+                c.x,c.y,
+                x0,hy,
+                lx,hy
+            );
             inside = pointLineHandedness<double>(
                 c.x,c.y,
                 x0,hy,

@@ -57,6 +57,7 @@ SCENARIO("MapFile i/o", "[io]"){
 }
 
 SCENARIO("Geometry","[maths]"){
+
     GIVEN("A point [0.,1.]"){
         double px = 0.0; double py = 1.0;
         AND_GIVEN("The line [0.5,0] -> [0.5,1.]"){
@@ -68,6 +69,7 @@ SCENARIO("Geometry","[maths]"){
             }
         }
     }
+
     GIVEN("A point [0.5,0.]"){
         double px = 0.5; double py = 0.0;
         AND_GIVEN("The line [0.0,0.5] -> [0.75,0.5]"){
@@ -79,6 +81,7 @@ SCENARIO("Geometry","[maths]"){
             }
         }
     }
+
     GIVEN("A point [0.5,1.]"){
         double px = 0.5; double py = 1.0;
         AND_GIVEN("The line [0.0,0] -> [1,1.]"){
@@ -87,6 +90,70 @@ SCENARIO("Geometry","[maths]"){
             THEN("The point line distance is 0.5"){
                 double d = pointLineSegmentDistanceSquared(px,py,ax,ay,bx,by);
                 REQUIRE(std::abs(d-0.35355339059327373*0.35355339059327373)<tol);
+            }
+        }
+    }
+
+    GIVEN("A line [0.0,0.0] -> [0.,1.0]")
+    {
+        double ax = 0.0; double ay = 0.0;
+        double bx = 0.0; double by = 1.0; 
+        AND_GIVEN("A point [0.5,0.5]")
+        {
+            double px = 0.5; double py = 0.5;
+            THEN("The point line handedness is -1")
+            {
+                int h = pointLineHandedness<double>(
+                    px,py,
+                    ax,ay,
+                    bx,by
+                );
+                REQUIRE(h == -1);
+            }
+        }
+        AND_GIVEN("A point [-0.5,0.5]")
+        {
+            double px = -0.5; double py = 0.5;
+            THEN("The point line handedness is 1")
+            {
+                int h = pointLineHandedness<double>(
+                    px,py,
+                    ax,ay,
+                    bx,by
+                );
+                REQUIRE(h == 1);
+            }
+        }
+    }
+
+    GIVEN("A line [-0.5,0.5] -> [0.5,0.5]")
+    {
+        double ax = -0.5; double ay = 0.5;
+        double bx = 0.5; double by = 0.5; 
+        AND_GIVEN("A point [0.0,1.0]")
+        {
+            double px = 0.0; double py = 1.0;
+            THEN("The point line handedness is 1")
+            {
+                int h = pointLineHandedness<double>(
+                    px,py,
+                    ax,ay,
+                    bx,by
+                );
+                REQUIRE(h == 1);
+            }
+        }
+        AND_GIVEN("A point [0.0,-1.0]")
+        {
+            double px = 0.0; double py = -1.0;
+            THEN("The point line handedness is -1")
+            {
+                int h = pointLineHandedness<double>(
+                    px,py,
+                    ax,ay,
+                    bx,by
+                );
+                REQUIRE(h == -1);
             }
         }
     }

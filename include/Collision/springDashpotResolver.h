@@ -39,7 +39,8 @@ namespace Hop::System::Physics
         void handleObjectObjectCollision(
             Id & objectI, uint64_t particleI,
             Id & objectJ, uint64_t particleJ,
-            ObjectManager * manager
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP
         );
 
         void handleObjectWorldCollisions(
@@ -76,7 +77,8 @@ namespace Hop::System::Physics
             double & hy,
             double & lx,
             double & ly,
-            bool & inside
+            bool & inside,
+            bool neighbour = false
         );
 
         void neighbourTilesCollision

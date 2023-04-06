@@ -23,8 +23,8 @@
 
 using namespace std::chrono;
 
-const int resX = 1000;
-const int resY = 1000;
+const int resX = 256;
+const int resY = 512;
 const float MAX_SPEED = 1.0/60.0;
 
 // for smoothing delta numbers
@@ -133,7 +133,7 @@ int main(int argc, char ** argv)
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 5000;
+  int n = 100;
 
   sf::Clock timer2;
   double t1 = 0.0;
@@ -329,6 +329,7 @@ int main(int argc, char ** argv)
     clock.restart();
 
     window.display();
+    
   }
   return 0;
 }

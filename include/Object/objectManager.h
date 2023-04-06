@@ -29,6 +29,9 @@
 
 #include <log.h>
 
+#include <chrono>
+using namespace std::chrono;
+
 namespace Hop::System::Rendering
 {
     class sRender;
@@ -132,6 +135,7 @@ namespace Hop::Object
             registeredComponents[handle] = nextComponentIndex;
             nextComponentIndex++;
             componentData[handle] = std::make_shared<ComponentArray<T>>(MAX_OBJECTS);
+            
         }
 
         template <class T>
@@ -144,7 +148,7 @@ namespace Hop::Object
                 return;
             }
 
-            getComponentArray<T>()->insert(i,component);
+            getComponentArray<T>().insert(i,component);
             idToSignature[i].set(
                 getComponentId<T>(),
                 true
@@ -162,7 +166,7 @@ namespace Hop::Object
                 return;
             }
 
-            getComponentArray<T>()->remove(i);
+            getComponentArray<T>().remove(i);
             idToSignature[i].set(
                 getComponentId<T>(),
                 false
@@ -257,6 +261,28 @@ namespace Hop::Object
 
         void optimiseJobAllocation(){systemManager.optimiseJobAllocation();}
 
+
+        template <class T>
+        ComponentArray<T> getComponentArrayCopy()
+        {
+            const char * handle = typeid(T).name();
+
+            return *(std::static_pointer_cast<ComponentArray<T>>(componentData[handle]));
+
+        }
+
+        template <class T>
+        ComponentArray<T> & getComponentArray()
+        {
+            const char * handle = typeid(T).name();
+
+            return *(std::static_pointer_cast<ComponentArray<T>>(componentData[handle]));
+
+        }
+
+        template <class T>
+        void updateMainComponents();
+
     private:
 
         std::unordered_map<std::string,Id> handleToId;
@@ -278,15 +304,9 @@ namespace Hop::Object
 
         uint32_t nextComponentIndex;
         std::unordered_map<const char *,uint32_t> registeredComponents;
+
         std::unordered_map<const char*, std::shared_ptr<AbstractComponentArray>> componentData;
 
-
-        template<typename T>
-        std::shared_ptr<ComponentArray<T>> getComponentArray()
-        {
-            const char * handle = typeid(T).name();
-            return std::static_pointer_cast<ComponentArray<T>>(componentData[handle]);
-        }
     };
 }
 
