@@ -179,7 +179,8 @@ namespace Hop::System::Physics
         uint64_t b1,
         uint64_t a2,
         uint64_t b2,
-        ObjectManager * manager,
+        ComponentArray<cCollideable> & dataC,
+        ComponentArray<cPhysics> & dataP,
         CollisionResolver * resolver
     )
     {
@@ -227,7 +228,7 @@ namespace Hop::System::Physics
                 resolver->handleObjectObjectCollision(
                     idi.first,idi.second,
                     idj.first,idj.second,
-                    manager
+                    dataC, dataP
                 );
                 p2++;
             }
@@ -243,6 +244,10 @@ namespace Hop::System::Physics
     )
     {
         unsigned a, b, a1, b1;
+
+        ComponentArray<cCollideable> & c = manager->getComponentArray<cCollideable>();
+        ComponentArray<cPhysics> & p = manager->getComponentArray<cPhysics>();
+    
         for (unsigned j = 0; j < njobs; j++)
         {
             a = jobs[j].first;
@@ -254,11 +259,11 @@ namespace Hop::System::Physics
             //  i.e cell a-1,b-1 will collide with
             //  cell a,b so no need to double up!
             
-            cellCollisions(a,b,a,b,manager,resolver);
-            cellCollisions(a,b,a1,b1,manager,resolver);
-            cellCollisions(a,b,a,b1,manager,resolver);
-            cellCollisions(a,b,a1,b,manager,resolver);
-            cellCollisions(a,b,a1,b-1,manager,resolver);
+            cellCollisions(a,b,a,b,c,p,resolver);
+            cellCollisions(a,b,a1,b1,c,p,resolver);
+            cellCollisions(a,b,a,b1,c,p,resolver);
+            cellCollisions(a,b,a1,b,c,p,resolver);
+            cellCollisions(a,b,a1,b-1,c,p,resolver);
         }
     }
 
@@ -292,10 +297,21 @@ namespace Hop::System::Physics
             for (unsigned t = 0; t < nThreads; t++)
             {
                 unsigned k = 0;
-                for (unsigned j = t*jobsPerThread; j < (t+1)*jobsPerThread; j++)
+                if (t % 2 == 0)
                 {
-                    threadJobs[t][k] = jobs[j];
-                    k++;
+                    for (unsigned j = t*jobsPerThread; j < (t+1)*jobsPerThread; j++)
+                    {
+                        threadJobs[t][k] = jobs[j];
+                        k++;
+                    }
+                }
+                else
+                {
+                    for (unsigned j = (t+1)*jobsPerThread-1; j > t*jobsPerThread; j--)
+                    {
+                        threadJobs[t][k] = jobs[j];
+                        k++;
+                    }  
                 }
             }
             //high_resolution_clock::time_point t2 = high_resolution_clock::now();
@@ -322,6 +338,9 @@ namespace Hop::System::Physics
         }
         else
         {
+            ComponentArray<cCollideable> & c = manager->getComponentArray<cCollideable>();
+            ComponentArray<cPhysics> & p = manager->getComponentArray<cPhysics>();
+
             for (int a = 0; a < rootNCells; a++)
             {
                 a1 = a+1;
@@ -332,11 +351,11 @@ namespace Hop::System::Physics
                     //  i.e cell a-1,b-1 will collide with
                     //  cell a,b so no need to double up!
                     
-                    cellCollisions(a,b,a,b,manager,resolver);
-                    cellCollisions(a,b,a1,b1,manager,resolver);
-                    cellCollisions(a,b,a,b1,manager,resolver);
-                    cellCollisions(a,b,a1,b,manager,resolver);
-                    cellCollisions(a,b,a1,b-1,manager,resolver);
+                    cellCollisions(a,b,a,b,c,p,resolver);
+                    cellCollisions(a,b,a1,b1,c,p,resolver);
+                    cellCollisions(a,b,a,b1,c,p,resolver);
+                    cellCollisions(a,b,a1,b,c,p,resolver);
+                    cellCollisions(a,b,a1,b-1,c,p,resolver);
                 }
             }
         }

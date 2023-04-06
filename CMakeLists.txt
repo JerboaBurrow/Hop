@@ -39,10 +39,12 @@ add_compile_definitions(TIMESTAMP="${TODAY}")
 if (RELEASE)
     add_compile_definitions(BUILD_TYPE="Release")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -O3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signaling-nans -fno-signed-zeros -funsafe-math-optimizations")
 else ()
     add_compile_definitions(BUILD_TYPE="Debug")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g3")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g")
 endif ()
+
 
 if (SANITISE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")

@@ -48,6 +48,20 @@ namespace Hop::Object::Component
         {
             componentData = std::make_unique<T[]>(maxObjects);
         }
+
+        ComponentArray(const ComponentArray<T> & a)
+        : maxObjects(a.maxObjects), nextIndex(a.nextIndex)
+        {
+            this->componentData = std::make_unique<T[]>(maxObjects);
+
+            for (unsigned i = 0; i < nextIndex; i++)
+            {
+                this->componentData[i] = a.componentData[i];
+            }
+
+            this->idToIndex = a.idToIndex;
+            this->indexToId = a.indexToId;
+        }
         
         void insert(Id & i, T component);
         void remove(Id & i);
@@ -68,6 +82,7 @@ namespace Hop::Object::Component
             }
             remove(i);
         }
+        
 
 
     private:
