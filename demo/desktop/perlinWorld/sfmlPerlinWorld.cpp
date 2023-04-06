@@ -23,8 +23,8 @@
 
 using namespace std::chrono;
 
-const int resX = 1000;
-const int resY = 1000;
+const int resX = 256;
+const int resY = 512;
 const float MAX_SPEED = 1.0/60.0;
 
 // for smoothing delta numbers
