@@ -8,6 +8,7 @@
 #include <fstream>
 #include <exception>
 #include <memory>
+#include <log.h>
 
 namespace Hop::System::Rendering
 {
@@ -70,6 +71,8 @@ namespace Hop::System::Rendering
             return this->vertex == s.vertex && this->fragment == s.fragment;
         }
 
+        bool lint(Hop::Logging::Log & log);
+
     private:
 
         GLuint program;
@@ -90,7 +93,8 @@ namespace Hop::System::Rendering
         void makeShader(
             const char * v, 
             const char * f,
-            std::string n
+            std::string n,
+            Hop::Logging::Log & log
         );
         
         void remove(std::string n);
@@ -103,6 +107,6 @@ namespace Hop::System::Rendering
         
     };
 }
-#include <Shader/marchingQuad.h>
-#include <Shader/object.h>
+#include <Shader/marchingQuad.shader>
+#include <Shader/object.shader>
 #endif /* SHADERS_H */

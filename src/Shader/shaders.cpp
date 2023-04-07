@@ -36,6 +36,48 @@ namespace Hop::System::Rendering
         return lhs.vertex == rhs.vertex && lhs.fragment == rhs.fragment;
     }
 
+    bool Shader::lint(Hop::Logging::Log & log)
+    {
+        if (vertex == "" || fragment == "")
+        {
+            Hop::Logging::WARN("Attempted to lint an empty shader") >> log;
+            return true;
+        }
+
+        std::string msg("");
+
+        std::string vs(vertex);
+        std::string fs(fragment);
+
+        std::string vsPreamble = vs.substr(0,vs.find("main"));
+        std::string fsPreamble = fs.substr(0,fs.find("main"));
+
+        if (vsPreamble.find("layout(location=") == std::string::npos)
+        {
+            msg += "\nCould not find layout specifiers in vertex shader, android requires them";
+        }
+
+        if (vsPreamble.find("precision") == std::string::npos)
+        {
+            msg += "\nCould not find precision qualifiers in vertex shader, optional";
+        }
+
+        if (fsPreamble.find("precision") == std::string::npos)
+        {
+            msg += "\nCould not find precision qualifiers in fragment shader, optional";
+        }
+
+        if (msg != "")
+        {
+            Hop::Logging::WARN(msg) >> log;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     void Shader::compile()
     {
         if (compiled){return;}
@@ -101,7 +143,8 @@ namespace Hop::System::Rendering
     void Shaders::makeShader(
         const char * v, 
         const char * f,
-        std::string n
+        std::string n,
+        Hop::Logging::Log & log
     )
     {
         if (shaders.find(n)!=shaders.end())
@@ -113,6 +156,16 @@ namespace Hop::System::Rendering
             v,
             f
         );
+        
+        
+        if((*shaders[n]).lint(log))
+        {
+            Hop::Logging::WARN("linting issues found for " + n) >> log;
+        }
+        else
+        {
+            Hop::Logging::INFO("successfully linted " + n) >> log;
+        }
 
 
     }

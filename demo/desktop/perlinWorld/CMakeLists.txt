@@ -30,8 +30,6 @@ add_executable(sfmlPerlinWorld
     "sfmlPerlinWorld.cpp"
 )
 
-target_compile_definitions(sfmlPerlinWorld PUBLIC GLSL_VERSION="140")
-
 target_link_libraries(sfmlPerlinWorld
     Hop
     sfml-graphics

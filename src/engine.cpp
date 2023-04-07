@@ -88,14 +88,16 @@ namespace Hop
         (
             Hop::System::Rendering::marchingQuadVertexShader,
             Hop::System::Rendering::marchingQuadFragmentShader,
-            "worldShader"
+            "worldShader",
+            manager.getLog()
         );
 
         shaderPool.makeShader
         (
             Hop::System::Rendering::objectVertexShader,
             Hop::System::Rendering::circleObjectFragmentShader,
-            "circleObjectShader"
+            "circleObjectShader",
+            manager.getLog()
         );
 
         // first pass to setup shaders
@@ -169,16 +171,20 @@ namespace Hop
             double oot, owt;
             collisions.update(&manager, world.get(), oot, owt);
 
+            #if defined(BENCHMARK)
             collisionTimeOO += oot;
             collisionTimeOW += owt;
+            #endif
             
             if (frame == 60)
             {
                 frame = 0;
+                #if defined(BENCHMARK)
                 std::string msg = "Collision time (o-o, o-w): " + std::to_string(collisionTimeOO/60.0) + ", " + std::to_string(collisionTimeOW/60.0);
                 log<Hop::Logging::INFO>(msg);
                 collisionTimeOO = 0.0;
                 collisionTimeOW = 0.0;
+                #endif
             }
             frame++;
         }
@@ -195,18 +201,38 @@ namespace Hop
     {
 
         if (needToRefreshRenderer){refreshObjectShaders=true;}
-
+        
+        high_resolution_clock::time_point t1 = high_resolution_clock::now();
+        
         sRender & rendering = manager.getSystem<sRender>();
 
         shaderPool.setProjection(camera.getVP());
 
+        high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
         world.get()->draw(*shaderPool.get("worldShader").get());
+
+        high_resolution_clock::time_point t3 = high_resolution_clock::now();
 
         rendering.update(&manager, &shaderPool, refreshObjectShaders);
 
         rendering.draw(&shaderPool);
 
+        high_resolution_clock::time_point t4 = high_resolution_clock::now();
+
         needToRefreshRenderer = false;
+
+        #if defined(BENCHMARK)
+        if (frame == 30) 
+        {
+            std::string msg = "Render times: " + std::to_string(duration_cast<duration<double>>(t2 - t1).count()) + 
+                                ", " + std::to_string(duration_cast<duration<double>>(t3 - t2).count()) + 
+                                ", " + std::to_string(duration_cast<duration<double>>(t4 - t3).count());
+                
+
+            log<Hop::Logging::INFO>(msg);
+        }
+        #endif
 
     }
 

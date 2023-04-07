@@ -21,6 +21,7 @@ using namespace std::chrono;
 #include <World/tileWorld.h>
 
 #include <Util/util.h>
+#include <log.h>
 
 struct PhysicsOptions
 {
