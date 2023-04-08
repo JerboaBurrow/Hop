@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">GLSkeleton</string>
+    <string name="app_uri">app.jerboa.glskeleton</string>
+    <string name="tagline">Tagline goes here</string>
+    <string name="description">Longer description goes here</string>
+    <string name="OSSprompt">Click for open Source Software we depend on! (Licenses)</string>
+    <string name="attrib">Attributions go here</string>
+    <string name="rate">"If you had fun, why not rate us on the Play Store? Thanks!"</string>
+
+    <string name="rewarded_ad_id">ca-app-pub-3176178116308308/1925387464</string>
+    <string name="rewarded_ad_test_id">ca-app-pub-3940256099942544/5224354917</string>
+    <string name="privacy">By enabling ads you agree to our privacy policy (this popup) and understand that:\n\n
+        <b>You revoke consent at any time (in menu)</b>\n\n
+        The ads you see will be rewarded, non-personalised ads*\n\n
+        <b>The developers (Jerboa) will not store, process, or forward any personal data to any private server or database held by the developers (Jerboa)</b>\n\n
+        Google AdMob may use cookies to combat ad fraud, frequency capping, and aggregated ad reporting\n\n
+        Google AdMob may use coarse geo-data such as your current city or country to serve ads\n\n
+        You consent to the following data uses:\n\n
+    (1) Select basic ads: Ads can be shown to you based on the content you’re viewing, the app you’re using, your approximate location, or your device type.
+    \n(2) Measure ad performance: The performance and effectiveness of ads that you see or interact with can be measured.
+    \n\n(*)Non-personalized ads (NPA) Non-personalized ads are ads that are not based on a user’s past behavior. They are targeted using contextual information, including coarse (such as city-level) geo-targeting based on current location, and content on the current site or app or current query terms. Google disallows all personalized targeting, including demographic targeting and user list targeting.Although non-personalized ads don’t use cookies or mobile ad identifiers for ad targeting, they do still use cookies or mobile ad identifiers for frequency capping, aggregated ad reporting, and to combat fraud and abuse. Therefore, you must obtain consent to use cookies or mobile ad identifiers for those purposes where legally required, per the ePrivacy Directive in certain EEA countries.</string>
+</resources>

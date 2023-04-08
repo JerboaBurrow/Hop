@@ -1,5 +1,10 @@
 #include <World/marchingWorld.h>
 
+#ifndef ANDROID
+#else
+  #include <android/log.h>
+#endif
+
 namespace Hop::World 
 {
 
@@ -258,11 +263,13 @@ namespace Hop::World
         bool buffered = false;
 
         worldToTile(x,y,ix,iy);
+
         if (boundary->outOfBounds(ix,iy))
         {
             h = Tile::EMPTY;
             s = 0.0; x0 = 0.0; y0 = 0.0;
         }
+
         tileToIdCoord(ix,iy,i,j);
 
         h = tileType(i,j);
@@ -295,6 +302,7 @@ namespace Hop::World
         nData.northEast.x = (ix+1)*s;
         nData.northEast.y = (iy+1)*s;
 
+
         nData.east.tileType = tileType(i+1,j);
 
         nData.east.length = s;
@@ -306,7 +314,7 @@ namespace Hop::World
         nData.southEast.length = s;
         nData.southEast.x = (ix+1)*s;
         nData.southEast.y = (iy-1)*s;
-
+        
         nData.south.tileType = tileType(i,j-1);
 
         nData.south.length = s;

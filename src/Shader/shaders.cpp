@@ -11,8 +11,8 @@ namespace Hop::System::Rendering
         std::ifstream fileFs(path+name+".fs");
         if (fileVs.is_open() && fileFs.is_open())
         {
-            const char * v = parseShaderSource(fileVs);
-            const char * f = parseShaderSource(fileFs);
+            std::string v = parseShaderSource(fileVs);
+            std::string f = parseShaderSource(fileFs);
         }
         else
         {
@@ -20,7 +20,7 @@ namespace Hop::System::Rendering
         }
     }
 
-    const char * Shader::parseShaderSource(std::ifstream & file)
+    std::string Shader::parseShaderSource(std::ifstream & file)
     {
         std::string src = "";
         std::string line;
@@ -28,7 +28,7 @@ namespace Hop::System::Rendering
         {
             src += line + "\n";
         }
-        return src.c_str();
+        return src;
     }
 
     bool operator==(const Shader & lhs, const Shader & rhs)
@@ -38,7 +38,7 @@ namespace Hop::System::Rendering
 
     bool Shader::lint(Hop::Logging::Log & log)
     {
-        if (vertex == "" || fragment == "")
+        if (strcmp(vertex,"") == 0 || strcmp(fragment,"") == 0)
         {
             Hop::Logging::WARN("Attempted to lint an empty shader") >> log;
             return true;

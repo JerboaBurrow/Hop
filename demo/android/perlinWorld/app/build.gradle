@@ -1,0 +1,99 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+def propsFile = rootProject.file('/media/harvey/ExtraFiles/Jerboa/Games/Android/keys/glskeleton.prop')
+def props = new Properties()
+props.load(new FileInputStream(propsFile))
+
+
+android {
+    compileSdk 33
+
+    signingConfigs {
+        release {
+            storeFile = file(props['storeFile'])
+            storePassword = props['storePassword']
+            keyAlias = props['keyAlias']
+            keyPassword = props['keyPassword']
+        }
+    }
+
+    defaultConfig {
+        applicationId "app.jerboa.glskeleton"
+        minSdk 23
+        targetSdk 33
+        versionCode 1
+        versionName "0.0.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+            buildConfigField("long", "TIMESTAMP", System.currentTimeMillis() + "L")
+        }
+        release {
+            signingConfig signingConfigs.release
+            buildConfigField("long", "TIMESTAMP", System.currentTimeMillis() + "L")
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    namespace 'app.jerboa.glskeleton'
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.activity:activity-compose:1.3.1'
+    implementation "com.google.android.gms:play-services-games-v2:17.0.0"
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+
+    //implementation 'com.google.android.gms:play-services-ads-lite:21.5.0'
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Google Play game services IDs. Save this file as res/values/games-ids.xml in your project.-->
+<!--
+Example format
+<item name="achievement_deduction_novice" translatable="false">achievement_deduction_novice=CgkI0sPwtIEdEAIQAg</item>
+-->
+<resources>
+    <!--app_id-->
+    <string name="app_id" translatable="false">473396077788</string>
+    <!--package_name-->
+    <string name="package_name" translatable="false">app.jerboa.glskeleton</string>
+    <string-array name="achievements_incrementable">
+        <item name="achievement_TEST_INCREMENTABLE" translatable="false">achievement_TEST_INCREMENTABLE=CgkI3MnrxOMNEAIQAg_1000</item>
+    </string-array>
+    <string-array name="achievements">
+        <!--achievement TEST1-->
+        <item name="achievement_TEST1" translatable="false">achievement_TEST1=CgkI3MnrxOMNEAIQAQ</item>
+    </string-array>
+    <string-array name="leaderboards">
+        <!--leaderboard Longest Balance Time-->
+        <item name="leaderboard_TEST1" translatable="false">leaderboard_TEST1=CgkI3MnrxOMNEAIQAw</item>
+    </string-array>
+</resources>

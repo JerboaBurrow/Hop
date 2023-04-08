@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/media/harvey/ExtraFiles/Android/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/RelWithDebInfo/5s4v2e21/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/media/harvey/ExtraFiles/Android/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/RelWithDebInfo/5s4v2e21/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "HopAndroid::@6890427a1f51a3e7e1df": {
+      "artifactName": "HopAndroid",
+      "abi": "x86",
+      "output": "/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/build/intermediates/cxx/RelWithDebInfo/5s4v2e21/obj/x86/libHopAndroid.so",
+      "runtimeFiles": []
+    }
+  }
+}

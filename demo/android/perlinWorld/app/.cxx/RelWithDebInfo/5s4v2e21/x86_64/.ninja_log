@@ -1,0 +1,13 @@
+# ninja log v5
+0	30	1680943279019578174	build.ninja	4e4edaa812ef7114
+1986	2093	1680850382625628870	/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/build/intermediates/cxx/RelWithDebInfo/5s4v2e21/obj/x86_64/libHopAndroid.so	dfca70d86d4db551
+0	1	0	clean	bb6b290de44ec6b5
+7	1986	1680850382517626791	CMakeFiles/HopAndroid.dir/hopAndroid.cpp.o	43fd6dfbb186e13e
+0	22	1680943279019578174	build.ninja	4e4edaa812ef7114
+0	1	0	clean	bb6b290de44ec6b5
+0	1	0	clean	bb6b290de44ec6b5
+0	2	0	clean	bb6b290de44ec6b5
+0	4	0	clean	bb6b290de44ec6b5
+0	1	0	clean	bb6b290de44ec6b5
+0	2	0	clean	bb6b290de44ec6b5
+0	2	0	clean	bb6b290de44ec6b5

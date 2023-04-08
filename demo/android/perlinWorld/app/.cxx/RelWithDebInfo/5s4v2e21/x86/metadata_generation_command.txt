@@ -1,0 +1,18 @@
+                        -H/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/src/main/cpp
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=23
+-DANDROID_PLATFORM=android-23
+-DANDROID_ABI=x86
+-DCMAKE_ANDROID_ARCH_ABI=x86
+-DANDROID_NDK=/media/harvey/ExtraFiles/Android/ndk/23.1.7779620
+-DCMAKE_ANDROID_NDK=/media/harvey/ExtraFiles/Android/ndk/23.1.7779620
+-DCMAKE_TOOLCHAIN_FILE=/media/harvey/ExtraFiles/Android/ndk/23.1.7779620/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/media/harvey/ExtraFiles/Android/cmake/3.22.1/bin/ninja
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/build/intermediates/cxx/RelWithDebInfo/5s4v2e21/obj/x86
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/build/intermediates/cxx/RelWithDebInfo/5s4v2e21/obj/x86
+-DCMAKE_BUILD_TYPE=RelWithDebInfo
+-B/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/RelWithDebInfo/5s4v2e21/x86
+-GNinja
+                        Build command args: []
+                        Version: 2
