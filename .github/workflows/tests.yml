@@ -151,7 +151,7 @@ jobs:
         yes | ./cmdline-tools/latest/bin/sdkmanager --licenses
         ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
         ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
-        no | ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
+        echo no | ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
 
     - name: linux-android-hop
       run: |
@@ -177,6 +177,7 @@ jobs:
 
     - name: linux-android-run
       run: |
+        echo $(ls .android/avd)
         export DISPLAY=:99
         sudo Xvfb :99 -screen 0 800x600x24 &
         sleep 5
