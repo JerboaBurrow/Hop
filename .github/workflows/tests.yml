@@ -85,56 +85,6 @@ jobs:
       with:
         name: demoWindows
         path: demos.zip
-    
-  linuxXandroid:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install dependencies
-      run: |
-        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev
-        wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
-        unzip android-ndk-r25c-linux.zip
-        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip   
-        unzip commandlinetools-linux-9477386_latest.zip
-        export ANDROID_SDK_ROOT=./
-        mv cmdline-tools latest
-        mkdir cmdline-tools
-        mv latest cmdline-tools
-        yes | ./cmdline-tools/latest/bin/sdkmanager --licenses
-        ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
-        ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
-        echo no ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
-
-    - name: linux-android-hop
-      run: |
-        ./build.sh -r --android android-ndk-r25c
-        mkdir androidbuild 
-        cp build/libHop* androidbuild/
-        cp -r include androidbuild/
-        cd androidbuild  && zip -r ../androidbuild.zip * && cd ..
-
-    - name: buildArtifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: androidbuild
-        path: androidbuild.zip
-
-    - name: linux-android-demo
-      run: |
-        cp -r build/*.a demo/android/perlinWorld/app/src/main/cpp/include/
-        cp -r include/* demo/android/perlinWorld/app/src/main/cpp/include/
-        cd demo/android/perlinWorld
-        ./gradlew assembleDebug
-        cd ~/
-
-    - name: demoAndroid
-      uses: actions/upload-artifact@v3
-      with:
-        name: demoAndroid
-        path: demo/android/perlinWorld/app/release/*.aab
       
   linuxRun:
     needs: linuxXlinux
@@ -181,21 +131,73 @@ jobs:
           name: screenshot-map-sfml
           path: sfml/screenshot-map.png
 
-  # androidRun:
-  #   needs: linuxXandroid
-  #   runs-on: ubuntu-20.04
-    
-  #   steps:
-  #     - name: Install dependencies
-  #       run: |
-  #         sudo apt-get update && sudo apt-get install -y xvfb x11-apps imagemagick
-  #         https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip   
-  #         unzip commandlinetools-linux-9477386_latest.zip
+  linuxXandroid:
+    runs-on: ubuntu-20.04
 
-  #     - name: get linux demos
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: demoLinux
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev
+        wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+        unzip android-ndk-r25c-linux.zip
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip   
+        unzip commandlinetools-linux-9477386_latest.zip
+        export ANDROID_SDK_ROOT=~/
+        mv cmdline-tools latest
+        mkdir cmdline-tools
+        mv latest cmdline-tools
+        yes | ./cmdline-tools/latest/bin/sdkmanager --licenses
+        ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
+        ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
+        echo no ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
+
+    - name: linux-android-hop
+      run: |
+        ./build.sh -r --android android-ndk-r25c
+        mkdir androidbuild 
+        cp build/libHop* androidbuild/
+        cp -r include androidbuild/
+        cd androidbuild  && zip -r ../androidbuild.zip * && cd ..
+
+    - name: buildArtifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: androidbuild
+        path: androidbuild.zip
+
+    - name: linux-android-demo
+      run: |
+        cp -r build/*.a demo/android/perlinWorld/app/src/main/cpp/include/
+        cp -r include/* demo/android/perlinWorld/app/src/main/cpp/include/
+        cd demo/android/perlinWorld
+        ./gradlew assembleDebug
+        cd ~/
+
+    - name: linux-android-run
+      run: |
+        export DISPLAY=:99
+        sudo Xvfb :99 -screen 0 800x600x24 &
+        sleep 5
+        ./cmdline-tools/latest/bin/emulator -avd android33 &
+        export PID=$!
+        sleep 10
+        ./cmdline-tools/latest/bin/adb install demo/android/perlinWorld/app/release/app-release.aab
+        xwd -root -silent | convert xwd:- png:screenshot-android.png
+        sleep 5 && kill $PID
+
+    - name: demoAndroid
+      uses: actions/upload-artifact@v3
+      with:
+        name: demoAndroid
+        path: demo/android/perlinWorld/app/release/*.aab
+
+    - name: upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: screenshot-android
+        path: screenshot-android.png
   
   release:
     needs: [linuxXlinux, linuxXwindows]
