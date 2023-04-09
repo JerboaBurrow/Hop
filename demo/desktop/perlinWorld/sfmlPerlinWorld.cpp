@@ -23,8 +23,8 @@
 
 using namespace std::chrono;
 
-const int resX = 256;
-const int resY = 512;
+const int resX = 1000;
+const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
 
 // for smoothing delta numbers
@@ -91,7 +91,7 @@ int main(int argc, char ** argv)
   perlin.setThreshold(0.2);
   perlin.setSize(64*3+1);
 
-  WorldOptions pWOptions(2,64,1,true);
+  WorldOptions pWOptions(2,64,0,true);
   PhysicsOptions pPhyOptions(deltaPhysics,9.81,0.66,true);
 
   std::cout << argc << "\n";
@@ -133,7 +133,7 @@ int main(int argc, char ** argv)
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
-  int n = 100;
+  int n = 1000;
 
   sf::Clock timer2;
   double t1 = 0.0;

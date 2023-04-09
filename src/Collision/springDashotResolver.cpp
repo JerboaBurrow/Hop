@@ -2,6 +2,11 @@
 #include <chrono>
 using namespace std::chrono;
 
+#ifndef ANDROID
+#else
+  #include <android/log.h>
+#endif
+
 namespace Hop::System::Physics
 {
 
@@ -51,6 +56,8 @@ namespace Hop::System::Physics
         //float isContact = dd < rc*rc;
         if (dd < rc*rc)
         {
+
+            mag = 0.0;
         
             d = std::sqrt(dd);
             dinv = 1.0 / d;
@@ -83,6 +90,7 @@ namespace Hop::System::Physics
 
             fx *= mag;//+friction*std::abs(mag)*nxt;
             fy *= mag;//+friction*std::abs(mag)*nyt;
+
 
             dataPi.fx += fx;
             dataPi.fy += fy;
