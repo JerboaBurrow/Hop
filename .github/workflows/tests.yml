@@ -175,18 +175,20 @@ jobs:
         ./gradlew assembleDebug
         cd ~/
 
-    - name: linux-android-run
-      run: |
-        echo $(ls .android/avd)
-        export DISPLAY=:99
-        sudo Xvfb :99 -screen 0 800x600x24 &
-        sleep 5
-        export ANDROID_SDK_ROOT=~/ && ./emulator/emulator -avd android33 &
-        export PID=$!
-        sleep 10
-        export ANDROID_SDK_ROOT=~/ && ./platform-tools/adb install demo/android/perlinWorld/app/release/app-release.aab
-        xwd -root -silent | convert xwd:- png:screenshot-android.png
-        sleep 5 && kill $PID
+#    emulator not being created in setup
+#    get em next time..
+#    - name: linux-android-run
+#      run: |
+#        echo $(ls .android/avd)
+#        export DISPLAY=:99
+#        sudo Xvfb :99 -screen 0 800x600x24 &
+#        sleep 5
+#        export ANDROID_SDK_ROOT=~/ && ./emulator/emulator -avd android33 &
+#        export PID=$!
+#        sleep 10
+#        export ANDROID_SDK_ROOT=~/ && ./platform-tools/adb install demo/android/perlinWorld/app/release/app-release.aab
+#        xwd -root -silent | convert xwd:- png:screenshot-android.png
+#        sleep 5 && kill $PID
 
     - name: demoAndroid
       uses: actions/upload-artifact@v3
