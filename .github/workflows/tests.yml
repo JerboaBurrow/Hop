@@ -180,10 +180,10 @@ jobs:
         export DISPLAY=:99
         sudo Xvfb :99 -screen 0 800x600x24 &
         sleep 5
-        ./cmdline-tools/latest/bin/emulator -avd android33 &
+        ./emulator/emulator -avd android33 &
         export PID=$!
         sleep 10
-        ./cmdline-tools/latest/bin/adb install demo/android/perlinWorld/app/release/app-release.aab
+        ./platform-tools/adb install demo/android/perlinWorld/app/release/app-release.aab
         xwd -root -silent | convert xwd:- png:screenshot-android.png
         sleep 5 && kill $PID
 
@@ -200,7 +200,7 @@ jobs:
         path: screenshot-android.png
   
   release:
-    needs: [linuxXlinux, linuxXwindows]
+    needs: [linuxXlinux, linuxXwindows, linuxXandroid]
     if: github.ref_type == 'tag'
     runs-on: ubuntu-20.04
     
@@ -214,6 +214,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: windowsbuild
+
+                
+      - name: get android build
+        uses: actions/download-artifact@v3
+        with:
+          name: androidbuild
         
       - name: create release
         id: createRelease
@@ -235,6 +241,7 @@ jobs:
           asset_path: linuxbuild.zip
           asset_name: linux
           asset_content_type: application/zip
+          retention-days: 30
           
       - name: upload windows release artifact
         uses: actions/upload-release-asset@v1
@@ -245,6 +252,16 @@ jobs:
           asset_path: windowsbuild.zip
           asset_name: windows
           asset_content_type: application/zip
+          retention-days: 30
 
-    
+      - name: upload android release artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.createRelease.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: androidbuild.zip
+          asset_name: android
+          asset_content_type: application/zip
+          retention-days: 30
 
