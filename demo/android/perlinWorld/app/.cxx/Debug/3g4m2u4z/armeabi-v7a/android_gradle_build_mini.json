@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/media/harvey/ExtraFiles/Android/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/Debug/3g4m2u4z/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/media/harvey/ExtraFiles/Android/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/Debug/3g4m2u4z/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "HopAndroid::@6890427a1f51a3e7e1df": {
+      "artifactName": "HopAndroid",
+      "abi": "armeabi-v7a",
+      "output": "/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/build/intermediates/cxx/Debug/3g4m2u4z/obj/armeabi-v7a/libHopAndroid.so",
+      "runtimeFiles": []
+    }
+  }
+}

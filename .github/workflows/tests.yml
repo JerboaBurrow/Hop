@@ -94,11 +94,21 @@ jobs:
     
     - name: Install dependencies
       run: |
-        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev 
+        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev
         wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
         unzip android-ndk-r25c-linux.zip
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip   
+        unzip commandlinetools-linux-9477386_latest.zip
+        export ANDROID_SDK_ROOT=./
+        mv cmdline-tools latest
+        mkdir cmdline-tools
+        mv latest cmdline-tools
+        yes | ./cmdline-tools/latest/bin/sdkmanager --licenses
+        ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
+        ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
+        ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
 
-    - name: linux-android
+    - name: linux-android-hop
       run: |
         ./build.sh -r --android android-ndk-r25c
         mkdir androidbuild 
@@ -111,6 +121,20 @@ jobs:
       with:
         name: androidbuild
         path: androidbuild.zip
+
+    - name: linux-android-demo
+      run: |
+        cp -r build/*.a demo/android/perlinWorld/app/src/main/cpp/include/
+        cp -r include/* demo/android/perlinWorld/app/src/main/cpp/include/
+        cd demos/android/perlinWorld
+        ./gradlew assembleDebug
+        cd ~/
+
+    - name: demoAndroid
+      uses: actions/upload-artifact@v3
+      with:
+        name: demoAndroid
+        path: demo/android/perlinWorld/app/release/*.aab
       
   linuxRun:
     needs: linuxXlinux
@@ -156,7 +180,23 @@ jobs:
         with:
           name: screenshot-map-sfml
           path: sfml/screenshot-map.png
-          
+
+  # androidRun:
+  #   needs: linuxXandroid
+  #   runs-on: ubuntu-20.04
+    
+  #   steps:
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo apt-get update && sudo apt-get install -y xvfb x11-apps imagemagick
+  #         https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip   
+  #         unzip commandlinetools-linux-9477386_latest.zip
+
+  #     - name: get linux demos
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: demoLinux
+  
   release:
     needs: [linuxXlinux, linuxXwindows]
     if: github.ref_type == 'tag'

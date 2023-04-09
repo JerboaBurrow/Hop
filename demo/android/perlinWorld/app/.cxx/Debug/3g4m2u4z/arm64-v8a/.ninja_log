@@ -22,3 +22,5 @@
 0	3	0	clean	bb6b290de44ec6b5
 0	6	0	clean	bb6b290de44ec6b5
 0	2	0	clean	bb6b290de44ec6b5
+20	3171	1680954099138301551	CMakeFiles/HopAndroid.dir/hopAndroid.cpp.o	8ad2b2405145bb3
+3171	3441	1680954099406305490	/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/build/intermediates/cxx/Debug/3g4m2u4z/obj/arm64-v8a/libHopAndroid.so	ad29099058d9ac19
