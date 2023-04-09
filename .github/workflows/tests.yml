@@ -106,7 +106,7 @@ jobs:
         yes | ./cmdline-tools/latest/bin/sdkmanager --licenses
         ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
         ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
-        ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
+        echo no ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
 
     - name: linux-android-hop
       run: |
