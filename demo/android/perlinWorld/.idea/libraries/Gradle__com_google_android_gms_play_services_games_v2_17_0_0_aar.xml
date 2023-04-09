@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.android.gms:play-services-games-v2:17.0.0@aar">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../../../../.gradle/caches/transforms-3/d9aac738df3c08aa3048f03e11eaa826/transformed/play-services-games-v2-17.0.0/res" />
+      <root url="file://$PROJECT_DIR$/../../../../../.gradle/caches/transforms-3/d9aac738df3c08aa3048f03e11eaa826/transformed/play-services-games-v2-17.0.0/AndroidManifest.xml" />
+      <root url="jar://$PROJECT_DIR$/../../../../../.gradle/caches/transforms-3/d9aac738df3c08aa3048f03e11eaa826/transformed/play-services-games-v2-17.0.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../../.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-games-v2/17.0.0/da32159a93c4c8d3c74f428ed50b75a700996a91/play-services-games-v2-17.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

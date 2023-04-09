@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 3.1)
 project(Jerboa)
 
+list(APPEND CMAKE_CXX_SOURCE_FILE_EXTENSIONS shader)
+
 option(SYNTAX_ONLY "only check syntax" OFF)
 option(TEST_SUITE "test" OFF)
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 option(RELEASE On)
 option(SANITISE OFF)
 option(BUILD_DEMOS OFF)
+option(BENCHMARK OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 if (RELEASE)
@@ -37,14 +40,25 @@ string(TIMESTAMP TODAY "%Y-%m-%d:%H:%M:%S")
 add_compile_definitions(TIMESTAMP="${TODAY}")
 
 if (RELEASE)
-    add_compile_definitions(BUILD_TYPE="Release")
+    if (ANDROID)
+        # GOOGLE!! (Release is not a thing pos ndk 23 apparently..)
+        add_compile_definitions(BUILD_TYPE="MinSizeRel")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signed-zeros -funsafe-math-optimizations")
+    else()
+        add_compile_definitions(BUILD_TYPE="Release")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signaling-nans -fno-signed-zeros -funsafe-math-optimizations")
+    endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -O3")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signaling-nans -fno-signed-zeros -funsafe-math-optimizations")
+
 else ()
-    add_compile_definitions(BUILD_TYPE="Debug")
+    if (ANDROID)
+        # GOOGLE!!
+        add_compile_definitions(BUILD_TYPE="RelWithDebInfo")
+    else()
+        add_compile_definitions(BUILD_TYPE="Debug")
+    endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g")
 endif ()
-
 
 if (SANITISE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
@@ -116,11 +130,15 @@ add_library(Hop STATIC
     ${UTIL_SRC}
 )
 
+if(BENCHMARK)
+    target_compile_definitions(Hop PUBLIC BENCHMARK)
+endif()
+
 if (ANDROID)
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
     target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid)
 else()
-    target_compile_definitions(Hop PUBLIC GLSL_VERSION="140")
+    target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
     target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
 endif()
 

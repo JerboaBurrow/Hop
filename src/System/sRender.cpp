@@ -134,6 +134,9 @@ namespace Hop::System::Rendering
                 updateColours(it->first);
                 updateTexOffsets(it->first);
             }
+
+            glError("updateOffsets");
+            glBufferStatus("updateOffsets");
         }
 
 
