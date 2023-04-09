@@ -180,10 +180,10 @@ jobs:
         export DISPLAY=:99
         sudo Xvfb :99 -screen 0 800x600x24 &
         sleep 5
-        ./emulator/emulator -avd android33 &
+        export ANDROID_SDK_ROOT=~/ && ./emulator/emulator -avd android33 &
         export PID=$!
         sleep 10
-        ./platform-tools/adb install demo/android/perlinWorld/app/release/app-release.aab
+        export ANDROID_SDK_ROOT=~/ && ./platform-tools/adb install demo/android/perlinWorld/app/release/app-release.aab
         xwd -root -silent | convert xwd:- png:screenshot-android.png
         sleep 5 && kill $PID
 
