@@ -1,3 +1,0 @@
-/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/Debug/3g4m2u4z/armeabi-v7a/CMakeFiles/HopAndroid.dir
-/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/Debug/3g4m2u4z/armeabi-v7a/CMakeFiles/edit_cache.dir
-/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/Debug/3g4m2u4z/armeabi-v7a/CMakeFiles/rebuild_cache.dir

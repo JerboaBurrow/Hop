@@ -1,3 +1,0 @@
-/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/RelWithDebInfo/5s4v2e21/x86/CMakeFiles/HopAndroid.dir
-/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/RelWithDebInfo/5s4v2e21/x86/CMakeFiles/edit_cache.dir
-/media/harvey/ExtraFiles/Jerboa/Hop/demo/android/perlinWorld/app/.cxx/RelWithDebInfo/5s4v2e21/x86/CMakeFiles/rebuild_cache.dir
