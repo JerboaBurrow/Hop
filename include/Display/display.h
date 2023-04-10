@@ -1,3 +1,5 @@
+#ifndef ANDROID
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
@@ -85,3 +87,5 @@ namespace Hop
 }
 
 #endif /* DISPLAY_H */
+
+#endif
