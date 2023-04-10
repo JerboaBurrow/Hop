@@ -1,0 +1,239 @@
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <iomanip>
+
+#include <time.h>
+#include <random>
+#include <math.h>
+#include <vector>
+
+#include <chrono>
+using namespace std::chrono;
+
+#include <logo.h>
+
+#include <engine.h>
+#include <Display/display.h>
+
+#include <orthoCam.h>
+
+const int resX = 1000;
+const int resY = 1000;
+const float MAX_SPEED = 1.0/60.0;
+
+// for smoothing delta numbers
+uint8_t frameId = 0;
+double deltas[60];
+
+bool debug = false;
+
+const double deltaPhysics = 1.0/900.0;
+
+using Hop::Object::Component::cTransform;
+using Hop::Object::Component::cPhysics;
+using Hop::Object::Component::cRenderable;
+using Hop::Object::Component::cCollideable;
+
+using Hop::System::Physics::CollisionVertex;
+
+using Hop::Logging::INFO;
+using Hop::Logging::WARN;
+
+using Hop::Util::fixedLengthNumber;
+
+int main(int argc, char ** argv)
+{
+
+    Hop::Display display(resX,resY,"Perlin World Demo");
+
+    glewInit();
+
+    float posX = 0.0;
+    float posY = 0.0;
+
+    Hop::World::Boundary * bounds;
+    Hop::World::MapSource * source;
+    WorldOptions wOptions;
+    PhysicsOptions phyOptions;
+
+    Hop::World::FiniteBoundary mapBounds(0,0,16,16);
+    Hop::World::FixedSource mapSource;
+    mapSource.load("tile",false);
+
+    WorldOptions mapWOptions(2,16,1,false);
+    PhysicsOptions mapPhyOptions(deltaPhysics,9.81,0.66,true);
+
+    Hop::World::InfiniteBoundary pBounds;
+    Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
+    perlin.setThreshold(0.2);
+    perlin.setSize(64*3+1);
+
+    WorldOptions pWOptions(2,64,0,true);
+    PhysicsOptions pPhyOptions(deltaPhysics,9.81,0.66,true);
+
+    std::cout << argc << "\n";
+    if (argc > 1 && argv[1] == std::string("map"))
+    {
+        std::cout << "map\n";
+        bounds = &mapBounds;
+        source = &mapSource;
+
+        wOptions = mapWOptions;
+        phyOptions = mapPhyOptions;
+    
+    }
+    else
+    {
+        bounds = &pBounds;
+        source = &perlin;
+
+        wOptions = pWOptions;
+        phyOptions = pPhyOptions;
+    }
+
+    Hop::Engine hop
+    (
+        resX,
+        resY,
+        source,
+        bounds,
+        wOptions,
+        phyOptions,
+        0
+    );
+
+    high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
+
+    std::uniform_real_distribution<double> U;
+    std::default_random_engine e;
+    std::normal_distribution normal;
+    int n = 1000;
+
+    Hop::Object::Id pid;
+
+    double radius = 0.2*hop.getCollisionPrimitiveMaxSize();
+
+    for (int i = 0; i < n; i++)
+    {
+        pid = hop.createObject();
+
+        double x = U(e);
+        double y = U(e);
+
+        hop.addComponent<cTransform>(
+        pid,
+        cTransform(
+            x,y,0.0,radius
+        )
+        );
+
+        hop.addComponent<cRenderable>(
+        pid,
+        cRenderable(
+        "circleObjectShader",
+        200.0/255.0,200.0/255.0,250.0/255.0,1.0
+        )
+        );
+
+        hop.addComponent<cPhysics>(
+        pid,
+        cPhysics(
+            x,y,0.0
+        )
+        );
+
+        hop.addComponent<cCollideable>(
+        pid,
+        cCollideable(
+            std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)},
+            x,y,0.0,radius
+        )
+        );
+    }
+
+    while (display.isOpen())
+    {
+
+        t0 = high_resolution_clock::now();
+
+        hop.tryMoveWorld(posX,posY);
+
+        glClearColor(1.0f,1.0f,1.0f,1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        tp0 = high_resolution_clock::now();
+
+        hop.stepPhysics();
+
+        tp1 = high_resolution_clock::now();
+
+        tr0 = high_resolution_clock::now();
+
+        hop.render();
+
+        tr1 = high_resolution_clock::now();
+
+        if (frameId == 59)
+        {
+            hop.outputLog(std::cout);
+        }
+
+        if (debug)
+        {
+            double delta = 0.0;
+            for (int n = 0; n < 60; n++)
+            {
+                delta += deltas[n];
+            }
+            delta /= 60.0;
+            std::stringstream debugText;
+
+            double pdt = duration_cast<duration<double>>(tp1 - tp0).count();
+            double rdt = duration_cast<duration<double>>(tr1 - tr0).count();
+
+            double mouseX, mouseY;
+            display.mousePosition(mouseX,mouseY);
+
+            const Hop::System::Rendering::OrthoCam & camera = hop.getCamera();
+
+            float cameraX = camera.getPosition().x;
+            float cameraY = camera.getPosition().y;
+
+            glm::vec4 world = camera.screenToWorld(mouseX,mouseY);
+
+            Hop::World::TileData tile = hop.getTileData(world[0],world[1]);
+
+            debugText << "Delta: " << fixedLengthNumber(delta,6) <<
+                " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
+                "\n" <<
+                "Mouse (" << fixedLengthNumber(mouseX,4) << "," << fixedLengthNumber(mouseY,4) << ")" <<
+                "\n" <<
+                "Mouse [world] (" << fixedLengthNumber(world[0],4) << "," << fixedLengthNumber(world[1],4) << ")" <<
+                "\n" <<
+                "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
+                "\n" <<
+                "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
+                "\n" << 
+                "update time: " << fixedLengthNumber(pdt+rdt,6) <<
+                "\n" <<
+                "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+
+            hop.renderText(
+                debugText.str(),
+                64.0f,resY-64.0f,
+                0.5f,
+                glm::vec3(0.0f,0.0f,0.0f)
+            );
+        }
+
+        display.loop();
+
+        t1 = high_resolution_clock::now();
+
+        deltas[frameId] = duration_cast<duration<double>>(t1 - t0).count();
+        frameId = (frameId+1) % 60;
+        
+    }
+    return 0;
+}

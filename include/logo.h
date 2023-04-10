@@ -1,7 +1,11 @@
 /*
   logo.h (PNM).
 */
-static const unsigned char
+
+static const unsigned LOGO_WIDTH=397;
+static const unsigned LOGO_HEIGHT=397;
+
+static unsigned char
   LOGO[] =
   {
     0x50, 0x36, 0x0A, 0x33, 0x39, 0x37, 0x20, 0x33, 0x39, 0x37, 0x0A, 0x32, 
