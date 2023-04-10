@@ -127,7 +127,7 @@ file(GLOB SRC
 
 if (NOT ANDROID)
     file(GLOB STANDALONE_SRC "src/Display/*.cpp")
-    add_library(Hop STATIC ${SRC} ${STANDALONE_SCR})
+    add_library(Hop STATIC ${SRC} ${STANDALONE_SRC})
 else()
     add_library(Hop STATIC ${SRC})
 endif()
