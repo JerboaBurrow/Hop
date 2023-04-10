@@ -69,6 +69,8 @@ int main(int argc, char ** argv)
 
   window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
+  std::cout << icon.getSize().x << ", " << icon.getSize().y << "\n";
+
   glewInit();
 
   float posX = 0.0;

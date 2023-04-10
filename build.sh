@@ -20,11 +20,20 @@ function mergeLibs()
 
   for lib in *.a
   do
-      mkdir "$lib-o"
-      ar -x $lib
-      mv *.o "$lib-o"
-      ar -r libHopMerged.a "$lib-o/"*
-      rm -rf "$lib-o"
+      if [[ $WINDOWS -eq 0 ]];
+      then 
+        mkdir "$lib-o"
+        ar -x $lib
+        mv *.obj "$lib-o"
+        ar -r libHopMerged.a "$lib-o/"*
+        rm -rf "$lib-o"
+      else
+        mkdir "$lib-o"
+        ar -x $lib
+        mv *.o "$lib-o"
+        ar -r libHopMerged.a "$lib-o/"*
+        rm -rf "$lib-o"
+      fi
   done
 
   mv libHopMerged.a libHop.a
@@ -53,6 +62,7 @@ SANITISE=0
 DEMO=0
 ANDROID_NDK=""
 BENCHMARK=0
+STANDALONE=0
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -66,6 +76,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -r|--release)
       RELEASE=1
+      shift
+      ;;
+    -s|--standalone)
+      STANDALONE=1
       shift
       ;;
     -t|--test)
@@ -121,7 +135,7 @@ echo "release ${RELEASE}"
 if [[ $WINDOWS -eq 0 ]];
 then 
   cmake -E make_directory build
-  cmake -E chdir build cmake .. -D WINDOWS=ON -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8 -C build
+  cmake -E chdir build cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8 -C build
   # now copy dlls
   PREFIX="x86_64-w64-mingw32"
 
@@ -166,7 +180,7 @@ then
 elif [[ $OSX -eq 0 ]];
 then
   cmake -E make_directory build
-  cmake -E chdir build cmake .. -D OSX=ON -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8 -C build
+  cmake -E chdir build cmake .. -D OSX=ON -D STANDALONE=$STANDALONE -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8 -C build
 elif [[ ! -z "$ANDROID_NDK" ]]
 then
   TOOL_CHAIN="$ANDROID_NDK/build/cmake/android.toolchain.cmake"
@@ -185,7 +199,7 @@ then
 
 else
   cmake -E make_directory build
-  cmake -E chdir build cmake -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8 -C build
+  cmake -E chdir build cmake -D BUILD_DEMOS=$DEMO -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8 -C build
 fi
 
 

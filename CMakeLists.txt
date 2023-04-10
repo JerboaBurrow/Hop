@@ -10,6 +10,7 @@ option(RELEASE On)
 option(SANITISE OFF)
 option(BUILD_DEMOS OFF)
 option(BENCHMARK OFF)
+option(STANDALONE OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 if (RELEASE)
@@ -91,6 +92,10 @@ add_subdirectory(include/vendored/stduuid)
 if (ANDROID)
     find_library(GLES-lib GLESv3 REQUIRED)
 else()
+
+    add_subdirectory(include/vendored/glfw)
+    include_directories(include/vendored/glfw/include)
+
     find_package(OpenGL REQUIRED)
     # let sources know glew is static
     add_compile_definitions(GLEW_STATIC)
@@ -105,30 +110,29 @@ else()
 
 endif()
 
-include_directories(include ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
+include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
-file(GLOB SRC "src/*.cpp")
-file(GLOB TEXT_SRC "src/Text/*.cpp")
-file(GLOB OBJECT_SRC "src/Object/*.cpp")
-file(GLOB SHADER_SRC "src/Shader/*.cpp")
-file(GLOB SYSTEM_SRC "src/System/*.cpp")
-file(GLOB COMPONENT_SRC "src/Component/*.cpp") 
-file(GLOB COLLISION_SRC "src/Collision/*.cpp")
-file(GLOB WORLD_SRC "src/World/*.cpp") 
-file(GLOB MATHS_SRC "src/Maths/*.cpp")
-file(GLOB UTIL_SRC "src/Util/*.cpp")
-add_library(Hop STATIC
-    ${SHADER_SRC} 
-    ${SRC} 
-    ${TEXT_SRC} 
-    ${OBJECT_SRC} 
-    ${SYSTEM_SRC} 
-    ${COMPONENT_SRC} 
-    ${COLLISION_SRC}
-    ${WORLD_SRC}
-    ${MATHS_SRC}
-    ${UTIL_SRC}
+file(GLOB SRC 
+    "src/*.cpp"
+    "src/Text/*.cpp"
+    "src/Object/*.cpp"
+    "src/Shader/*.cpp"
+    "src/System/*.cpp"
+    "src/Component/*.cpp"
+    "src/Collision/*.cpp"
+    "src/World/*.cpp" 
+    "src/Maths/*.cpp" 
+    "src/Util/*.cpp"
 )
+
+if (NOT ANDROID)
+    file(GLOB STANDALONE_SRC "src/Display/*.cpp")
+    add_library(Hop STATIC ${SRC} ${STANDALONE_SRC})
+else()
+    add_library(Hop STATIC ${SRC})
+endif()
+
+
 
 if(BENCHMARK)
     target_compile_definitions(Hop PUBLIC BENCHMARK)
@@ -139,7 +143,7 @@ if (ANDROID)
     target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid)
 else()
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
-    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw)
 endif()
 
 
