@@ -90,6 +90,8 @@ namespace Hop
 
     class Engine
     {
+        friend class Console;
+
     public:
 
         Engine(
@@ -241,6 +243,11 @@ namespace Hop
         const OrthoCam & getCamera() const {return camera;}
         void incrementZoom(double z){camera.incrementZoom(z);}
 
+    protected:
+
+        // Lua console interface
+        int lua_createObject(lua_State * lua);
+        
     private:
 
         OrthoCam camera;

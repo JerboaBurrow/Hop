@@ -18,7 +18,7 @@
 
 #include <logo.h>
 
-#include <engine.h>
+#include <Engine/engine.h>
 #include <orthoCam.h>
 
 using namespace std::chrono;

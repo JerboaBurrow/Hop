@@ -1,4 +1,4 @@
-#include <engine.h>
+#include <Engine/engine.h>
 #include <iostream>
 namespace Hop
 {
@@ -236,6 +236,13 @@ namespace Hop
         }
         #endif
 
+    }
+
+    // Lua console
+
+    int Engine::lua_createObject(lua_State * lua)
+    {
+        int n = lua_gettop(lua);
     }
 
 }

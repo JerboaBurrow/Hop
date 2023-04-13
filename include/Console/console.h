@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <Engine/engine.h>
 
 extern "C"
 {
@@ -13,6 +14,30 @@ extern "C"
 
 namespace Hop
 {
+    class Engine;
+    
+    using Hop::Engine;
+
+    typedef int (Engine::*member)(lua_State * lua);
+
+    template <member function>
+    int dispatch(lua_State * lua)
+    {
+        Engine * ptr = *static_cast<Engine**>(lua_getextraspace(lua));
+        return ((*ptr).*function)(lua);
+    }
+
+    const luaL_Reg hopLib[] =
+    {
+        {NULL, NULL}
+    };
+
+    int load_hopLib(lua_State * lua)
+    {
+        luaL_newlib(lua,hopLib);
+        return 1;
+    }
+
     class Console 
     {
         public:
@@ -21,6 +46,7 @@ namespace Hop
             {
                 lua = luaL_newstate();
                 luaL_openlibs(lua);
+                luaL_requiref(lua,"hop",load_hopLib,1);
             }
 
             ~Console(){ lua_close(lua); }
@@ -48,6 +74,7 @@ namespace Hop
         private:
 
         lua_State * lua;
+
     };
 }
 
