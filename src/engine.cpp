@@ -106,6 +106,8 @@ namespace Hop
         collisionTimeOO = 0.0;
         collisionTimeOW = 0.0;
         frame = 0;
+
+        hopConsole.runString("a = \"Lua process running succesfully\"; print(a)");
     }
 
     void Engine::setCollisionDetector
