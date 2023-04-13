@@ -89,6 +89,14 @@ SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
 add_subdirectory(include/vendored/glm)
 add_subdirectory(include/vendored/stduuid)
 
+if (!WINDOWS)
+    add_compile_definitions(LUA_USE_POSIX)
+endif()
+
+file(GLOB LUA_SRC "include/vendored/lua/src/*.c")
+include_directories(include/vendored/lua/src)
+add_library(Lua STATIC ${LUA_SRC})
+
 if (ANDROID)
     find_library(GLES-lib GLESv3 REQUIRED)
 else()
@@ -140,10 +148,10 @@ endif()
 
 if (ANDROID)
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
-    target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid)
+    target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid Lua)
 else()
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
-    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw)
+    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw Lua)
 endif()
 
 

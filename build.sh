@@ -6,6 +6,7 @@ function findAndCopyDLL()
     do
         FILE="$i/$1"
         if [ -f $FILE ]; then
+           echo -e "\033[1;34mFound DLL $FILE\033[0m"
            cp $FILE build/
            return 0
         fi
@@ -20,6 +21,7 @@ function mergeLibs()
 
   for lib in *.a
   do
+      echo -e "\033[1;34mMerging $lib\033[0m"
       if [[ $WINDOWS -eq 0 ]];
       then 
         mkdir "$lib-o"

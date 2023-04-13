@@ -20,6 +20,8 @@ using namespace std::chrono;
 #include <World/marchingWorld.h>
 #include <World/tileWorld.h>
 
+#include <Console/console.h>
+
 #include <Util/util.h>
 #include <log.h>
 
@@ -83,6 +85,8 @@ namespace Hop
     using Hop::World::TileWorld;
     using Hop::World::MarchingWorld;
     using Hop::World::TileData;
+
+    using Hop::Console;
 
     class Engine
     {
@@ -256,6 +260,8 @@ namespace Hop
 
         TextRenderer textRenderer;
         Type font;
+
+        Console hopConsole;
 
     };
 
