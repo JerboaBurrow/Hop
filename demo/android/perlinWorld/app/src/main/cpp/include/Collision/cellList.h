@@ -5,11 +5,18 @@
 #include <memory>
 #include <utility>
 
+#include <World/tileWorld.h>
+#include <World/marchingWorld.h>
+
 #include <chrono>
 using namespace std::chrono;
 
 namespace Hop::System::Physics
 {
+
+    using Hop::World::TileWorld;
+    using Hop::World::MarchingWorld;
+
     const uint64_t MAX_PARTICLES = 100000;
     const uint64_t MAX_PARTICLES_PER_CELL = 64;
     const uint64_t NULL_INDEX = MAX_PARTICLES+1;
@@ -44,7 +51,12 @@ namespace Hop::System::Physics
 
         void clear(bool full = false);
 
-        void populate(ObjectManager * manager, std::set<Id> objects);
+        void populate
+        (      
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP,
+            std::set<Id> objects
+        );
 
         void cellCollisions(
             uint64_t a1,
@@ -56,46 +68,29 @@ namespace Hop::System::Physics
             CollisionResolver * resolver
         );
 
-        void handleObjectObjectCollisions(
-            ObjectManager * manager,
-            CollisionResolver * resolver,
-            std::set<Id> objects
-        );
-
-        // void cellCollisionsThreaded(
-        //     ObjectManager * manager,
-        //     CollisionResolver * resolver,
-        //     int a
-        // );
-        
         void cellCollisionsThreaded(
-            ObjectManager * manager,
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP,
             CollisionResolver * resolver,
             std::pair<unsigned,unsigned> * jobs,
             unsigned njobs
         );
 
+        void handleObjectObjectCollisions(
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP,
+            CollisionResolver * resolver,
+            std::set<Id> objects,
+            ThreadPool * workers = nullptr
+        );
+
         void handleObjectWorldCollisions(
-            ObjectManager * manager,
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP,
             CollisionResolver * resolver,
             AbstractWorld * world,
-            std::set<Id> objects
-        );
-
-
-        void handleObjectWorldCollisions(
-            ObjectManager * manager,
-            CollisionResolver * resolver,
-            TileWorld * world,
-            std::set<Id> objects
-        );
-
-
-        void handleObjectWorldCollisions(
-            ObjectManager * manager,
-            CollisionResolver * resolver,
-            MarchingWorld * world,
-            std::set<Id> objects
+            std::set<Id> objects,
+            ThreadPool * workers = nullptr
         );
 
     };

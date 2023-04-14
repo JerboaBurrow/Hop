@@ -129,7 +129,11 @@ namespace Hop::System::Physics
         lastElement = NULL_INDEX;
     }
 
-    void CellList::populate(ObjectManager * manager, std::set<Id> objects)
+    void CellList::populate(
+        ComponentArray<cCollideable> & dataC,
+        ComponentArray<cPhysics> & dataP,
+        std::set<Id> objects
+    )
     {
         clear();
 
@@ -137,7 +141,7 @@ namespace Hop::System::Physics
         for (auto it = objects.begin(); it != objects.cend(); it++)
         {
 
-            cCollideable & data = manager->getComponent<cCollideable>(*it);
+            cCollideable & data = dataC.get(*it);
 
             uint64_t meshSize = data.mesh.size();
 
@@ -221,14 +225,20 @@ namespace Hop::System::Physics
             p2 = 0;
             i = cells[c1+p1]; 
             auto idi = id[i];
+            cCollideable & collidableI = dataC.get(idi.first);
+            cPhysics & physicsI = dataP.get(idi.first);
             while (p2 < n2)
             {
                 j = cells[c2+p2];
                 auto idj = id[j];
+                cCollideable & collidableJ = dataC.get(idj.first);
+                cPhysics & physicsJ = dataP.get(idj.first);
+
                 resolver->handleObjectObjectCollision(
                     idi.first,idi.second,
                     idj.first,idj.second,
-                    dataC, dataP
+                    collidableI, collidableJ,
+                    physicsI, physicsJ
                 );
                 p2++;
             }
@@ -237,7 +247,8 @@ namespace Hop::System::Physics
     }
 
     void CellList::cellCollisionsThreaded(
-        ObjectManager * manager,
+        ComponentArray<cCollideable> & dataC,
+        ComponentArray<cPhysics> & dataP,
         CollisionResolver * resolver,
         std::pair<unsigned,unsigned> * jobs,
         unsigned njobs
@@ -245,9 +256,6 @@ namespace Hop::System::Physics
     {
         unsigned a, b, a1, b1;
 
-        ComponentArray<cCollideable> & c = manager->getComponentArray<cCollideable>();
-        ComponentArray<cPhysics> & p = manager->getComponentArray<cPhysics>();
-    
         for (unsigned j = 0; j < njobs; j++)
         {
             a = jobs[j].first;
@@ -259,27 +267,30 @@ namespace Hop::System::Physics
             //  i.e cell a-1,b-1 will collide with
             //  cell a,b so no need to double up!
             
-            cellCollisions(a,b,a,b,c,p,resolver);
-            cellCollisions(a,b,a1,b1,c,p,resolver);
-            cellCollisions(a,b,a,b1,c,p,resolver);
-            cellCollisions(a,b,a1,b,c,p,resolver);
-            cellCollisions(a,b,a1,b-1,c,p,resolver);
+            cellCollisions(a,b,a,b,dataC,dataP,resolver);
+            cellCollisions(a,b,a1,b1,dataC,dataP,resolver);
+            cellCollisions(a,b,a,b1,dataC,dataP,resolver);
+            cellCollisions(a,b,a1,b,dataC,dataP,resolver);
+            cellCollisions(a,b,a1,b-1,dataC,dataP,resolver);
         }
     }
 
     void CellList::handleObjectObjectCollisions(
-        ObjectManager * manager,
+        ComponentArray<cCollideable> & dataC,
+        ComponentArray<cPhysics> & dataP,
         CollisionResolver * resolver,
-        std::set<Id> objects
+        std::set<Id> objects,
+        ThreadPool * workers
     )
     {
-        populate(manager,objects);
+        populate(dataC, dataP ,objects);
    
         int a1, b1;
-        unsigned thread = 0;
-        unsigned nThreads = manager->nThreads();
 
-        if (nThreads>0){
+        if (workers != nullptr){
+
+            unsigned thread = 0;
+            unsigned nThreads = workers->size();
 
             unsigned jobsPerThread = std::floor(nCells / nThreads);
             std::pair<unsigned,unsigned> threadJobs[nThreads][jobsPerThread];
@@ -319,18 +330,19 @@ namespace Hop::System::Physics
 
             for (int t = 0; t < nThreads; t++)
             {
-                manager->postJob(
+                workers->queueJob(
                     std::bind(
                         &CellList::cellCollisionsThreaded,
                         this,
-                        manager,
+                        dataC,
+                        dataP,
                         resolver,
                         &threadJobs[t][0],
                         jobsPerThread
                     )
                 );
             }
-            manager->waitForJobs();
+            workers->wait();
             //high_resolution_clock::time_point t3 = high_resolution_clock::now();
 
             //std::cout << "Thread collisions: " << duration_cast<duration<double>>(t2-t1).count() << ", " << duration_cast<duration<double>>(t3-t2).count() << "\n";
@@ -338,8 +350,6 @@ namespace Hop::System::Physics
         }
         else
         {
-            ComponentArray<cCollideable> & c = manager->getComponentArray<cCollideable>();
-            ComponentArray<cPhysics> & p = manager->getComponentArray<cPhysics>();
 
             for (int a = 0; a < rootNCells; a++)
             {
@@ -351,11 +361,11 @@ namespace Hop::System::Physics
                     //  i.e cell a-1,b-1 will collide with
                     //  cell a,b so no need to double up!
                     
-                    cellCollisions(a,b,a,b,c,p,resolver);
-                    cellCollisions(a,b,a1,b1,c,p,resolver);
-                    cellCollisions(a,b,a,b1,c,p,resolver);
-                    cellCollisions(a,b,a1,b,c,p,resolver);
-                    cellCollisions(a,b,a1,b-1,c,p,resolver);
+                    cellCollisions(a,b,a,b,dataC,dataP,resolver);
+                    cellCollisions(a,b,a1,b1,dataC,dataP,resolver);
+                    cellCollisions(a,b,a,b1,dataC,dataP,resolver);
+                    cellCollisions(a,b,a1,b,dataC,dataP,resolver);
+                    cellCollisions(a,b,a1,b-1,dataC,dataP,resolver);
                 }
             }
         }
@@ -363,71 +373,25 @@ namespace Hop::System::Physics
     }
 
     void CellList::handleObjectWorldCollisions(
-        ObjectManager * manager,
+        ComponentArray<cCollideable> & dataC,
+        ComponentArray<cPhysics> & dataP,
         CollisionResolver * resolver,
         AbstractWorld * world,
-        std::set<Id> objects
+        std::set<Id> objects,
+        ThreadPool * workers
     )
     {
-        TileWorld * tw = dynamic_cast<TileWorld*>(world);
 
-        if (tw != nullptr)
-        {
-            handleObjectWorldCollisions(
-                manager,
-                resolver,
-                tw,
-                objects
-            );
-            return;
-        }
-        
-        MarchingWorld * mw = dynamic_cast<MarchingWorld*>(world);
-
-        if (mw != nullptr)
-        {
-            handleObjectWorldCollisions(
-                manager,
-                resolver,
-                mw,
-                objects
-            );
-            return;
-        }
-    }
-
-    void CellList::handleObjectWorldCollisions(
-        ObjectManager * manager,
-        CollisionResolver * resolver,
-        TileWorld * world,
-        std::set<Id> objects
-    )
-    {
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
-            resolver->handleObjectWorldCollisions(
+            cCollideable & c = dataC.get(*it);
+            cPhysics & p = dataP.get(*it);
+            resolver->handleObjectWorldCollision(
                 *it,
-                manager,
+                c,
+                p,
                 world
             );
         }
     }
-
-    void CellList::handleObjectWorldCollisions(
-        ObjectManager * manager,
-        CollisionResolver * resolver,
-        MarchingWorld * world,
-        std::set<Id> objects
-    )
-    {
-        for (auto it = objects.begin(); it != objects.end(); it++)
-        {
-            resolver->handleObjectWorldCollisions(
-                *it,
-                manager,
-                world
-            );
-        }
-    }
-
 }

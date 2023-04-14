@@ -8,16 +8,24 @@ using namespace std::chrono;
 namespace Hop::System::Physics
 {
 
-    void sPhysics::processThreaded(ObjectManager * m, size_t threadId)
+    void sPhysics::processThreaded(
+        ComponentArray<cCollideable> & collideables,
+        ComponentArray<cPhysics> & physics,
+        ComponentArray<cTransform> & transforms,
+        Id * jobs,
+        unsigned njobs
+    )
     {
         double nx, ny, ntheta, ar, br, cr, at, bt, ct;
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
-        for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++)
+        for (unsigned i = 0; i < njobs; i++)
         {
 
-            cTransform & dataT = m->getComponent<cTransform>(*it);
-            cPhysics & dataP = m->getComponent<cPhysics>(*it);
+            Id id = jobs[i];
+
+            cTransform & dataT = transforms.get(id);
+            cPhysics & dataP = physics.get(id);
             
             dataP.fy += -gravity*PARTICLE_MASS;
 
@@ -53,9 +61,9 @@ namespace Hop::System::Physics
             dataT.y = ny;
             dataT.theta = ntheta;
 
-            if (m->hasComponent<cCollideable>(*it))
+            if (collideables.hasComponent(id))
             {
-                cCollideable & data = m->getComponent<cCollideable>(*it);
+                cCollideable & data = collideables.get(id);
                 data.mesh.updateWorldMesh(
                     dataT.x,
                     dataT.y,
@@ -66,31 +74,56 @@ namespace Hop::System::Physics
         }
     }
 
-    void sPhysics::updateThreaded(ObjectManager * m)
+    void sPhysics::updateThreaded(EntityComponentSystem * m,  ThreadPool * workers)
     {
 
-        for (int j = 0; j < threadJobs.size(); j++)
+        ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
+        ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
+        ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
+
+        unsigned nThreads = workers->size();
+        unsigned jobsPerThread = std::floor(objects.size()/nThreads);
+        Id jobs[nThreads][jobsPerThread];
+
+        auto iter = objects.begin();
+        for (unsigned t = 0; t < nThreads; t++)
         {
-            m->postJob(
+            for (unsigned j = t*jobsPerThread; j < (t+1)*jobsPerThread; j++)
+            {
+                jobs[t][j] = *iter;
+                iter++;
+            }
+        }
+
+        for (int j = 0; j < nThreads; j++)
+        {
+            workers->queueJob(
                 std::bind(
                     &sPhysics::processThreaded,
                     this,
-                    m,
-                    j
+                    collideables,
+                    physics,
+                    transforms,
+                    &jobs[j][0],
+                    jobsPerThread
                 )
             );
         }
-        m->waitForJobs();
+        workers->wait();
     }
 
-    void sPhysics::update(ObjectManager * m)
+    void sPhysics::update(EntityComponentSystem * m, ThreadPool * workers)
     {
 
-        if (m->isThreaded())
+        if (workers != nullptr)
         {
-            updateThreaded(m);
+            updateThreaded(m, workers);
             return;
         }
+
+        ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
+        ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
+        ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
         double nx, ny, ntheta, ar, br, cr, at, bt, ct;
         unsigned k = 0;
@@ -99,8 +132,8 @@ namespace Hop::System::Physics
 
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
-            cTransform & dataT = m->getComponent<cTransform>(*it);
-            cPhysics & dataP = m->getComponent<cPhysics>(*it);
+            cTransform & dataT = transforms.get(*it);
+            cPhysics & dataP = physics.get(*it);
 
             dataP.fy += -gravity*PARTICLE_MASS;
 
@@ -136,9 +169,9 @@ namespace Hop::System::Physics
             dataT.y = ny;
             dataT.theta = ntheta;
 
-            if (m->hasComponent<cCollideable>(*it))
+            if (collideables.hasComponent(*it))
             {
-                cCollideable & data = m->getComponent<cCollideable>(*it);
+                cCollideable & data = collideables.get(*it);
                 data.mesh.updateWorldMesh(
                     dataT.x,
                     dataT.y,
@@ -150,7 +183,7 @@ namespace Hop::System::Physics
     }
 
     void sPhysics::applyForce(
-        ObjectManager * m,
+        EntityComponentSystem * m,
         Id i,
         double x,
         double y,
@@ -175,7 +208,7 @@ namespace Hop::System::Physics
     }
 
     void sPhysics::applyForce(
-        ObjectManager * m,
+        EntityComponentSystem * m,
         double fx,
         double fy
     )
@@ -189,7 +222,7 @@ namespace Hop::System::Physics
         }
     }
 
-    void sPhysics::stabaliseObjectParameters(ObjectManager * m)
+    void sPhysics::stabaliseObjectParameters(EntityComponentSystem * m)
     {
         for (auto it = objects.begin(); it != objects.end(); it++)
         {

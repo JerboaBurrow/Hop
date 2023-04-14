@@ -1,25 +1,31 @@
 #ifndef COLLISIONDETECTOR_H
 #define COLLISIONDETECTOR_H
 
+#include <set>
+
+#include <Thread/threadPool.h>
+
+#include <Component/componentArray.h>
+#include <Component/cPhysics.h>
+#include <Component/cCollideable.h>
+
 #include <Collision/collisionResolver.h>
-#include <Object/objectManager.h>
 #include <Object/id.h>
 
-#include <World/tileWorld.h>
-#include <World/marchingWorld.h>
+#include <World/world.h>
 #include <Util/util.h>
-
-namespace Hop::Object
-{
-    class ObjectManager;
-}
 
 namespace Hop::System::Physics
 {
 
-    using Hop::Object::ObjectManager;
     using Hop::Util::tupled;
     using Hop::World::AbstractWorld;
+
+    using Hop::Object::Id;
+
+    using Hop::Object::Component::ComponentArray;
+    using Hop::Object::Component::cCollideable;
+    using Hop::Object::Component::cPhysics;
 
     class CollisionDetector 
     {
@@ -37,30 +43,20 @@ namespace Hop::System::Physics
         virtual ~CollisionDetector() = default;
 
         virtual void handleObjectObjectCollisions(
-            ObjectManager * manager,
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP,
             CollisionResolver * resolver,
-            std::set<Id>
+            std::set<Id>,
+            ThreadPool * workers = nullptr
         ) = 0;
 
         virtual void handleObjectWorldCollisions(
-            ObjectManager * manager,
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP,
             CollisionResolver * resolver,
             AbstractWorld * world,
-            std::set<Id> objects
-        ) = 0;
-
-        virtual void handleObjectWorldCollisions(
-            ObjectManager * manager,
-            CollisionResolver * resolver,
-            TileWorld * world,
-            std::set<Id> objects
-        ) = 0;
-
-        virtual void handleObjectWorldCollisions(
-            ObjectManager * manager,
-            CollisionResolver * resolver,
-            MarchingWorld * world,
-            std::set<Id> objects
+            std::set<Id> objects,
+            ThreadPool * workers = nullptr
         ) = 0;
 
         virtual void centreOn(double x, double y)

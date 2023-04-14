@@ -39,9 +39,7 @@ namespace Hop::System
 
     public:
 
-        SystemManager(size_t n)
-        : threads(n)
-        {}
+        SystemManager(){}
 
         template<typename T>
         void registerSystem()
@@ -85,8 +83,6 @@ namespace Hop::System
 
         void objectSignatureChanged(Id i, Signature s);
 
-        void optimiseJobAllocation();
-
         
     private:
 
@@ -95,7 +91,6 @@ namespace Hop::System
         std::unordered_map<const char*, Signature> signatures;
         std::unordered_map<const char*, std::shared_ptr<System>> systems;
 
-        const size_t threads;
     };
 
 }

@@ -15,7 +15,6 @@ namespace Hop::System
     public:
 
         std::set<Id> objects;
-        std::vector<std::set<Id>> threadJobs;
         
     };
 

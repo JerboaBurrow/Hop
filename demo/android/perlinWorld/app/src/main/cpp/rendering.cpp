@@ -6,12 +6,19 @@ extern "C"
             jboolean refresh
     )
     {
-        if (hop == nullptr){
+        if (manager == nullptr){
             return;
         }
 
-        hop->render(refresh);
+        sRender & rendering = manager->getSystem<sRender>();
 
+        shaderPool->setProjection(camera->getVP());
+
+        world->draw(*shaderPool->get("worldShader").get());
+
+        rendering.update(manager, shaderPool, refresh);
+
+        rendering.draw(shaderPool);
         //hop->log<Hop::Logging::INFO>("refresh = "+std::to_string(refresh));
     }
 
@@ -30,13 +37,14 @@ extern "C"
                     jboolean centred
             )
     {
-        if (hop == nullptr){
+        if (textRenderer == nullptr){
             return;
         }
 
-        hop->renderText
+        textRenderer->renderText
                 (
-                        jstring2string(env,text),
+                        *font,
+                        jstring2string(env,text).c_str(),
                         x,
                         y,
                         scale,

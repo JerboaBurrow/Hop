@@ -93,7 +93,7 @@ namespace Hop::Logging
     std::string get()const{return u+msg;}
   private:
     #if !defined(ANDROID) && !defined(WINDOWS)
-      const char * u = "\033[1;34m[INFO] \033[0m";
+      const char * u = "\033[1;36m[INFO] \033[0m";
     #else
       const char * u = "[INFO] ";
     #endif

@@ -15,17 +15,36 @@
 #include <vector>
 
 #include <chrono>
+using namespace std::chrono;
 
 #include <logo.h>
 
-#include <engine.h>
+#include <Display/display.h>
 #include <orthoCam.h>
+
+#include <Text/textRenderer.h>
+
+#include <Object/entityComponentSystem.h>
+
+#include <System/sPhysics.h>
+#include <System/sRender.h>
+#include <System/sCollision.h>
+
+#include <World/world.h>
+#include <World/marchingWorld.h>
+#include <World/tileWorld.h>
+
+#include <Console/console.h>
+
+#include <Util/util.h>
+#include <log.h>
 
 using namespace std::chrono;
 
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
+const unsigned MAX_THREADS = 4;
 
 // for smoothing delta numbers
 uint8_t frameId = 0;
@@ -39,8 +58,28 @@ using Hop::Object::Component::cTransform;
 using Hop::Object::Component::cPhysics;
 using Hop::Object::Component::cRenderable;
 using Hop::Object::Component::cCollideable;
+using Hop::Object::EntityComponentSystem;
+using Hop::Object::Id;
 
+using Hop::System::Rendering::OrthoCam;
+using Hop::System::Rendering::Type;
+using Hop::System::Rendering::TextRenderer;
+using Hop::System::Rendering::sRender;
+using Hop::System::Rendering::Shaders;
+
+using Hop::System::Physics::CollisionDetector;
+using Hop::System::Physics::CollisionResolver;
+using Hop::System::Physics::sPhysics;
+using Hop::System::Physics::sCollision;
 using Hop::System::Physics::CollisionVertex;
+
+using Hop::System::Signature;
+
+using Hop::World::MapSource;
+using Hop::World::Boundary;
+using Hop::World::AbstractWorld;
+using Hop::World::TileWorld;
+using Hop::World::MarchingWorld;
 
 using Hop::Logging::INFO;
 using Hop::Logging::WARN;
@@ -60,7 +99,7 @@ int main(int argc, char ** argv)
     sf::Style::Close|sf::Style::Titlebar,
     contextSettings);
 
-  window.setVerticalSyncEnabled(true);
+  //window.setVerticalSyncEnabled(true);
   window.setFramerateLimit(60);
   window.setActive();
 
@@ -69,131 +108,141 @@ int main(int argc, char ** argv)
 
   window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-  std::cout << icon.getSize().x << ", " << icon.getSize().y << "\n";
-
   glewInit();
+
+  OrthoCam camera(resX, resY, glm::vec2(0.0,0.0));
+
+  EntityComponentSystem manager;
+
+  Hop::Logging::Log log;
+
+  ThreadPool workers(MAX_THREADS);
+
+  TextRenderer textRenderer(glm::ortho(0.0,double(resX),0.0,double(resY)));
+  Type font(48);
+
+  Shaders shaderPool;
+  shaderPool.defaultShaders(log);
+
+  std::unique_ptr<AbstractWorld> world;
 
   float posX = 0.0;
   float posY = 0.0;
 
   Hop::World::Boundary * bounds;
   Hop::World::MapSource * source;
-  WorldOptions wOptions;
-  PhysicsOptions phyOptions;
 
   Hop::World::FiniteBoundary mapBounds(0,0,16,16);
   Hop::World::FixedSource mapSource;
   mapSource.load("tile",false);
-
-  WorldOptions mapWOptions(2,16,1,false);
-  PhysicsOptions mapPhyOptions(deltaPhysics,9.81,0.66,true);
 
   Hop::World::InfiniteBoundary pBounds;
   Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
   perlin.setThreshold(0.2);
   perlin.setSize(64*3+1);
 
-  WorldOptions pWOptions(2,64,0,true);
-  PhysicsOptions pPhyOptions(deltaPhysics,9.81,0.66,true);
-
-  std::cout << argc << "\n";
   if (argc > 1 && argv[1] == std::string("map"))
   {
-    std::cout << "map\n";
-    bounds = &mapBounds;
-    source = &mapSource;
 
-    wOptions = mapWOptions;
-    phyOptions = mapPhyOptions;
- 
+      world = std::make_unique<TileWorld>
+      (
+          2,
+          &camera,
+          16,
+          1,
+          &mapSource,
+          &mapBounds  
+      );
   }
   else
   {
-    bounds = &pBounds;
-    source = &perlin;
-
-    wOptions = pWOptions;
-    phyOptions = pPhyOptions;
+      world = static_cast<std::unique_ptr<AbstractWorld>>
+      (
+          std::make_unique<MarchingWorld>
+          (
+              2,
+              &camera,
+              64,
+              0,
+              &perlin,
+              &pBounds  
+          )
+      );
   }
 
-  Hop::Engine hop
+  sRender & rendering = manager.getSystem<sRender>();
+
+  // setup physics system
+  sPhysics & physics = manager.getSystem<sPhysics>();
+  physics.setTimeStep(deltaPhysics);
+  physics.setGravity(9.81);
+
+  sCollision & collisions = manager.getSystem<sCollision>();
+
+  auto det = std::make_unique<Hop::System::Physics::CellList>(world.get());
+
+  auto res = std::make_unique<Hop::System::Physics::SpringDashpot>
   (
-    resX,
-    resY,
-    source,
-    bounds,
-    wOptions,
-    phyOptions,
-    0
+      deltaPhysics*10.0,
+      0.66,
+      0.0
   );
 
-  sf::Clock clock;
+  collisions.setDetector(std::move(det));
+  collisions.setResolver(std::move(res));
 
-  sf::Clock timer;
-  timer.restart();
+  high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
 
   std::uniform_real_distribution<double> U;
   std::default_random_engine e;
   std::normal_distribution normal;
   int n = 1000;
 
-  sf::Clock timer2;
-  double t1 = 0.0;
-  double t2 = 0.0;
-  timer.restart();
-
   Hop::Object::Id pid;
 
-  double radius = 0.2*hop.getCollisionPrimitiveMaxSize();
+  double radius = 0.2*world.get()->worldMaxCollisionPrimitiveSize();
 
   for (int i = 0; i < n; i++)
   {
-    timer2.restart();
-    pid = hop.createObject();
-    t1 += timer2.getElapsedTime().asSeconds();
+      pid = manager.createObject();
 
-    double x = U(e);
-    double y = U(e);
+      double x = U(e);
+      double y = U(e);
 
-    timer2.restart();
+      manager.addComponent<cTransform>(
+          pid,
+          cTransform(
+              x,y,0.0,radius
+          )
+      );
 
-    hop.addComponent<cTransform>(
-      pid,
-      cTransform(
-        x,y,0.0,radius
-      )
-    );
+      manager.addComponent<cRenderable>(
+          pid,
+          cRenderable(
+          "circleObjectShader",
+          200.0/255.0,200.0/255.0,250.0/255.0,1.0
+          )
+      );
 
-    hop.addComponent<cRenderable>(
-      pid,
-      cRenderable(
-       "circleObjectShader",
-       200.0/255.0,200.0/255.0,250.0/255.0,1.0
-      )
-    );
+      manager.addComponent<cPhysics>(
+          pid,
+          cPhysics(
+              x,y,0.0
+          )
+      );
 
-    hop.addComponent<cPhysics>(
-      pid,
-      cPhysics(
-        x,y,0.0
-      )
-    );
-
-    hop.addComponent<cCollideable>(
-      pid,
-      cCollideable(
-        std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)},
-        x,y,0.0,radius
-      )
-    );
-
-    t2 += timer2.getElapsedTime().asSeconds();
+      manager.addComponent<cCollideable>(
+          pid,
+          cCollideable(
+              std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)},
+              x,y,0.0,radius
+          )
+      );
   }
-  double ct = timer.getElapsedTime().asSeconds();
 
-  hop.log<INFO>("object creation time/ per object " + std::to_string(ct) + ", " + std::to_string(ct/float(n)));
-  hop.log<INFO>("createObject time "+std::to_string(t1/float(n)));
-  hop.log<INFO>("addComponents time "+std::to_string(t2/float(n)));
+  physics.stabaliseObjectParameters(&manager);
+
+  bool refreshObjectShaders = true;
 
   while (window.isOpen())
   {
@@ -215,12 +264,12 @@ int main(int argc, char ** argv)
       }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
       {
-        hop.requestAddThread();
+        workers.createThread();
       }
 
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L)
       {
-        hop.requestDeleteThread();
+        workers.joinThread();
       }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
       {
@@ -230,7 +279,7 @@ int main(int argc, char ** argv)
       if (event.type == sf::Event::MouseWheelScrolled)
       {
         double z = event.mouseWheelScroll.delta;
-        hop.incrementZoom(z);
+        camera.incrementZoom(z);
       }
     }
 
@@ -259,79 +308,89 @@ int main(int argc, char ** argv)
       
     }
 
-    hop.tryMoveWorld(posX,posY);
+    t0 = high_resolution_clock::now();
+
+    world->updateRegion(posX,posY);
 
     glClearColor(1.0f,1.0f,1.0f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    timer.restart();
+    tp0 = high_resolution_clock::now();
 
-    hop.stepPhysics();
+    collisions.centreOn(world.get()->getMapCenter());
+    
+    collisions.update(&manager, world.get());
 
-    double pdt = timer.getElapsedTime().asSeconds();
+    physics.update(&manager);
 
-    timer.restart();
+    tp1 = high_resolution_clock::now();
 
-    hop.render();
+    tr0 = high_resolution_clock::now();
 
-    double rdt = timer.getElapsedTime().asSeconds();
+    shaderPool.setProjection(camera.getVP());
 
-    deltas[frameId] = clock.getElapsedTime().asSeconds();
-    frameId = (frameId+1) % 60;
+    world.get()->draw(*shaderPool.get("worldShader").get());
 
-    if (frameId == 59)
-    {
-      hop.outputLog(std::cout);
-    }
+    rendering.update(&manager, &shaderPool, refreshObjectShaders);
+    refreshObjectShaders = false;
+
+    rendering.draw(&shaderPool);
+
+    tr1 = high_resolution_clock::now();
 
     if (debug)
     {
       double delta = 0.0;
       for (int n = 0; n < 60; n++)
       {
-        delta += deltas[n];
+          delta += deltas[n];
       }
       delta /= 60.0;
       std::stringstream debugText;
 
-      sf::Vector2i mouse = sf::Mouse::getPosition(window);
+      double pdt = duration_cast<duration<double>>(tp1 - tp0).count();
+      double rdt = duration_cast<duration<double>>(tr1 - tr0).count();
 
-      const Hop::System::Rendering::OrthoCam & camera = hop.getCamera();
+      sf::Vector2i mouse = sf::Mouse::getPosition(window);
 
       float cameraX = camera.getPosition().x;
       float cameraY = camera.getPosition().y;
 
-      glm::vec4 world = camera.screenToWorld(mouse.x,mouse.y);
+      glm::vec4 worldPos = camera.screenToWorld(mouse.x,mouse.y);
 
-      Hop::World::TileData tile = hop.getTileData(world[0],world[1]);
+      Hop::World::TileData tile = world->getTileData(worldPos[0],worldPos[1]);
 
       debugText << "Delta: " << fixedLengthNumber(delta,6) <<
-        " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
-        "\n" <<
-        "Mouse (" << fixedLengthNumber(mouse.x,4) << "," << fixedLengthNumber(mouse.y,4) << ")" <<
-        "\n" <<
-        "Mouse [world] (" << fixedLengthNumber(world[0],4) << "," << fixedLengthNumber(world[1],4) << ")" <<
-        "\n" <<
-        "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
-        "\n" <<
-        "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
-        "\n" << 
-        "update time: " << fixedLengthNumber(pdt+rdt,6) <<
-        "\n" <<
-        "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+          " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
+          "\n" <<
+          "Mouse (" << fixedLengthNumber(mouse.x,4) << "," << fixedLengthNumber(mouse.y,4) << ")" <<
+          "\n" <<
+          "Mouse [world] (" << fixedLengthNumber(worldPos[0],4) << "," << fixedLengthNumber(worldPos[1],4) << ")" <<
+          "\n" <<
+          "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
+          "\n" <<
+          "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
+          "\n" << 
+          "update time: " << fixedLengthNumber(pdt+rdt,6) <<
+          "\n" <<
+          "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
 
-      hop.renderText(
-        debugText.str(),
-        64.0f,resY-64.0f,
-        0.5f,
-        glm::vec3(0.0f,0.0f,0.0f)
+      textRenderer.renderText(
+          font,
+          debugText.str(),
+          64.0f,resY-64.0f,
+          0.5f,
+          glm::vec3(0.0f,0.0f,0.0f)
       );
     }
 
-    clock.restart();
-
     window.display();
-    
+
+    t1 = high_resolution_clock::now();
+
+    deltas[frameId] = duration_cast<duration<double>>(t1 - t0).count();
+    frameId = (frameId+1) % 60;
+
   }
   return 0;
 }

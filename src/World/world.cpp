@@ -19,7 +19,7 @@ namespace Hop::World
 
     AbstractWorld::AbstractWorld(
         uint64_t s, 
-        OrthoCam & c, 
+        OrthoCam * c, 
         uint64_t renderRegion, 
         uint64_t dynamicsShell,
         MapSource * f,
@@ -120,9 +120,9 @@ namespace Hop::World
     */
     void AbstractWorld::updateProjection()
     {
-        glm::vec2 resolution = camera.getResolution();
+        glm::vec2 resolution = camera->getResolution();
         double maxRes = std::max(resolution.x,resolution.y);
-        double zoomLevel = camera.getZoomLevel();
+        double zoomLevel = camera->getZoomLevel();
         // scale equally by screen width (all lengths relative to this)
         modelView = glm::scale(glm::mat4(1.0),glm::vec3(maxRes,maxRes,1.0)) *
         // move to position and look at x-y plane from z=1, with up = y axis

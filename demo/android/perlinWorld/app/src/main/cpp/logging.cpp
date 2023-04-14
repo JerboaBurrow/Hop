@@ -6,9 +6,9 @@ extern "C"
         jobject /* this */
     )
     {
-        if (hop != nullptr)
+        if (hopLog != nullptr)
         {
-            hop->outputLogAndroid();
+            hopLog->androidLog();
         }
     }
 }

@@ -13,27 +13,27 @@ extern "C"
         jfloat a
     )
     {
-        if (hop != nullptr) {
+        if (manager != nullptr) {
 
             Hop::Object::Id pid;
 
             s > 1.0 ? s = 1.0 : s = s;
             s < 0.01 ? s = 0.01 : s = s;
 
-            double radius = s * hop->getCollisionPrimitiveMaxSize();
+            double radius = s * world->worldMaxCollisionPrimitiveSize();
 
             //hop->log<Hop::Logging::INFO>("s, radius = "+std::to_string(s) + ", " + std::to_string(radius));
 
-            pid = hop->createObject();
+            pid = manager->createObject();
 
-            hop->addComponent<Hop::Object::Component::cTransform>(
+            manager->addComponent<Hop::Object::Component::cTransform>(
                     pid,
                     Hop::Object::Component::cTransform(
                             x, y, 0.0, radius
                     )
             );
 
-            hop->addComponent<Hop::Object::Component::cRenderable>(
+            manager->addComponent<Hop::Object::Component::cRenderable>(
                     pid,
                     Hop::Object::Component::cRenderable(
                             "circleObjectShader",
@@ -43,14 +43,14 @@ extern "C"
 
             //hop->log<Hop::Logging::INFO>("colour = "+std::to_string(r) + ", " + std::to_string(g) + ", " + std::to_string(b));
 
-            hop->addComponent<Hop::Object::Component::cPhysics>(
+            manager->addComponent<Hop::Object::Component::cPhysics>(
                     pid,
                     Hop::Object::Component::cPhysics(
                             x, y, 0.0
                     )
             );
 
-            hop->addComponent<Hop::Object::Component::cCollideable>(
+            manager->addComponent<Hop::Object::Component::cCollideable>(
                     pid,
                     Hop::Object::Component::cCollideable(
                             std::vector<Hop::System::Physics::CollisionVertex>

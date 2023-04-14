@@ -16,8 +16,8 @@ namespace Hop::System::Physics
     void SpringDashpot::handleObjectObjectCollision(
         Id & objectI, uint64_t particleI,
         Id & objectJ, uint64_t particleJ,
-        ComponentArray<cCollideable> & dataC,
-        ComponentArray<cPhysics> & dataP
+        cCollideable & cI, cCollideable & cJ,
+        cPhysics & pI, cPhysics & pJ
     )
     {
 
@@ -35,16 +35,12 @@ namespace Hop::System::Physics
 
         rx = 0.0; ry = 0.0; rc = 0.0;
 
-        cCollideable & datai = dataC.get(objectI);
-        cPhysics & dataPi = dataP.get(objectI);
-        CollisionVertex ci = datai.mesh[particleI];
+        CollisionVertex ci = cI.mesh[particleI];
         rx -= ci.x;
         ry -= ci.y;
         rc += ci.r;
 
-        cCollideable & dataj = dataC.get(objectJ);
-        cPhysics & dataPj = dataP.get(objectJ);
-        CollisionVertex cj = dataj.mesh[particleJ];
+        CollisionVertex cj = cJ.mesh[particleJ];
         rx += cj.x;
         ry += cj.y;
         rc += cj.r;
@@ -69,8 +65,8 @@ namespace Hop::System::Physics
 
             mag -= kr*(rc-d)*dinv;
 
-            vrx = dataPi.vx-dataPj.vx;
-            vry = dataPi.vy-dataPj.vy;
+            vrx = pI.vx-pJ.vx;
+            vry = pI.vy-pJ.vy;
 
             // nxt = ny;
             // nyt = -nx;
@@ -92,12 +88,12 @@ namespace Hop::System::Physics
             fy *= mag;//+friction*std::abs(mag)*nyt;
 
 
-            dataPi.fx += fx;
-            dataPi.fy += fy;
+            pI.fx += fx;
+            pI.fy += fy;
 
             
-            dataPj.fx -= fx;
-            dataPj.fy -= fy;
+            pJ.fx -= fx;
+            pJ.fy -= fy;
 
             //manager->collisionCallback(objectI,objectJ);
 
@@ -109,9 +105,44 @@ namespace Hop::System::Physics
         }
     }
 
-    void SpringDashpot::handleObjectWorldCollisions(
+    void SpringDashpot::handleObjectWorldCollision(
         Id id,
-        ObjectManager * manager,
+        cCollideable & dataC,
+        cPhysics & dataP,
+        AbstractWorld * world
+    )
+    {
+        TileWorld * tw = dynamic_cast<TileWorld*>(world);
+
+        if (tw != nullptr)
+        {
+            handleObjectWorldCollision(
+                id,
+                dataC,
+                dataP,
+                tw
+            );
+            return;
+        }
+        
+        MarchingWorld * mw = dynamic_cast<MarchingWorld*>(world);
+
+        if (mw != nullptr)
+        {
+            handleObjectWorldCollision(
+                id,
+                dataC,
+                dataP,
+                mw
+            );
+            return;
+        }
+    }
+
+    void SpringDashpot::handleObjectWorldCollision(
+        Id id,
+        cCollideable & dataC,
+        cPhysics & dataP,
         TileWorld * world
     )
     {
@@ -120,17 +151,14 @@ namespace Hop::System::Physics
         double halfS, S, hx, hy, lx, ly;
         bool inside;
 
-        cCollideable & data = manager->getComponent<cCollideable>(id);
-        cPhysics & dataP = manager->getComponent<cPhysics>(id);
-
-        for (unsigned p = 0; p < data.mesh.size(); p++)
+        for (unsigned p = 0; p < dataC.mesh.size(); p++)
         {
 
-            CollisionVertex c = data.mesh[p];
+            CollisionVertex c = dataC.mesh[p];
 
-            if (data.mesh.recentlyInside(p))
+            if (dataC.mesh.recentlyInside(p))
             {
-                data.mesh.decrementInside(p);
+                dataC.mesh.decrementInside(p);
             }
             else
             {
@@ -182,7 +210,7 @@ namespace Hop::System::Physics
                     inside
                 );
 
-                if(inside){ data.mesh.resetInsideCounter(p); }
+                if(inside){ dataC.mesh.resetInsideCounter(p); }
                 else
                 {
 
@@ -205,9 +233,10 @@ namespace Hop::System::Physics
         }
     }
 
-    void SpringDashpot::handleObjectWorldCollisions(
+    void SpringDashpot::handleObjectWorldCollision(
         Id id,
-        ObjectManager * manager,
+        cCollideable & dataC,
+        cPhysics & dataP,
         MarchingWorld * world
     )
     {
@@ -216,17 +245,14 @@ namespace Hop::System::Physics
         double halfS, S, hx, hy, lx, ly;
         bool inside;
 
-        cCollideable & data = manager->getComponent<cCollideable>(id);
-        cPhysics & dataP = manager->getComponent<cPhysics>(id);
-
-        for (unsigned p = 0; p < data.mesh.size(); p++)
+        for (unsigned p = 0; p < dataC.mesh.size(); p++)
         {
 
-            const CollisionVertex & c = data.mesh[p];
+            const CollisionVertex & c = dataC.mesh[p];
 
-            if (data.mesh.recentlyInside(p))
+            if (dataC.mesh.recentlyInside(p))
             {
-                data.mesh.decrementInside(p);
+                dataC.mesh.decrementInside(p);
             }
             else
             {
@@ -265,7 +291,7 @@ namespace Hop::System::Physics
                     inside
                 );
 
-                if(inside){ data.mesh.resetInsideCounter(p); }
+                if(inside){ dataC.mesh.resetInsideCounter(p); }
                 else
                 {
                     neighbourTilesCollision

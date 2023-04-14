@@ -4,64 +4,9 @@
 namespace Hop::System::Rendering
 {
 
-    void sRender::processThreaded(ObjectManager * m, Shaders * s, size_t threadId)
+    void sRender::update(EntityComponentSystem * m, Shaders * s, bool refresh)
     {
-        for (auto it = threadJobs[threadId].begin(); it != threadJobs[threadId].end(); it++)
-        {
-            cRenderable & dataR = m->getComponent<cRenderable>(*it);
-            cTransform & dataT = m->getComponent<cTransform>(*it);
-
-            std::string handle = idToIndex[*it].first;
-            std::size_t start = idToIndex[*it].second;
-
-            size_t offset = 0;
-            
-            offsets[handle].second[start*4] = dataT.x;
-            offsets[handle].second[start*4+1] = dataT.y;
-            offsets[handle].second[start*4+2] = dataT.theta;
-            offsets[handle].second[start*4+3] = dataT.scale*2.0;
-        }
-    }
-
-    void sRender::updateThreaded(ObjectManager * m, Shaders * s)
-    {
-
-
-        for (int j = 0; j < threadJobs.size(); j++)
-        {
-            m->postJob(
-                std::bind(
-                    &sRender::processThreaded,
-                    this,
-                    m,
-                    s,
-                    j
-                )
-            );
-        }
         
-        m->waitForJobs();
-
-        for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++)
-        {
-            glBindVertexArray(it->second.first);
-
-            std::shared_ptr<Shader> shader = s->get(it->first);
-            shader->use();
-
-            updateOffsets(it->first);
-        }
-    }
-
-
-    void sRender::update(ObjectManager * m, Shaders * s, bool refresh)
-    {
-        if (m->isThreaded() && !refresh)
-        {
-            updateThreaded(m,s);
-            return;
-        }
-
         bool newData = false;
         bool staleData = false;
         std::string handle;
