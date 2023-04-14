@@ -3,7 +3,6 @@
 
 #include <Collision/collisionResolver.h>
 #include <cmath>
-#include <Object/objectManager.h>
 #include <Collision/collisionMesh.h>
 
 #include <World/tileWorld.h>
@@ -16,7 +15,12 @@ namespace Hop::System::Physics
 {
 
     using namespace Hop::Object::Component;
-    using Hop::World::AbstractWorld;
+
+    using Hop::World::TileWorld;
+    using Hop::World::MarchingWorld;
+    using Hop::World::Tile;
+    using Hop::World::TileBoundsData;
+    using Hop::World::TileNeighbourData;
 
     const double WALL_MASS_MULTIPLIER = 10.0;
     // will check collision with neigbhours tiles when
@@ -39,25 +43,28 @@ namespace Hop::System::Physics
         void handleObjectObjectCollision(
             Id & objectI, uint64_t particleI,
             Id & objectJ, uint64_t particleJ,
-            ComponentArray<cCollideable> & dataC,
-            ComponentArray<cPhysics> & dataP
+            cCollideable & cI, cCollideable & cJ,
+            cPhysics & pI, cPhysics & pJ
         );
 
-        void handleObjectWorldCollisions(
+        void handleObjectWorldCollision(
             Id id,
-            ObjectManager * manager,
+            cCollideable & dataC,
+            cPhysics & dataP,
             AbstractWorld * world
         );
 
-        void handleObjectWorldCollisions(
+        void handleObjectWorldCollision(
             Id id,
-            ObjectManager * manager,
+            cCollideable & dataC,
+            cPhysics & dataP,
             TileWorld * world
         );
 
-        void handleObjectWorldCollisions(
+        void handleObjectWorldCollision(
             Id id,
-            ObjectManager * manager,
+            cCollideable & dataC,
+            cPhysics & dataP,
             MarchingWorld * world
         );
         

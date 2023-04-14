@@ -8,9 +8,15 @@ extern "C"
             jboolean detectCollisions = true
     )
     {
-        if (hop != nullptr)
+        if (manager != nullptr)
         {
-            hop->stepPhysics(delta,detectCollisions);
+            sPhysics & physics = manager->getSystem<sPhysics>();
+            sCollision & collisions = manager->getSystem<sCollision>();
+
+            collisions.centreOn(world->getMapCenter());
+            collisions.update(manager, world);
+
+            physics.update(manager);
         }
     }
 }

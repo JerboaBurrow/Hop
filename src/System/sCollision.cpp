@@ -7,30 +7,42 @@ using namespace std::chrono;
 namespace Hop::System::Physics
 {
 
-    void sCollision::update(ObjectManager * m, AbstractWorld * w, double & oot, double & owt)
+    void sCollision::update
+    (
+        EntityComponentSystem * m, 
+        AbstractWorld * w,
+        ThreadPool * workers
+    )
     {
 
         high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
+        ComponentArray<cCollideable> & dataC = m->getComponentArray<cCollideable>();
+        ComponentArray<cPhysics> & dataP = m->getComponentArray<cPhysics>();
+
         detector->handleObjectObjectCollisions(
-            m,
+            dataC,
+            dataP,
             resolver.get(),
-            objects
+            objects,
+            workers
         );
 
         high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
         detector->handleObjectWorldCollisions(
-            m,
+            dataC,
+            dataP,
             resolver.get(),
             w,
-            objects
+            objects,
+            workers
         );
 
         high_resolution_clock::time_point t3 = high_resolution_clock::now();
 
-        oot = duration_cast<duration<double>>(t2 - t1).count();
-        owt = duration_cast<duration<double>>(t3 - t2).count();
+        // oot = duration_cast<duration<double>>(t2 - t1).count();
+        // owt = duration_cast<duration<double>>(t3 - t2).count();
 
     }
 

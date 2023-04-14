@@ -90,6 +90,8 @@ namespace Hop::System::Rendering
     public:
 
         Shaders(){}
+        
+        void defaultShaders(Hop::Logging::Log & log);
 
         void makeShader(
             const char * v, 

@@ -15,7 +15,7 @@ namespace Hop::World
 
         MarchingWorld(
             uint64_t s, 
-            OrthoCam & c, 
+            OrthoCam * c, 
             uint64_t renderRegion, 
             uint64_t dynamicsShell,
             MapSource * f,

@@ -17,14 +17,13 @@ extern "C" {
                     jfloat rx,
                     jfloat ry
             ) {
-        if (hop == nullptr) {
+        if (camera == nullptr) {
             return;
         }
 
-        std::pair<float, float> w = hop->screenToWorld(x, y);
-
-        rx = w.first;
-        ry = w.second;
+        glm::vec4 w = camera->screenToWorld(x,y);
+        rx = w[0];
+        ry = w[1];
     }
 
 }

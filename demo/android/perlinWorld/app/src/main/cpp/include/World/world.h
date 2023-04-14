@@ -127,7 +127,7 @@ namespace Hop::World
 
         AbstractWorld(
             uint64_t s, 
-            OrthoCam & c, 
+            OrthoCam * c, 
             uint64_t renderRegion, 
             uint64_t dynamicsShell,
             MapSource * f,
@@ -192,7 +192,7 @@ namespace Hop::World
 
         const uint64_t dynamicsShell;
 
-        OrthoCam & camera;
+        OrthoCam * camera;
 
         glm::mat4 modelView, projection, invProjection, vp;
 

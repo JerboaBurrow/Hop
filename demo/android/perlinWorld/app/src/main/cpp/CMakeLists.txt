@@ -22,6 +22,7 @@ include_directories(include/vendored/glm)
 include_directories(include/vendored/freetype/include)
 include_directories(include/vendored/stduuid/include)
 include_directories(include/vendored/stduuid/)
+include_directories(include/vendored/lua/src)
 
 link_directories(include)
 

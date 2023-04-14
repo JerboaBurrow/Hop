@@ -66,6 +66,11 @@ namespace Hop::Object::Component
         void insert(Id & i, T component);
         void remove(Id & i);
 
+        inline bool hasComponent(const Id & i) const
+        {
+            return idTaken(i);
+        }
+
         inline T & get(const Id & i)
         {
             // if (!idTaken(i)){
@@ -87,7 +92,7 @@ namespace Hop::Object::Component
 
     private:
 
-        bool idTaken(Id id){return idToIndex.find(id) != idToIndex.end();}
+        bool idTaken(const Id & id) const {return idToIndex.find(id) != idToIndex.end();}
 
         std::unique_ptr<T[]> componentData;
         std::unordered_map<Id,size_t> idToIndex;

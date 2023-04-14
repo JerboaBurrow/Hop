@@ -1,9 +1,9 @@
-#include <Object/objectManager.h>
+#include <Object/entityComponentSystem.h>
 
 namespace Hop::Object
 {
 
-    Id ObjectManager::createObject()
+    Id EntityComponentSystem::createObject()
     {
         std::shared_ptr<Object> o = std::make_shared<Object>();
 
@@ -14,7 +14,7 @@ namespace Hop::Object
         return o->id;
     }
 
-    Id ObjectManager::createObject(std::string handle)
+    Id EntityComponentSystem::createObject(std::string handle)
     {
         std::shared_ptr<Object> o = std::make_shared<Object>();
 
@@ -26,14 +26,14 @@ namespace Hop::Object
         return o->id;
     }
 
-    void ObjectManager::remove(Id id){}
+    void EntityComponentSystem::remove(Id id){}
 
-    void ObjectManager::remove(std::string handle){}
+    void EntityComponentSystem::remove(std::string handle){}
 
     // do nothing callback
     void identityCallback(Id & i, Id & j){return;}
 
-    void ObjectManager::initialiseBaseECS()
+    void EntityComponentSystem::initialiseBaseECS()
     {
 
         registerComponent<cTransform>();

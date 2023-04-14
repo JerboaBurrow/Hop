@@ -10,7 +10,7 @@ namespace Hop::World
 
     MarchingWorld::MarchingWorld(
         uint64_t s, 
-        OrthoCam & c, 
+        OrthoCam * c, 
         uint64_t renderRegion, 
         uint64_t dynamicsShell,
         MapSource * f,
@@ -124,7 +124,7 @@ namespace Hop::World
         tilePosX = ix; tilePosY = iy;
         
         std::pair<float,float> p = getPos();
-        camera.setPosition(p.first,p.second);
+        camera->setPosition(p.first,p.second);
 
         return true;
     }
