@@ -334,8 +334,8 @@ namespace Hop::System::Physics
                     std::bind(
                         &CellList::cellCollisionsThreaded,
                         this,
-                        dataC,
-                        dataP,
+                        std::ref(dataC),
+                        std::ref(dataP),
                         resolver,
                         &threadJobs[t][0],
                         jobsPerThread
