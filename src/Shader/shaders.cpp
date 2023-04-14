@@ -140,6 +140,25 @@ namespace Hop::System::Rendering
         );
     }
 
+    void Shaders::defaultShaders(Hop::Logging::Log & log)
+    {
+        makeShader
+        (
+            Hop::System::Rendering::marchingQuadVertexShader,
+            Hop::System::Rendering::marchingQuadFragmentShader,
+            "worldShader",
+            log
+        );
+
+        makeShader
+        (
+            Hop::System::Rendering::objectVertexShader,
+            Hop::System::Rendering::circleObjectFragmentShader,
+            "circleObjectShader",
+            log
+        );
+    }
+
     void Shaders::makeShader(
         const char * v, 
         const char * f,
@@ -183,11 +202,11 @@ namespace Hop::System::Rendering
 
     void Shaders::setProjection(glm::mat4 proj)
     {
-    for (auto it = shaders.begin(); it != shaders.end(); it++)
-    {
-            std::shared_ptr<Shader> shader = it->second;
-            shader->use();
-            shader->setMatrix4x4(proj,"proj");
-    }
+        for (auto it = shaders.begin(); it != shaders.end(); it++)
+        {
+                std::shared_ptr<Shader> shader = it->second;
+                shader->use();
+                shader->setMatrix4x4(proj,"proj");
+        }
     }
 }

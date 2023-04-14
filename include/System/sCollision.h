@@ -3,8 +3,12 @@
 
 #include <memory>
 #include <System/system.h>
+
 #include <Collision/cellList.h>
 #include <Collision/springDashpotResolver.h>
+
+#include <Object/entityComponentSystem.h>
+#include <Component/componentArray.h>
 
 #include <chrono>
 using namespace std::chrono;
@@ -14,6 +18,11 @@ namespace Hop::System::Physics
 {
 
     using Hop::World::AbstractWorld;
+    using Hop::Object::EntityComponentSystem;
+    using Hop::Object::Component::ComponentArray;
+    using Hop::Object::Component::cPhysics;
+    using Hop::Object::Component::cCollideable;
+
     /*
         System to detect collisions and apply forces
     */
@@ -25,7 +34,12 @@ namespace Hop::System::Physics
 
         sCollision(){}
 
-        void update(ObjectManager * m, AbstractWorld * w, double & oot, double & owt);
+        void update
+        (
+            EntityComponentSystem * m, 
+            AbstractWorld * w,
+            ThreadPool * workers = nullptr
+        );
 
         void setDetector(std::unique_ptr<CollisionDetector> d)
         {
@@ -42,10 +56,6 @@ namespace Hop::System::Physics
         void centreOn(double x, double y);
 
     private:
-
-        void processThreaded(ObjectManager * m, size_t threadId);
-
-        void updateThreaded(ObjectManager * m);
 
         std::unique_ptr<CollisionDetector> detector;
         std::unique_ptr<CollisionResolver> resolver;

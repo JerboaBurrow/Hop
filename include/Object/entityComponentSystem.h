@@ -1,5 +1,5 @@
-#ifndef OBJECTMANAGER_H
-#define OBJECTMANAGER_H
+#ifndef EntityComponentSystem_H
+#define EntityComponentSystem_H
 
 #include <World/world.h>
 #include <Object/object.h>
@@ -23,11 +23,6 @@
 #include <exception>
 
 #include <Component/componentArray.h>
-#include <Component/componentManager.h>
-
-#include <Thread/threadPool.h>
-
-#include <log.h>
 
 #include <chrono>
 using namespace std::chrono;
@@ -53,8 +48,6 @@ namespace Hop::Object
     using Hop::System::Physics::sCollision;
     using Hop::System::Rendering::sRender;
 
-    using namespace Hop::Logging;
-
 
     /*
         Stores an unordered map of objects that can be added to
@@ -78,23 +71,18 @@ namespace Hop::Object
 
     const uint32_t MAX_OBJECTS = 100000;
 
-    class ObjectManager 
+    class EntityComponentSystem 
     {
 
     public:
 
-        ObjectManager(
-            size_t threads,
+        EntityComponentSystem(
             void (*callback)(Id & i, Id & j) = &identityCallback
         )
         : collisionCallback(callback), 
-        nextComponentIndex(0), 
-        workers(ThreadPool(threads)),
-        systemManager(SystemManager(threads)),
-        threads(threads)
+        nextComponentIndex(0)
         {
             initialiseBaseECS();
-            INFO("using "+std::to_string(threads)+" threads") >> log;
         }
 
         Id createObject();
@@ -105,10 +93,6 @@ namespace Hop::Object
 
         Id & idFromHandle(std::string handle)
         {
-            if (handleToId.find(handle) == handleToId.end())
-            {
-                WARN("Tried to access id with non-existent handle "+handle)>>log;
-            }
             return handleToId[handle];
         }
 
@@ -197,10 +181,6 @@ namespace Hop::Object
         uint32_t getComponentId()
         {
             const char * handle = typeid(T).name();
-            if (!componentRegistered(handle))
-            {
-                throw ComponentNotRegistered(" Attempt to getComponent<"+std::string(handle)+">()");
-            }
             return registeredComponents[handle];
         }
 
@@ -214,53 +194,8 @@ namespace Hop::Object
         template <class T>
         T & getSystem(){return systemManager.getSystem<T>();}
 
-        Log & getLog(){return log;}
-
-        void postJob(
-            const std::function<void(void)> & job
-        )
-        {
-            workers.queueJob(job);
-        }
-
-        void waitForJobs()
-        {
-            workers.wait();
-        }
-
-        bool isThreaded()
-        {
-            return workers.size()>0;
-        }
-
-        size_t nThreads(){ return workers.size(); }
-
-        void releaseThread()
-        {
-            INFO("releaseing a thread (nThreads): "+std::to_string(workers.size()))>>log;
-            workers.joinThread();
-            INFO("join called (nThreads): "+std::to_string(workers.size()))>>log;
-        }
-
-        void releaseAllThreads()
-        {
-            INFO("releasing all threads (nThreads): "+std::to_string(workers.size()))>>log;
-            workers.joinAll();
-            INFO("joinAll called (nThreads): "+std::to_string(workers.size()))>>log;
-        }
-
-        void addThread()
-        {
-            INFO("adding a thread (nThreads): "+std::to_string(workers.size()))>>log;
-            workers.createThread();
-            INFO("create called (nThreads): "+std::to_string(workers.size()))>>log;
-        }
-
         template<class T>
         bool hasComponent(const Id & i){return idToSignature[i][getComponentId<T>()];}
-
-        void optimiseJobAllocation(){systemManager.optimiseJobAllocation();}
-
 
         template <class T>
         ComponentArray<T> getComponentArrayCopy()
@@ -291,12 +226,7 @@ namespace Hop::Object
 
         SystemManager systemManager;
 
-        ThreadPool workers;
-        const size_t threads;
-
         void initialiseBaseECS();
-
-        Log log;
 
         // components
 
@@ -311,4 +241,4 @@ namespace Hop::Object
 }
 
 
-#endif /* OBJECTMANAGER_H */
+#endif /* EntityComponentSystem_H */
