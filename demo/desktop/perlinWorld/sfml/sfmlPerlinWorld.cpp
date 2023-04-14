@@ -99,7 +99,7 @@ int main(int argc, char ** argv)
     sf::Style::Close|sf::Style::Titlebar,
     contextSettings);
 
-  window.setVerticalSyncEnabled(true);
+  //window.setVerticalSyncEnabled(true);
   window.setFramerateLimit(60);
   window.setActive();
 
