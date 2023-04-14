@@ -147,7 +147,7 @@ int main(int argc, char ** argv)
       world = std::make_unique<TileWorld>
       (
           2,
-          camera,
+          &camera,
           16,
           1,
           &mapSource,
@@ -161,7 +161,7 @@ int main(int argc, char ** argv)
           std::make_unique<MarchingWorld>
           (
               2,
-              camera,
+              &camera,
               64,
               0,
               &perlin,

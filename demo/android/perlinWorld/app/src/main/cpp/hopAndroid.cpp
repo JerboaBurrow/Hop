@@ -7,12 +7,78 @@
 #include <android/log.h>
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
-#include <engine.h>
 
-static Hop::Engine * hop = nullptr;
-static Hop::World::Boundary * boundary = nullptr;
-static Hop::World::PerlinSource * perlin = nullptr;
-static Hop::World::MapSource * source = nullptr;
+#include <math.h>
+#include <algorithm>
+
+#include <orthoCam.h>
+
+#include <Text/textRenderer.h>
+
+#include <Object/entityComponentSystem.h>
+
+#include <System/sPhysics.h>
+#include <System/sRender.h>
+#include <System/sCollision.h>
+
+#include <World/world.h>
+#include <World/marchingWorld.h>
+#include <World/tileWorld.h>
+
+#include <Console/console.h>
+
+#include <Util/util.h>
+
+#include <log.h>
+
+using Hop::Object::Component::cTransform;
+using Hop::Object::Component::cPhysics;
+using Hop::Object::Component::cRenderable;
+using Hop::Object::Component::cCollideable;
+using Hop::Object::EntityComponentSystem;
+using Hop::Object::Id;
+
+using Hop::System::Rendering::OrthoCam;
+using Hop::System::Rendering::Type;
+using Hop::System::Rendering::TextRenderer;
+using Hop::System::Rendering::sRender;
+using Hop::System::Rendering::Shaders;
+
+using Hop::System::Physics::CollisionDetector;
+using Hop::System::Physics::CollisionResolver;
+using Hop::System::Physics::sPhysics;
+using Hop::System::Physics::sCollision;
+using Hop::System::Physics::CollisionVertex;
+
+using Hop::System::Signature;
+
+using Hop::World::MapSource;
+using Hop::World::PerlinSource;
+using Hop::World::Boundary;
+using Hop::World::AbstractWorld;
+using Hop::World::TileWorld;
+using Hop::World::MarchingWorld;
+
+using Hop::Logging::INFO;
+using Hop::Logging::WARN;
+
+static Boundary * boundary = nullptr;
+static PerlinSource * perlin = nullptr;
+static MapSource * source = nullptr;
+static MarchingWorld * world = nullptr;
+
+static EntityComponentSystem * manager = nullptr;
+
+static Hop::Logging::Log * hopLog = nullptr;
+
+static CollisionDetector * detector = nullptr;
+static CollisionResolver * resolver = nullptr;
+
+static sRender * renderer = nullptr;
+static OrthoCam * camera = nullptr;
+static TextRenderer * textRenderer = nullptr;
+static Type * font;
+static Shaders * shaderPool = nullptr;
 
 std::string jstring2string(JNIEnv *env, jstring jStr) {
     if (!jStr)
@@ -52,19 +118,47 @@ extern "C"
             source = static_cast<Hop::World::MapSource*>(perlin);
             boundary = new Hop::World::InfiniteBoundary;
 
-            if (hop == nullptr) {
+            camera = new Hop::System::Rendering::OrthoCam(resX,resY,glm::vec2(0.0,0.0));
 
-                hop = new Hop::Engine
-                        (
-                                resX,
-                                resY,
-                                source,
-                                boundary,
-                                WorldOptions(2, 64, 0, true),
-                                PhysicsOptions(1.0 / 600.0, 9.81, 0.66, true),
-                                0
-                        );
-            }
+            world = new Hop::World::MarchingWorld(
+                    2,
+                    camera,
+                    64,
+                    1,
+                    source,
+                    boundary
+            );
+
+            textRenderer = new Hop::System::Rendering::TextRenderer(glm::ortho(0.0,double(resX),0.0,double(resY)));
+            font = new Hop::System::Rendering::Type(48);
+
+            hopLog = new Hop::Logging::Log;
+
+            shaderPool = new Hop::System::Rendering::Shaders;
+            shaderPool->defaultShaders(*hopLog);
+
+            manager = new EntityComponentSystem;
+
+            sRender & rendering = manager->getSystem<sRender>();
+
+            // setup physics system
+            sPhysics & physics = manager->getSystem<sPhysics>();
+            physics.setTimeStep(1.0/900.0);
+            physics.setGravity(9.81);
+
+            sCollision & collisions = manager->getSystem<sCollision>();
+
+            auto det = std::make_unique<Hop::System::Physics::CellList>(world);
+
+            auto res = std::make_unique<Hop::System::Physics::SpringDashpot>
+                    (
+                            (1.0/900.0)*10.0,
+                            0.66,
+                            0.0
+                    );
+
+            collisions.setDetector(std::move(det));
+            collisions.setResolver(std::move(res));
         }
 
     #include <world.cpp>

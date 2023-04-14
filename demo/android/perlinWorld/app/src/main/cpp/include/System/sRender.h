@@ -7,17 +7,17 @@
 #include <map>
 #include <Component/cRenderable.h>
 #include <System/system.h>
-#include <Object/objectManager.h>
+#include <Object/entityComponentSystem.h>
 #include <gl.h>
 
 namespace Hop::Object
 {
-    class ObjectManager;
+    class EntityComponentSystem;
 }
 
 namespace Hop::System::Rendering
 {
-    using Hop::Object::ObjectManager;
+    using Hop::Object::EntityComponentSystem;
     
     using Hop::Object::Component::cRenderable;
     using Hop::Object::Component::cTransform;
@@ -65,15 +65,12 @@ namespace Hop::System::Rendering
 
         // update float verts, loop over all object
         //  with matching signature
-        void update(ObjectManager * m, Shaders * s, bool refresh);
+        void update(EntityComponentSystem * m, Shaders * s, bool refresh);
 
         void draw(Shaders * s, bool debug = false);
         void initialise();
 
     private:
-
-        void processThreaded(ObjectManager * m, Shaders * s, size_t threadId);
-        void updateThreaded(ObjectManager * m, Shaders * s);
 
         void addNewShader(std::string handle);
         void addNewObject(Id i, std::string handle);
