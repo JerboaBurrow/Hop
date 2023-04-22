@@ -24,8 +24,15 @@
 
 #include <Component/componentArray.h>
 
+#include <Console/lua.h>
+
 #include <chrono>
 using namespace std::chrono;
+
+namespace Hop 
+{
+    class Console;
+}
 
 namespace Hop::System::Rendering
 {
@@ -47,6 +54,7 @@ namespace Hop::Object
     using Hop::System::Physics::sPhysics;
     using Hop::System::Physics::sCollision;
     using Hop::System::Rendering::sRender;
+    using Hop::Console;
 
 
     /*
@@ -83,6 +91,7 @@ namespace Hop::Object
         nextComponentIndex(0)
         {
             initialiseBaseECS();
+            objects.clear();
         }
 
         Id createObject();
@@ -217,6 +226,10 @@ namespace Hop::Object
 
         template <class T>
         void updateMainComponents();
+
+        // Lua bindings
+
+        int lua_loadObject(lua_State * lua);
 
     private:
 

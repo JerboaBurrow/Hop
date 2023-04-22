@@ -12,7 +12,7 @@ using Hop::Maths::Vertex;
 namespace Hop::System::Physics
 {
 
-    const uint8_t LAST_INSIDE_COUNTER_MAX = 10;
+    const uint8_t LAST_INSIDE_COUNTER_MAX = 60;
 
     struct CollisionVertex 
     {
@@ -25,15 +25,12 @@ namespace Hop::System::Physics
         double y;
         double r;
         uint8_t lastInside;
+
+        void setRecentlyInside(int i){ lastInside =  i; }
+        bool recentlyInside() const { return lastInside > 0; }
     };
 
     bool operator==(const CollisionVertex & lhs, const CollisionVertex & rhs);
-
-    const CollisionVertex NULL_COLLISION_VERTEX = CollisionVertex(
-        std::numeric_limits<double>::quiet_NaN(),
-        std::numeric_limits<double>::quiet_NaN(),
-        std::numeric_limits<double>::quiet_NaN()
-    );
 
     struct CollisionMesh 
     {
@@ -67,15 +64,8 @@ namespace Hop::System::Physics
         }
 
         size_t size(){return vertices.size();}
-        void resetInsideCounter(size_t i){ worldVertices[i].lastInside = LAST_INSIDE_COUNTER_MAX; }
-        bool recentlyInside(size_t i) const { return worldVertices[i].lastInside > 0; }
-        void decrementInside(size_t i){ worldVertices[i].lastInside > 0 ? worldVertices[i].lastInside-- : worldVertices[i].lastInside = 0; }
-        const CollisionVertex & operator[](size_t i) 
+        CollisionVertex & operator[](size_t i) 
         {
-            // if (i < 0 || i > vertices.size())
-            // {
-            //     return NULL_COLLISION_VERTEX;
-            // }
             return worldVertices[i];
         }
 

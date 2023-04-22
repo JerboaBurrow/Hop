@@ -154,82 +154,73 @@ namespace Hop::System::Physics
         for (unsigned p = 0; p < dataC.mesh.size(); p++)
         {
 
-            CollisionVertex c = dataC.mesh[p];
+            CollisionVertex & c = dataC.mesh[p];
 
-            if (dataC.mesh.recentlyInside(p))
+            TileNeighbourData neighbours;
+
+            world->neighourTileData(
+                c.x,
+                c.y,
+                neighbours,
+                h,
+                x0,
+                y0,
+                s
+            );
+
+            TileBoundsData tileBounds;
+
+            world->boundsTileData
+            (
+                c.x,
+                c.y,
+                h,
+                tileBounds,
+                x0,
+                y0,
+                s
+            );  
+
+            halfS = double(s)*0.5;
+            S = double(s);
+
+            hx = x0+halfS;
+            hy = y0+halfS;
+            lx = x0+S;
+            ly = y0+S;
+
+            tileCollision
+            (
+                h,
+                x0,
+                y0,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+
+            if (!inside && !c.recentlyInside())
             {
-                dataC.mesh.decrementInside(p);
-            }
-            else
-            {
-            
-                TileNeighbourData neighbours;
 
-                world->neighourTileData(
-                    c.x,
-                    c.y,
-                    neighbours,
-                    h,
-                    x0,
-                    y0,
-                    s
-                );
-
-                TileBoundsData tileBounds;
-
-                world->boundsTileData
+                tileBoundariesCollision
                 (
-                    c.x,
-                    c.y,
-                    h,
-                    tileBounds,
-                    x0,
-                    y0,
-                    s
-                );  
-
-                halfS = double(s)*0.5;
-                S = double(s);
-
-                hx = x0+halfS;
-                hy = y0+halfS;
-                lx = x0+S;
-                ly = y0+S;
-
-                tileCollision
-                (
-                    h,
-                    x0,
-                    y0,
                     c,
                     dataP,
-                    hx,
-                    hy,
-                    lx,
-                    ly,
-                    inside
+                    tileBounds
                 );
 
-                if(inside){ dataC.mesh.resetInsideCounter(p); }
-                else
-                {
-
-                    tileBoundariesCollision
-                    (
-                        c,
-                        dataP,
-                        tileBounds
-                    );
-
-                    neighbourTilesCollision
-                    (
-                    c,
-                    dataP,
-                    neighbours
-                    );
-
-                }
+                neighbourTilesCollision
+                (
+                c,
+                dataP,
+                neighbours
+                );
             }
+
         }
     }
 
@@ -248,59 +239,52 @@ namespace Hop::System::Physics
         for (unsigned p = 0; p < dataC.mesh.size(); p++)
         {
 
-            const CollisionVertex & c = dataC.mesh[p];
+            CollisionVertex & c = dataC.mesh[p];
 
-            if (dataC.mesh.recentlyInside(p))
-            {
-                dataC.mesh.decrementInside(p);
-            }
-            else
-            {
             
-                TileNeighbourData neighbours;
+            TileNeighbourData neighbours;
 
-                world->neighourTileData(
-                    c.x,
-                    c.y,
-                    neighbours,
-                    h,
-                    x0,
-                    y0,
-                    s
-                );
+            world->neighourTileData(
+                c.x,
+                c.y,
+                neighbours,
+                h,
+                x0,
+                y0,
+                s
+            );
 
-                halfS = double(s)*0.5;
-                S = double(s);
+            halfS = double(s)*0.5;
+            S = double(s);
 
-                hx = x0+halfS;
-                hy = y0+halfS;
-                lx = x0+S;
-                ly = y0+S;
-        
-                tileCollision
+            hx = x0+halfS;
+            hy = y0+halfS;
+            lx = x0+S;
+            ly = y0+S;
+    
+            tileCollision
+            (
+                h,
+                x0,
+                y0,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                inside
+            );
+
+            if (!inside && !c.recentlyInside())
+            {
+
+                neighbourTilesCollision
                 (
-                    h,
-                    x0,
-                    y0,
                     c,
                     dataP,
-                    hx,
-                    hy,
-                    lx,
-                    ly,
-                    inside
+                    neighbours
                 );
-
-                if(inside){ dataC.mesh.resetInsideCounter(p); }
-                else
-                {
-                    neighbourTilesCollision
-                    (
-                        c,
-                        dataP,
-                        neighbours
-                    );
-                }
             }
         }
 
@@ -324,7 +308,7 @@ namespace Hop::System::Physics
 
     void SpringDashpot::neighbourTilesCollision
     (
-        const CollisionVertex & c,
+        CollisionVertex & c,
         cPhysics & dataP,
         TileNeighbourData & tileNeighbours
     )
@@ -461,7 +445,7 @@ namespace Hop::System::Physics
         Tile & h,
         double x0,
         double y0,
-        const CollisionVertex & c,
+        CollisionVertex & c,
         cPhysics & dataP,
         double & hx,
         double & hy,
@@ -476,20 +460,28 @@ namespace Hop::System::Physics
         double ny = 0.0;
         bool op = false;
         inside = false;
+        double thresh = c.r;
+        double insideThresh = thresh*thresh;
+        int handedness, handedness2;
 
         if (h == Tile::EMPTY)
         {   
             // no boundaries
+            if (c.recentlyInside())
+            {
+                if (c.x > x0+thresh ||
+                    c.x < lx-thresh ||
+                    c.y > y0+thresh ||
+                    c.y < ly-thresh 
+                )
+                {
+                    c.setRecentlyInside(0);
+                }
+            }
             return;
         }
         else if (h == Tile::FULL)
         {
-            if (!neighbour)
-            {
-                // within, no boundaries
-                inside = true;
-                return;
-            }
 
             /*
              _____
@@ -527,6 +519,20 @@ namespace Hop::System::Physics
                 x0, y0,
                 lx, ly
             );
+
+            double d = std::min(std::min(dw,dn),std::min(de,ds));
+
+            if (!neighbour)
+            {
+                inside = true;
+                if (d > insideThresh)
+                {
+                    c.setRecentlyInside(1);
+                }
+                return;
+            }
+            
+
 
             if (dw < dn && dw < de && dw < ds)
             {
@@ -592,11 +598,12 @@ namespace Hop::System::Physics
                 hx,y0,
                 x0,hy
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 hx,y0,
                 x0,hy
-            ) == 1;
+            );
+            inside = handedness == 1;
         }
         else if (h == Tile::EMPTY_BOTTOM_LEFT)
         {
@@ -613,11 +620,12 @@ namespace Hop::System::Physics
                 hx,y0,
                 x0,hy
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 hx,y0,
                 x0,hy
-            ) == -1;
+            );
+            inside = handedness == -1;
         }
         else if (h == Tile::BOTTOM_RIGHT)
         {
@@ -634,11 +642,12 @@ namespace Hop::System::Physics
                 hx,y0,
                 lx,hy
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 hx,y0,
                 lx,hy
-            ) == -1;
+            );
+            inside = handedness == -1;
         }
         else if (h == Tile::EMPTY_BOTTOM_RIGHT)
         {
@@ -655,11 +664,12 @@ namespace Hop::System::Physics
                 hx,y0,
                 lx,hy
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 hx,y0,
                 lx,hy
-            ) == 1;
+            );
+            inside = handedness == 1;
         }
         else if (h == Tile::TOP_RIGHT)
         {
@@ -676,11 +686,12 @@ namespace Hop::System::Physics
                 lx,hy,
                 hx,ly
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 lx,hy,
                 hx,ly
-            ) == -1;
+            );
+            inside = handedness == -1;
         }
         else if (h == Tile::EMPTY_TOP_RIGHT)
         {
@@ -697,11 +708,12 @@ namespace Hop::System::Physics
                 lx,hy,
                 hx,ly
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 lx,hy,
                 hx,ly
-            ) == 1;
+            );
+            inside = handedness == 1;
         }
         else if (h == Tile::TOP_LEFT)
         {
@@ -718,11 +730,12 @@ namespace Hop::System::Physics
                 x0,hy,
                 hx,ly
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 x0,hy,
                 hx,ly
-            ) == 1;
+            );
+            inside = handedness == 1;
         }
         else if (h == Tile::EMPTY_TOP_LEFT)
         {
@@ -739,11 +752,12 @@ namespace Hop::System::Physics
                 x0,hy,
                 hx,ly
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 x0,hy,
                 hx,ly
-            ) == -1;
+            );
+            inside = handedness == -1;
         }
         else if (h == Tile::BOTTOM_HALF)
         {
@@ -760,11 +774,12 @@ namespace Hop::System::Physics
                 x0,hy,
                 lx,hy
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 x0,hy,
                 lx,hy
-            ) == -1;
+            );
+            inside = handedness == -1;
         }
         else if (h == Tile::TOP_HALF)
         {
@@ -781,11 +796,12 @@ namespace Hop::System::Physics
                 x0,hy,
                 lx,hy
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 x0,hy,
                 lx,hy
-            ) == 1;
+            );
+            inside = handedness == 1;
         }
         else if (h == Tile::LEFT_HALF)
         {
@@ -802,11 +818,12 @@ namespace Hop::System::Physics
                 hx,y0,
                 hx,ly
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 hx,y0,
                 hx,ly
-            ) == 1;
+            );
+            inside = handedness == 1;
         }
         else if (h == Tile::RIGHT_HALF)
         {
@@ -823,11 +840,12 @@ namespace Hop::System::Physics
                 hx,y0,
                 hx,ly
             );
-            inside = pointLineHandedness<double>(
+            handedness = pointLineHandedness<double>(
                 c.x,c.y,
                 hx,y0,
                 hx,ly
-            ) == -1;
+            );
+            inside = handedness == -1;
         }
         else if (h == Tile::BOTTOM_LEFT_AND_TOP_RIGHT)
         {
@@ -846,12 +864,14 @@ namespace Hop::System::Physics
                 x0,hy,
                 hx,ly
             );
-            
-            if (pointLineHandedness<double>(
-                    c.x,c.y,
-                    x0,hy,
-                    hx,ly
-                    ) == -1
+
+            handedness = pointLineHandedness<double>(
+                c.x,c.y,
+                x0,hy,
+                hx,ly
+            );
+
+            if (handedness == -1
             )
             {
                 insideLeft = true;
@@ -864,11 +884,13 @@ namespace Hop::System::Physics
                 lx,hy
             );
 
-            if (insideLeft && pointLineHandedness<double>(
-                    c.x,c.y,
-                    hx,y0,
-                    lx,hy
-                    ) == 1
+            handedness2 = pointLineHandedness<double>(
+                c.x,c.y,
+                hx,y0,
+                lx,hy
+            );
+
+            if (insideLeft && handedness2 == 1
             )
             {
                 inside = true;
@@ -892,11 +914,13 @@ namespace Hop::System::Physics
                 x0,hy
             );
 
-            if (pointLineHandedness<double>(
-                    c.x,c.y,
-                    hx,y0,
-                    x0,hy
-                    ) == -1
+            handedness = pointLineHandedness<double>(
+                c.x,c.y,
+                hx,y0,
+                x0,hy
+            );
+
+            if (handedness == -1
             )
             {
                 insideLeft = true;
@@ -907,18 +931,53 @@ namespace Hop::System::Physics
                 hx,ly
             );
 
-            if (insideLeft && pointLineHandedness<double>(
-                    c.x,c.y,
-                    lx,hy,
-                    hx,ly
-                    ) == 1
+            handedness2 = pointLineHandedness<double>(
+                c.x,c.y,
+                lx,hy,
+                hx,ly
+            );
+
+            if (insideLeft && handedness2 == 1
             )
             {
                 inside = true;
             }
         }
 
-        if (inside){return;}
+        if (neighbour){inside = false;}
+
+        if (inside){ 
+            if (!op && d2 > insideThresh){ c.setRecentlyInside(1); }
+            else{ double d = std::min(d2,d2p); if (d > insideThresh){ c.setRecentlyInside(1);} }
+            return; 
+        }
+
+        if (c.recentlyInside())
+        {
+            if (!op)
+            {
+                if (d2 > insideThresh)
+                {
+                    c.setRecentlyInside(0);
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                double d = std::min(d2,d2p);
+                if (d > insideThresh)
+                {
+                    c.setRecentlyInside(0);
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
 
         double r2 = c.r*c.r;
 
@@ -958,7 +1017,7 @@ namespace Hop::System::Physics
 
         d = std::sqrt(d2);
 
-        mag = std::min(1.0/d,10.0)*(kr*(r-d)-kd*ddot);
+        mag = std::min(1.0/d,3.0)*(kr*(r-d)-kd*ddot);
 
         fx = mag*nx;//+friction*std::abs(mag)*nxt;
         fy = mag*ny;//+friction*std::abs(mag)*nyt;

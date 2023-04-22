@@ -89,6 +89,8 @@ int main(int argc, char ** argv)
 
     EntityComponentSystem manager;
 
+    Hop::Console console;
+
     Hop::Logging::Log log;
 
     ThreadPool workers(MAX_THREADS);
@@ -166,54 +168,18 @@ int main(int argc, char ** argv)
     collisions.setDetector(std::move(det));
     collisions.setResolver(std::move(res));
 
+    Hop::LuaExtraSpace luaStore;
+
+    luaStore.ecs = &manager;
+    luaStore.world = world.get();
+
+    console.luaStore(&luaStore);
+
+    console.runFile("test.lua");
+    std::string status = console.luaStatus();
+    if (status != "LUA_OK") { WARN(status) >> log; }
+
     high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
-
-    std::uniform_real_distribution<double> U;
-    std::default_random_engine e;
-    std::normal_distribution normal;
-    int n = 1000;
-
-    Hop::Object::Id pid;
-
-    double radius = 0.2*world.get()->worldMaxCollisionPrimitiveSize();
-
-    for (int i = 0; i < n; i++)
-    {
-        pid = manager.createObject();
-
-        double x = U(e);
-        double y = U(e);
-
-        manager.addComponent<cTransform>(
-            pid,
-            cTransform(
-                x,y,0.0,radius
-            )
-        );
-
-        manager.addComponent<cRenderable>(
-            pid,
-            cRenderable(
-            "circleObjectShader",
-            200.0/255.0,200.0/255.0,250.0/255.0,1.0
-            )
-        );
-
-        manager.addComponent<cPhysics>(
-            pid,
-            cPhysics(
-                x,y,0.0
-            )
-        );
-
-        manager.addComponent<cCollideable>(
-            pid,
-            cCollideable(
-                std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)},
-                x,y,0.0,radius
-            )
-        );
-    }
 
     physics.stabaliseObjectParameters(&manager);
 

@@ -114,6 +114,8 @@ int main(int argc, char ** argv)
 
   EntityComponentSystem manager;
 
+  Hop::Console console;
+
   Hop::Logging::Log log;
 
   ThreadPool workers(MAX_THREADS);

@@ -81,6 +81,10 @@ namespace Hop::System::Physics
     {
         double c = std::cos(theta);
         double s = std::sin(theta);
+        std::vector<uint8_t> inside(worldVertices.size());
+        for (unsigned i = 0; i < worldVertices.size(); i++){
+            inside[i] = worldVertices[i].lastInside;
+        }
         worldVertices = vertices;
 
         for (int i = 0; i < vertices.size(); i++)
@@ -88,6 +92,7 @@ namespace Hop::System::Physics
             worldVertices[i].x = (vertices[i].x * c + vertices[i].y*s)*scale+x;
             worldVertices[i].y = (vertices[i].y*c-vertices[i].x*s)*scale+y;
             worldVertices[i].r = vertices[i].r*scale;
+            worldVertices[i].lastInside = inside[i]; 
         }
     }
 
