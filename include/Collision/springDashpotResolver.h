@@ -78,7 +78,7 @@ namespace Hop::System::Physics
             Tile & h,
             double x0,
             double y0,
-            const CollisionVertex & c,
+            CollisionVertex & c,
             cPhysics & dataP,
             double & hx,
             double & hy,
@@ -90,7 +90,7 @@ namespace Hop::System::Physics
 
         void neighbourTilesCollision
         (
-            const CollisionVertex & c,
+            CollisionVertex & c,
             cPhysics & dataP,
             TileNeighbourData & tileNieghbours
         );

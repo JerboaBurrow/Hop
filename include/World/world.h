@@ -19,6 +19,7 @@
 #include <World/fixedSource.h>
 
 #include <Util/util.h>
+#include <Console/lua.h>
 
 namespace Hop::System::Physics
 {
@@ -182,6 +183,14 @@ namespace Hop::World
             glDeleteBuffers(1,&VBOoffset);
             glDeleteBuffers(1,&VBOid);
             glDeleteVertexArrays(1,&VAO);
+        }
+
+        // Lua bindings
+
+        int lua_worldMaxCollisionPrimitiveSize(lua_State * lua)
+        {
+            lua_pushnumber(lua,worldMaxCollisionPrimitiveSize());
+            return 1;
         }
 
     protected:

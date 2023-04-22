@@ -24,6 +24,7 @@ namespace Hop::Object::Component
         {}
 
         cCollideable(){}
+
     };
 
 }

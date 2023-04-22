@@ -120,6 +120,8 @@ endif()
 
 include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
+include_directories(src)
+
 file(GLOB SRC 
     "src/*.cpp"
     "src/Text/*.cpp"
@@ -131,6 +133,7 @@ file(GLOB SRC
     "src/World/*.cpp" 
     "src/Maths/*.cpp" 
     "src/Util/*.cpp"
+    "src/Console/*.cpp"
 )
 
 if (NOT ANDROID)

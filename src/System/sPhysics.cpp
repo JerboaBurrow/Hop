@@ -26,41 +26,52 @@ namespace Hop::System::Physics
 
             cTransform & dataT = transforms.get(id);
             cPhysics & dataP = physics.get(id);
-            
-            dataP.fy += -gravity*PARTICLE_MASS;
 
-            ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
-            bt = 1.0/(1.0+ct);
-            at = (1.0-ct)*bt;
+            if (!dataP.isMoveable)
+            {
+                dataP.fx = 0.0;
+                dataP.fy = 0.0;
+                dataP.vx = 0.0;
+                dataP.vy = 0.0;
+            }
+            else
+            {
+                dataP.fy += -gravity*PARTICLE_MASS;
 
-            nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
-            ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
+                ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
+                bt = 1.0/(1.0+ct);
+                at = (1.0-ct)*bt;
 
-            dataP.vx = (nx-dataP.lastX)/(dt*2.0);
-            dataP.vy = (ny-dataP.lastY)/(dt*2.0);
+                nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
+                ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
 
-            dataP.lastX = dataT.x;
-            dataP.lastY = dataT.y;
+                dataP.vx = (nx-dataP.lastX)/(dt*2.0);
+                dataP.vy = (ny-dataP.lastY)/(dt*2.0);
 
-            dataP.fx = 0.0;
-            dataP.fy = 0.0;
+                dataP.lastX = dataT.x;
+                dataP.lastY = dataT.y;
 
-            cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
-            br = 1.0/(1.0+cr);
-            ar = (1.0-cr)*br;
+                dataP.fx = 0.0;
+                dataP.fy = 0.0;
 
-            ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
+                cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
+                br = 1.0/(1.0+cr);
+                ar = (1.0-cr)*br;
 
-            dataP.phi = (ntheta-dataP.lastTheta)/2.0;
+                ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
 
-            dataP.lastTheta = dataT.theta;
+                dataP.phi = (ntheta-dataP.lastTheta)/2.0;
 
-            dataP.omega = 0.0;
+                dataP.lastTheta = dataT.theta;
 
-            dataT.x = nx;
-            dataT.y = ny;
-            dataT.theta = ntheta;
+                dataP.omega = 0.0;
 
+                dataT.x = nx;
+                dataT.y = ny;
+                dataT.theta = ntheta;
+
+            }
+        
             if (collideables.hasComponent(id))
             {
                 cCollideable & data = collideables.get(id);
@@ -135,39 +146,50 @@ namespace Hop::System::Physics
             cTransform & dataT = transforms.get(*it);
             cPhysics & dataP = physics.get(*it);
 
-            dataP.fy += -gravity*PARTICLE_MASS;
+            if (!dataP.isMoveable)
+            {
+                dataP.fx = 0.0;
+                dataP.fy = 0.0;
+                dataP.vx = 0.0;
+                dataP.vy = 0.0;
+            }
+            else
+            {
+                dataP.fy += -gravity*PARTICLE_MASS;
 
-            ct = dataP.translationalDrag * DT_OVER_TWICE_MASS;
-            bt = 1.0/(1.0+ct);
-            at = (1.0-ct)*bt;
+                ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
+                bt = 1.0/(1.0+ct);
+                at = (1.0-ct)*bt;
 
-            nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
-            ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
+                nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
+                ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
 
-            dataP.vx = (nx-dataP.lastX)/(dt*2.0);
-            dataP.vy = (ny-dataP.lastY)/(dt*2.0);
+                dataP.vx = (nx-dataP.lastX)/(dt*2.0);
+                dataP.vy = (ny-dataP.lastY)/(dt*2.0);
 
-            dataP.lastX = dataT.x;
-            dataP.lastY = dataT.y;
+                dataP.lastX = dataT.x;
+                dataP.lastY = dataT.y;
 
-            dataP.fx = 0.0;
-            dataP.fy = 0.0;
+                dataP.fx = 0.0;
+                dataP.fy = 0.0;
 
-            cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
-            br = 1.0/(1.0+cr);
-            ar = (1.0-cr)*br;
+                cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
+                br = 1.0/(1.0+cr);
+                ar = (1.0-cr)*br;
 
-            ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
+                ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
 
-            dataP.phi = (ntheta-dataP.lastTheta)/2.0;
+                dataP.phi = (ntheta-dataP.lastTheta)/2.0;
 
-            dataP.lastTheta = dataT.theta;
+                dataP.lastTheta = dataT.theta;
 
-            dataP.omega = 0.0;
+                dataP.omega = 0.0;
 
-            dataT.x = nx;
-            dataT.y = ny;
-            dataT.theta = ntheta;
+                dataT.x = nx;
+                dataT.y = ny;
+                dataT.theta = ntheta;
+
+            }
 
             if (collideables.hasComponent(*it))
             {
