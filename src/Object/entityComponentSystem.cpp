@@ -1,12 +1,10 @@
 #include <Object/entityComponentSystem.h>
-
 namespace Hop::Object
 {
 
     Id EntityComponentSystem::createObject()
     {
         std::shared_ptr<Object> o = std::make_shared<Object>();
-
         objects[o->id] = o;
         idToSignature[o->id] = Signature();
         //handleToId[Hop::Object::to_string(o->id)] = o->id;
@@ -91,5 +89,9 @@ namespace Hop::Object
         systemManager.setSignature<sCollision>(sCollisionSig);
         
     }
+
+    // Lua bindings
+
+    #include <Object/LuaBindings/lua_loadObject.cpp>
 
 }

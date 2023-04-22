@@ -148,7 +148,6 @@ namespace Hop::System::Physics
             for (int i = 0; i < meshSize; i++)
             {
                 const CollisionVertex p = data.mesh[i];
-                if (p == NULL_COLLISION_VERTEX){continue;}
 
                 uint64_t h = hash(p.x,p.y);
 
