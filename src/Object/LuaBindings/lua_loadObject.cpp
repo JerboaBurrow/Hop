@@ -219,14 +219,14 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
             if (collisionMesh.size() > 0)
             {
                 bool goodInput = false;
-                std::vector<CollisionVertex> mesh;
+                std::vector<std::shared_ptr<CollisionPrimitive>> mesh;
                 for (unsigned i = 0; i < collisionMesh.size(); i++)
                 {
                     if (collisionMesh[i].size() == 3)
                     {
                         mesh.push_back
                         (
-                            CollisionVertex
+                            std::make_shared<CollisionPrimitive>
                             (
                                 collisionMesh[i][0],
                                 collisionMesh[i][1],
@@ -241,7 +241,7 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
                     addComponent<cCollideable>
                     (
                         pid,
-                        cCollideable(mesh, x,y,theta,scale)
+                        cCollideable(mesh,x,y,theta,scale)
                     );
                 }
             }

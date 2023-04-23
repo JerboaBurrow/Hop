@@ -155,6 +155,11 @@ namespace Hop::System::Physics
             }
             else
             {
+                // std::cout << it->id << ", " << dataP.fx << ", " << dataP.fy
+                //           << ", " << dataP.lastX << ", " <<  dataP.lastY 
+                //           << ", " << dt << ", " << dtdt
+                //           << "\n";
+
                 dataP.fy += -gravity*PARTICLE_MASS;
 
                 ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
