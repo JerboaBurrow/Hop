@@ -66,6 +66,8 @@ namespace Hop::Logging
       return l;
     }
 
+    inline size_t size(){return logStream.size();}
+
   private:
     std::vector<std::string> logStream;
   };

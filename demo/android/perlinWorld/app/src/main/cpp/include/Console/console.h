@@ -2,37 +2,61 @@
 #define CONSOLE_H
 
 #include <memory>
-#include <string>
-
-extern "C"
-{
-    #include <lua.h>
-    #include <lauxlib.h>
-    #include <lualib.h>
-}
+#include <Object/entityComponentSystem.h>
+#include <World/world.h>
+#include <Console/lua.h>
+#include <iostream>
 
 namespace Hop
 {
 
-    // typedef int (Engine::*member)(lua_State * lua);
+    using Hop::Object::EntityComponentSystem;
+    using Hop::World::AbstractWorld;
 
-    // template <member function>
-    // int dispatch(lua_State * lua)
-    // {
-    //     Engine * ptr = *static_cast<Engine**>(lua_getextraspace(lua));
-    //     return ((*ptr).*function)(lua);
-    // }
+    struct LuaExtraSpace
+    {
+        EntityComponentSystem * ecs;
+        AbstractWorld * world;
+    };
 
-    // const luaL_Reg hopLib[] =
-    // {
-    //     {NULL, NULL}
-    // };
+    // ECS 
 
-    // int load_hopLib(lua_State * lua)
-    // {
-    //     luaL_newlib(lua,hopLib);
-    //     return 1;
-    // }
+    typedef int (EntityComponentSystem::*EntityComponentSystemMember)(lua_State * lua);
+
+    template <EntityComponentSystemMember function>
+    int dispatchEntityComponentSystem(lua_State * lua)
+    {
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        EntityComponentSystem * ptr = store->ecs;
+        return ((*ptr).*function)(lua);
+    }
+
+    // World
+
+    typedef int (AbstractWorld::*AbstractWorldMember)(lua_State * lua);
+
+    template <AbstractWorldMember function>
+    int dispatchWorld(lua_State * lua)
+    {
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        AbstractWorld * ptr = store->world;
+        return ((*ptr).*function)(lua);
+    }
+
+    // register lib
+
+    const luaL_Reg hopLib[] =
+    {
+        {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
+        {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
+        {NULL, NULL}
+    };
+
+    int load_hopLib(lua_State * lua)
+    {
+        luaL_newlib(lua,hopLib);
+        return 1;
+    }
 
     class Console 
     {
@@ -42,7 +66,9 @@ namespace Hop
             {
                 lua = luaL_newstate();
                 luaL_openlibs(lua);
-                //luaL_requiref(lua,"hop",load_hopLib,1);
+                luaL_requiref(lua,"hop",load_hopLib,1);
+                runString("print(\"process running\")");
+                std::cout << luaStatus() << "\n";
             }
 
             ~Console(){ lua_close(lua); }
@@ -51,6 +77,7 @@ namespace Hop
             {
                 if (luaIsOk())
                 {
+                    lastCommandOrProgram = file;
                     return luaL_dofile(lua,file.c_str());
                 }
                 return false;
@@ -59,7 +86,7 @@ namespace Hop
             bool runString(std::string program)
             {
                 if (luaIsOk())
-                {
+                {   lastCommandOrProgram = program;
                     return luaL_dostring(lua,program.c_str());
                 }
                 return false;
@@ -67,9 +94,49 @@ namespace Hop
 
             bool luaIsOk(){ return lua_status(lua) == LUA_OK ? true : false; }
 
+            std::string luaStatus()
+            {
+                int s = lua_status(lua);
+
+                if (s == LUA_OK){return "LUA_OK";}
+
+                std::string status = lastCommandOrProgram + " | ";
+
+                switch(s)
+                {
+                    case LUA_YIELD:
+                        status += "LUA_YIELD";
+                        break;
+                    case LUA_ERRRUN:
+                        status += "LUA_ERRRUN";
+                        break;
+                    case LUA_ERRSYNTAX:
+                        status += "LUA_ERRSYNTAX";
+                        break;
+                    case LUA_ERRMEM:
+                        status += "LUA_ERRMEM";
+                        break;
+                    case LUA_ERRERR:
+                        status += "LUA_ERRERR";
+                        break;
+                    default:
+                        status += "LUA_STATUS_UNKOWN";
+                        break;
+                }
+
+                return status;
+            }
+
+            void luaStore(LuaExtraSpace * ptr)
+            {
+	            *static_cast<LuaExtraSpace**>(lua_getextraspace(lua)) = ptr;
+            }
+
         private:
 
         lua_State * lua;
+
+        std::string lastCommandOrProgram;
 
     };
 }

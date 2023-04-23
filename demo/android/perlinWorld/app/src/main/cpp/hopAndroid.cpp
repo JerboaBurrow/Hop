@@ -48,7 +48,7 @@ using Hop::System::Physics::CollisionDetector;
 using Hop::System::Physics::CollisionResolver;
 using Hop::System::Physics::sPhysics;
 using Hop::System::Physics::sCollision;
-using Hop::System::Physics::CollisionVertex;
+using Hop::System::Physics::CollisionPrimitive;
 
 using Hop::System::Signature;
 

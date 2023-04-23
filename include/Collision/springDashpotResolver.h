@@ -54,6 +54,30 @@ namespace Hop::System::Physics
             AbstractWorld * world
         );
 
+        void collisionForce
+        (
+            cPhysics & pI, cPhysics & pJ,
+            LineSegment * li,
+            LineSegment * lj,
+            double rx, double ry, double rc, double dd
+        );
+
+        void collisionForce
+        (
+            cPhysics & pI, cPhysics & pJ,
+            CollisionPrimitive * c,
+            LineSegment * l,
+            double rx, double ry, double rc, double dd
+        );
+
+        void collisionForce
+        (
+            cPhysics & pI, cPhysics & pJ,
+            CollisionPrimitive * c,
+            CollisionPrimitive * l,
+            double rx, double ry, double rc, double dd
+        );
+
         void handleObjectWorldCollision(
             Id id,
             cCollideable & dataC,
@@ -78,7 +102,7 @@ namespace Hop::System::Physics
             Tile & h,
             double x0,
             double y0,
-            CollisionVertex & c,
+            std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
             double & hx,
             double & hy,
@@ -90,14 +114,14 @@ namespace Hop::System::Physics
 
         void neighbourTilesCollision
         (
-            CollisionVertex & c,
+            std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
             TileNeighbourData & tileNieghbours
         );
 
         void tileBoundariesCollision
         (
-            const CollisionVertex & c,
+            std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
             TileBoundsData & tileBounds
         );

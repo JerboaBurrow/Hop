@@ -44,7 +44,7 @@ using namespace std::chrono;
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
-const unsigned MAX_THREADS = 4;
+const unsigned MAX_THREADS = 8;
 
 // for smoothing delta numbers
 uint8_t frameId = 0;
@@ -71,7 +71,6 @@ using Hop::System::Physics::CollisionDetector;
 using Hop::System::Physics::CollisionResolver;
 using Hop::System::Physics::sPhysics;
 using Hop::System::Physics::sCollision;
-using Hop::System::Physics::CollisionVertex;
 
 using Hop::System::Signature;
 
@@ -195,52 +194,17 @@ int main(int argc, char ** argv)
 
   high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
 
-  std::uniform_real_distribution<double> U;
-  std::default_random_engine e;
-  std::normal_distribution normal;
-  int n = 1000;
+  Hop::LuaExtraSpace luaStore;
 
-  Hop::Object::Id pid;
+  luaStore.ecs = &manager;
+  luaStore.world = world.get();
 
-  double radius = 0.2*world.get()->worldMaxCollisionPrimitiveSize();
+  console.luaStore(&luaStore);
 
-  for (int i = 0; i < n; i++)
-  {
-      pid = manager.createObject();
+  console.runFile("test.lua");
+  std::string status = console.luaStatus();
+  if (status != "LUA_OK") { WARN(status) >> log; }
 
-      double x = U(e);
-      double y = U(e);
-
-      manager.addComponent<cTransform>(
-          pid,
-          cTransform(
-              x,y,0.0,radius
-          )
-      );
-
-      manager.addComponent<cRenderable>(
-          pid,
-          cRenderable(
-          "circleObjectShader",
-          200.0/255.0,200.0/255.0,250.0/255.0,1.0
-          )
-      );
-
-      manager.addComponent<cPhysics>(
-          pid,
-          cPhysics(
-              x,y,0.0
-          )
-      );
-
-      manager.addComponent<cCollideable>(
-          pid,
-          cCollideable(
-              std::vector<CollisionVertex>{CollisionVertex(0.0,0.0,1.0)},
-              x,y,0.0,radius
-          )
-      );
-  }
 
   physics.stabaliseObjectParameters(&manager);
 
@@ -267,11 +231,13 @@ int main(int argc, char ** argv)
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
       {
         workers.createThread();
+        INFO("Thread: "+std::to_string(workers.size())) >> log;
       }
 
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L)
       {
         workers.joinThread();
+        INFO("Thread: "+std::to_string(workers.size())) >> log;
       }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
       {
@@ -321,7 +287,14 @@ int main(int argc, char ** argv)
 
     collisions.centreOn(world.get()->getMapCenter());
     
-    collisions.update(&manager, world.get());
+    if (workers.size() > 1)
+    {
+      collisions.update(&manager, world.get(),&workers);
+    }
+    else
+    {
+      collisions.update(&manager, world.get());
+    }
 
     physics.update(&manager);
 
@@ -384,6 +357,14 @@ int main(int argc, char ** argv)
           0.5f,
           glm::vec3(0.0f,0.0f,0.0f)
       );
+    }
+
+    if (frameId == 30)
+    {
+      if (log.size() > 0)
+      {
+        std::cout << log.get() << "\n";
+      }
     }
 
     window.display();
