@@ -50,13 +50,20 @@ extern "C"
                     )
             );
 
+            std::vector<std::shared_ptr<CollisionPrimitive>> mesh;
+            mesh.push_back
+                    (
+                            std::make_shared<CollisionPrimitive>
+                                    (
+                                            0.0,
+                                            0.0,
+                                            1.0
+                                    )
+                    );
             manager->addComponent<Hop::Object::Component::cCollideable>(
                     pid,
                     Hop::Object::Component::cCollideable(
-                            std::vector<Hop::System::Physics::CollisionVertex>
-                            {
-                                    Hop::System::Physics::CollisionVertex(0.0, 0.0, 1.0)
-                            },
+                            mesh,
                             x, y, 0.0, radius
                     )
             );

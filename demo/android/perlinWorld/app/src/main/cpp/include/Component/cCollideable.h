@@ -6,7 +6,7 @@
 namespace Hop::Object::Component
 {
     using Hop::System::Physics::CollisionMesh;
-    using Hop::System::Physics::CollisionVertex;
+    using Hop::System::Physics::CollisionPrimitive;
 
     struct cCollideable 
     {
@@ -14,7 +14,7 @@ namespace Hop::Object::Component
 
         cCollideable
         (
-            std::vector<CollisionVertex> v,
+            std::vector<std::shared_ptr<CollisionPrimitive>> v,
             double x,
             double y, 
             double theta, 
@@ -24,6 +24,7 @@ namespace Hop::Object::Component
         {}
 
         cCollideable(){}
+
     };
 
 }
