@@ -102,63 +102,7 @@ namespace Hop::System::Physics
  
             }
         }
-
-        CollisionMesh(const CollisionMesh & m)
-        {
-            vertices.clear();
-            for (unsigned i = 0; i < m.vertices.size(); i++)
-            {
-                CollisionPrimitive * c = (m.vertices[i].get());
-                LineSegment * l = dynamic_cast<LineSegment*>(c);
-
-                std::shared_ptr<CollisionPrimitive> p;
-
-                if (l != nullptr)
-                {
-                    p = std::make_shared<CollisionPrimitive>
-                    (
-                        LineSegment(l->x0, l->x1, l->y0, l->y1)
-                    );
-                }
-                else
-                {
-                    p = std::make_shared<CollisionPrimitive>
-                    (
-                        CollisionPrimitive(c->x,c->y,c->r)
-                    );
-                }
-
-                vertices.push_back(std::move(p)); 
-            }
-            
-            worldVertices.clear();
-            for (unsigned i = 0; i < vertices.size(); i++)
-            {
-                CollisionPrimitive * c = (vertices[i].get());
-                LineSegment * l = dynamic_cast<LineSegment*>(c);
-
-                std::shared_ptr<CollisionPrimitive> p;
-
-                if (l != nullptr)
-                {
-                    p = std::make_shared<CollisionPrimitive>
-                    (
-                        LineSegment(l->x0, l->x1, l->y0, l->y1)
-                    );
-                }
-                else
-                {
-                    p = std::make_shared<CollisionPrimitive>
-                    (
-                        CollisionPrimitive(c->x,c->y,c->r)
-                    );
-                }
-
-                worldVertices.push_back(std::move(p));
- 
-            }
-        }
-
+        
         size_t size(){return vertices.size();}
 
         std::shared_ptr<CollisionPrimitive> operator[](size_t i) 

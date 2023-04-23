@@ -81,6 +81,7 @@ namespace Hop::System::Physics
         
         pJ.fx -= fx;
         pJ.fy -= fy;
+
     }
 
     void SpringDashpot::handleObjectObjectCollision(

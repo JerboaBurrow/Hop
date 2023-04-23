@@ -97,9 +97,4 @@ namespace Hop::System::Physics
         }
     }
 
-    // bool operator==(const CollisionVertex & lhs, const CollisionVertex & rhs)
-    // {
-    //     return lhs.x == rhs.x && lhs.x == rhs.y && lhs.r == rhs.r;
-    // }
-
 }
