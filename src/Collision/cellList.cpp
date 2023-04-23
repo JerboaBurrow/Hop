@@ -147,6 +147,7 @@ namespace Hop::System::Physics
 
             for (int i = 0; i < meshSize; i++)
             {
+            
                 std::shared_ptr<CollisionPrimitive> p = data.mesh[i];
 
                 uint64_t h = hash(p->x,p->y);

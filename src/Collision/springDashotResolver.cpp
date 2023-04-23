@@ -317,7 +317,7 @@ namespace Hop::System::Physics
                 ly,
                 inside
             );
-
+            
             if (!inside && !c->recentlyInside())
             {
 

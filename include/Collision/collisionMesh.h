@@ -48,8 +48,6 @@ namespace Hop::System::Physics
         double x0, x1, y0, y1;
     };
 
-    bool operator==(const CollisionPrimitive & lhs, const CollisionPrimitive & rhs);
-
     struct CollisionMesh 
     {
         CollisionMesh(){}
@@ -162,6 +160,7 @@ namespace Hop::System::Physics
         }
 
         size_t size(){return vertices.size();}
+
         std::shared_ptr<CollisionPrimitive> operator[](size_t i) 
         {
             return worldVertices[i];
