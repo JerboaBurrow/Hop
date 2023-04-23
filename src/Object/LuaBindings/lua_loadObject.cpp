@@ -235,6 +235,20 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
                         );
                         goodInput = true;
                     }
+                    else if (collisionMesh[i].size() == 4)
+                    {
+                        mesh.push_back
+                        (
+                            std::make_shared<LineSegment>
+                            (
+                                collisionMesh[i][0],
+                                collisionMesh[i][1],
+                                collisionMesh[i][2],
+                                collisionMesh[i][3]
+                            )
+                        );
+                        goodInput = true;
+                    }
                 }
                 if (goodInput)
                 {

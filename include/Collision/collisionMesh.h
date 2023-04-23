@@ -36,7 +36,7 @@ namespace Hop::System::Physics
 
     struct LineSegment : public CollisionPrimitive 
     {
-        LineSegment(double x0, double x1, double y0, double y1)
+        LineSegment(double x0, double x1, double y0, double y1, double th = 0.1)
         : x0(x0), y0(y0), x1(x1), y1(y1)
         {
             r = std::sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
@@ -44,8 +44,9 @@ namespace Hop::System::Physics
             double ny = y1 > y0 ? 1.0 : -1.0;
             x = x0 + r/2.0 * nx;
             y = y0 + r/2.0 * ny;
+            thickness = r*th;
         }
-        double x0, x1, y0, y1;
+        double x0, x1, y0, y1, thickness;
     };
 
     struct CollisionMesh 

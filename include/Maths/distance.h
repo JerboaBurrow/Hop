@@ -8,7 +8,8 @@ namespace Hop::Maths
     T pointLineSegmentDistanceSquared(
         T px, T py,
         T ax, T ay,
-        T bx, T by
+        T bx, T by,
+        T & nx, T & ny
     )
     {
 
@@ -20,13 +21,24 @@ namespace Hop::Maths
 
         pMINUSaDOTrOVERlength2 = std::max(static_cast<T>(0.0),std::min(static_cast<T>(1.0),pMINUSaDOTrOVERlength2));
 
-        T tx = ax + pMINUSaDOTrOVERlength2 * rx;
-        T ty = ay + pMINUSaDOTrOVERlength2 * ry;
+        nx = ax + pMINUSaDOTrOVERlength2 * rx;
+        ny = ay + pMINUSaDOTrOVERlength2 * ry;
 
-        T dx = px-tx;
-        T dy = py-ty;
+        T dx = px-nx;
+        T dy = py-ny;
 
         return dx*dx+dy*dy;
+    }
+
+    template <class T>
+    T pointLineSegmentDistanceSquared(
+        T px, T py,
+        T ax, T ay,
+        T bx, T by
+    )
+    {
+        T nx, ny;
+        return pointLineSegmentDistanceSquared(px,py,ax,ay,bx,by,nx,ny);
     }
 
 }

@@ -14,6 +14,65 @@ namespace Hop::System::Physics
     using Hop::Maths::pointLineHandedness;
 
 
+    /*
+        Line segment - Line segment collision
+
+        Interior case one vertex (a,b) willl be closest, parallel case
+         both might be.
+
+        (i)
+              p
+               \
+              a \
+             /   \
+            /     \ q
+          b/
+
+        Assume a is closest, distance from a to qp is:
+
+        d = Distance between ba and qp is length of line from a (closest vertex)
+         hitting qp at 90 degrees.
+
+        theta = angle made by a-q-p
+
+        cos(theta) = (p-q)/|p-q| \cdot (a-q) / |a-q|
+
+        For this interior case, porjection satisfies, 0 <= cos(theta)*|a-q| <= 1
+
+        Closest point on qp is then the vector projection of qa onto qp plus q
+
+        p* = q + cos(theta)*|a-q|
+
+        Exterior cases, either (i) cos(theta)*|a-q| < 0 (ii) cos(theta)*|a-q| > 1
+        
+        (ii)
+              p
+               \
+                \
+                 \
+                  \ q
+          
+                   a
+                  /
+                 /
+               b/
+
+        (iii)
+             a
+            /
+           /  p
+          /    \
+         b      \
+                 \
+                  \ q
+
+        (i)   d = |a-(q + cos(theta)*|a-q|)|
+        (ii)  d = |a-q|
+        (iii) d = |a-q|
+
+        General case, check both a and b against qp to find closest point
+
+    */
     void SpringDashpot::collisionForce
     (
         cPhysics & pI, cPhysics & pJ,
@@ -21,7 +80,83 @@ namespace Hop::System::Physics
         LineSegment * lj,
         double rx, double ry, double rc, double dd
     )
-    {}
+    {
+        // may be possible to optimise by not using the function and reusing
+        //  calcs? not prematurely though.
+        double nx1, ny1, nx2, ny2, dd1, dd2, rc;
+        double fx, fy, nx, ny, d, dinv, vrx, vry, ddot;
+        bool colliding = false;
+
+        dd1 = pointLineSegmentDistanceSquared<double>
+        (
+            li->x0,li->y0,
+            lj->x0,lj->y0,
+            lj->x1,lj->y1,
+            nx1, ny1
+        );
+
+        dd2 = pointLineSegmentDistanceSquared<double>
+        (
+            li->x1,li->y1,
+            lj->x0,lj->y0,
+            lj->x1,lj->y1,
+            nx2, ny2
+        );
+        
+        rc = li->thickness + lj->thickness;
+
+        if (dd1 < dd2)
+        {
+            if (dd1 < rc*rc)
+            {
+                nx = nx1-li->x0;
+                ny = ny1-li->y0;
+                d = std::sqrt(dd1);
+
+                colliding = true;
+            }
+        }
+        else
+        {
+            if (dd2 < rc*rc)
+            {
+                nx = nx2-li->x1;
+                ny = ny2-li->y1;
+                d = std::sqrt(dd2);
+
+                colliding = true;
+            }
+        }
+
+        if (colliding)
+        {
+            dinv = 1.0/d;
+            nx = nx / d;
+            fx = nx;
+            ny = ny / d;
+            fy = ny;
+
+            dinv = std::min(3.0,dinv);
+
+            mag -= kr*(rc-d)*dinv;
+
+            vrx = pI.vx - pJ.vx;
+            vry = pI.vy - pJ.vy;
+
+            ddot = nx*vrx+ny*vry;
+
+            mag -= kd*ddot*dinv;
+
+            fx *= mag;
+            fy *= mag;
+
+            pI.fx += fx;
+            pI.fy += fy;
+
+            pJ.fx -= fx;
+            pJ.fy -= fy;
+        }
+    }
 
     void SpringDashpot::collisionForce
     (
@@ -32,6 +167,9 @@ namespace Hop::System::Physics
     )
     {}
 
+    /*
+        Circle - Circle collision is easy!
+    */
     void SpringDashpot::collisionForce
     (
         cPhysics & pI, cPhysics & pJ,
