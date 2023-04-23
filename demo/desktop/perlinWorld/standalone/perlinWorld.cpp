@@ -36,7 +36,7 @@ using namespace std::chrono;
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
-const unsigned MAX_THREADS = 4;
+const unsigned MAX_THREADS = 2;
 
 // for smoothing delta numbers
 uint8_t frameId = 0;
@@ -63,7 +63,6 @@ using Hop::System::Physics::CollisionDetector;
 using Hop::System::Physics::CollisionResolver;
 using Hop::System::Physics::sPhysics;
 using Hop::System::Physics::sCollision;
-using Hop::System::Physics::CollisionVertex;
 
 using Hop::System::Signature;
 
@@ -263,6 +262,14 @@ int main(int argc, char ** argv)
                 0.5f,
                 glm::vec3(0.0f,0.0f,0.0f)
             );
+        }
+
+        if (frameId == 30)
+        {
+        if (log.size() > 0)
+        {
+            std::cout << log.get() << "\n";
+        }
         }
 
         display.loop();

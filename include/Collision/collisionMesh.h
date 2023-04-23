@@ -6,6 +6,8 @@
 #include <Maths/vertex.h>
 #include <limits>
 #include <cstdint>
+#include <memory>
+#include <iostream>
 
 using Hop::Maths::Vertex;
 
@@ -14,23 +16,39 @@ namespace Hop::System::Physics
 
     const uint8_t LAST_INSIDE_COUNTER_MAX = 60;
 
-    struct CollisionVertex 
+    struct CollisionPrimitive 
     {
-        CollisionVertex(double x, double y, double r)
+        CollisionPrimitive() = default;
+
+        CollisionPrimitive(double x, double y, double r)
         : x(x),y(y),r(r),lastInside(0)
         {}
+
+        virtual ~CollisionPrimitive() = default;
         // x position, y position, radius (model space)
         //  of a collision point
-        double x;
-        double y;
-        double r;
+        double x, y, r;
         uint8_t lastInside;
 
         void setRecentlyInside(int i){ lastInside =  i; }
         bool recentlyInside() const { return lastInside > 0; }
     };
 
-    bool operator==(const CollisionVertex & lhs, const CollisionVertex & rhs);
+    struct LineSegment : public CollisionPrimitive 
+    {
+        LineSegment(double x0, double x1, double y0, double y1)
+        : x0(x0), y0(y0), x1(x1), y1(y1)
+        {
+            r = std::sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
+            double nx = x1 > x0 ? 1.0 : -1.0;
+            double ny = y1 > y0 ? 1.0 : -1.0;
+            x = x0 + r/2.0 * nx;
+            y = y0 + r/2.0 * ny;
+        }
+        double x0, x1, y0, y1;
+    };
+
+    bool operator==(const CollisionPrimitive & lhs, const CollisionPrimitive & rhs);
 
     struct CollisionMesh 
     {
@@ -38,33 +56,113 @@ namespace Hop::System::Physics
         // construct a mesh around a model space polygon 
         //   with vertices v with each mesh vertex having 
         //   radius r in model space
-        CollisionMesh(std::vector<Vertex> v, double r = 0.01);
+        //CollisionMesh(std::vector<Vertex> v, double r = 0.01);
         // construct a mesh from given points
         CollisionMesh
         (
-            std::vector<CollisionVertex> v,
+            std::vector<std::shared_ptr<CollisionPrimitive>> v,
             double x,
             double y, 
             double theta, 
             double scale
         )
+        : CollisionMesh(std::move(v))
         {
-            vertices=v;
-            worldVertices=v;
             updateWorldMesh(x,y,theta,scale);
         }
 
         CollisionMesh
         (
-            std::vector<CollisionVertex> v
+            std::vector<std::shared_ptr<CollisionPrimitive>> v
         )
         {
-            vertices=v;
-            worldVertices=v;
+            vertices=std::move(v);
+            worldVertices.clear();
+            for (unsigned i = 0; i < vertices.size(); i++)
+            {
+                CollisionPrimitive * c = (vertices[i].get());
+                LineSegment * l = dynamic_cast<LineSegment*>(c);
+
+                std::shared_ptr<CollisionPrimitive> p;
+
+                if (l != nullptr)
+                {
+                    p = std::make_shared<CollisionPrimitive>
+                    (
+                        LineSegment(l->x0, l->x1, l->y0, l->y1)
+                    );
+                }
+                else
+                {
+                    p = std::make_shared<CollisionPrimitive>
+                    (
+                        CollisionPrimitive(c->x,c->y,c->r)
+                    );
+                }
+
+                worldVertices.push_back(std::move(p));
+ 
+            }
+        }
+
+        CollisionMesh(const CollisionMesh & m)
+        {
+            vertices.clear();
+            for (unsigned i = 0; i < m.vertices.size(); i++)
+            {
+                CollisionPrimitive * c = (m.vertices[i].get());
+                LineSegment * l = dynamic_cast<LineSegment*>(c);
+
+                std::shared_ptr<CollisionPrimitive> p;
+
+                if (l != nullptr)
+                {
+                    p = std::make_shared<CollisionPrimitive>
+                    (
+                        LineSegment(l->x0, l->x1, l->y0, l->y1)
+                    );
+                }
+                else
+                {
+                    p = std::make_shared<CollisionPrimitive>
+                    (
+                        CollisionPrimitive(c->x,c->y,c->r)
+                    );
+                }
+
+                vertices.push_back(std::move(p)); 
+            }
+            
+            worldVertices.clear();
+            for (unsigned i = 0; i < vertices.size(); i++)
+            {
+                CollisionPrimitive * c = (vertices[i].get());
+                LineSegment * l = dynamic_cast<LineSegment*>(c);
+
+                std::shared_ptr<CollisionPrimitive> p;
+
+                if (l != nullptr)
+                {
+                    p = std::make_shared<CollisionPrimitive>
+                    (
+                        LineSegment(l->x0, l->x1, l->y0, l->y1)
+                    );
+                }
+                else
+                {
+                    p = std::make_shared<CollisionPrimitive>
+                    (
+                        CollisionPrimitive(c->x,c->y,c->r)
+                    );
+                }
+
+                worldVertices.push_back(std::move(p));
+ 
+            }
         }
 
         size_t size(){return vertices.size();}
-        CollisionVertex & operator[](size_t i) 
+        std::shared_ptr<CollisionPrimitive> operator[](size_t i) 
         {
             return worldVertices[i];
         }
@@ -77,8 +175,8 @@ namespace Hop::System::Physics
         );
 
     private:
-        std::vector<CollisionVertex> vertices;
-        std::vector<CollisionVertex> worldVertices;
+        std::vector<std::shared_ptr<CollisionPrimitive>> vertices;
+        std::vector<std::shared_ptr<CollisionPrimitive>> worldVertices;
     };
 
 }

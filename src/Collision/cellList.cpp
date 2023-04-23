@@ -147,9 +147,9 @@ namespace Hop::System::Physics
 
             for (int i = 0; i < meshSize; i++)
             {
-                const CollisionVertex p = data.mesh[i];
+                std::shared_ptr<CollisionPrimitive> p = data.mesh[i];
 
-                uint64_t h = hash(p.x,p.y);
+                uint64_t h = hash(p->x,p->y);
 
                 if (0 <= h && h < nCells)
                 {
