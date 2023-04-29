@@ -239,7 +239,7 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
                     {
                         mesh.push_back
                         (
-                            std::make_shared<LineSegment>
+                            std::make_shared<Hop::System::Physics::LineSegment>
                             (
                                 collisionMesh[i][0],
                                 collisionMesh[i][1],

@@ -13,6 +13,54 @@ namespace Hop::System::Physics
     using Hop::Maths::pointLineSegmentDistanceSquared;
     using Hop::Maths::pointLineHandedness;
 
+    void SpringDashpot::springDashpotForce
+    (
+        cPhysics & pI, cPhysics & pJ,
+        double dd, double rx, double ry, double rc
+    )
+    {
+        double mag, fx, fy, dinv, nx, ny, vrx, vry, ddot, d;
+
+        mag = 0.0;
+        d = std::sqrt(dd);
+        dinv = 1.0 / d;
+        nx = rx * dinv;
+        fx = nx;
+        ny = ry * dinv;
+        fy = ny;
+        dinv = std::min(3.0,dinv);
+
+        mag -= kr*(rc-d)*dinv;
+
+        vrx = pI.vx-pJ.vx;
+        vry = pI.vy-pJ.vy;
+
+        // nxt = ny;
+        // nyt = -nx;
+        ddot = nx*vrx+ny*vry;
+
+        // vnorm = vrx*vrx+vry*vry;
+
+        // if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) )
+        // {
+        //     nxt *= -1.0;
+        //     nyt *= -1.0;
+        // }
+
+        mag -= kd*ddot*dinv;
+
+        fx *= mag;//+friction*std::abs(mag)*nxt;
+        fy *= mag;//+friction*std::abs(mag)*nyt;
+
+
+        pI.fx += fx;
+        pI.fy += fy;
+
+        
+        pJ.fx -= fx;
+        pJ.fy -= fy;
+    }
+
 
     /*
         Line segment - Line segment collision
@@ -83,8 +131,8 @@ namespace Hop::System::Physics
     {
         // may be possible to optimise by not using the function and reusing
         //  calcs? not prematurely though.
-        double nx1, ny1, nx2, ny2, dd1, dd2, rc;
-        double fx, fy, nx, ny, d, dinv, vrx, vry, ddot;
+        double nx1, ny1, nx2, ny2, dd1, dd2, tc;
+        double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag;
         bool colliding = false;
 
         dd1 = pointLineSegmentDistanceSquared<double>
@@ -103,26 +151,28 @@ namespace Hop::System::Physics
             nx2, ny2
         );
         
-        rc = li->thickness + lj->thickness;
+        tc = li->thickness + lj->thickness;
 
         if (dd1 < dd2)
         {
-            if (dd1 < rc*rc)
+            if (dd1 < tc*tc)
             {
                 nx = nx1-li->x0;
                 ny = ny1-li->y0;
-                d = std::sqrt(dd1);
+
+                dd = dd1;
 
                 colliding = true;
             }
         }
         else
         {
-            if (dd2 < rc*rc)
+            if (dd2 < tc*tc)
             {
                 nx = nx2-li->x1;
                 ny = ny2-li->y1;
-                d = std::sqrt(dd2);
+
+                dd = dd2;
 
                 colliding = true;
             }
@@ -130,31 +180,7 @@ namespace Hop::System::Physics
 
         if (colliding)
         {
-            dinv = 1.0/d;
-            nx = nx / d;
-            fx = nx;
-            ny = ny / d;
-            fy = ny;
-
-            dinv = std::min(3.0,dinv);
-
-            mag -= kr*(rc-d)*dinv;
-
-            vrx = pI.vx - pJ.vx;
-            vry = pI.vy - pJ.vy;
-
-            ddot = nx*vrx+ny*vry;
-
-            mag -= kd*ddot*dinv;
-
-            fx *= mag;
-            fy *= mag;
-
-            pI.fx += fx;
-            pI.fy += fy;
-
-            pJ.fx -= fx;
-            pJ.fy -= fy;
+            springDashpotForce(pI, pJ, dd, nx, ny, tc);
         }
     }
 
@@ -165,7 +191,28 @@ namespace Hop::System::Physics
         LineSegment * l,
         double rx, double ry, double rc, double dd
     )
-    {}
+    {
+        double contactX, contactY, tc;
+        double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag;
+        bool colliding = false;
+
+        dd = pointLineSegmentDistanceSquared<double>
+        (
+            c->x,c->y,
+            l->x0,l->y0,
+            l->x1,l->y1,
+            contactX, contactY
+        );
+
+        tc = c->r + l->thickness;
+
+        if (dd < tc*tc)
+        {
+            nx = contactX-c->x;
+            ny = contactY-c->y;
+            springDashpotForce(pI, pJ, dd, nx, ny, tc);
+        }
+    }
 
     /*
         Circle - Circle collision is easy!
@@ -178,47 +225,12 @@ namespace Hop::System::Physics
         double rx, double ry, double rc, double dd
     )
     {
-        double mag, fx, fy, dinv, nx, ny, vrx, vry, ddot, d;
+        double nx, ny;
 
-        mag = 0.0;
-        
-        d = std::sqrt(dd);
-        dinv = 1.0 / d;
-        nx = rx * dinv;
-        fx = nx;
-        ny = ry * dinv;
-        fy = ny;
-        dinv = std::min(3.0,dinv);
+        nx = l->x-c->x;
+        ny = l->y-c->y;
 
-        mag -= kr*(rc-d)*dinv;
-
-        vrx = pI.vx-pJ.vx;
-        vry = pI.vy-pJ.vy;
-
-        // nxt = ny;
-        // nyt = -nx;
-        ddot = nx*vrx+ny*vry;
-
-        // vnorm = vrx*vrx+vry*vry;
-
-        // if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) )
-        // {
-        //     nxt *= -1.0;
-        //     nyt *= -1.0;
-        // }
-
-        mag -= kd*ddot*dinv;
-
-        fx *= mag;//+friction*std::abs(mag)*nxt;
-        fy *= mag;//+friction*std::abs(mag)*nyt;
-
-
-        pI.fx += fx;
-        pI.fy += fy;
-
-        
-        pJ.fx -= fx;
-        pJ.fy -= fy;
+        springDashpotForce(pI,pJ,dd,nx,ny,rc);
 
     }
 
@@ -1167,16 +1179,16 @@ namespace Hop::System::Physics
 
         if (f1)
         {
-            applyForce(nx,ny,d2,c->r,dataP);
+            springDashpotWallForce(nx,ny,d2,c->r,dataP);
         }
 
         if (f2)
         {
-            applyForce(-nx,-ny,d2p,c->r,dataP);
+            springDashpotWallForce(-nx,-ny,d2p,c->r,dataP);
         }
     }
 
-    void SpringDashpot::applyForce
+    void SpringDashpot::springDashpotWallForce
     (
         double nx,
         double ny,
@@ -1242,7 +1254,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
-                applyForce(nx,ny,d2,c->r,dataP);
+                springDashpotWallForce(nx,ny,d2,c->r,dataP);
             }
         }
 
@@ -1270,7 +1282,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
-                applyForce(nx,ny,d2,c->r,dataP);
+                springDashpotWallForce(nx,ny,d2,c->r,dataP);
             }
         }
 
@@ -1298,7 +1310,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
-                applyForce(nx,ny,d2,c->r,dataP);
+                springDashpotWallForce(nx,ny,d2,c->r,dataP);
             }
         }
 
@@ -1326,7 +1338,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
-                applyForce(nx,ny,d2,c->r,dataP);
+                springDashpotWallForce(nx,ny,d2,c->r,dataP);
             }
         }
 

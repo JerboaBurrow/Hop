@@ -54,6 +54,12 @@ namespace Hop::System::Physics
             AbstractWorld * world
         );
 
+        void springDashpotForce
+        (
+            cPhysics & pI, cPhysics & pJ,
+            double dd, double rx, double ry, double rc
+        );
+
         void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
@@ -126,7 +132,7 @@ namespace Hop::System::Physics
             TileBoundsData & tileBounds
         );
 
-        void applyForce
+        void springDashpotWallForce
         (
             double nx,
             double ny,
