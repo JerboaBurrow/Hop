@@ -36,7 +36,7 @@ namespace Hop::System::Physics
 
     struct LineSegment : public CollisionPrimitive 
     {
-        LineSegment(double x0, double x1, double y0, double y1, double th = 0.1)
+        LineSegment(double x0, double x1, double y0, double y1, double th = 0.01)
         : x0(x0), y0(y0), x1(x1), y1(y1)
         {
             r = std::sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
@@ -56,6 +56,7 @@ namespace Hop::System::Physics
         //   with vertices v with each mesh vertex having 
         //   radius r in model space
         //CollisionMesh(std::vector<Vertex> v, double r = 0.01);
+
         // construct a mesh from given points
         CollisionMesh
         (

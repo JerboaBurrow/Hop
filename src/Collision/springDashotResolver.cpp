@@ -61,6 +61,37 @@ namespace Hop::System::Physics
         pJ.fy -= fy;
     }
 
+     void SpringDashpot::springDashpotWallForce
+    (
+        double nx,
+        double ny,
+        double d2,
+        double r,
+        cPhysics & dataP
+    )
+    {
+        double meff, kr, kd, d, vrx, vry, ddot, mag, fx, fy;
+
+        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
+        kr = meff*alpha;
+        kd = 2.0*meff*beta;
+
+        vrx = dataP.vx;
+        vry = dataP.vy;
+
+        ddot = nx*vrx+ny*vry;
+
+        d = std::sqrt(d2);
+
+        mag = std::min(1.0/d,3.0)*(kr*(r-d)-kd*ddot);
+
+        fx = mag*nx;//+friction*std::abs(mag)*nxt;
+        fy = mag*ny;//+friction*std::abs(mag)*nyt;
+
+        dataP.fx += fx;
+        dataP.fy += fy;
+        
+    }
 
     /*
         Line segment - Line segment collision
@@ -649,10 +680,13 @@ namespace Hop::System::Physics
     )
     {
         double d2, d2p;
+        double lx0, lx1, ly0, ly1;
+        double l2x0, l2x1, l2y0, l2y1;
         double nx = 0.0;
         double ny = 0.0;
         bool op = false;
         inside = false;
+        
         double thresh = c->r;
         double insideThresh = thresh*thresh;
         int handedness, handedness2;
@@ -797,6 +831,9 @@ namespace Hop::System::Physics
                 x0,hy
             );
             inside = handedness == 1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = x0; ly1 = hy;
         }
         else if (h == Tile::EMPTY_BOTTOM_LEFT)
         {
@@ -819,6 +856,9 @@ namespace Hop::System::Physics
                 x0,hy
             );
             inside = handedness == -1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = x0; ly1 = hy;
         }
         else if (h == Tile::BOTTOM_RIGHT)
         {
@@ -841,6 +881,9 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == -1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = lx; ly1 = hy;
         }
         else if (h == Tile::EMPTY_BOTTOM_RIGHT)
         {
@@ -863,6 +906,9 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == 1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = lx; ly1 = hy;
         }
         else if (h == Tile::TOP_RIGHT)
         {
@@ -885,6 +931,9 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == -1;
+
+            lx0 = lx; ly0 = hy;
+            lx1 = hx; ly1 = ly;
         }
         else if (h == Tile::EMPTY_TOP_RIGHT)
         {
@@ -907,6 +956,9 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == 1;
+
+            lx0 = lx; ly0 = hy;
+            lx1 = hx; ly1 = ly;
         }
         else if (h == Tile::TOP_LEFT)
         {
@@ -929,6 +981,9 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == 1;
+
+            lx0 = x0; ly0 = hy;
+            lx1 = hx; ly1 = ly;
         }
         else if (h == Tile::EMPTY_TOP_LEFT)
         {
@@ -951,6 +1006,9 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == -1;
+
+            lx0 = x0; ly0 = hy;
+            lx1 = hx; ly1 = ly;
         }
         else if (h == Tile::BOTTOM_HALF)
         {
@@ -973,6 +1031,9 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == -1;
+
+            lx0 = x0; ly0 = hy;
+            lx1 = lx; ly1 = hy;
         }
         else if (h == Tile::TOP_HALF)
         {
@@ -995,6 +1056,8 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == 1;
+            lx0 = x0; ly0 = hy;
+            lx1 = lx; ly1 = hy;
         }
         else if (h == Tile::LEFT_HALF)
         {
@@ -1017,6 +1080,9 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == 1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = hx; ly1 = ly;
         }
         else if (h == Tile::RIGHT_HALF)
         {
@@ -1039,6 +1105,8 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == -1;
+            lx0 = hx; ly0 = y0;
+            lx1 = hx; ly1 = ly;
         }
         else if (h == Tile::BOTTOM_LEFT_AND_TOP_RIGHT)
         {
@@ -1063,6 +1131,8 @@ namespace Hop::System::Physics
                 x0,hy,
                 hx,ly
             );
+            lx0 = x0; ly0 = hy;
+            lx1 = hx; ly1 = ly;
 
             if (handedness == -1
             )
@@ -1082,6 +1152,9 @@ namespace Hop::System::Physics
                 hx,y0,
                 lx,hy
             );
+
+            l2x0 = hx; l2y0 = y0;
+            l2x1 = lx; l2y1 = hy;
 
             if (insideLeft && handedness2 == 1
             )
@@ -1113,6 +1186,9 @@ namespace Hop::System::Physics
                 x0,hy
             );
 
+            lx0 = hx; ly0 = y0;
+            lx1 = x0; ly1 = hy;
+
             if (handedness == -1
             )
             {
@@ -1129,6 +1205,9 @@ namespace Hop::System::Physics
                 lx,hy,
                 hx,ly
             );
+
+            l2x0 = lx; l2y0 = hy;
+            l2x1 = hx; l2y1 = ly;
 
             if (insideLeft && handedness2 == 1
             )
@@ -1177,47 +1256,114 @@ namespace Hop::System::Physics
         bool f1 = d2 < r2;
         bool f2 = op && (d2p < r2);
 
-        if (f1)
+        LineSegment * li = dynamic_cast<LineSegment*>(c.get());
+
+        if (li == nullptr)
         {
-            springDashpotWallForce(nx,ny,d2,c->r,dataP);
-        }
+            if (f1)
+            {
+                springDashpotWallForce(nx,ny,d2,c->r,dataP);
+            }
 
-        if (f2)
+            if (f2)
+            {
+                springDashpotWallForce(-nx,-ny,d2p,c->r,dataP);
+            }
+        }
+        else 
         {
-            springDashpotWallForce(-nx,-ny,d2p,c->r,dataP);
+            // line - line collision
+            double nx1, ny1, nx2, ny2, dd, dd1, dd2, tc;
+            double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag;
+            bool colliding = false;
+
+            if (f1)
+            {
+
+                dd1 = pointLineSegmentDistanceSquared<double>
+                (
+                    li->x0,li->y0,
+                    lx0, ly0,
+                    lx1, ly1,
+                    nx1, ny1
+                );
+
+                dd1 = pointLineSegmentDistanceSquared<double>
+                (
+                    li->x1,li->y1,
+                    lx0, ly0,
+                    lx1, ly1,
+                    nx2, ny2
+                );
+
+                tc = li->thickness*2;
+
+                if (dd1 < dd2 && dd1 < tc*tc)
+                {
+                    nx = nx1 - li->x0;
+                    ny = ny1 - li->y0;
+                    dd = dd1;
+                    colliding = true;
+                }
+                else if (dd2 < tc*tc)
+                {
+                    nx = nx2 - li->x0;
+                    ny = ny2 - li->y0;
+                    dd = dd2;
+                    colliding = true;                   
+                }
+            
+            }
+
+            if (colliding)
+            {
+                springDashpotWallForce(-nx,-ny, dd, li->thickness,dataP);
+            }
+
+            colliding = false;
+
+            if (f2)
+            {
+                dd1 = pointLineSegmentDistanceSquared<double>
+                (
+                    li->x0,li->y0,
+                    l2x0, l2y0,
+                    l2x1, l2y1,
+                    nx1, ny1
+                );
+
+                dd1 = pointLineSegmentDistanceSquared<double>
+                (
+                    li->x1,li->y1,
+                    l2x0, l2y0,
+                    l2x1, l2y1,
+                    nx2, ny2
+                );
+
+                tc = li->thickness*2;
+
+                if (dd1 < dd2 && dd1 < tc*tc)
+                {
+                    nx = nx1 - li->x0;
+                    ny = ny1 - li->y0;
+                    dd = dd1;
+                    colliding = true;
+                }
+                else if (dd2 < tc*tc)
+                {
+                    nx = nx2 - li->x0;
+                    ny = ny2 - li->y0;
+                    dd = dd2;
+                    colliding = true;                   
+                }
+            }
+
+            if (colliding)
+            {
+                springDashpotWallForce(-nx,-ny, dd, li->thickness,dataP);
+            }
+
         }
-    }
-
-    void SpringDashpot::springDashpotWallForce
-    (
-        double nx,
-        double ny,
-        double d2,
-        double r,
-        cPhysics & dataP
-    )
-    {
-        double meff, kr, kd, d, vrx, vry, ddot, mag, fx, fy;
-
-        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
-        kr = meff*alpha;
-        kd = 2.0*meff*beta;
-
-        vrx = dataP.vx;
-        vry = dataP.vy;
-
-        ddot = nx*vrx+ny*vry;
-
-        d = std::sqrt(d2);
-
-        mag = std::min(1.0/d,3.0)*(kr*(r-d)-kd*ddot);
-
-        fx = mag*nx;//+friction*std::abs(mag)*nxt;
-        fy = mag*ny;//+friction*std::abs(mag)*nyt;
-
-        dataP.fx += fx;
-        dataP.fy += fy;
-        
     }
 
     void SpringDashpot::tileBoundariesCollision
@@ -1230,118 +1376,133 @@ namespace Hop::System::Physics
         double nx, ny, d2;
         double r2 = c->r*c->r;
 
+        double lx0, ly0, lx1, ly1;
+
+        bool colliding = false;
+
+        LineSegment * li = dynamic_cast<LineSegment*>(c.get());
+
         // WEST
 
         if 
         (
-            tileBounds.wx0 == 0 &&
-            tileBounds.wx1 == 0 &&
-            tileBounds.wy0 == 0 &&
-            tileBounds.wy1 == 0
+            tileBounds.wx0 != 0 &&
+            tileBounds.wx1 != 0 &&
+            tileBounds.wy0 != 0 &&
+            tileBounds.wy1 != 0
         )
         {
-            // no collision here
-        }
-        else
-        {
             nx = 1.0; ny = 0.0;
-            d2 = pointLineSegmentDistanceSquared<double>
-            (
-                c->x,c->y,
-                tileBounds.wx0, tileBounds.wy0,
-                tileBounds.wx1, tileBounds.wy1
-            );
-
-            if (d2 < r2)
-            {
-                springDashpotWallForce(nx,ny,d2,c->r,dataP);
-            }
+            lx0 = tileBounds.wx0; ly0 = tileBounds.wy0;
+            lx1 = tileBounds.wx1; ly1 = tileBounds.wy1;
+            colliding = true;
         }
 
         // NORTH
 
         if 
         (
-            tileBounds.nx0 == 0 &&
-            tileBounds.nx1 == 0 &&
-            tileBounds.ny0 == 0 &&
-            tileBounds.ny1 == 0
+            tileBounds.nx0 != 0 &&
+            tileBounds.nx1 != 0 &&
+            tileBounds.ny0 != 0 &&
+            tileBounds.ny1 != 0
         )
         {
-            // no collision here
-        }
-        else
-        {
             nx = 0.0; ny = -1.0;
-            d2 = pointLineSegmentDistanceSquared<double>
-            (
-                c->x,c->y,
-                tileBounds.nx0, tileBounds.ny0,
-                tileBounds.nx1, tileBounds.ny1
-            );
-
-            if (d2 < r2)
-            {
-                springDashpotWallForce(nx,ny,d2,c->r,dataP);
-            }
+            lx0 = tileBounds.nx0; ly0 = tileBounds.ny0;
+            lx1 = tileBounds.nx1; ly1 = tileBounds.ny1;
+            colliding = true;
         }
 
         // EAST
 
         if 
         (
-            tileBounds.ex0 == 0 &&
-            tileBounds.ex1 == 0 &&
-            tileBounds.ey0 == 0 &&
-            tileBounds.ey1 == 0
+            tileBounds.ex0 != 0 &&
+            tileBounds.ex1 != 0 &&
+            tileBounds.ey0 != 0 &&
+            tileBounds.ey1 != 0
         )
         {
-            // no collision here
-        }
-        else
-        {
             nx = -1.0; ny = 0.0;
-            d2 = pointLineSegmentDistanceSquared<double>
-            (
-                c->x,c->y,
-                tileBounds.ex0, tileBounds.ey0,
-                tileBounds.ex1, tileBounds.ey1
-            );
-
-            if (d2 < r2)
-            {
-                springDashpotWallForce(nx,ny,d2,c->r,dataP);
-            }
+            lx0 = tileBounds.ex0; ly0 = tileBounds.ey0;
+            lx1 = tileBounds.ex1; ly1 = tileBounds.ey1;
+            colliding = true;
         }
 
         // SOUTH
 
         if 
         (
-            tileBounds.sx0 == 0 &&
-            tileBounds.sx1 == 0 &&
-            tileBounds.sy0 == 0 &&
-            tileBounds.sy1 == 0
+            tileBounds.sx0 != 0 &&
+            tileBounds.sx1 != 0 &&
+            tileBounds.sy0 != 0 &&
+            tileBounds.sy1 != 0
         )
         {
-            // no collision here
-        }
-        else
-        {
             nx = 0.0; ny = 1.0;
-            d2 = pointLineSegmentDistanceSquared<double>
-            (
-                c->x,c->y,
-                tileBounds.sx0, tileBounds.sy0,
-                tileBounds.sx1, tileBounds.sy1
-            );
+            lx0 = tileBounds.sx0; ly0 = tileBounds.sy0;
+            lx1 = tileBounds.sx1; ly1 = tileBounds.sy1;
+            colliding = true;
+        }
 
-            if (d2 < r2)
+        if (colliding)
+        {
+            if (li == nullptr)
             {
-                springDashpotWallForce(nx,ny,d2,c->r,dataP);
+                d2 = pointLineSegmentDistanceSquared<double>
+                (
+                    c->x,c->y,
+                    lx0, ly0,
+                    lx1, ly1
+                );
+
+                if (d2 < r2)
+                {
+                    springDashpotWallForce(nx,ny,d2,c->r,dataP);
+                }
+            }
+            else
+            {
+                double tc, nx1, ny1, dd1, nx2, ny2, dd2, dd;
+                dd1 = pointLineSegmentDistanceSquared<double>
+                (
+                    li->x0,li->y0,
+                    lx0, ly0,
+                    lx1, ly1,
+                    nx1, ny1
+                );
+
+                dd1 = pointLineSegmentDistanceSquared<double>
+                (
+                    li->x1,li->y1,
+                    lx0, ly0,
+                    lx1, ly1,
+                    nx2, ny2
+                );
+
+                tc = li->thickness*2;
+
+                if (dd1 < dd2 && dd1 < tc*tc)
+                {
+                    nx = nx1 - li->x0;
+                    ny = ny1 - li->y0;
+                    dd = dd1;
+                    colliding = true;
+                }
+                else if (dd2 < tc*tc)
+                {
+                    nx = nx2 - li->x0;
+                    ny = ny2 - li->y0;
+                    dd = dd2;
+                    colliding = true;                   
+                }
+
+                if (colliding)
+                {
+                    springDashpotWallForce(-nx,-ny, dd, li->thickness,dataP);
+                }
             }
         }
-
     }
-
 }
