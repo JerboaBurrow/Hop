@@ -235,16 +235,20 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
                         );
                         goodInput = true;
                     }
-                    else if (collisionMesh[i].size() == 4)
+                    else if (collisionMesh[i].size() == 8)
                     {
                         mesh.push_back
                         (
-                            std::make_shared<Hop::System::Physics::LineSegment>
+                            std::make_shared<Hop::System::Physics::Rectangle>
                             (
                                 collisionMesh[i][0],
                                 collisionMesh[i][1],
                                 collisionMesh[i][2],
-                                collisionMesh[i][3]
+                                collisionMesh[i][3],
+                                collisionMesh[i][4],
+                                collisionMesh[i][5],
+                                collisionMesh[i][6],
+                                collisionMesh[i][7]
                             )
                         );
                         goodInput = true;

@@ -57,22 +57,40 @@ namespace Hop::System::Physics
         void springDashpotForce
         (
             cPhysics & pI, cPhysics & pJ,
-            double dd, double rx, double ry, double rc
+            double dd, double rx, double ry, double rc,
+            double pxi, double pyi, double pxj, double pyj
+        );
+
+        void springDashpotWallForce
+        (
+            double nx,
+            double ny,
+            double d2,
+            double c,
+            double px, double py,
+            cPhysics & dataP
+        );
+
+
+        void springDashpotSDFForce
+        (
+            cPhysics & pI, cPhysics & pJ,
+            double sd, double nx, double ny,
+            double px, double py
         );
 
         void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
-            LineSegment * li,
-            LineSegment * lj,
-            double rx, double ry, double rc, double dd
+            Rectangle * li,
+            Rectangle * lj
         );
 
         void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
             CollisionPrimitive * c,
-            LineSegment * l,
+            Rectangle * l,
             double rx, double ry, double rc, double dd
         );
 
@@ -130,15 +148,6 @@ namespace Hop::System::Physics
             std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
             TileBoundsData & tileBounds
-        );
-
-        void springDashpotWallForce
-        (
-            double nx,
-            double ny,
-            double d2,
-            double c,
-            cPhysics & dataP
         );
 
     private:

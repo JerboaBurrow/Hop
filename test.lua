@@ -10,11 +10,13 @@ for i = 1,1 do
 
         ["transform"] = {x,y,0.0,s},
         ["colour"] = {200/255,200/255,250/255,1.0},
-        ["shader"] = "lineSegmentObjectShader",
+        ["shader"] = "circleObjectShader",
+        -- ["shader"] = "lineSegmentObjectShader",
         ["moveable"] = true,
         ["collisionMesh"] =
         {
-            {0.5,0.5,0.0,1.0}
+            {0.0,0.0,1.0}
+            -- {0.5,0.5,0.0,1.0}
         },
         ["name"] = ""
 

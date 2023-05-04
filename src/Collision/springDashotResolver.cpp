@@ -7,16 +7,94 @@ using namespace std::chrono;
   #include <android/log.h>
 #endif
 
+/* TODO 
+
+    X deprecate LineSegment
+
+    X Rectangle - world vertices update
+
+    Forces
+
+        X Use p-axis to cull?
+            Then test each vertex and apply
+            forces based upon Box SDF
+
+            Apply forces at point (for rotation)
+
+        Rect-Rect force
+        Rect-Circle force
+        Rect-world (Rect) force
+*/
+
 namespace Hop::System::Physics
 {
 
     using Hop::Maths::pointLineSegmentDistanceSquared;
     using Hop::Maths::pointLineHandedness;
+    using Hop::Maths::rectangleRectangleCollided;
+    using Hop::Maths::sdf;
+
+    void SpringDashpot::springDashpotSDFForce
+    (
+        cPhysics & pI, cPhysics & pJ,
+        double sd, double nx, double ny,
+        double px, double py
+    )
+    {
+        double mag, fx, fy, dinv, vrx, vry, ddot, d, rx, ry;
+
+        mag = 0.0;
+        fx = nx;
+        fy = ny;
+
+        d = -d;
+
+        d = 10.0*d;
+
+        d *= d;
+
+        mag -= kr*d;
+
+        vrx = pI.vx-pJ.vx;
+        vry = pI.vy-pJ.vy;
+
+        // nxt = ny;
+        // nyt = -nx;
+        ddot = nx*vrx+ny*vry;
+
+        // vnorm = vrx*vrx+vry*vry;
+
+        // if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) )
+        // {
+        //     nxt *= -1.0;
+        //     nyt *= -1.0;
+        // }
+
+        mag -= kd*ddot*d;
+
+        fx *= mag;//+friction*std::abs(mag)*nxt;
+        fy *= mag;//+friction*std::abs(mag)*nyt;
+
+        pI.fx += fx;
+        pI.fy += fy;
+
+        pI.fpx += px;
+        pI.fpy += py;
+        pI.fc += 1;
+
+        pJ.fx -= fx;
+        pJ.fy -= fy;
+
+        pJ.fpx += px;
+        pJ.fpy += py;
+        pJ.fc += 1;
+    }
 
     void SpringDashpot::springDashpotForce
     (
         cPhysics & pI, cPhysics & pJ,
-        double dd, double rx, double ry, double rc
+        double dd, double rx, double ry, double rc,
+        double pxi, double pyi, double pxj, double pyj
     )
     {
         double mag, fx, fy, dinv, nx, ny, vrx, vry, ddot, d;
@@ -56,9 +134,16 @@ namespace Hop::System::Physics
         pI.fx += fx;
         pI.fy += fy;
 
-        
+        pI.fpx += pxi;
+        pI.fpy += pyi;
+        pI.fc += 1;
+
         pJ.fx -= fx;
         pJ.fy -= fy;
+
+        pJ.fpx += pxj;
+        pJ.fpy += pyj;
+        pJ.fc += 1;
     }
 
      void SpringDashpot::springDashpotWallForce
@@ -67,6 +152,7 @@ namespace Hop::System::Physics
         double ny,
         double d2,
         double r,
+        double px, double py,
         cPhysics & dataP
     )
     {
@@ -83,135 +169,95 @@ namespace Hop::System::Physics
 
         d = std::sqrt(d2);
 
-        mag = std::min(1.0/d,3.0)*(kr*(r-d)-kd*ddot);
+        mag = std::min(1.0/d,10.0)*(kr*(r-d)-kd*ddot);
 
         fx = mag*nx;//+friction*std::abs(mag)*nxt;
         fy = mag*ny;//+friction*std::abs(mag)*nyt;
 
         dataP.fx += fx;
         dataP.fy += fy;
+
+        dataP.fpx += px;
+        dataP.fpy += py;
+        dataP.fc += 1;
         
     }
 
-    /*
-        Line segment - Line segment collision
-
-        Interior case one vertex (a,b) willl be closest, parallel case
-         both might be.
-
-        (i)
-              p
-               \
-              a \
-             /   \
-            /     \ q
-          b/
-
-        Assume a is closest, distance from a to qp is:
-
-        d = Distance between ba and qp is length of line from a (closest vertex)
-         hitting qp at 90 degrees.
-
-        theta = angle made by a-q-p
-
-        cos(theta) = (p-q)/|p-q| \cdot (a-q) / |a-q|
-
-        For this interior case, porjection satisfies, 0 <= cos(theta)*|a-q| <= 1
-
-        Closest point on qp is then the vector projection of qa onto qp plus q
-
-        p* = q + cos(theta)*|a-q|
-
-        Exterior cases, either (i) cos(theta)*|a-q| < 0 (ii) cos(theta)*|a-q| > 1
-        
-        (ii)
-              p
-               \
-                \
-                 \
-                  \ q
-          
-                   a
-                  /
-                 /
-               b/
-
-        (iii)
-             a
-            /
-           /  p
-          /    \
-         b      \
-                 \
-                  \ q
-
-        (i)   d = |a-(q + cos(theta)*|a-q|)|
-        (ii)  d = |a-q|
-        (iii) d = |a-q|
-
-        General case, check both a and b against qp to find closest point
-
-    */
     void SpringDashpot::collisionForce
     (
         cPhysics & pI, cPhysics & pJ,
-        LineSegment * li,
-        LineSegment * lj,
-        double rx, double ry, double rc, double dd
+        Rectangle * li,
+        Rectangle * lj
     )
     {
-        // may be possible to optimise by not using the function and reusing
-        //  calcs? not prematurely though.
-        double nx1, ny1, nx2, ny2, dd1, dd2, tc;
-        double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag;
-        bool colliding = false;
+        double nx, ny, s, d;
 
-        dd1 = pointLineSegmentDistanceSquared<double>
-        (
-            li->x0,li->y0,
-            lj->x0,lj->y0,
-            lj->x1,lj->y1,
-            nx1, ny1
-        );
+        bool collided = rectangleRectangleCollided<double>(li,lj,nx,ny,s);
 
-        dd2 = pointLineSegmentDistanceSquared<double>
-        (
-            li->x1,li->y1,
-            lj->x0,lj->y0,
-            lj->x1,lj->y1,
-            nx2, ny2
-        );
-        
-        tc = li->thickness + lj->thickness;
-
-        if (dd1 < dd2)
+        if (!collided)
         {
-            if (dd1 < tc*tc)
-            {
-                nx = nx1-li->x0;
-                ny = ny1-li->y0;
-
-                dd = dd1;
-
-                colliding = true;
-            }
-        }
-        else
-        {
-            if (dd2 < tc*tc)
-            {
-                nx = nx2-li->x1;
-                ny = ny2-li->y1;
-
-                dd = dd2;
-
-                colliding = true;
-            }
+            return;
         }
 
-        if (colliding)
+        // must have collided, check forces per vertex
+
+        // li's vertices
+        d = sdf(lj,li->llx,li->lly);
+
+        if (d < 0)
         {
-            springDashpotForce(pI, pJ, dd, nx, ny, tc);
+            springDashpotSDFForce(pI, pJ, d, nx, ny, li->llx, li->lly);
+        }
+
+        d = sdf(lj,li->ulx,li->uly);
+
+        if (d < 0)
+        {
+            springDashpotSDFForce(pI, pJ, d, nx, ny, li->ulx,li->uly);
+        }
+
+        d = sdf(lj,li->urx,li->ury);
+
+        if (d < 0)
+        {
+            springDashpotSDFForce(pI, pJ, d, nx, ny, li->urx,li->ury);
+        }
+
+        d = sdf(li,li->lrx,li->lry);
+
+        if (d < 0)
+        {
+            springDashpotSDFForce(pI, pJ, d, nx, ny, li->lrx,li->lry);
+        }
+
+        // lj's vertices
+
+        d = sdf(li,lj->llx,lj->lly);
+
+        if (d < 0)
+        {
+            springDashpotSDFForce(pI, pJ, d, nx, ny, lj->llx, lj->lly);
+        }
+
+        d = sdf(li,lj->ulx,lj->uly);
+
+        if (d < 0)
+        {
+            springDashpotSDFForce(pI, pJ, d, nx, ny, lj->ulx,lj->uly);
+        }
+
+        d = sdf(li,lj->urx,lj->ury);
+
+        if (d < 0)
+        {
+            springDashpotSDFForce(pI, pJ, d, nx, ny, lj->urx,lj->ury);
+        }
+
+        d = sdf(li,lj->lrx,lj->lry);
+
+        if (d < 0)
+        {
+            springDashpotSDFForce(pI, pJ, d, nx, ny, lj->lrx,lj->lry);
         }
     }
 
@@ -219,29 +265,70 @@ namespace Hop::System::Physics
     (
         cPhysics & pI, cPhysics & pJ,
         CollisionPrimitive * c,
-        LineSegment * l,
+        Rectangle * l,
         double rx, double ry, double rc, double dd
     )
     {
         double contactX, contactY, tc;
-        double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag;
+        double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag, px, py;
         bool colliding = false;
 
         dd = pointLineSegmentDistanceSquared<double>
         (
             c->x,c->y,
-            l->x0,l->y0,
-            l->x1,l->y1,
+            l->llx,l->lly,
+            l->ulx,l->uly,
             contactX, contactY
         );
 
-        tc = c->r + l->thickness;
+        d = dd; nx = contactX-c->x; ny = contactY-c->y;
+        px = contactX; py = contactY;
 
-        if (dd < tc*tc)
+        dd = pointLineSegmentDistanceSquared<double>
+        (
+            c->x,c->y,
+            l->ulx,l->uly,
+            l->urx,l->ury,
+            contactX, contactY
+        );
+
+        if (dd < d)
         {
-            nx = contactX-c->x;
-            ny = contactY-c->y;
-            springDashpotForce(pI, pJ, dd, nx, ny, tc);
+            d = dd; nx = contactX-c->x; ny = contactY-c->y;
+            px = contactX; py = contactY;
+        }
+
+        dd = pointLineSegmentDistanceSquared<double>
+        (
+            c->x,c->y,
+            l->urx,l->ury,
+            l->lrx,l->lry,
+            contactX, contactY
+        );
+
+        if (dd < d)
+        {
+            d = dd; nx = contactX-c->x; ny = contactY-c->y;
+            px = contactX; py = contactY;
+        }
+
+        dd = pointLineSegmentDistanceSquared<double>
+        (
+            c->x,c->y,
+            l->lrx,l->lry,
+            l->llx,l->lly,
+            contactX, contactY
+        );
+
+        if (dd < d)
+        {
+            d = dd; nx = contactX-c->x; ny = contactY-c->y;
+            px = contactX; py = contactY;
+        }
+
+        if (d < c->r)
+        {
+            springDashpotForce(pI,pJ,d*d,nx,ny,c->r,px,py,px,py);
         }
     }
 
@@ -261,7 +348,7 @@ namespace Hop::System::Physics
         nx = l->x-c->x;
         ny = l->y-c->y;
 
-        springDashpotForce(pI,pJ,dd,nx,ny,rc);
+        springDashpotForce(pI,pJ,dd,nx,ny,rc,c->x,c->y,l->x,l->y);
 
     }
 
@@ -283,7 +370,7 @@ namespace Hop::System::Physics
 
         double ix, iy, jx, jy, rx, ry, rc, dd;
 
-        LineSegment * li, * lj;
+        Rectangle * li, * lj;
 
         rx = 0.0; ry = 0.0; rc = 0.0;
 
@@ -304,25 +391,25 @@ namespace Hop::System::Physics
         //float isContact = dd < rc*rc;
         if (dd < rc*rc)
         {
-            li = dynamic_cast<LineSegment*>(ci.get());
-            lj = dynamic_cast<LineSegment*>(cj.get());
+            li = dynamic_cast<Rectangle*>(ci.get());
+            lj = dynamic_cast<Rectangle*>(cj.get());
 
-            bool iIsLine = li != nullptr;
-            bool jIsLine = lj != nullptr;
+            bool iIsRectangle = li != nullptr;
+            bool jIsRectangle = lj != nullptr;
 
-            if (iIsLine && jIsLine)
+            if (iIsRectangle && jIsRectangle)
             {
-                collisionForce(pI,pJ,li,lj,rx,ry,rc,dd);
+                collisionForce(pI,pJ,li,lj);
             }
-            else if (iIsLine && !jIsLine)
+            else if (iIsRectangle && !jIsRectangle)
             {
                 collisionForce(pJ,pI,cj.get(),li,rx,ry,rc,dd);
             }
-            else if (!iIsLine && !jIsLine)
+            else if (!iIsRectangle && !jIsRectangle)
             {
                 collisionForce(pI,pJ,ci.get(),cj.get(),rx,ry,rc,dd);
             }
-            else if (!iIsLine && jIsLine)
+            else if (!iIsRectangle && jIsRectangle)
             {
                 collisionForce(pI,pJ,ci.get(),lj,rx,ry,rc,dd);
             }
@@ -690,6 +777,8 @@ namespace Hop::System::Physics
         double thresh = c->r;
         double insideThresh = thresh*thresh;
         int handedness, handedness2;
+
+        Rectangle r1, r2;
 
         if (h == Tile::EMPTY)
         {   
@@ -1219,6 +1308,7 @@ namespace Hop::System::Physics
         if (neighbour){inside = false;}
 
         if (inside){ 
+            std::cout << "inside\n";
             if (!op && d2 > insideThresh){ c->setRecentlyInside(1); }
             else{ double d = std::min(d2,d2p); if (d > insideThresh){ c->setRecentlyInside(1);} }
             return; 
@@ -1226,6 +1316,7 @@ namespace Hop::System::Physics
 
         if (c->recentlyInside())
         {
+            std::cout << "r-inside\n";
             if (!op)
             {
                 if (d2 > insideThresh)
@@ -1253,114 +1344,42 @@ namespace Hop::System::Physics
 
         double r2 = c->r*c->r;
 
+        std::cout << d2 << ", " << d2p << "\n";
+
         bool f1 = d2 < r2;
         bool f2 = op && (d2p < r2);
 
-        LineSegment * li = dynamic_cast<LineSegment*>(c.get());
+        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
 
         if (li == nullptr)
         {
+            std::cout << "not rectangle\n";
             if (f1)
             {
-                springDashpotWallForce(nx,ny,d2,c->r,dataP);
+                springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP);
             }
 
             if (f2)
             {
-                springDashpotWallForce(-nx,-ny,d2p,c->r,dataP);
+                springDashpotWallForce(-nx,-ny,d2p,c->r,c->x,c->y,dataP);
             }
         }
         else 
         {
-            // line - line collision
+            // rect-rect collision
             double nx1, ny1, nx2, ny2, dd, dd1, dd2, tc;
             double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag;
             bool colliding = false;
+            cPhysics dataTmp(c->x,c->y,c->y);
 
             if (f1)
             {
-
-                dd1 = pointLineSegmentDistanceSquared<double>
-                (
-                    li->x0,li->y0,
-                    lx0, ly0,
-                    lx1, ly1,
-                    nx1, ny1
-                );
-
-                dd1 = pointLineSegmentDistanceSquared<double>
-                (
-                    li->x1,li->y1,
-                    lx0, ly0,
-                    lx1, ly1,
-                    nx2, ny2
-                );
-
-                tc = li->thickness*2;
-
-                if (dd1 < dd2 && dd1 < tc*tc)
-                {
-                    nx = nx1 - li->x0;
-                    ny = ny1 - li->y0;
-                    dd = dd1;
-                    colliding = true;
-                }
-                else if (dd2 < tc*tc)
-                {
-                    nx = nx2 - li->x0;
-                    ny = ny2 - li->y0;
-                    dd = dd2;
-                    colliding = true;                   
-                }
-            
+                collisionForce(dataP, dataTmp,li,r1);
             }
-
-            if (colliding)
-            {
-                springDashpotWallForce(-nx,-ny, dd, li->thickness,dataP);
-            }
-
-            colliding = false;
 
             if (f2)
             {
-                dd1 = pointLineSegmentDistanceSquared<double>
-                (
-                    li->x0,li->y0,
-                    l2x0, l2y0,
-                    l2x1, l2y1,
-                    nx1, ny1
-                );
-
-                dd1 = pointLineSegmentDistanceSquared<double>
-                (
-                    li->x1,li->y1,
-                    l2x0, l2y0,
-                    l2x1, l2y1,
-                    nx2, ny2
-                );
-
-                tc = li->thickness*2;
-
-                if (dd1 < dd2 && dd1 < tc*tc)
-                {
-                    nx = nx1 - li->x0;
-                    ny = ny1 - li->y0;
-                    dd = dd1;
-                    colliding = true;
-                }
-                else if (dd2 < tc*tc)
-                {
-                    nx = nx2 - li->x0;
-                    ny = ny2 - li->y0;
-                    dd = dd2;
-                    colliding = true;                   
-                }
-            }
-
-            if (colliding)
-            {
-                springDashpotWallForce(-nx,-ny, dd, li->thickness,dataP);
+                collisionForce(dataP, dataTmp,li,r2);
             }
 
         }
@@ -1380,7 +1399,9 @@ namespace Hop::System::Physics
 
         bool colliding = false;
 
-        LineSegment * li = dynamic_cast<LineSegment*>(c.get());
+        Rectangle r;
+
+        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
 
         // WEST
 
@@ -1396,6 +1417,7 @@ namespace Hop::System::Physics
             lx0 = tileBounds.wx0; ly0 = tileBounds.wy0;
             lx1 = tileBounds.wx1; ly1 = tileBounds.wy1;
             colliding = true;
+            r
         }
 
         // NORTH
@@ -1459,49 +1481,13 @@ namespace Hop::System::Physics
 
                 if (d2 < r2)
                 {
-                    springDashpotWallForce(nx,ny,d2,c->r,dataP);
+                    springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP);
                 }
             }
             else
             {
-                double tc, nx1, ny1, dd1, nx2, ny2, dd2, dd;
-                dd1 = pointLineSegmentDistanceSquared<double>
-                (
-                    li->x0,li->y0,
-                    lx0, ly0,
-                    lx1, ly1,
-                    nx1, ny1
-                );
-
-                dd1 = pointLineSegmentDistanceSquared<double>
-                (
-                    li->x1,li->y1,
-                    lx0, ly0,
-                    lx1, ly1,
-                    nx2, ny2
-                );
-
-                tc = li->thickness*2;
-
-                if (dd1 < dd2 && dd1 < tc*tc)
-                {
-                    nx = nx1 - li->x0;
-                    ny = ny1 - li->y0;
-                    dd = dd1;
-                    colliding = true;
-                }
-                else if (dd2 < tc*tc)
-                {
-                    nx = nx2 - li->x0;
-                    ny = ny2 - li->y0;
-                    dd = dd2;
-                    colliding = true;                   
-                }
-
-                if (colliding)
-                {
-                    springDashpotWallForce(-nx,-ny, dd, li->thickness,dataP);
-                }
+                cPhysics dataTmp(0.,0.,0.);
+                springDashpotForce(dataP, dataTmp, li, &r);
             }
         }
     }

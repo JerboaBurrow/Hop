@@ -16,7 +16,7 @@ namespace Hop::System::Physics
         unsigned njobs
     )
     {
-        double nx, ny, ntheta, ar, br, cr, at, bt, ct;
+        double nx, ny, ntheta, ar, br, cr, at, bt, ct, rx, ry, tau, norm;
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
         for (unsigned i = 0; i < njobs; i++)
@@ -53,6 +53,19 @@ namespace Hop::System::Physics
 
                 dataP.fx = 0.0;
                 dataP.fy = 0.0;
+                dataP.fpx = 0.0;
+                dataP.fpy = 0.0;
+                dataP.fc = 0;
+
+                if (dataP.fc > 0)
+                {
+                    norm = 1.0 / double(dataP.fc);
+                    rx = dataP.fpx * norm; 
+                    ry = dataP.fpy * norm;
+
+                    tau = rx*dataP.fy - ry*dataP.fx;
+                    dataP.omega -= tau / (PARTICLE_MASS*(rx*rx+ry*ry));
+                }
 
                 cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
                 br = 1.0/(1.0+cr);
@@ -136,7 +149,7 @@ namespace Hop::System::Physics
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
-        double nx, ny, ntheta, ar, br, cr, at, bt, ct;
+        double nx, ny, ntheta, ar, br, cr, at, bt, ct, rx, ry, tau, norm;
         unsigned k = 0;
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
@@ -177,6 +190,19 @@ namespace Hop::System::Physics
 
                 dataP.fx = 0.0;
                 dataP.fy = 0.0;
+                dataP.fpx = 0.0;
+                dataP.fpy = 0.0;
+                dataP.fc = 0;
+
+                if (dataP.fc > 0)
+                {
+                    norm = 1.0 / double(dataP.fc);
+                    rx = dataP.fpx * norm; 
+                    ry = dataP.fpy * norm;
+
+                    tau = rx*dataP.fy - ry*dataP.fx;
+                    dataP.omega -= tau / (PARTICLE_MASS*(rx*rx+ry*ry));
+                }
 
                 cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
                 br = 1.0/(1.0+cr);

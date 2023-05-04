@@ -94,6 +94,33 @@ namespace Hop::System::Physics
             worldVertices[i]->y = (vertices[i]->y*c-vertices[i]->x*s)*scale+y;
             worldVertices[i]->r = vertices[i]->r*scale;
             worldVertices[i]->lastInside = inside[i]; 
+
+            Rectangle * lw = dynamic_cast<Rectangle*>(worldVertices[i].get());
+            Rectangle * lv = dynamic_cast<Rectangle*>(vertices[i].get());
+
+            if (lw != nullptr && lv != nullptr)
+            {
+                lw->llx = lv->llx;
+                lw->lly = lv->lly;
+
+                lw->ulx = lv->ulx;
+                lw->uly = lv->uly;
+
+                lw->urx = lv->urx;
+                lw->ury = lv->ury;
+
+                lw->lrx = lv->lrx;
+                lw->lry = lv->lry;
+
+                lw->x = lv->x;
+                lw->y = lv->y;
+                lw->r = lv->r;
+                
+                Hop::Maths::rotateClockWise(lw, c, s);
+                Hop::Maths::scale(lw, scale);
+                Hop::Maths::translate(lw, x, y);
+
+            }
         }
     }
 

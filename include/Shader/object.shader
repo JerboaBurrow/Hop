@@ -63,7 +63,7 @@ namespace Hop::System::Rendering
         "   vec2 ba = b-a; vec2 ca = c-a;\n"
         "   float h = clamp(dot(ca,ba)/dot(ba,ba),0.0,1.0);\n"
         "   float d = length(ca-h*ba);\n"
-        "   if (d > 0.02) {colour = vec4(oColour.rgb,0.5);}\n"
+        "   if (d > 0.5) {colour = vec4(oColour.rgb,0.5);}\n"
         "   else {colour = oColour;}\n"
         "}";
 }

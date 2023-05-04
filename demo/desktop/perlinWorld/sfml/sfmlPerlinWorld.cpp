@@ -53,6 +53,7 @@ double deltas[60];
 bool debug = false;
 
 const double deltaPhysics = 1.0/900.0;
+const unsigned subSamples = 1;
 
 using Hop::Object::Component::cTransform;
 using Hop::Object::Component::cPhysics;
@@ -254,25 +255,25 @@ int main(int argc, char ** argv)
     if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
 
-        posY += MAX_SPEED;
+        posY += MAX_SPEED/camera.getZoomLevel();
       
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
 
-        posY -= MAX_SPEED;
+        posY -= MAX_SPEED/camera.getZoomLevel();
       
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
 
-        posX -= MAX_SPEED;
+        posX -= MAX_SPEED/camera.getZoomLevel();
       
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
 
-        posX += MAX_SPEED;
+        posX += MAX_SPEED/camera.getZoomLevel();
       
     }
 
@@ -287,16 +288,19 @@ int main(int argc, char ** argv)
 
     collisions.centreOn(world.get()->getMapCenter());
     
-    if (workers.size() > 1)
+    for (unsigned k = 0 ; k < subSamples; k++)
     {
-      collisions.update(&manager, world.get(),&workers);
-    }
-    else
-    {
-      collisions.update(&manager, world.get());
-    }
+      if (workers.size() > 1)
+      {
+        collisions.update(&manager, world.get(),&workers);
+      }
+      else
+      {
+        collisions.update(&manager, world.get());
+      }
 
-    physics.update(&manager);
+      physics.update(&manager);
+    }
 
     tp1 = high_resolution_clock::now();
 
