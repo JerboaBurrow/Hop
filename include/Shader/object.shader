@@ -11,12 +11,14 @@ namespace Hop::System::Rendering
         "layout(location=1) in vec4 a_offset;\n"
         "layout(location=2) in vec4 a_colour;\n"
         "layout(location=3) in vec4 a_texOffset;\n"
+        "layout(location=4) in vec4 a_util;\n"
         "uniform mat4 proj;\n"
         "uniform float atlasN;\n"
         "out vec2 texCoord;\n"
         "out vec2 atlasTexCoord;\n"
         "out vec4 oColour;\n"
         "out float theta;\n"
+        "out vec4 util;\n"
         "void main()\n"
         "{\n"
             "gl_Position = proj*vec4(a_offset.w*a_position.xy+a_offset.xy,0.0,1.0);\n"
@@ -25,6 +27,7 @@ namespace Hop::System::Rendering
             "atlasTexCoord = tileCoord + tileCoord*a_texOffset.xy;\n"
             "oColour = a_colour;\n"
             "theta = a_offset.z;\n"
+            "util = a_util;\n"
         "}";
 
     // circle

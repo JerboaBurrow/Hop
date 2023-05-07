@@ -313,7 +313,23 @@ int main(int argc, char ** argv)
     rendering.update(&manager, &shaderPool, refreshObjectShaders);
     refreshObjectShaders = false;
 
-    rendering.draw(&shaderPool);
+    rendering.draw(&shaderPool);  
+
+    auto citer = manager.objectIterator();
+    auto cend = manager.objectIteratorEnd();
+
+    while (citer != cend)
+    {
+      if (manager.hasComponent<cCollideable>(citer->first))
+      {
+        
+        cCollideable & c = manager.getComponent<cCollideable>(citer->first);
+
+        c.mesh.drawDebug(camera.getVP());
+
+      }
+      citer++;
+    }
 
     tr1 = high_resolution_clock::now();
 

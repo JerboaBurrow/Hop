@@ -1342,12 +1342,12 @@ namespace Hop::System::Physics
             }
         }
 
-        double r2 = c->r*c->r;
+        double rr = c->r*c->r;
 
         std::cout << d2 << ", " << d2p << "\n";
 
-        bool f1 = d2 < r2;
-        bool f2 = op && (d2p < r2);
+        bool f1 = d2 < rr;
+        bool f2 = op && (d2p < rr);
 
         Rectangle * li = dynamic_cast<Rectangle*>(c.get());
 
@@ -1374,12 +1374,12 @@ namespace Hop::System::Physics
 
             if (f1)
             {
-                collisionForce(dataP, dataTmp,li,r1);
+                collisionForce(dataP, dataTmp,li,&r1);
             }
 
             if (f2)
             {
-                collisionForce(dataP, dataTmp,li,r2);
+                collisionForce(dataP, dataTmp,li,&r2);
             }
 
         }
@@ -1417,7 +1417,6 @@ namespace Hop::System::Physics
             lx0 = tileBounds.wx0; ly0 = tileBounds.wy0;
             lx1 = tileBounds.wx1; ly1 = tileBounds.wy1;
             colliding = true;
-            r
         }
 
         // NORTH
@@ -1487,7 +1486,7 @@ namespace Hop::System::Physics
             else
             {
                 cPhysics dataTmp(0.,0.,0.);
-                springDashpotForce(dataP, dataTmp, li, &r);
+                collisionForce(dataP, dataTmp, li, &r);
             }
         }
     }
