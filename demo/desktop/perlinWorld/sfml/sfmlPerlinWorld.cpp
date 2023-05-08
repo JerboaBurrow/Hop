@@ -299,6 +299,8 @@ int main(int argc, char ** argv)
         collisions.update(&manager, world.get());
       }
 
+      physics.gravityForce(&manager,9.81,0.0,-1.0);
+
       physics.update(&manager);
     }
 

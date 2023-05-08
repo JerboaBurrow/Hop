@@ -36,7 +36,6 @@ namespace Hop::System::Physics
             }
             else
             {
-                dataP.fy += -gravity*PARTICLE_MASS;
 
                 ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
                 bt = 1.0/(1.0+ct);
@@ -53,19 +52,6 @@ namespace Hop::System::Physics
 
                 dataP.fx = 0.0;
                 dataP.fy = 0.0;
-                dataP.fpx = 0.0;
-                dataP.fpy = 0.0;
-                dataP.fc = 0;
-
-                if (dataP.fc > 0)
-                {
-                    norm = 1.0 / double(dataP.fc);
-                    rx = dataP.fpx * norm; 
-                    ry = dataP.fpy * norm;
-
-                    tau = rx*dataP.fy - ry*dataP.fx;
-                    dataP.omega -= tau / (PARTICLE_MASS*(rx*rx+ry*ry));
-                }
 
                 cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
                 br = 1.0/(1.0+cr);
@@ -168,13 +154,9 @@ namespace Hop::System::Physics
             }
             else
             {
-                // std::cout << it->id << ", " << dataP.fx << ", " << dataP.fy
-                //           << ", " << dataP.lastX << ", " <<  dataP.lastY 
-                //           << ", " << dt << ", " << dtdt
-                //           << "\n";
 
-                dataP.fy += -gravity*PARTICLE_MASS;
-
+                                std::cout << dataP.fx << ", " << dataP.fy << "\n";
+                
                 ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
                 bt = 1.0/(1.0+ct);
                 at = (1.0-ct)*bt;
@@ -190,19 +172,10 @@ namespace Hop::System::Physics
 
                 dataP.fx = 0.0;
                 dataP.fy = 0.0;
-                dataP.fpx = 0.0;
-                dataP.fpy = 0.0;
-                dataP.fc = 0;
 
-                if (dataP.fc > 0)
-                {
-                    norm = 1.0 / double(dataP.fc);
-                    rx = dataP.fpx * norm; 
-                    ry = dataP.fpy * norm;
+                if (dataP.omega < 0.1) { dataP.omega -= dataP.phi; }
 
-                    tau = rx*dataP.fy - ry*dataP.fx;
-                    dataP.omega -= tau / (PARTICLE_MASS*(rx*rx+ry*ry));
-                }
+                std::cout << dataP.omega << ", " << dataP.momentOfInertia << "\n";
 
                 cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
                 br = 1.0/(1.0+cr);
@@ -210,7 +183,7 @@ namespace Hop::System::Physics
 
                 ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
 
-                dataP.phi = (ntheta-dataP.lastTheta)/2.0;
+                dataP.phi = (ntheta-dataP.lastTheta)/(2.0*dt);
 
                 dataP.lastTheta = dataT.theta;
 
@@ -231,33 +204,106 @@ namespace Hop::System::Physics
                     dataT.theta,
                     dataT.scale
                 );
+                dataP.momentOfInertia = 0.25*data.mesh.momentOfInertia();
             }
         }
     }
 
+    void sPhysics::gravityForce
+    (
+        EntityComponentSystem * m,
+        double g,
+        double nx,
+        double ny
+    )
+    {
+        auto citer = m->objectIterator();
+        auto cend = m->objectIteratorEnd();
+
+        double fx = nx*g; double fy = ny*g;
+        double rx, ry;
+
+        while (citer != cend)
+        {
+
+            cPhysics & dataP = m->getComponent<cPhysics>(citer->first);
+            cTransform & dataT = m->getComponent<cTransform>(citer->first);
+
+            if (m->hasComponent<cCollideable>(citer->first))
+            {
+                cCollideable & dataC = m->getComponent<cCollideable>(citer->first);
+
+                for (unsigned i = 0; i < dataC.mesh.size(); i++)
+                {
+                    std::shared_ptr<CollisionPrimitive> p = dataC.mesh[i];
+                    Rectangle * r = dynamic_cast<Rectangle*>(p.get());
+
+                    if (r == nullptr)
+                    {
+                        dataP.fx += fx;
+                        dataP.fy += fy;
+
+                        rx = p->x - dataP.lastX;
+                        ry = p->y - dataP.lastY;
+
+                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                    }
+                    else
+                    {
+                        dataP.fx += fx;
+                        dataP.fy += fy;
+
+                        rx = r->llx - dataP.lastX;
+                        ry = r->lly - dataP.lastY;
+
+                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+
+                        rx = r->ulx - dataP.lastX;
+                        ry = r->uly - dataP.lastY;
+
+                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+
+                        rx = r->urx - dataP.lastX;
+                        ry = r->ury - dataP.lastY;
+
+                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+
+                        rx = r->lrx - dataP.lastX;
+                        ry = r->lry - dataP.lastY;
+
+                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+
+                    }
+                }
+            }
+
+            citer++;
+        }
+
+    }
+
     void sPhysics::applyForce(
         EntityComponentSystem * m,
-        Id i,
+        Id & i,
         double x,
         double y,
         double fx,
         double fy
     )
     {
+        double rx, ry;
+
         cPhysics & dataP = m->getComponent<cPhysics>(i);
         cTransform & dataT = m->getComponent<cTransform>(i);
 
         dataP.fx += fx;
         dataP.fy += fy;
 
-        if (dataT.x != x || dataT.y != y)
-        {
-            double rx = x-dataT.x;
-            double ry = y-dataT.y;
-            double tau = rx*fy-ry*fx;
-            double r2 = rx*rx+ry*ry;
-            dataP.omega -= tau/(PARTICLE_MASS*r2); 
-        }
+        rx = x - dataP.lastX;
+        ry = y - dataP.lastY;
+
+        dataP.omega += (rx*fy-ry*fx)/PARTICLE_MASS;
+
     }
 
     void sPhysics::applyForce(

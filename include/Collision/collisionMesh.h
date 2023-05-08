@@ -69,21 +69,11 @@ namespace Hop::System::Physics
         {
             x = (llx+ulx+urx+lrx)/4.0;
             y = (lly+uly+ury+lry)/4.0;
-            
-            double d = std::sqrt(llx*llx+lly*lly);
-            double d2 = std::sqrt(ulx*ulx+uly*uly);
 
-            if (d2 > d) { d = d2; }
+            double dx = llx-x;
+            double dy = lly-y;
 
-            d2 = std::sqrt(urx*urx+ury*ury);
-
-            if (d2 > d) { d = d2; }
-
-            d2 = std::sqrt(lrx*lrx+ury*ury);
-
-            if (d2 > d) { d = d2; }
-
-            r = d;
+            r = std::sqrt(dx*dx+dy*dy);
 
             resetAxes();
         }
@@ -107,6 +97,26 @@ namespace Hop::System::Physics
             axis2y /= d;
         }
 
+        double height()
+        {
+
+            double u = llx-lrx;
+            double v = lly-lry;
+
+            return std::sqrt(u*u+v*v);
+
+        }
+
+        double width()
+        {
+
+            double u = ulx-llx;
+            double v = uly-llx;
+
+            return std::sqrt(u*u+v*v);
+
+        }
+
         double llx, lly;
         double ulx, uly;
         double urx, ury;
@@ -114,7 +124,8 @@ namespace Hop::System::Physics
         double axis1x, axis1y;
         double axis2x, axis2y;
     };
-    
+
+    std::ostream & operator<<(std::ostream & o, Rectangle const & r);
 
     struct CollisionMesh 
     {
@@ -195,6 +206,8 @@ namespace Hop::System::Physics
             double scale
         );
 
+        double momentOfInertia();
+
         void drawDebug(glm::mat4 & proj);
         void setupDebug();
 
@@ -261,8 +274,8 @@ namespace Hop::System::Physics
     "void main()"
     "{\n"
     "   vec2 c = texCoord-vec2(0.5,0.5);\n"
-    "   if (dot(c,c) > 0.5*0.5) {discard;}\n"
-    "   colour = oColour;\n"
+    "   if (dot(c,c) > 0.5*0.5) {colour = vec4(oColour.rgb,0.1);}\n"
+    "   else { colour = oColour; }\n"
     "}";
 
      const char * rectangleVertexShader = "#version " GLSL_VERSION "\n"
@@ -282,10 +295,9 @@ namespace Hop::System::Physics
         "mat2 rot = mat2(cosine,-sine,sine,cosine);"
         "vec2 pos = rot * a_position.xy;\n"
         "gl_Position = proj*vec4(a_offset.w*pos+a_offset.xy,0.0,1.0);\n"
-        "vec2 centre = vec2(0.5,0.5);\n"
-        "texCoord = rot * (a_position.zw-centre)+centre;\n"
-        "parameters.xy = rot * (a_parameters.xy-centre)+centre;\n"
-        "parameters.zw = rot * (a_parameters.zw-centre)+centre;\n"
+        "texCoord = pos;\n"
+        "parameters.xy = rot * a_parameters.xy;\n"
+        "parameters.zw = rot * a_parameters.zw;\n"
         "oColour = vec4(0.0,0.0,1.0,1.0);\n"
         "th = a_thickness;\n"
     "}";

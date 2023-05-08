@@ -122,11 +122,39 @@ namespace Hop::System::Physics
                 lw->r = lv->r;
                 
                 Hop::Maths::rotateClockWise(lw, c, s);
-                Hop::Maths::scale(lw, scale);
+                Hop::Maths::scale(lw, scale*2.0);
                 Hop::Maths::translate(lw, x, y);
 
             }
         }
+    }
+
+    double CollisionMesh::momentOfInertia()
+    {
+
+        double m = 0.0;
+        // apply composite area method
+        // assume non-overlapping
+        // assume unit mass for each piece
+        for (unsigned i = 0; i < size(); i++)
+        {
+            std::shared_ptr<CollisionPrimitive> c = worldVertices[i];
+            Rectangle * r = dynamic_cast<Rectangle*>(c.get());
+
+            if (r == nullptr)
+            {
+                m += 0.5*c->r*c->r;
+            }
+            else
+            {  
+                double h = r->height();
+                double w = r->width();
+
+                m += 0.08333333333333333 * (h*h+w*w);
+            }
+        }
+
+        return m;
     }
 
     void CollisionMesh::setupDebug()
@@ -373,8 +401,6 @@ namespace Hop::System::Physics
 
                 thickness[nr] = th*0.5;
 
-                std::cout << th << ", " << ax << ", " << ay << ", " << bx << ", " << by << "\n";
-                std::cout << x << ", " << y << ", " << theta << ", " << scale*2.0 << "\n";
                 nr += 1;
 
             }
@@ -467,5 +493,15 @@ namespace Hop::System::Physics
 
 
     }
+
+    std::ostream & operator<<(std::ostream & o, Rectangle const & r)
+    {
+        o << r.ulx << ", " << r.uly << "    " << r.urx << ", " << r.ury << "\n"
+          << r.llx << ", " << r.lly << "    " << r.lrx << ", " << r.lry << "\n"
+          << r.x   << ", " << r.y   << ", "   << r.r << "\n";
+
+        return o;
+    }
+    
 
 }

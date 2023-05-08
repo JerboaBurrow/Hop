@@ -132,6 +132,7 @@ namespace Hop::System::Physics
             double & hy,
             double & lx,
             double & ly,
+            double s,
             bool & inside,
             bool neighbour = false
         );
