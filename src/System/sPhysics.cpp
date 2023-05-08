@@ -154,8 +154,6 @@ namespace Hop::System::Physics
             }
             else
             {
-
-                                std::cout << dataP.fx << ", " << dataP.fy << "\n";
                 
                 ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
                 bt = 1.0/(1.0+ct);
@@ -173,9 +171,8 @@ namespace Hop::System::Physics
                 dataP.fx = 0.0;
                 dataP.fy = 0.0;
 
-                if (dataP.omega < 0.1) { dataP.omega -= dataP.phi; }
-
-                std::cout << dataP.omega << ", " << dataP.momentOfInertia << "\n";
+                //std::cout << dataP.omega << "\n";
+                //if (dataP.omega < 0.1) { dataP.omega -= dataP.phi; }
 
                 cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
                 br = 1.0/(1.0+cr);
@@ -204,7 +201,7 @@ namespace Hop::System::Physics
                     dataT.theta,
                     dataT.scale
                 );
-                dataP.momentOfInertia = 0.25*data.mesh.momentOfInertia();
+                dataP.momentOfInertia = 0.25*data.mesh.momentOfInertia()*PARTICLE_MASS;
             }
         }
     }

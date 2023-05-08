@@ -170,7 +170,7 @@ namespace Hop::System::Physics
 
         d = std::sqrt(d2);
 
-        mag = std::min(1.0/d,10.0)*(kr*(r-d)-kd*ddot);
+        mag = (kr*(r-d)-kd*ddot)*std::min(1.0/d,3.0);
 
         fx = mag*nx;//+friction*std::abs(mag)*nxt;
         fy = mag*ny;//+friction*std::abs(mag)*nyt;
@@ -1432,6 +1432,7 @@ namespace Hop::System::Physics
             }
             else
             {
+                //std::cout << "circle inside\n";
                 if (!op && d2 > insideThresh){ c->setRecentlyInside(1); }
                 else{ double d = std::min(d2,d2p); if (d > insideThresh){ c->setRecentlyInside(1);} }
                 return; 

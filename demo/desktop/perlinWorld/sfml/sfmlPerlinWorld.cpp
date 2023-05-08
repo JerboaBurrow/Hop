@@ -44,7 +44,7 @@ using namespace std::chrono;
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
-const unsigned MAX_THREADS = 8;
+const unsigned MAX_THREADS = 0;
 
 // for smoothing delta numbers
 uint8_t frameId = 0;
@@ -177,7 +177,6 @@ int main(int argc, char ** argv)
   // setup physics system
   sPhysics & physics = manager.getSystem<sPhysics>();
   physics.setTimeStep(deltaPhysics);
-  physics.setGravity(9.81);
 
   sCollision & collisions = manager.getSystem<sCollision>();
 
