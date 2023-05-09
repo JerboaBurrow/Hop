@@ -23,7 +23,6 @@ namespace Hop::System::Rendering
                     addNewShader(dataR.shaderHandle);
                     newData = true;
                 }
-                glError("add new shader");
 
                 if (idToIndex.find(*it) == idToIndex.end())
                 {
@@ -110,7 +109,7 @@ namespace Hop::System::Rendering
             GL_ARRAY_BUFFER,
             0,
             4*cnt*sizeof(float),
-            &offsets[handle].second[OFFSET_COMPONENTS*MAX_OBJECTS_PER_SHADER]
+            &offsets[handle].second[4*MAX_OBJECTS_PER_SHADER]
         );
         glBindBuffer(GL_ARRAY_BUFFER,0);
     }
@@ -124,7 +123,7 @@ namespace Hop::System::Rendering
             GL_ARRAY_BUFFER,
             0,
             4*cnt*sizeof(float),
-            &offsets[handle].second[2*OFFSET_COMPONENTS*MAX_OBJECTS_PER_SHADER]
+            &offsets[handle].second[4*MAX_OBJECTS_PER_SHADER*2]
         );
         glBindBuffer(GL_ARRAY_BUFFER,0);
     }
@@ -138,7 +137,7 @@ namespace Hop::System::Rendering
             GL_ARRAY_BUFFER,
             0,
             4*cnt*sizeof(float),
-            &offsets[handle].second[3*OFFSET_COMPONENTS*MAX_OBJECTS_PER_SHADER]
+            &offsets[handle].second[4*MAX_OBJECTS_PER_SHADER*3]
         );
         glBindBuffer(GL_ARRAY_BUFFER,0);
     }
@@ -146,9 +145,9 @@ namespace Hop::System::Rendering
     void sRender::addNewShader(std::string handle)
     {
         offsets[handle] = std::pair(-1,std::vector<float>());
-        offsets[handle].second.reserve(3*MAX_OBJECTS_PER_SHADER*OFFSET_COMPONENTS);
+        offsets[handle].second.reserve(4*MAX_OBJECTS_PER_SHADER*OFFSET_COMPONENTS);
 
-        for (int i = 0; i < 3*MAX_OBJECTS_PER_SHADER*OFFSET_COMPONENTS; i++)
+        for (int i = 0; i < 4*MAX_OBJECTS_PER_SHADER*OFFSET_COMPONENTS; i++)
         {
             offsets[handle].second.push_back(0.0);
         }
@@ -158,6 +157,7 @@ namespace Hop::System::Rendering
         glGenBuffers(1,&vboO);
         glGenBuffers(1,&vboC);
         glGenBuffers(1,&vboT);
+        glGenBuffers(1,&vboU);
         glBindVertexArray(vao);
 
         glBindBuffer(GL_ARRAY_BUFFER,quadVBO);
@@ -178,6 +178,7 @@ namespace Hop::System::Rendering
         );
         glVertexAttribDivisor(0,0);
         glBindBuffer(GL_ARRAY_BUFFER,0);
+        glError("add new shader quadVBO");
         // offsets
         glBindBuffer(GL_ARRAY_BUFFER,vboO);
         glBufferData(
@@ -197,12 +198,13 @@ namespace Hop::System::Rendering
         );
         glVertexAttribDivisor(1,1);
         glBindBuffer(GL_ARRAY_BUFFER,0);
+        glError("add new shader offsets VBO");
         // colour
         glBindBuffer(GL_ARRAY_BUFFER,vboC);
         glBufferData(
             GL_ARRAY_BUFFER,
             4*MAX_OBJECTS_PER_SHADER*sizeof(float),
-            &offsets[handle].second[OFFSET_COMPONENTS*MAX_OBJECTS_PER_SHADER],
+            &offsets[handle].second[MAX_OBJECTS_PER_SHADER*4],
             GL_DYNAMIC_DRAW
         );
         glEnableVertexAttribArray(2);
@@ -216,12 +218,13 @@ namespace Hop::System::Rendering
         );
         glVertexAttribDivisor(2,1);
         glBindBuffer(GL_ARRAY_BUFFER,0);
+        glError("add new shader colour VBO");
         // texOffset
         glBindBuffer(GL_ARRAY_BUFFER,vboT);
         glBufferData(
             GL_ARRAY_BUFFER,
             4*MAX_OBJECTS_PER_SHADER*sizeof(float),
-            &offsets[handle].second[2*OFFSET_COMPONENTS*MAX_OBJECTS_PER_SHADER],
+            &offsets[handle].second[2*MAX_OBJECTS_PER_SHADER*4],
             GL_DYNAMIC_DRAW
         );
         glEnableVertexAttribArray(3);
@@ -235,14 +238,16 @@ namespace Hop::System::Rendering
         );
         glVertexAttribDivisor(3,1);
         glBindBuffer(GL_ARRAY_BUFFER,0);
+        glError("add new shader tex VBO");
         // util
         glBindBuffer(GL_ARRAY_BUFFER,vboU);
         glBufferData(
             GL_ARRAY_BUFFER,
             4*MAX_OBJECTS_PER_SHADER*sizeof(float),
-            &offsets[handle].second[3*OFFSET_COMPONENTS*MAX_OBJECTS_PER_SHADER],
+            &offsets[handle].second[3*MAX_OBJECTS_PER_SHADER*4],
             GL_DYNAMIC_DRAW
         );
+        glError("add new shader util data");
         glEnableVertexAttribArray(4);
         glVertexAttribPointer(
             4,
@@ -254,6 +259,7 @@ namespace Hop::System::Rendering
         );
         glVertexAttribDivisor(4,1);
         glBindBuffer(GL_ARRAY_BUFFER,0);
+        glError("add new shader util VBO");
         glBindVertexArray(0);
 
         shaderBufferObjects[handle] = std::pair(
@@ -282,9 +288,9 @@ namespace Hop::System::Rendering
         {
             // not at end of array replace data
             // with last component
-            for (int k = 0; k < OFFSET_COMPONENTS; k++)
+            for (int k = 0; k < 4; k++)
             {
-                offsets[oldShader].second[start*OFFSET_COMPONENTS+k] = offsets[oldShader].second[lastComponentOld*OFFSET_COMPONENTS+k];
+                offsets[oldShader].second[start*4+k] = offsets[oldShader].second[lastComponentOld*4+k];
             }
             Id movedId = indexToId[std::pair(oldShader,lastComponentOld)];
             idToIndex[movedId] = std::pair(oldShader,start);

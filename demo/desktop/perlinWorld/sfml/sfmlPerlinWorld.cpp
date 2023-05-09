@@ -316,8 +316,8 @@ int main(int argc, char ** argv)
 
     rendering.draw(&shaderPool);  
 
-    auto citer = manager.objectIterator();
-    auto cend = manager.objectIteratorEnd();
+    auto citer = manager.begin();
+    auto cend = manager.end();
 
     while (citer != cend)
     {
@@ -327,7 +327,6 @@ int main(int argc, char ** argv)
         cCollideable & c = manager.getComponent<cCollideable>(citer->first);
 
         c.mesh.drawDebug(camera.getVP());
-
       }
       citer++;
     }

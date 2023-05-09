@@ -106,8 +106,8 @@ namespace Hop::Object
             return handleToId[handle];
         }
 
-        std::unordered_map<Id,std::shared_ptr<Object>>::const_iterator objectIterator() { objects.cbegin(); }
-        std::unordered_map<Id,std::shared_ptr<Object>>::const_iterator objectIteratorEnd() { objects.cend(); }
+        std::unordered_map<Id,std::shared_ptr<Object>>::const_iterator begin() const { objects.cbegin(); }
+        std::unordered_map<Id,std::shared_ptr<Object>>::const_iterator end() const { objects.cend(); }
 
         CollisionCallback collisionCallback;
 

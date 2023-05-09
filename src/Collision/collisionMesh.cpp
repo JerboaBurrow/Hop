@@ -444,6 +444,7 @@ namespace Hop::System::Physics
             glDrawArraysInstanced(GL_TRIANGLES,0,6,nc);
 
             glBindVertexArray(0);
+
         }
 
         if (nr > 0)
@@ -491,6 +492,7 @@ namespace Hop::System::Physics
 
         }
 
+        Hop::GL::glError("mesh draw debug");
 
     }
 

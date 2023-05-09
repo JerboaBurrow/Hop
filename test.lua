@@ -2,7 +2,7 @@ s = 0.5*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
-for i = 1,2 do
+for i = 1,256 do
 
     x = math.random(); y = math.random();
 

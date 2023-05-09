@@ -90,7 +90,7 @@ namespace Hop::System::Rendering
             std::pair<std::size_t,std::vector<float>>
         > offsets;
 
-        const unsigned OFFSET_COMPONENTS = 5;
+        const unsigned OFFSET_COMPONENTS = 4;
 
         std::unordered_map<
             Id,

@@ -171,7 +171,6 @@ namespace Hop::System::Physics
                 dataP.fx = 0.0;
                 dataP.fy = 0.0;
 
-                //std::cout << dataP.omega << "\n";
                 //if (dataP.omega < 0.1) { dataP.omega -= dataP.phi; }
 
                 cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
@@ -214,21 +213,19 @@ namespace Hop::System::Physics
         double ny
     )
     {
-        auto citer = m->objectIterator();
-        auto cend = m->objectIteratorEnd();
 
         double fx = nx*g; double fy = ny*g;
         double rx, ry;
 
-        while (citer != cend)
+        for (auto it = objects.begin(); it != objects.end(); it++)
         {
 
-            cPhysics & dataP = m->getComponent<cPhysics>(citer->first);
-            cTransform & dataT = m->getComponent<cTransform>(citer->first);
+            cPhysics & dataP = m->getComponent<cPhysics>(it->id);
+            cTransform & dataT = m->getComponent<cTransform>(it->id);
 
-            if (m->hasComponent<cCollideable>(citer->first))
+            if (m->hasComponent<cCollideable>(it->id))
             {
-                cCollideable & dataC = m->getComponent<cCollideable>(citer->first);
+                cCollideable & dataC = m->getComponent<cCollideable>(it->id);
 
                 for (unsigned i = 0; i < dataC.mesh.size(); i++)
                 {
@@ -273,8 +270,6 @@ namespace Hop::System::Physics
                     }
                 }
             }
-
-            citer++;
         }
 
     }
