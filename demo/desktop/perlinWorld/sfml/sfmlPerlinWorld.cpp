@@ -314,10 +314,12 @@ int main(int argc, char ** argv)
     rendering.update(&manager, &shaderPool, refreshObjectShaders);
     refreshObjectShaders = false;
 
-    rendering.draw(&shaderPool);  
+    rendering.draw(&shaderPool); 
 
-    auto citer = manager.begin();
-    auto cend = manager.end();
+    auto objects = manager.getObjects();  
+
+    auto citer = objects.cbegin();
+    auto cend = objects.cend();
 
     while (citer != cend)
     {
