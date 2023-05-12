@@ -37,7 +37,7 @@ namespace Hop::Object::Component
       : lastX(x), lastY(y), lastTheta(t),
         vx(0.0),vy(0.0),momentOfInertia(0.01),
         phi(0.0),fx(0.0),fy(0.0), omega(0.0),
-        translationalDrag(1.0), rotationalDrag(0.001),
+        translationalDrag(1.0), rotationalDrag(0.1),
         isMoveable(true)
       {}
 

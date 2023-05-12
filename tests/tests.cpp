@@ -257,20 +257,60 @@ SCENARIO("Geometry","[maths]"){
         {
             double px = -0.45;
             double py = -0.9;
-            THEN("The SDF is -0.1")
+            THEN("The SDF is -0.05")
             {
                 double s = sdf(&r1,px,py);
-                REQUIRE(std::abs(s- -0.1)<tol);
+                REQUIRE(std::abs(s- -0.05)<tol);
             }
         }
         AND_GIVEN("A point [0,0]")
         {
             double px = 0;
             double py = 0;
-            THEN("The SDF is -1.0")
+            THEN("The SDF is -0.5")
             {
                 double s = sdf(&r1,px,py);
-                REQUIRE(std::abs(s- -1.0)<tol);
+                REQUIRE(std::abs(s- -0.5)<tol);
+            }
+        }
+    }
+    GIVEN("A rectangle primitive [-1,0],[0,1],[1,0],[0,-1]")
+    {
+        Rectangle r1
+        (
+            -1.,0.,
+            0.,1.,
+            1.,0.,
+            0.,-1.
+        );
+        AND_GIVEN("A point [-1.0,-0.0]")
+        {
+            double px = -1.0;
+            double py = 0.0;
+            THEN("The SDF is 0")
+            {
+                double s = sdf(&r1,px,py);
+                REQUIRE(std::abs(s) < tol);
+            }
+        }
+        AND_GIVEN("A point [0.0,0.0]")
+        {
+            double px = 0.0;
+            double py = 0.0;
+            THEN("The SDF is -1")
+            {
+                double s = sdf(&r1,px,py);
+                REQUIRE(std::abs(s - -0.707107) < tol);
+            }
+        }
+        AND_GIVEN("A point [0.51,0.51]")
+        {
+            double px = 0.51;
+            double py = 0.51;
+            THEN("The SDF is -1")
+            {
+                double s = sdf(&r1,px,py);
+                REQUIRE(std::abs(s - 0.0141421356237309) < tol);
             }
         }
     }

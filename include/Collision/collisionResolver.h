@@ -56,7 +56,8 @@ namespace Hop::System::Physics
         (
             cPhysics & pI, cPhysics & pJ,
             Rectangle * li,
-            Rectangle * lj
+            Rectangle * lj,
+            bool wall
         ) = 0;
 
         virtual void collisionForce

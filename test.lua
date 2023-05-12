@@ -2,9 +2,9 @@ s = 0.5*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
-for i = 1,256 do
+for i = 1,1 do
 
-    x = math.random(); y = math.random();
+    x = 0.905; y = 0.36;-- y = 0.35351;
 
 
     object = {
@@ -16,8 +16,8 @@ for i = 1,256 do
         ["moveable"] = true,
         ["collisionMesh"] =
         {
-            {0.0,0.0,1.0}
-            -- {-0.25,-0.25,-0.25,0.25,0.25,0.25,0.25,-0.25}
+            -- {0.0,0.0,1.0}
+            {-0.25,-0.25,-0.25,0.25,0.25,0.25,0.25,-0.25}
         },
         ["name"] = ""
 

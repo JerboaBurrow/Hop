@@ -7,25 +7,6 @@ using namespace std::chrono;
   #include <android/log.h>
 #endif
 
-/* TODO 
-
-    X deprecate LineSegment
-
-    X Rectangle - world vertices update
-
-    Forces
-
-        X Use p-axis to cull?
-            Then test each vertex and apply
-            forces based upon Box SDF
-
-            Apply forces at point (for rotation)
-
-        Rect-Rect force
-        Rect-Circle force
-        Rect-world (Rect) force
-*/
-
 namespace Hop::System::Physics
 {
 
@@ -33,24 +14,28 @@ namespace Hop::System::Physics
     using Hop::Maths::pointLineHandedness;
     using Hop::Maths::rectangleRectangleCollided;
     using Hop::Maths::sdf;
+    using Hop::Maths::shortestDistanceSquared;
 
-    void SpringDashpot::springDashpotSDFForce
+    void SpringDashpot::springDashpotForce
     (
         cPhysics & pI, cPhysics & pJ,
-        double sd, double nx, double ny,
+        double od, double nx, double ny,
         double px, double py
     )
     {
-        double mag, fx, fy, dinv, vrx, vry, ddot, d, rx, ry;
+        double mag, fx, fy, dinv, vrx, vry, ddot, rx, ry, meff, kr, kd;
 
         mag = 0.0;
         fx = nx;
         fy = ny;
 
-        d = -sd;
-        dinv = std::min(3.0,1.0/d);
+        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
+        kr = meff*alpha;
+        kd = 2.0*meff*beta;
 
-        mag -= kr*d*dinv;
+        dinv = std::min(3.0,1.0/od);
+
+        mag -= kr*od*dinv;
 
         vrx = pI.vx-pJ.vx;
         vry = pI.vy-pJ.vy;
@@ -67,26 +52,26 @@ namespace Hop::System::Physics
         //     nyt *= -1.0;
         // }
 
-        mag += kd*ddot*dinv;
+        mag -= kd*ddot*dinv;
 
         fx *= mag;//+friction*std::abs(mag)*nxt;
         fy *= mag;//+friction*std::abs(mag)*nyt;
 
-        pI.fx -= fx;
-        pI.fy -= fy;
+        pI.fx += fx;
+        pI.fy += fy;
 
         rx = px - pI.lastX;
         ry = py - pI.lastY;
 
-        pI.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
+        pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
 
-        pJ.fx += fx;
-        pJ.fy += fy;
+        pJ.fx -= fx;
+        pJ.fy -= fy;
 
         rx = px - pJ.lastX;
         ry = py - pJ.lastY;
 
-        pJ.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
+        pJ.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
     }
 
     void SpringDashpot::springDashpotForce
@@ -185,108 +170,168 @@ namespace Hop::System::Physics
         
     }
 
+
+    void SpringDashpot::springDashpotWallForce
+    (
+        cPhysics & pI,
+        double od, double nx, double ny,
+        double px, double py
+    )
+    {
+        double mag, fx, fy, dinv, vrx, vry, ddot, rx, ry, meff, kr, kd;
+
+        mag = 0.0;
+        fx = nx;
+        fy = ny;
+
+        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
+        kr = meff*alpha;
+        kd = 2.0*meff*beta;
+
+        dinv = std::min(1.0,1.0/od);
+
+        mag = kr*od;//*dinv;
+
+        vrx = pI.vx;
+        vry = pI.vy;
+
+        // nxt = ny;
+        // nyt = -nx;
+        ddot = nx*vrx+ny*vry;
+
+        // vnorm = vrx*vrx+vry*vry;
+
+        // if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) )
+        // {
+        //     nxt *= -1.0;
+        //     nyt *= -1.0;
+        // }
+
+        mag -= kd*ddot;//*dinv;
+
+        fx *= mag;//+friction*std::abs(mag)*nxt;
+        fy *= mag;//+friction*std::abs(mag)*nyt;
+
+        // std::cout << px << ", " << py << ", " << nx << ", " << ny << "\n";
+        // std::cout << fx << ", " << fy << ", " << mag << ", " << od << "\n";
+
+        pI.fx += fx;
+        pI.fy += fy;
+
+        rx = px - pI.lastX;
+        ry = py - pI.lastY;
+
+        pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
+    }
+
+    void SpringDashpot::collisionForce
+    (
+        cPhysics & pI, cPhysics & pJ,
+        double pix, double piy,
+        Rectangle * lj,
+        bool wall,
+        bool reverse
+    )
+    {
+        double d, sd, cx, cy, nx, ny, nxt, nyt, dt, odod; 
+
+        sd = sdf<double>(lj,pix,piy);
+
+        // std::cout << sd << "\n";
+
+        if (sd < 0)
+        {
+            shortestDistanceSquared(pix, piy, lj, cx, cy, odod);
+            d = std::sqrt(odod);
+            nx = (cx-pix)/d;
+            ny = (cy-piy)/d;
+
+            if (reverse)
+            {
+                nx = -nx;
+                ny = -ny;
+            }
+            else
+            {
+                // nxt = lj->x - pix;
+                // nyt = lj->y - piy;
+
+                // dt = std::sqrt(nxt*nxt+nyt*nyt);
+
+                // nxt /= dt;
+                // nyt /= dt;
+
+                // std::cout << "ij" << nxt << ", " << nyt << "\n";
+
+                // if (nx*nxt+ny*nyt < 0.0)
+                // {
+                //     nx = -nx;
+                //     ny = -ny;
+                // }
+            }
+
+            std::cout << "dir " << reverse << ", " << nx << ", " << ny << ", " << pix << ", " << piy << ", " << cx << ", " << cy << "\n";
+
+
+            if (wall)
+            {
+                springDashpotWallForce(pI, d, nx, ny, pix, piy);
+            }
+            else
+            {
+                springDashpotForce(pI, pJ, d, nx, ny, pix, piy);
+            }
+ 
+        }
+    }
+
     void SpringDashpot::collisionForce
     (
         cPhysics & pI, cPhysics & pJ,
         Rectangle * li,
-        Rectangle * lj
+        Rectangle * lj,
+        bool wall
     )
     {
-        double nx, ny, s, d;
-
-        bool collided = rectangleRectangleCollided<double>(li,lj,nx,ny,s);
-
-        if (!collided)
-        {
-            //std::cout << "no collision\n";
-            //std::cout << *li << "\n" << *lj << "\n"; 
-            return;
-        }
-
-        // check axis correct direction (i->j)
-
-        double rx = lj->x-li->x;
-        double ry = lj->y-li->y;
-        d = std::sqrt(rx*rx+ry*ry);
-        rx /= d; ry /= d;
-
-        double cdot = rx*nx+ry*ny;
-
-        if (cdot > 0)
-        {
-            // reverse
-            nx = -nx;
-            ny = -ny;
-        }
-
-        // must have collided, check forces per vertex
+        double nx, ny, cx, cy, s, d, odod;
 
         // li's vertices
-        d = sdf(lj,li->llx,li->lly);
+        // std::cout << *li << "\n";
+        // std::cout << *lj << "\n";
 
-        if (d < 0)
-        {
-            //std::cout << "ll i\n";
-            springDashpotSDFForce(pI, pJ, d, nx, ny, li->llx, li->lly);
-        }
+        collisionForce(pI, pJ, li->llx, li->lly, lj, wall);
 
-        d = sdf(lj,li->ulx,li->uly);
+        collisionForce(pI, pJ, li->ulx, li->uly, lj, wall);
 
-        if (d < 0)
-        {
-            //std::cout << "ul i\n";
-            springDashpotSDFForce(pI, pJ, d, nx, ny, li->ulx,li->uly);
-        }
+        collisionForce(pI, pJ, li->urx, li->ury, lj, wall);
 
-        d = sdf(lj,li->urx,li->ury);
-
-        if (d < 0)
-        {
-            //std::cout << "ur i\n";
-            springDashpotSDFForce(pI, pJ, d, nx, ny, li->urx,li->ury);
-        }
-
-        d = sdf(lj,li->lrx,li->lry);
-
-        if (d < 0)
-        {
-            //std::cout << "lr i\n";
-            springDashpotSDFForce(pI, pJ, d, nx, ny, li->lrx,li->lry);
-        }
+        collisionForce(pI, pJ, li->lrx, li->lry, lj, wall);
 
         // lj's vertices
 
-        d = sdf(li,lj->llx,lj->lly);
+        if (wall)
+        { 
+            std::cout << "lj\n";
 
-        if (d < 0)
-        {
-            //std::cout << "ll j\n";
-            springDashpotSDFForce(pI, pJ, d, nx, ny, lj->llx, lj->lly);
+            collisionForce(pI, pJ, lj->llx, lj->lly, li, wall, true);
+
+            collisionForce(pI, pJ, lj->ulx, lj->uly, li, wall, true);
+
+            collisionForce(pI, pJ, lj->urx, lj->ury, li, wall, true);
+
+            collisionForce(pI, pJ, lj->lrx, lj->lry, li, wall, true);
         }
-
-        d = sdf(li,lj->ulx,lj->uly);
-
-        if (d < 0)
+        else
         {
-            //std::cout << "ul j\n";
-            springDashpotSDFForce(pI, pJ, d, nx, ny, lj->ulx,lj->uly);
+            collisionForce(pJ, pI, lj->llx, lj->lly, li);
+
+            collisionForce(pJ, pI, lj->ulx, lj->uly, li);
+
+            collisionForce(pJ, pI, lj->urx, lj->ury, li);
+
+            collisionForce(pJ, pI, lj->lrx, lj->lry, li);
         }
-
-        d = sdf(li,lj->urx,lj->ury);
-
-        if (d < 0)
-        {
-            //std::cout << "ur j\n";
-            springDashpotSDFForce(pI, pJ, d, nx, ny, lj->urx,lj->ury);
-        }
-
-        d = sdf(li,lj->lrx,lj->lry);
-
-        if (d < 0)
-        {
-            //std::cout << "lr j\n";
-            springDashpotSDFForce(pI, pJ, d, nx, ny, lj->lrx,lj->lry);
-        }
+        
     }
 
     void SpringDashpot::collisionForce
@@ -297,67 +342,79 @@ namespace Hop::System::Physics
         double rx, double ry, double rc, double dd
     )
     {
-        double contactX, contactY, tc;
-        double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag, px, py;
-        bool colliding = false;
+        // double contactX, contactY, tc;
+        // double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag, px, py;
+        // bool colliding = false;
+        double cx, cy, odod, nx, ny, d;
 
-        dd = pointLineSegmentDistanceSquared<double>
-        (
-            c->x,c->y,
-            l->llx,l->lly,
-            l->ulx,l->uly,
-            contactX, contactY
-        );
+        shortestDistanceSquared(c->x, c->y, l, cx, cy, odod);
 
-        d = dd; nx = contactX-c->x; ny = contactY-c->y;
-        px = contactX; py = contactY;
-
-        dd = pointLineSegmentDistanceSquared<double>
-        (
-            c->x,c->y,
-            l->ulx,l->uly,
-            l->urx,l->ury,
-            contactX, contactY
-        );
-
-        if (dd < d)
-        {
-            d = dd; nx = contactX-c->x; ny = contactY-c->y;
-            px = contactX; py = contactY;
-        }
-
-        dd = pointLineSegmentDistanceSquared<double>
-        (
-            c->x,c->y,
-            l->urx,l->ury,
-            l->lrx,l->lry,
-            contactX, contactY
-        );
-
-        if (dd < d)
-        {
-            d = dd; nx = contactX-c->x; ny = contactY-c->y;
-            px = contactX; py = contactY;
-        }
-
-        dd = pointLineSegmentDistanceSquared<double>
-        (
-            c->x,c->y,
-            l->lrx,l->lry,
-            l->llx,l->lly,
-            contactX, contactY
-        );
-
-        if (dd < d)
-        {
-            d = dd; nx = contactX-c->x; ny = contactY-c->y;
-            px = contactX; py = contactY;
-        }
+        d = std::sqrt(odod);
+        nx = (cx-c->x)/d;
+        ny = (cy-c->y)/d;
 
         if (d < c->r)
         {
-            springDashpotForce(pI,pJ,d*d,nx,ny,c->r,px,py,px,py);
+            springDashpotForce(pI,pJ,odod,nx,ny,c->r,cx,cy,cx,cy);
         }
+
+        // dd = pointLineSegmentDistanceSquared<double>
+        // (
+        //     c->x,c->y,
+        //     l->llx,l->lly,
+        //     l->ulx,l->uly,
+        //     contactX, contactY
+        // );
+
+        // d = dd; nx = contactX-c->x; ny = contactY-c->y;
+        // px = contactX; py = contactY;
+
+        // dd = pointLineSegmentDistanceSquared<double>
+        // (
+        //     c->x,c->y,
+        //     l->ulx,l->uly,
+        //     l->urx,l->ury,
+        //     contactX, contactY
+        // );
+
+        // if (dd < d)
+        // {
+        //     d = dd; nx = contactX-c->x; ny = contactY-c->y;
+        //     px = contactX; py = contactY;
+        // }
+
+        // dd = pointLineSegmentDistanceSquared<double>
+        // (
+        //     c->x,c->y,
+        //     l->urx,l->ury,
+        //     l->lrx,l->lry,
+        //     contactX, contactY
+        // );
+
+        // if (dd < d)
+        // {
+        //     d = dd; nx = contactX-c->x; ny = contactY-c->y;
+        //     px = contactX; py = contactY;
+        // }
+
+        // dd = pointLineSegmentDistanceSquared<double>
+        // (
+        //     c->x,c->y,
+        //     l->lrx,l->lry,
+        //     l->llx,l->lly,
+        //     contactX, contactY
+        // );
+
+        // if (dd < d)
+        // {
+        //     d = dd; nx = contactX-c->x; ny = contactY-c->y;
+        //     px = contactX; py = contactY;
+        // }
+
+        // if (d < c->r)
+        // {
+        //     springDashpotForce(pI,pJ,d*d,nx,ny,c->r,px,py,px,py);
+        // }
     }
 
     /*
@@ -1423,6 +1480,8 @@ namespace Hop::System::Physics
 
         if (neighbour){inside = false;}
 
+        //std::cout << "not neighbour\n";
+
         Rectangle * li = dynamic_cast<Rectangle*>(c.get());
 
         if (inside){ 
@@ -1432,15 +1491,17 @@ namespace Hop::System::Physics
             }
             else
             {
-                //std::cout << "circle inside\n";
                 if (!op && d2 > insideThresh){ c->setRecentlyInside(1); }
                 else{ double d = std::min(d2,d2p); if (d > insideThresh){ c->setRecentlyInside(1);} }
                 return; 
             }
         }
 
+        //std::cout << "not inside\n";
+
         if (c->recentlyInside())
         {
+            //std::cout << "rec inside\n";
             if (!op)
             {
                 if (d2 > insideThresh)
@@ -1498,18 +1559,21 @@ namespace Hop::System::Physics
             r2.resetAxes();
 
             //std::cout << "r-r\n";
+            //std::cout << rr << ", " << d2 << "\n";
+            //std::cout << li<< "\n";
+            //std::cout << r1 << "\n";
 
             if (f1)
             {
                 //std::cout << "f1\n";
                 //std::cout << *li << "\n" << r1 << "\n";
-                collisionForce(dataP, dataTmp, li, &r1);
+                collisionForce(dataP, dataTmp, li, &r1, true);
             }
 
             if (f2)
             {
                 //std::cout << "f2\n";
-                collisionForce(dataP, dataTmp, li, &r2);
+                collisionForce(dataP, dataTmp, li, &r2, true);
             }
 
         }
@@ -1640,7 +1704,7 @@ namespace Hop::System::Physics
             else
             {
                 cPhysics dataTmp(0.,0.,0.);
-                collisionForce(dataP, dataTmp, li, &r);
+                collisionForce(dataP, dataTmp, li, &r, true);
             }
         }
     }

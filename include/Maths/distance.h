@@ -13,7 +13,7 @@ namespace Hop::Maths
         T px, T py,
         T ax, T ay,
         T bx, T by,
-        T & nx, T & ny
+        T & cx, T & cy
     )
     {
 
@@ -25,11 +25,12 @@ namespace Hop::Maths
 
         pMINUSaDOTrOVERlength2 = std::max(static_cast<T>(0.0),std::min(static_cast<T>(1.0),pMINUSaDOTrOVERlength2));
 
-        nx = ax + pMINUSaDOTrOVERlength2 * rx;
-        ny = ay + pMINUSaDOTrOVERlength2 * ry;
+        // contact point
+        cx = ax + pMINUSaDOTrOVERlength2 * rx;
+        cy = ay + pMINUSaDOTrOVERlength2 * ry;
 
-        T dx = px-nx;
-        T dy = py-ny;
+        T dx = px-cx;
+        T dy = py-cy;
 
         return dx*dx+dy*dy;
     }
@@ -41,8 +42,8 @@ namespace Hop::Maths
         T bx, T by
     )
     {
-        T nx, ny;
-        return pointLineSegmentDistanceSquared(px,py,ax,ay,bx,by,nx,ny);
+        T nx, ny, cx, cy;
+        return pointLineSegmentDistanceSquared(px,py,ax,ay,bx,by,cx,cy);
     }
 
     template <class T>
@@ -143,16 +144,15 @@ namespace Hop::Maths
     template <class T>
     T sdf(Rectangle * r, T px, T py)
     {
-
         // thickness
         T thx = r->llx-r->lrx;
         T thy = r->lly-r->lry;
         T th = std::sqrt(thx*thx+thy*thy);
         // line through middle
-        T ax = r->llx - r->axis1x*th*0.5;
-        T ay = r->lly - r->axis1y*th*0.5;
-        T bx = r->ulx - r->axis1x*th*0.5;
-        T by = r->uly - r->axis1y*th*0.5;
+        T ax = (r->llx + r->lrx)/2.0;
+        T ay = (r->lly + r->lry)/2.0;
+        T bx = (r->ulx + r->urx)/2.0;
+        T by = (r->uly + r->ury)/2.0;
 
         T lx = bx-ax;
         T ly = by-ay;
@@ -170,7 +170,7 @@ namespace Hop::Maths
         qx = qxt;
 
         qx = std::abs(qx)-l*0.5;
-        qy = std::abs(qy)-th;
+        qy = std::abs(qy)-th*0.5;
 
         qxt = std::max(qx,0.0);
         T qyt = std::max(qy,0.0);
@@ -179,6 +179,115 @@ namespace Hop::Maths
 
         return d + std::min(std::max(qx,qy),0.0); 
 
+    }
+
+    template <class T>
+    void shortestDistanceSquared(T px, T py, Rectangle * r, T & nx, T & ny, T & d)
+    {
+        T d2, s, nxt, nyt, rx, ry;
+
+        d = pointLineSegmentDistanceSquared<T>(
+            px, py,
+            r->llx, r->lly,
+            r->ulx, r->uly,
+            nx, ny
+        );
+
+        rx = r->llx-px;
+        ry = r->lly-py;
+
+        d2 = rx*rx+ry*ry;
+
+        if (d2 < d)
+        {
+            d = d2;
+            s = std::sqrt(d);
+            nx = rx / s;
+            ny = ry / s;
+
+            std::cout << "1\n";
+        }
+
+        d2 = pointLineSegmentDistanceSquared<T>(
+            px, py,
+            r->ulx, r->uly,
+            r->urx, r->ury,
+            nxt, nyt
+        );
+
+        if (d2 < d)
+        {
+            d = d2; nx = nxt; ny = nyt;
+            std::cout << "2\n";
+        }
+
+        rx = r->ulx-px;
+        ry = r->uly-py;
+
+        d2 = rx*rx+ry*ry;
+
+        if (d2 < d)
+        {
+            d = d2;
+            s = std::sqrt(d);
+            nx = rx / s;
+            ny = ry / s;
+            std::cout << "3\n";
+        }
+
+        d2 = pointLineSegmentDistanceSquared<T>(
+            px, py,
+            r->urx, r->ury,
+            r->lrx, r->lry,
+            nxt, nyt
+        );
+
+        if (d2 < d)
+        {
+            d = d2; nx = nxt; ny = nyt;
+            std::cout << "4\n";
+        }
+
+        rx = r->urx-px;
+        ry = r->ury-py;
+
+        d2 = rx*rx+ry*ry;
+
+        if (d2 < d)
+        {
+            d = d2;
+            s = std::sqrt(d);
+            nx = rx / s;
+            ny = ry / s;
+            std::cout << "5\n";
+        }
+
+        d2 = pointLineSegmentDistanceSquared<T>(
+            px, py,
+            r->lrx, r->lry,
+            r->llx, r->lly,
+            nxt, nyt
+        );
+
+        if (d2 < d)
+        {
+            d = d2; nx = nxt; ny = nyt;
+            std::cout << "6\n";
+        }
+
+        rx = r->lrx-px;
+        ry = r->lry-py;
+
+        d2 = rx*rx+ry*ry;
+
+        if (d2 < d)
+        {
+            d = d2;
+            s = std::sqrt(d);
+            nx = rx / s;
+            ny = ry / s;
+            std::cout << "7\n";
+        }
     }
 
 }

@@ -500,7 +500,8 @@ namespace Hop::System::Physics
     {
         o << r.ulx << ", " << r.uly << "    " << r.urx << ", " << r.ury << "\n"
           << r.llx << ", " << r.lly << "    " << r.lrx << ", " << r.lry << "\n"
-          << r.x   << ", " << r.y   << ", "   << r.r << "\n";
+          << r.x   << ", " << r.y   << ", "   << r.r << "\n"
+          << r.axis1x << ", " << r.axis1y << ", " << r.axis2x << ", " << r.axis2y << "\n";
 
         return o;
     }

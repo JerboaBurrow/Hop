@@ -184,6 +184,8 @@ IF (TEST_SUITE)
             "src/World/mapFile.cpp"
         )
 
+        target_compile_definitions(testSuite PUBLIC GLSL_VERSION="330")
+
         target_link_libraries(testSuite stduuid zlibstatic freetype glm)
         
         include(CTest)

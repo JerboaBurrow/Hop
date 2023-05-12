@@ -321,17 +321,17 @@ int main(int argc, char ** argv)
     auto citer = objects.cbegin();
     auto cend = objects.cend();
 
-    while (citer != cend)
-    {
-      if (manager.hasComponent<cCollideable>(citer->first))
-      {
+    // while (citer != cend)
+    // {
+    //   if (manager.hasComponent<cCollideable>(citer->first))
+    //   {
         
-        cCollideable & c = manager.getComponent<cCollideable>(citer->first);
+    //     cCollideable & c = manager.getComponent<cCollideable>(citer->first);
 
-        c.mesh.drawDebug(camera.getVP());
-      }
-      citer++;
-    }
+    //     c.mesh.drawDebug(camera.getVP());
+    //   }
+    //   citer++;
+    // }
 
     tr1 = high_resolution_clock::now();
 

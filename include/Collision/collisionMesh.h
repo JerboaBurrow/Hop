@@ -75,6 +75,8 @@ namespace Hop::System::Physics
 
             r = std::sqrt(dx*dx+dy*dy);
 
+            lastInside = 0;
+
             resetAxes();
         }
 
@@ -83,13 +85,21 @@ namespace Hop::System::Physics
             axis1x = llx-lrx;
             axis1y = lly-lry;
 
+            x = (llx+ulx+urx+lrx)/4.0;
+            y = (lly+uly+ury+lry)/4.0;
+
+            double dx = llx-x;
+            double dy = lly-y;
+
+            r = std::sqrt(dx*dx+dy*dy);
+
             double d = std::sqrt(axis1x*axis1x+axis1y*axis1y);
 
             axis1x /= d;
             axis1y /= d;
 
             axis2x = ulx-llx;
-            axis2y = uly-llx;
+            axis2y = uly-lly;
 
             d = std::sqrt(axis2x*axis2x+axis2y*axis2y);
 
@@ -319,7 +329,7 @@ namespace Hop::System::Physics
         "q = abs(q)-vec2(l*0.5,th);\n"
         "float sd = length(max(q,0.0)) + min(max(q.x,q.y),0.0);"
         "float alpha = 0.1;"
-        "if (sd <= 0.0) { colour = vec4(oColour.rgb,1.0); }"
+        "if (sd <= 0.0) { colour = vec4(oColour.rgb,0.5); }"
         //"if (sd <= 0.1){ alpha = 1.0-smoothstep(0.0,0.1,sd); colour = vec4(oColour.rgb,alpha); }"
         "else { colour = vec4(oColour.rgb,alpha); }"
     "}";
