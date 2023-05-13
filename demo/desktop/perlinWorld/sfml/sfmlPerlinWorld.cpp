@@ -206,9 +206,11 @@ int main(int argc, char ** argv)
   if (status != "LUA_OK") { WARN(status) >> log; }
 
 
-  physics.stabaliseObjectParameters(&manager);
+  //physics.stabaliseObjectParameters(&manager);
 
   bool refreshObjectShaders = true;
+
+  bool paused = true;
 
   while (window.isOpen())
   {
@@ -239,15 +241,15 @@ int main(int argc, char ** argv)
         workers.joinThread();
         INFO("Thread: "+std::to_string(workers.size())) >> log;
       }
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
-      {
-        posX = 0.0; posY = 0.0;
-      }
 
       if (event.type == sf::Event::MouseWheelScrolled)
       {
         double z = event.mouseWheelScroll.delta;
         camera.incrementZoom(z);
+      }
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+      {
+        paused = !paused;
       }
     }
 
@@ -287,20 +289,23 @@ int main(int argc, char ** argv)
 
     collisions.centreOn(world.get()->getMapCenter());
     
-    for (unsigned k = 0 ; k < subSamples; k++)
+    if (!paused)
     {
-      if (workers.size() > 1)
+      for (unsigned k = 0 ; k < subSamples; k++)
       {
-        collisions.update(&manager, world.get(),&workers);
-      }
-      else
-      {
-        collisions.update(&manager, world.get());
-      }
+        if (workers.size() > 1)
+        {
+          collisions.update(&manager, world.get(),&workers);
+        }
+        else
+        {
+          collisions.update(&manager, world.get());
+        }
 
-      physics.gravityForce(&manager,9.81,0.0,-1.0);
+        physics.gravityForce(&manager,9.81,0.0,-1.0);
 
-      physics.update(&manager);
+        physics.update(&manager);
+      }
     }
 
     tp1 = high_resolution_clock::now();
@@ -321,17 +326,17 @@ int main(int argc, char ** argv)
     auto citer = objects.cbegin();
     auto cend = objects.cend();
 
-    // while (citer != cend)
-    // {
-    //   if (manager.hasComponent<cCollideable>(citer->first))
-    //   {
+    while (citer != cend)
+    {
+      if (manager.hasComponent<cCollideable>(citer->first))
+      {
         
-    //     cCollideable & c = manager.getComponent<cCollideable>(citer->first);
+        cCollideable & c = manager.getComponent<cCollideable>(citer->first);
 
-    //     c.mesh.drawDebug(camera.getVP());
-    //   }
-    //   citer++;
-    // }
+        c.mesh.drawDebug(camera.getVP());
+      }
+      citer++;
+    }
 
     tr1 = high_resolution_clock::now();
 

@@ -204,8 +204,6 @@ namespace Hop::Maths
             s = std::sqrt(d);
             nx = rx / s;
             ny = ry / s;
-
-            std::cout << "1\n";
         }
 
         d2 = pointLineSegmentDistanceSquared<T>(
@@ -218,7 +216,6 @@ namespace Hop::Maths
         if (d2 < d)
         {
             d = d2; nx = nxt; ny = nyt;
-            std::cout << "2\n";
         }
 
         rx = r->ulx-px;
@@ -232,7 +229,6 @@ namespace Hop::Maths
             s = std::sqrt(d);
             nx = rx / s;
             ny = ry / s;
-            std::cout << "3\n";
         }
 
         d2 = pointLineSegmentDistanceSquared<T>(
@@ -245,7 +241,6 @@ namespace Hop::Maths
         if (d2 < d)
         {
             d = d2; nx = nxt; ny = nyt;
-            std::cout << "4\n";
         }
 
         rx = r->urx-px;
@@ -259,7 +254,6 @@ namespace Hop::Maths
             s = std::sqrt(d);
             nx = rx / s;
             ny = ry / s;
-            std::cout << "5\n";
         }
 
         d2 = pointLineSegmentDistanceSquared<T>(
@@ -272,7 +266,6 @@ namespace Hop::Maths
         if (d2 < d)
         {
             d = d2; nx = nxt; ny = nyt;
-            std::cout << "6\n";
         }
 
         rx = r->lrx-px;
@@ -286,7 +279,6 @@ namespace Hop::Maths
             s = std::sqrt(d);
             nx = rx / s;
             ny = ry / s;
-            std::cout << "7\n";
         }
     }
 

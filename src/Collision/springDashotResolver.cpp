@@ -23,19 +23,15 @@ namespace Hop::System::Physics
         double px, double py
     )
     {
-        double mag, fx, fy, dinv, vrx, vry, ddot, rx, ry, meff, kr, kd;
+        double mag, fx, fy, dinv, vrx, vry, ddot, rx, ry, meff;
 
         mag = 0.0;
         fx = nx;
         fy = ny;
 
-        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
-        kr = meff*alpha;
-        kd = 2.0*meff*beta;
+        dinv = std::min(1.0,1.0/od);
 
-        dinv = std::min(3.0,1.0/od);
-
-        mag -= kr*od*dinv;
+        mag -= kr*od;//*dinv;
 
         vrx = pI.vx-pJ.vx;
         vry = pI.vy-pJ.vy;
@@ -52,7 +48,7 @@ namespace Hop::System::Physics
         //     nyt *= -1.0;
         // }
 
-        mag -= kd*ddot*dinv;
+        mag -= kd*ddot;//*dinv*10.0;
 
         fx *= mag;//+friction*std::abs(mag)*nxt;
         fy *= mag;//+friction*std::abs(mag)*nyt;
@@ -190,7 +186,7 @@ namespace Hop::System::Physics
 
         dinv = std::min(1.0,1.0/od);
 
-        mag = kr*od;//*dinv;
+        mag = kr*od*dinv;
 
         vrx = pI.vx;
         vry = pI.vy;
@@ -207,7 +203,7 @@ namespace Hop::System::Physics
         //     nyt *= -1.0;
         // }
 
-        mag -= kd*ddot;//*dinv;
+        mag -= kd*ddot*10.0*dinv;
 
         fx *= mag;//+friction*std::abs(mag)*nxt;
         fy *= mag;//+friction*std::abs(mag)*nyt;
@@ -238,8 +234,10 @@ namespace Hop::System::Physics
         sd = sdf<double>(lj,pix,piy);
 
         // std::cout << sd << "\n";
+        // std::cout << pix << ", " << piy << "\n";
+        // std::cout << "lj " << *lj << "\n";
 
-        if (sd < 0)
+        if (sd <= 0)
         {
             shortestDistanceSquared(pix, piy, lj, cx, cy, odod);
             d = std::sqrt(odod);
@@ -251,35 +249,32 @@ namespace Hop::System::Physics
                 nx = -nx;
                 ny = -ny;
             }
-            else
+
+            nxt = pI.lastX - pix;
+            nyt = pI.lastY - piy;
+
+            dt = std::sqrt(nxt*nxt+nyt*nyt);
+
+            nxt /= dt;
+            nyt /= dt;
+
+            // std::cout << "ij" << nxt << ", " << nyt << "\n";
+
+            if (nx*nxt+ny*nyt < 0.0)
             {
-                // nxt = lj->x - pix;
-                // nyt = lj->y - piy;
-
-                // dt = std::sqrt(nxt*nxt+nyt*nyt);
-
-                // nxt /= dt;
-                // nyt /= dt;
-
-                // std::cout << "ij" << nxt << ", " << nyt << "\n";
-
-                // if (nx*nxt+ny*nyt < 0.0)
-                // {
-                //     nx = -nx;
-                //     ny = -ny;
-                // }
+                nx = nxt;
+                ny = nyt;
             }
-
-            std::cout << "dir " << reverse << ", " << nx << ", " << ny << ", " << pix << ", " << piy << ", " << cx << ", " << cy << "\n";
-
 
             if (wall)
             {
+                // std::cout << "dir " << reverse << ", " << nx << ", " << ny << ", " << pix << ", " << piy << ", " << cx << ", " << cy << ", " << d << "\n";
+
                 springDashpotWallForce(pI, d, nx, ny, pix, piy);
             }
             else
             {
-                springDashpotForce(pI, pJ, d, nx, ny, pix, piy);
+                springDashpotForce(pI, pJ, d, -nx, -ny, pix, piy);
             }
  
         }
@@ -296,8 +291,7 @@ namespace Hop::System::Physics
         double nx, ny, cx, cy, s, d, odod;
 
         // li's vertices
-        // std::cout << *li << "\n";
-        // std::cout << *lj << "\n";
+        //std::cout << "li " <<  *li << "\n";
 
         collisionForce(pI, pJ, li->llx, li->lly, lj, wall);
 
@@ -311,8 +305,6 @@ namespace Hop::System::Physics
 
         if (wall)
         { 
-            std::cout << "lj\n";
-
             collisionForce(pI, pJ, lj->llx, lj->lly, li, wall, true);
 
             collisionForce(pI, pJ, lj->ulx, lj->uly, li, wall, true);
@@ -870,37 +862,100 @@ namespace Hop::System::Physics
         double insideThresh = thresh*thresh;
         int handedness, handedness2;
 
-        Rectangle r1, r2;
+        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
 
-        Rectangle bottomLeft;
-        bottomLeft.llx = x0-s/2.0; bottomLeft.lly = y0;
-        bottomLeft.ulx = x0;       bottomLeft.uly = y0+s/2.0;
-        bottomLeft.urx = x0+s/2.0; bottomLeft.ury = y0;
-        bottomLeft.lrx = x0;       bottomLeft.lry = y0-s/2.0;
+        bool isRectangle = li != nullptr;
 
-        Rectangle central;
-        central.llx = x0;       central.lly = y0+s/2.0;
-        central.ulx = x0+s/2.0; central.uly = y0+s;
-        central.urx = x0+s;     central.ury = y0+s/2.0;
-        central.lrx = x0+s/2.0; central.lry = y0;
+        Rectangle r1a, r1b, r1c;
 
-        Rectangle bottomRight;
-        bottomRight.llx = x0+s/2.0;     bottomRight.lly = y0;
-        bottomRight.ulx = x0+s;         bottomRight.uly = y0+s/2.0;
-        bottomRight.urx = x0+s*3.0/2.0; bottomRight.ury = y0;
-        bottomRight.lrx = x0+s;         bottomRight.lry = y0-s/2.0;
+        Rectangle bottomLeft, bottomLeftSquare, bottomRight, bottomRightSquare;
+        Rectangle central, topLeft, topLeftSquare, topRight, topRightSquare;
+        Rectangle leftHalf, rightHalf, topHalf, bottomHalf;
 
-        Rectangle topLeft;
-        topLeft.llx = x0;           topLeft.lly = y0+s/2.0;
-        topLeft.ulx = x0-s/2.0;     topLeft.uly = y0+s;
-        topLeft.urx = x0;           topLeft.ury = y0+s*3.0/2.0;
-        topLeft.lrx = x0+s/2.0;     topLeft.lry = y0+s;
+        bool bc = false;
 
-        Rectangle topRight;
-        topRight.llx = x0+s/2.0;     topRight.lly = y0+s;
-        topRight.ulx = x0+s;         topRight.uly = y0+s*3.0/2.0;
-        topRight.urx = x0+s*3.0/2.0; topRight.ury = y0;
-        topRight.lrx = x0+s;         topRight.lry = y0+s/2.0;
+        if (isRectangle)
+        {
+
+            // Rectangle bottomLeft;
+            bottomLeft.llx = x0-s/2.0; bottomLeft.lly = y0;
+            bottomLeft.ulx = x0;       bottomLeft.uly = y0+s/2.0;
+            bottomLeft.urx = x0+s/2.0; bottomLeft.ury = y0;
+            bottomLeft.lrx = x0;       bottomLeft.lry = y0-s/2.0;
+
+            // Rectangle bottomLeftSquare;
+            bottomLeftSquare.llx = x0;       bottomLeftSquare.lly = y0;
+            bottomLeftSquare.ulx = x0;       bottomLeftSquare.uly = y0+s/2.0;
+            bottomLeftSquare.urx = x0+s/2.0; bottomLeftSquare.ury = y0+s/2.0;
+            bottomLeftSquare.lrx = x0+s/2.0; bottomLeftSquare.lry = y0;
+
+            // Rectangle central;
+            central.llx = x0;       central.lly = y0+s/2.0;
+            central.ulx = x0+s/2.0; central.uly = y0+s;
+            central.urx = x0+s;     central.ury = y0+s/2.0;
+            central.lrx = x0+s/2.0; central.lry = y0;
+
+            // Rectangle bottomRight;
+            bottomRight.llx = x0+s/2.0;     bottomRight.lly = y0;
+            bottomRight.ulx = x0+s;         bottomRight.uly = y0+s/2.0;
+            bottomRight.urx = x0+s*3.0/2.0; bottomRight.ury = y0;
+            bottomRight.lrx = x0+s;         bottomRight.lry = y0-s/2.0;
+
+            // Rectangle bottomRightSquare;
+            bottomRightSquare.llx = x0+s/2.0;     bottomRightSquare.lly = y0;
+            bottomRightSquare.ulx = x0+s/2.0;     bottomRightSquare.uly = y0+s/2.0;
+            bottomRightSquare.urx = x0+s;         bottomRightSquare.ury = y0+s/2.0;
+            bottomRightSquare.lrx = x0+s;         bottomRightSquare.lry = y0;
+
+            // Rectangle topLeft;
+            topLeft.llx = x0;           topLeft.lly = y0+s/2.0;
+            topLeft.ulx = x0-s/2.0;     topLeft.uly = y0+s;
+            topLeft.urx = x0;           topLeft.ury = y0+s*3.0/2.0;
+            topLeft.lrx = x0+s/2.0;     topLeft.lry = y0+s;
+
+            // Rectangle topLeftSquare;
+            topLeftSquare.llx = x0;           topLeftSquare.lly = y0+s/2.0;
+            topLeftSquare.ulx = x0;           topLeftSquare.uly = y0+s;
+            topLeftSquare.urx = x0+s/2.0;     topLeftSquare.ury = y0+s;
+            topLeftSquare.lrx = x0+s/2.0;     topLeftSquare.lry = y0+s/2.0;
+
+            // Rectangle topRight;
+            topRight.llx = x0+s/2.0;     topRight.lly = y0+s;
+            topRight.ulx = x0+s;         topRight.uly = y0+s*3.0/2.0;
+            topRight.urx = x0+s*3.0/2.0; topRight.ury = y0;
+            topRight.lrx = x0+s;         topRight.lry = y0+s/2.0;
+
+            // Rectangle topRightSquare;
+            topRightSquare.llx = x0+s/2.0;     topRightSquare.lly = y0+s;
+            topRightSquare.ulx = x0+s;         topRightSquare.uly = y0+s;
+            topRightSquare.urx = x0+s;         topRightSquare.ury = y0+s/2.0;
+            topRightSquare.lrx = x0+s/2.0;     topRightSquare.lry = y0+s/2.0;
+
+            // Rectangle rightHalf;
+            rightHalf.llx = x0+s/2.0;     rightHalf.lly = y0;
+            rightHalf.ulx = x0+s/2.0;     rightHalf.uly = y0+s;
+            rightHalf.urx = x0+s;         rightHalf.ury = y0+s;
+            rightHalf.lrx = x0+s;         rightHalf.lry = y0;
+
+            // Rectangle leftHalf;
+            leftHalf.llx = x0;           leftHalf.lly = y0;
+            leftHalf.ulx = x0;           leftHalf.uly = y0+s;
+            leftHalf.urx = x0+s/2.0;     leftHalf.ury = y0+s;
+            leftHalf.lrx = x0+s/2.0;     leftHalf.lry = y0;
+
+            // Rectangle bottomHalf;
+            bottomHalf.llx = x0;           bottomHalf.lly = y0;
+            bottomHalf.ulx = x0;           bottomHalf.uly = y0+s/2.0;
+            bottomHalf.urx = x0+s;         bottomHalf.ury = y0+s/2.0;
+            bottomHalf.lrx = x0+s;         bottomHalf.lry = y0;
+
+            // Rectangle topHalf;
+            topHalf.llx = x0;           topHalf.lly = y0+s/2.0;
+            topHalf.ulx = x0;           topHalf.uly = y0+s;
+            topHalf.urx = x0+s;         topHalf.ury = y0+s;
+            topHalf.lrx = x0+s;         topHalf.lry = y0+s/2.0;
+
+        }
 
         if (h == Tile::EMPTY)
         {   
@@ -929,10 +984,13 @@ namespace Hop::System::Physics
             
             */
 
-            r1.llx = x0;    r1.lly = y0;
-            r1.ulx = x0;    r1.uly = y0+s;
-            r1.urx = x0+s;  r1.ury = y0+s;
-            r1.lrx = x0+s;  r1.lry = y0;
+            if (isRectangle)
+            {
+                r1a.llx = x0;    r1a.lly = y0;
+                r1a.ulx = x0;    r1a.uly = y0+s;
+                r1a.urx = x0+s;  r1a.ury = y0+s;
+                r1a.lrx = x0+s;  r1a.lry = y0;
+            }
 
             double dw, dn, de, ds;
             dw = pointLineSegmentDistanceSquared<double>
@@ -1051,7 +1109,16 @@ namespace Hop::System::Physics
             lx0 = hx; ly0 = y0;
             lx1 = x0; ly1 = hy;
 
-            r1 = bottomLeft;
+
+            if (isRectangle && !neighbour)
+            {
+                r1a = bottomLeft;
+            }
+            else
+            {
+                r1a = bottomLeftSquare;
+            }
+
         }
         else if (h == Tile::EMPTY_BOTTOM_LEFT)
         {
@@ -1078,7 +1145,15 @@ namespace Hop::System::Physics
             lx0 = hx; ly0 = y0;
             lx1 = x0; ly1 = hy;
 
-            r1 = central;
+
+            if (isRectangle)
+            {
+                r1a = central;
+                r1b = rightHalf;
+                r1c = topHalf;
+                bc = true;
+            }
+
         }
         else if (h == Tile::BOTTOM_RIGHT)
         {
@@ -1105,7 +1180,15 @@ namespace Hop::System::Physics
             lx0 = hx; ly0 = y0;
             lx1 = lx; ly1 = hy;
 
-            r1 = bottomRight;
+            if (isRectangle && !neighbour)
+            {
+                r1a = bottomRight;
+            }
+            else
+            {
+                r1a = bottomRightSquare;
+            }
+
         }
         else if (h == Tile::EMPTY_BOTTOM_RIGHT)
         {
@@ -1132,7 +1215,14 @@ namespace Hop::System::Physics
             lx0 = hx; ly0 = y0;
             lx1 = lx; ly1 = hy;
 
-            r1 = central;
+
+            if (isRectangle)
+            {
+                r1a = central;
+                r1b = leftHalf;
+                r1c = topHalf;
+                bc = true;
+            }
 
         }
         else if (h == Tile::TOP_RIGHT)
@@ -1160,7 +1250,15 @@ namespace Hop::System::Physics
             lx0 = lx; ly0 = hy;
             lx1 = hx; ly1 = ly;
 
-            r1 = topRight;
+            if (isRectangle && !neighbour)
+            {
+                r1a = topRight;
+            }
+            else
+            {
+                r1a = topRightSquare;
+            }
+
         }
         else if (h == Tile::EMPTY_TOP_RIGHT)
         {
@@ -1187,7 +1285,14 @@ namespace Hop::System::Physics
             lx0 = lx; ly0 = hy;
             lx1 = hx; ly1 = ly;
 
-            r1 = central;
+            if (isRectangle)
+            {
+                r1a = central;
+                r1b = bottomHalf;
+                r1c = leftHalf;
+                bc = true;
+            }
+
         }
         else if (h == Tile::TOP_LEFT)
         {
@@ -1214,7 +1319,15 @@ namespace Hop::System::Physics
             lx0 = x0; ly0 = hy;
             lx1 = hx; ly1 = ly;
 
-            r1 = topLeft;
+            if (isRectangle && !neighbour)
+            {
+                r1a = topLeft;
+            }
+            else
+            {
+                r1a = topLeftSquare;
+            }
+
         }
         else if (h == Tile::EMPTY_TOP_LEFT)
         {
@@ -1241,7 +1354,14 @@ namespace Hop::System::Physics
             lx0 = x0; ly0 = hy;
             lx1 = hx; ly1 = ly;
 
-            r1 = central;
+            if (isRectangle)
+            {
+                r1a = central;
+                r1b = bottomHalf;
+                r1c = rightHalf;
+                bc = true;
+            }
+
         }
         else if (h == Tile::BOTTOM_HALF)
         {
@@ -1268,10 +1388,12 @@ namespace Hop::System::Physics
             lx0 = x0; ly0 = hy;
             lx1 = lx; ly1 = hy;
 
-            r1.llx = x0;           r1.lly = y0;
-            r1.ulx = x0;           r1.uly = y0+s/2.0;
-            r1.urx = x0+s;         r1.ury = y0+s/2.0;
-            r1.lrx = x0+s;         r1.lry = y0;
+
+            if (isRectangle)
+            {
+                r1a = bottomHalf;
+            }
+
         }
         else if (h == Tile::TOP_HALF)
         {
@@ -1297,10 +1419,12 @@ namespace Hop::System::Physics
             lx0 = x0; ly0 = hy;
             lx1 = lx; ly1 = hy;
 
-            r1.llx = x0;           r1.lly = y0+s/2.0;
-            r1.ulx = x0;           r1.uly = y0+s;
-            r1.urx = x0+s;         r1.ury = y0+s;
-            r1.lrx = x0+s;         r1.lry = y0+s/2.0;
+
+            if (isRectangle)
+            {
+                r1a = topHalf;
+            }
+
         }
         else if (h == Tile::LEFT_HALF)
         {
@@ -1327,10 +1451,12 @@ namespace Hop::System::Physics
             lx0 = hx; ly0 = y0;
             lx1 = hx; ly1 = ly;
 
-            r1.llx = x0;           r1.lly = y0;
-            r1.ulx = x0;           r1.uly = y0+s;
-            r1.urx = x0+s/2.0;     r1.ury = y0+s;
-            r1.lrx = x0+s/2.0;     r1.lry = y0;
+
+            if (isRectangle)
+            {
+                r1a = leftHalf;
+            }
+
         }
         else if (h == Tile::RIGHT_HALF)
         {
@@ -1356,10 +1482,12 @@ namespace Hop::System::Physics
             lx0 = hx; ly0 = y0;
             lx1 = hx; ly1 = ly;
 
-            r1.llx = x0+s/2.0;     r1.lly = y0;
-            r1.ulx = x0+s/2.0;     r1.uly = y0+s;
-            r1.urx = x0+s;         r1.ury = y0+s;
-            r1.lrx = x0+s;         r1.lry = y0;
+
+            if (isRectangle)
+            {
+                r1a = rightHalf;
+            }
+
         }
         else if (h == Tile::BOTTOM_LEFT_AND_TOP_RIGHT)
         {
@@ -1388,9 +1516,24 @@ namespace Hop::System::Physics
             lx0 = x0; ly0 = hy;
             lx1 = hx; ly1 = ly;
 
-            r1 = topLeft;
 
-            r2 = bottomRight;
+            if (isRectangle)
+            {
+                r1a = central;
+                
+                if (!neighbour)
+                {
+                    r1b = bottomLeft;
+                    r1c = topRight;
+                }
+                else
+                {
+                    r1b = bottomLeftSquare;
+                    r1c = topRightSquare;
+                }
+
+                bc = true;
+            }
 
             if (handedness == -1
             )
@@ -1447,9 +1590,23 @@ namespace Hop::System::Physics
             lx0 = hx; ly0 = y0;
             lx1 = x0; ly1 = hy;
 
-            r1 = bottomLeft;
 
-            r2 = topRight;
+            if (isRectangle)
+            {
+                r1a = central;
+
+                if (!neighbour)
+                {
+                    r1b = topLeft;
+                    r1c = bottomRight;
+                }
+                else
+                {
+                    r1b = topLeftSquare;
+                    r1c = bottomRightSquare;                   
+                }
+                bc = true;
+            }
 
             if (handedness == -1
             )
@@ -1481,8 +1638,6 @@ namespace Hop::System::Physics
         if (neighbour){inside = false;}
 
         //std::cout << "not neighbour\n";
-
-        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
 
         if (inside){ 
             if (li != nullptr)
@@ -1550,30 +1705,35 @@ namespace Hop::System::Physics
         else 
         {
             // rect-rect collision
-            double nx1, ny1, nx2, ny2, dd, dd1, dd2, tc;
-            double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag;
-            bool colliding = false;
-            cPhysics dataTmp(c->x,c->y,c->y);
+            cPhysics dataA(c->x,c->y,c->y);
+            cPhysics dataB(c->x,c->y,c->y);
+            cPhysics dataC(c->x,c->y,c->y);
 
-            r1.resetAxes();
-            r2.resetAxes();
+            r1a.resetAxes();
+            r1b.resetAxes();
+            r1c.resetAxes();
 
             //std::cout << "r-r\n";
             //std::cout << rr << ", " << d2 << "\n";
-            //std::cout << li<< "\n";
+            //std::cout << h << "\n";
+            //std::cout << *li << "\n";
             //std::cout << r1 << "\n";
 
             if (f1)
             {
                 //std::cout << "f1\n";
                 //std::cout << *li << "\n" << r1 << "\n";
-                collisionForce(dataP, dataTmp, li, &r1, true);
+                collisionForce(dataP, dataA, li, &r1a, true);
+                //std::cout << "a " << r1a << "\n";
             }
 
-            if (f2)
+            if ((f1 || f2) && bc)
             {
                 //std::cout << "f2\n";
-                collisionForce(dataP, dataTmp, li, &r2, true);
+                collisionForce(dataP, dataB, li, &r1b, true);
+                collisionForce(dataP, dataC, li, &r1c, true);
+                //std::cout << "b " << r1b << "\n";
+                //std::cout << "c " << r1c << "\n";
             }
 
         }
