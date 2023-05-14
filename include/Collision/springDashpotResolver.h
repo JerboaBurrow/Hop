@@ -97,7 +97,9 @@ namespace Hop::System::Physics
         (
             cPhysics & pI, cPhysics & pJ,
             double pix, double piy,
+            Rectangle * li,
             Rectangle * lj,
+            double sx, double sy,
             bool wall = false,
             bool reverse = false
         );
@@ -173,7 +175,7 @@ namespace Hop::System::Physics
 
         // pre-calculated collision parameters
         double alpha, beta, friction;
-        double kr, kd;
+        double kr, kd, krR, kdR, alphaR, betaR;
     };
 
 }

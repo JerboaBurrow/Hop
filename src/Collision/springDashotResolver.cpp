@@ -16,6 +16,29 @@ namespace Hop::System::Physics
     using Hop::Maths::sdf;
     using Hop::Maths::shortestDistanceSquared;
 
+    void SpringDashpot::updateParameters(
+    double tc,
+    double cor
+    )
+    {
+        collisionTime = tc;
+        coefficientOfRestitution = cor;
+        alpha = (std::log(cor) + M_PI*M_PI) / (tc * tc);
+        beta = -std::log(cor) / tc;
+
+        kr = EFFECTIVE_MASS*alpha;
+        kd = 2.0*EFFECTIVE_MASS*beta;
+
+        alphaR = (std::log(cor) + M_PI*M_PI) / (tc * tc);
+        betaR = -std::log(cor) / tc;
+
+        krR = kr;
+        kdR = kd;
+
+        std::cout << kr << ", " << kd << krR << ", " << kdR << "\n";
+    }
+
+
     void SpringDashpot::springDashpotForce
     (
         cPhysics & pI, cPhysics & pJ,
@@ -29,9 +52,7 @@ namespace Hop::System::Physics
         fx = nx;
         fy = ny;
 
-        dinv = std::min(1.0,1.0/od);
-
-        mag -= kr*od;//*dinv;
+        mag -= krR*od;//*dinv;
 
         vrx = pI.vx-pJ.vx;
         vry = pI.vy-pJ.vy;
@@ -48,7 +69,7 @@ namespace Hop::System::Physics
         //     nyt *= -1.0;
         // }
 
-        mag -= kd*ddot;//*dinv*10.0;
+        mag -= kdR*ddot;//*dinv*10.0;
 
         fx *= mag;//+friction*std::abs(mag)*nxt;
         fy *= mag;//+friction*std::abs(mag)*nyt;
@@ -67,7 +88,7 @@ namespace Hop::System::Physics
         rx = px - pJ.lastX;
         ry = py - pJ.lastY;
 
-        pJ.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
+        pJ.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
     }
 
     void SpringDashpot::springDashpotForce
@@ -125,7 +146,7 @@ namespace Hop::System::Physics
         rx = pxj - pI.lastX;
         ry = pyj - pI.lastY;
 
-        pI.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
+        pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
     }
 
      void SpringDashpot::springDashpotWallForce
@@ -174,19 +195,15 @@ namespace Hop::System::Physics
         double px, double py
     )
     {
-        double mag, fx, fy, dinv, vrx, vry, ddot, rx, ry, meff, kr, kd;
+        double mag, fx, fy, dinv, vrx, vry, ddot, rx, ry, meff;
 
         mag = 0.0;
         fx = nx;
         fy = ny;
 
-        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
-        kr = meff*alpha;
-        kd = 2.0*meff*beta;
+        // dinv = std::min(1.0,od*od);
 
-        dinv = std::min(1.0,1.0/od);
-
-        mag = kr*od*dinv;
+        mag = kr*od*10.0;//*dinv;
 
         vrx = pI.vx;
         vry = pI.vy;
@@ -203,7 +220,9 @@ namespace Hop::System::Physics
         //     nyt *= -1.0;
         // }
 
-        mag -= kd*ddot*10.0*dinv;
+        mag -= kd*ddot*10.0;//*dinv;
+
+        std::cout << "wall " << mag << ", " << od << "\n";
 
         fx *= mag;//+friction*std::abs(mag)*nxt;
         fy *= mag;//+friction*std::abs(mag)*nyt;
@@ -224,12 +243,14 @@ namespace Hop::System::Physics
     (
         cPhysics & pI, cPhysics & pJ,
         double pix, double piy,
+        Rectangle * li,
         Rectangle * lj,
+        double sx, double sy,
         bool wall,
         bool reverse
     )
     {
-        double d, sd, cx, cy, nx, ny, nxt, nyt, dt, odod; 
+        double d, sd, cx, cy, nxt, nyt, dt, odod; 
 
         sd = sdf<double>(lj,pix,piy);
 
@@ -237,44 +258,66 @@ namespace Hop::System::Physics
         // std::cout << pix << ", " << piy << "\n";
         // std::cout << "lj " << *lj << "\n";
 
-        if (sd <= 0)
+        if (sd < 0)
         {
             shortestDistanceSquared(pix, piy, lj, cx, cy, odod);
             d = std::sqrt(odod);
-            nx = (cx-pix)/d;
-            ny = (cy-piy)/d;
+            // nx = (cx-pix)/d;
+            // ny = (cy-piy)/d;
 
-            if (reverse)
-            {
-                nx = -nx;
-                ny = -ny;
-            }
+            if (d == 0){ return; }
 
-            nxt = pI.lastX - pix;
-            nyt = pI.lastY - piy;
-
-            dt = std::sqrt(nxt*nxt+nyt*nyt);
-
-            nxt /= dt;
-            nyt /= dt;
-
-            // std::cout << "ij" << nxt << ", " << nyt << "\n";
-
-            if (nx*nxt+ny*nyt < 0.0)
-            {
-                nx = nxt;
-                ny = nyt;
-            }
+            // if (reverse)
+            // {
+            //     nx = -nx;
+            //     ny = -ny;
+            // }
 
             if (wall)
             {
-                // std::cout << "dir " << reverse << ", " << nx << ", " << ny << ", " << pix << ", " << piy << ", " << cx << ", " << cy << ", " << d << "\n";
+                nxt = li->x - lj->x;
+                nyt = li->y - lj->y;
 
-                springDashpotWallForce(pI, d, nx, ny, pix, piy);
+                std::cout << lj->x << ", " << lj->y << "\n";
+
+                if (reverse)
+                {
+                    nxt = -nxt;
+                    nyt = -nyt;
+                }
+
+                dt = std::sqrt(nxt*nxt+nyt*nyt);
+
+                nxt /= dt;
+                nyt /= dt;
+
+                if (sx*nxt+sy*nyt < 0.0)
+                {
+                    sx = -sx;
+                    sy = -sy;
+                }
+                std::cout << nxt << ", " << nyt << ", " << sx << ", " << sy << "\n";
+                springDashpotWallForce(pI, d, sx, sy, pix, piy);
             }
             else
             {
-                springDashpotForce(pI, pJ, d, -nx, -ny, pix, piy);
+                nxt = lj->x - li->x;
+                nyt = lj->y - li->y;
+
+                dt = std::sqrt(nxt*nxt+nyt*nyt);
+
+                nxt /= dt;
+                nyt /= dt;
+                
+                if (sx*nxt+sy*nyt < 0.0)
+                {
+                    sx = -sx;
+                    sy = -sy;
+                }
+
+                //std::cout << nxt << ", " << nyt << ", " << sx << ", " << sy << "\n";
+
+                springDashpotForce(pI, pJ, d, sx, sy, pix, piy);
             }
  
         }
@@ -290,38 +333,40 @@ namespace Hop::System::Physics
     {
         double nx, ny, cx, cy, s, d, odod;
 
+        rectangleRectangleCollided(li,lj,nx,ny,s);
+
         // li's vertices
         //std::cout << "li " <<  *li << "\n";
 
-        collisionForce(pI, pJ, li->llx, li->lly, lj, wall);
+        collisionForce(pI, pJ, li->llx, li->lly, li, lj, nx, ny, wall);
 
-        collisionForce(pI, pJ, li->ulx, li->uly, lj, wall);
+        collisionForce(pI, pJ, li->ulx, li->uly, li, lj, nx, ny, wall);
 
-        collisionForce(pI, pJ, li->urx, li->ury, lj, wall);
+        collisionForce(pI, pJ, li->urx, li->ury, li, lj, nx, ny, wall);
 
-        collisionForce(pI, pJ, li->lrx, li->lry, lj, wall);
+        collisionForce(pI, pJ, li->lrx, li->lry, li, lj, nx, ny, wall);
 
         // lj's vertices
 
         if (wall)
         { 
-            collisionForce(pI, pJ, lj->llx, lj->lly, li, wall, true);
+            collisionForce(pI, pJ, lj->llx, lj->lly, li, lj, nx, ny, wall, true);
 
-            collisionForce(pI, pJ, lj->ulx, lj->uly, li, wall, true);
+            collisionForce(pI, pJ, lj->ulx, lj->uly, li, lj, nx, ny, wall, true);
 
-            collisionForce(pI, pJ, lj->urx, lj->ury, li, wall, true);
+            collisionForce(pI, pJ, lj->urx, lj->ury, li, lj, nx, ny, wall, true);
 
-            collisionForce(pI, pJ, lj->lrx, lj->lry, li, wall, true);
+            collisionForce(pI, pJ, lj->lrx, lj->lry, li, lj, nx, ny, wall, true);
         }
         else
         {
-            collisionForce(pJ, pI, lj->llx, lj->lly, li);
+            collisionForce(pJ, pI, lj->llx, lj->lly, lj, li, nx, ny);
 
-            collisionForce(pJ, pI, lj->ulx, lj->uly, li);
+            collisionForce(pJ, pI, lj->ulx, lj->uly, lj, li, nx, ny);
 
-            collisionForce(pJ, pI, lj->urx, lj->ury, li);
+            collisionForce(pJ, pI, lj->urx, lj->ury, lj, li, nx, ny);
 
-            collisionForce(pJ, pI, lj->lrx, lj->lry, li);
+            collisionForce(pJ, pI, lj->lrx, lj->lry, lj, li, nx, ny);
         }
         
     }
@@ -679,22 +724,6 @@ namespace Hop::System::Physics
         }
 
     }
-
-
-    void SpringDashpot::updateParameters(
-        double tc,
-        double cor
-    )
-    {
-        collisionTime = tc;
-        coefficientOfRestitution = cor;
-        alpha = (std::log(cor) + M_PI*M_PI) / (tc * tc);
-        beta = -std::log(cor) / tc;
-
-        kr = EFFECTIVE_MASS*alpha;
-        kd = 2.0*EFFECTIVE_MASS*beta;
-    }
-
 
     void SpringDashpot::neighbourTilesCollision
     (

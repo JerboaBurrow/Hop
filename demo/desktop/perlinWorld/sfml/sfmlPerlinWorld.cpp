@@ -52,8 +52,8 @@ double deltas[60];
 
 bool debug = false;
 
-const double deltaPhysics = 1.0/900.0;
-const unsigned subSamples = 1;
+const double deltaPhysics = 1.0/9000.0;
+const unsigned subSamples = 10;
 
 using Hop::Object::Component::cTransform;
 using Hop::Object::Component::cPhysics;
@@ -201,7 +201,7 @@ int main(int argc, char ** argv)
 
   console.luaStore(&luaStore);
 
-  console.runFile("test.lua");
+  console.runFile("tests/stacked-rectangles.lua");
   std::string status = console.luaStatus();
   if (status != "LUA_OK") { WARN(status) >> log; }
 

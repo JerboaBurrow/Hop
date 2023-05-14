@@ -193,18 +193,18 @@ namespace Hop::Maths
             nx, ny
         );
 
-        rx = r->llx-px;
-        ry = r->lly-py;
+        // rx = r->llx-px;
+        // ry = r->lly-py;
 
-        d2 = rx*rx+ry*ry;
+        // d2 = rx*rx+ry*ry;
 
-        if (d2 < d)
-        {
-            d = d2;
-            s = std::sqrt(d);
-            nx = rx / s;
-            ny = ry / s;
-        }
+        // if (d2 < d)
+        // {
+        //     d = d2;
+        //     s = std::sqrt(d);
+        //     nx = rx / s;
+        //     ny = ry / s;
+        // }
 
         d2 = pointLineSegmentDistanceSquared<T>(
             px, py,
@@ -218,18 +218,18 @@ namespace Hop::Maths
             d = d2; nx = nxt; ny = nyt;
         }
 
-        rx = r->ulx-px;
-        ry = r->uly-py;
+        // rx = r->ulx-px;
+        // ry = r->uly-py;
 
-        d2 = rx*rx+ry*ry;
+        // d2 = rx*rx+ry*ry;
 
-        if (d2 < d)
-        {
-            d = d2;
-            s = std::sqrt(d);
-            nx = rx / s;
-            ny = ry / s;
-        }
+        // if (d2 < d)
+        // {
+        //     d = d2;
+        //     s = std::sqrt(d);
+        //     nx = rx / s;
+        //     ny = ry / s;
+        // }
 
         d2 = pointLineSegmentDistanceSquared<T>(
             px, py,
@@ -243,18 +243,18 @@ namespace Hop::Maths
             d = d2; nx = nxt; ny = nyt;
         }
 
-        rx = r->urx-px;
-        ry = r->ury-py;
+        // rx = r->urx-px;
+        // ry = r->ury-py;
 
-        d2 = rx*rx+ry*ry;
+        // d2 = rx*rx+ry*ry;
 
-        if (d2 < d)
-        {
-            d = d2;
-            s = std::sqrt(d);
-            nx = rx / s;
-            ny = ry / s;
-        }
+        // if (d2 < d)
+        // {
+        //     d = d2;
+        //     s = std::sqrt(d);
+        //     nx = rx / s;
+        //     ny = ry / s;
+        // }
 
         d2 = pointLineSegmentDistanceSquared<T>(
             px, py,
@@ -268,18 +268,18 @@ namespace Hop::Maths
             d = d2; nx = nxt; ny = nyt;
         }
 
-        rx = r->lrx-px;
-        ry = r->lry-py;
+        // rx = r->lrx-px;
+        // ry = r->lry-py;
 
-        d2 = rx*rx+ry*ry;
+        // d2 = rx*rx+ry*ry;
 
-        if (d2 < d)
-        {
-            d = d2;
-            s = std::sqrt(d);
-            nx = rx / s;
-            ny = ry / s;
-        }
+        // if (d2 < d)
+        // {
+        //     d = d2;
+        //     s = std::sqrt(d);
+        //     nx = rx / s;
+        //     ny = ry / s;
+        // }
     }
 
 }
