@@ -29,13 +29,15 @@ namespace Hop::System::Physics
         kr = EFFECTIVE_MASS*alpha;
         kd = 2.0*EFFECTIVE_MASS*beta;
 
+        cor = 0.33;
+
         alphaR = (std::log(cor) + M_PI*M_PI) / (tc * tc);
         betaR = -std::log(cor) / tc;
 
         krR = kr;
         kdR = kd;
 
-        std::cout << kr << ", " << kd << krR << ", " << kdR << "\n";
+        //std::cout << kr << ", " << kd << krR << ", " << kdR << "\n";
     }
 
 
@@ -52,7 +54,9 @@ namespace Hop::System::Physics
         fx = nx;
         fy = ny;
 
-        mag -= krR*od;//*dinv;
+        dinv = std::min(3.0,1.0/od);
+
+        mag -= krR*od*dinv;
 
         vrx = pI.vx-pJ.vx;
         vry = pI.vy-pJ.vy;
@@ -69,7 +73,7 @@ namespace Hop::System::Physics
         //     nyt *= -1.0;
         // }
 
-        mag -= kdR*ddot;//*dinv*10.0;
+        mag -= kdR*ddot*dinv;
 
         fx *= mag;//+friction*std::abs(mag)*nxt;
         fy *= mag;//+friction*std::abs(mag)*nyt;
@@ -80,7 +84,7 @@ namespace Hop::System::Physics
         rx = px - pI.lastX;
         ry = py - pI.lastY;
 
-        pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
+        //pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
 
         pJ.fx -= fx;
         pJ.fy -= fy;
@@ -88,7 +92,9 @@ namespace Hop::System::Physics
         rx = px - pJ.lastX;
         ry = py - pJ.lastY;
 
-        pJ.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
+        //pJ.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
+
+        std::cout << "o " << (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia) << "\n";
     }
 
     void SpringDashpot::springDashpotForce
@@ -203,7 +209,7 @@ namespace Hop::System::Physics
 
         // dinv = std::min(1.0,od*od);
 
-        mag = kr*od*10.0;//*dinv;
+        mag = krR*od;//*dinv;
 
         vrx = pI.vx;
         vry = pI.vy;
@@ -220,15 +226,14 @@ namespace Hop::System::Physics
         //     nyt *= -1.0;
         // }
 
-        mag -= kd*ddot*10.0;//*dinv;
+        mag -= kdR*ddot;//*dinv;
 
-        std::cout << "wall " << mag << ", " << od << "\n";
+        if (mag < 0.0) { return; }
+
+        //std::cout << "wall " << mag << ", " << od << "\n";
 
         fx *= mag;//+friction*std::abs(mag)*nxt;
         fy *= mag;//+friction*std::abs(mag)*nyt;
-
-        // std::cout << px << ", " << py << ", " << nx << ", " << ny << "\n";
-        // std::cout << fx << ", " << fy << ", " << mag << ", " << od << "\n";
 
         pI.fx += fx;
         pI.fy += fy;
@@ -236,7 +241,9 @@ namespace Hop::System::Physics
         rx = px - pI.lastX;
         ry = py - pI.lastY;
 
-        pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
+        //pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
+
+        std::cout << "o " << (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia) << "\n";
     }
 
     void SpringDashpot::collisionForce
@@ -246,26 +253,42 @@ namespace Hop::System::Physics
         Rectangle * li,
         Rectangle * lj,
         double sx, double sy,
+        double s,
         bool wall,
         bool reverse
     )
     {
         double d, sd, cx, cy, nxt, nyt, dt, odod; 
 
-        sd = sdf<double>(lj,pix,piy);
+        // TODO use SAT distance vector?
+        // just testing vertices can be weird, e.g. exactly ontop
 
-        // std::cout << sd << "\n";
-        // std::cout << pix << ", " << piy << "\n";
-        // std::cout << "lj " << *lj << "\n";
-
-        if (sd < 0)
+        if (wall && reverse)
         {
-            shortestDistanceSquared(pix, piy, lj, cx, cy, odod);
-            d = std::sqrt(odod);
+            sd = sdf<double>(li,pix,piy);
+        }
+        else
+        {
+            sd = sdf<double>(lj,pix,piy);
+        }
+
+        // std::cout << "sd, s " << sd << ", " << s << "\n";
+        // // std::cout << pix << ", " << piy << "\n";
+
+        if (sd <= 0)
+        {
+            // if (wall && reverse)
+            // {
+            //     shortestDistanceSquared(pix, piy, li, cx, cy, odod);
+            // }
+            // else
+            // {
+            //     shortestDistanceSquared(pix, piy, lj, cx, cy, odod);
+            // }
+            // d = std::sqrt(odod);
+            d = s;
             // nx = (cx-pix)/d;
             // ny = (cy-piy)/d;
-
-            if (d == 0){ return; }
 
             // if (reverse)
             // {
@@ -278,7 +301,7 @@ namespace Hop::System::Physics
                 nxt = li->x - lj->x;
                 nyt = li->y - lj->y;
 
-                std::cout << lj->x << ", " << lj->y << "\n";
+                //std::cout << lj->x << ", " << lj->y << "\n";
 
                 if (reverse)
                 {
@@ -296,7 +319,7 @@ namespace Hop::System::Physics
                     sx = -sx;
                     sy = -sy;
                 }
-                std::cout << nxt << ", " << nyt << ", " << sx << ", " << sy << "\n";
+                //std::cout << nxt << ", " << nyt << ", " << sx << ", " << sy << "\n";
                 springDashpotWallForce(pI, d, sx, sy, pix, piy);
             }
             else
@@ -315,7 +338,7 @@ namespace Hop::System::Physics
                     sy = -sy;
                 }
 
-                //std::cout << nxt << ", " << nyt << ", " << sx << ", " << sy << "\n";
+                std::cout << nxt << ", " << nyt << ", " << sx << ", " << sy << "\n";
 
                 springDashpotForce(pI, pJ, d, sx, sy, pix, piy);
             }
@@ -331,43 +354,70 @@ namespace Hop::System::Physics
         bool wall
     )
     {
-        double nx, ny, cx, cy, s, d, odod;
+        double nx, ny, nxt, nyt, dt, cx, cy, s, d, odod;
+        bool collided = false;
 
-        rectangleRectangleCollided(li,lj,nx,ny,s);
+        collided = rectangleRectangleCollided(li,lj,nx,ny,s);
+
+        if (!collided){ return; }
+
+        nxt = lj->x - li->x;
+        nyt = lj->y - li->y;
+
+        dt = std::sqrt(nxt*nxt+nyt*nyt);
+
+        nxt /= dt;
+        nyt /= dt;
+        
+        if (nx*nxt+ny*nyt < 0.0)
+        {
+            nx = -nx;
+            ny = -ny;
+        }
+
+        if (wall)
+        {
+            springDashpotWallForce(pI, s, -nx, -ny, li->x,li->y);
+        }
+        else
+        {
+            springDashpotWallForce(pI, s, -nx, -ny, li->x,li->y);
+            springDashpotWallForce(pJ, s, nx, ny, lj->x,lj->y);
+        }
 
         // li's vertices
         //std::cout << "li " <<  *li << "\n";
 
-        collisionForce(pI, pJ, li->llx, li->lly, li, lj, nx, ny, wall);
+        // collisionForce(pI, pJ, li->llx, li->lly, li, lj, nx, ny, s, wall);
 
-        collisionForce(pI, pJ, li->ulx, li->uly, li, lj, nx, ny, wall);
+        // collisionForce(pI, pJ, li->ulx, li->uly, li, lj, nx, ny, s, wall);
 
-        collisionForce(pI, pJ, li->urx, li->ury, li, lj, nx, ny, wall);
+        // collisionForce(pI, pJ, li->urx, li->ury, li, lj, nx, ny, s, wall);
 
-        collisionForce(pI, pJ, li->lrx, li->lry, li, lj, nx, ny, wall);
+        // collisionForce(pI, pJ, li->lrx, li->lry, li, lj, nx, ny, s, wall);
 
         // lj's vertices
 
-        if (wall)
-        { 
-            collisionForce(pI, pJ, lj->llx, lj->lly, li, lj, nx, ny, wall, true);
+        // if (wall)
+        // { 
+        //     collisionForce(pI, pJ, lj->llx, lj->lly, li, lj, nx, ny, s, wall, true);
 
-            collisionForce(pI, pJ, lj->ulx, lj->uly, li, lj, nx, ny, wall, true);
+        //     collisionForce(pI, pJ, lj->ulx, lj->uly, li, lj, nx, ny, s, wall, true);
 
-            collisionForce(pI, pJ, lj->urx, lj->ury, li, lj, nx, ny, wall, true);
+        //     collisionForce(pI, pJ, lj->urx, lj->ury, li, lj, nx, ny, s, wall, true);
 
-            collisionForce(pI, pJ, lj->lrx, lj->lry, li, lj, nx, ny, wall, true);
-        }
-        else
-        {
-            collisionForce(pJ, pI, lj->llx, lj->lly, lj, li, nx, ny);
+        //     collisionForce(pI, pJ, lj->lrx, lj->lry, li, lj, nx, ny, s, wall, true);
+        // }
+        // else
+        // {
+        //     collisionForce(pJ, pI, lj->llx, lj->lly, lj, li, nx, ny, s, false, true);
 
-            collisionForce(pJ, pI, lj->ulx, lj->uly, lj, li, nx, ny);
+        //     collisionForce(pJ, pI, lj->ulx, lj->uly, lj, li, nx, ny, s, false, true);
 
-            collisionForce(pJ, pI, lj->urx, lj->ury, lj, li, nx, ny);
+        //     collisionForce(pJ, pI, lj->urx, lj->ury, lj, li, nx, ny, s, false, true);
 
-            collisionForce(pJ, pI, lj->lrx, lj->lry, lj, li, nx, ny);
-        }
+        //     collisionForce(pJ, pI, lj->lrx, lj->lry, lj, li, nx, ny, s, false, true);
+        // }
         
     }
 

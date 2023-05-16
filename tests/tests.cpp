@@ -206,7 +206,7 @@ SCENARIO("Geometry","[maths]"){
         }
         AND_GIVEN("A rectangle [-0.5,-1.5],[1.5,-1.5],[1.5,-0.9],[-0.5,-0.9]")
         {
-            THEN("There is no intersection")
+            THEN("There is an intersection")
             {
                 Rectangle r2
                 (
@@ -237,6 +237,26 @@ SCENARIO("Geometry","[maths]"){
         {
             double px = -0.5;
             double py = -1.0;
+            THEN("The SDF is 0")
+            {
+                double s = sdf(&r1,px,py);
+                REQUIRE(std::abs(s) < tol);
+            }
+        }
+        AND_GIVEN("A point [0.5,1.0]")
+        {
+            double px = 0.5;
+            double py = 1.0;
+            THEN("The SDF is 0")
+            {
+                double s = sdf(&r1,px,py);
+                REQUIRE(std::abs(s) < tol);
+            }
+        }
+        AND_GIVEN("A point [0.5,0.5]")
+        {
+            double px = 0.5;
+            double py = 0.5;
             THEN("The SDF is 0")
             {
                 double s = sdf(&r1,px,py);

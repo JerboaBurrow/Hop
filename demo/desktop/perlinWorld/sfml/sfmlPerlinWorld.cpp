@@ -52,8 +52,8 @@ double deltas[60];
 
 bool debug = false;
 
-const double deltaPhysics = 1.0/9000.0;
-const unsigned subSamples = 10;
+const double deltaPhysics = 1.0/900.0;
+const unsigned subSamples = 1;
 
 using Hop::Object::Component::cTransform;
 using Hop::Object::Component::cPhysics;

@@ -100,6 +100,7 @@ namespace Hop::System::Physics
             Rectangle * li,
             Rectangle * lj,
             double sx, double sy,
+            double s,
             bool wall = false,
             bool reverse = false
         );

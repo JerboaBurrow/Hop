@@ -250,22 +250,22 @@ namespace Hop::System::Physics
                         rx = r->llx - dataP.lastX;
                         ry = r->lly - dataP.lastY;
 
-                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        //dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
 
                         rx = r->ulx - dataP.lastX;
                         ry = r->uly - dataP.lastY;
 
-                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        //dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
 
                         rx = r->urx - dataP.lastX;
                         ry = r->ury - dataP.lastY;
 
-                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        //dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
 
                         rx = r->lrx - dataP.lastX;
                         ry = r->lry - dataP.lastY;
 
-                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        //dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
 
                     }
                 }

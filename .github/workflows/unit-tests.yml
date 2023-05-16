@@ -1,0 +1,31 @@
+name: Hop
+
+on:
+  push:
+    branches-ignore: 'main'
+    tags:     'v*'
+    paths-ignore:
+      - 'doc/**'
+      - '.github/**'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linuxXlinux:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev
+
+    - name: linux-linux
+      run: |
+        ./dependencies.sh && ./build.sh -t -d -r
+
+    - name: Tests
+      working-directory: ${{github.workspace}}/build
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest
