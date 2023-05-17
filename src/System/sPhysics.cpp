@@ -135,7 +135,7 @@ namespace Hop::System::Physics
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
-        double nx, ny, ntheta, ar, br, cr, at, bt, ct, rx, ry, tau, norm;
+        double nx, ny, ntheta, ar, br, cr, at, bt, ct, rx, ry, tau, norm, sticktion;
         unsigned k = 0;
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
@@ -171,9 +171,19 @@ namespace Hop::System::Physics
                 dataP.fx = 0.0;
                 dataP.fy = 0.0;
 
-                //if (dataP.omega < 0.1) { dataP.omega -= dataP.phi; }
+                sticktion = 1.0;
 
-                cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
+                // std::cout << std::abs(dataP.phi) << "\n";
+
+                // if (std::abs(dataP.phi) < 10.0 && std::abs(dataP.phi) != 0.0) 
+                // { 
+                //     sticktion = std::min(10.0,10.0*1.0/std::abs(dataP.phi)); 
+                // }
+
+                dataP.omega += dataP.tau / dataP.momentOfInertia;
+                dataP.tau = 0.0;
+
+                cr = dt *sticktion * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
                 br = 1.0/(1.0+cr);
                 ar = (1.0-cr)*br;
 
@@ -184,6 +194,9 @@ namespace Hop::System::Physics
                 dataP.lastTheta = dataT.theta;
 
                 dataP.omega = 0.0;
+
+                dataP.x = nx;
+                dataP.y = ny;
 
                 dataT.x = nx;
                 dataT.y = ny;
@@ -215,7 +228,7 @@ namespace Hop::System::Physics
     {
 
         double fx = nx*g; double fy = ny*g;
-        double rx, ry;
+        double rx, ry, fxt, fyt;
 
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
@@ -237,35 +250,38 @@ namespace Hop::System::Physics
                         dataP.fx += fx;
                         dataP.fy += fy;
 
-                        rx = p->x - dataP.lastX;
-                        ry = p->y - dataP.lastY;
+                        rx = p->x - dataT.x;
+                        ry = p->y - dataT.y;
 
-                        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        dataP.tau += (rx*fy-ry*fx);
                     }
                     else
                     {
                         dataP.fx += fx;
                         dataP.fy += fy;
 
-                        rx = r->llx - dataP.lastX;
-                        ry = r->lly - dataP.lastY;
+                        fxt = fx / 4.0;
+                        fyt = fy / 4.0;
 
-                        //dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        rx = r->llx - dataT.x;
+                        ry = r->lly - dataT.y;
 
-                        rx = r->ulx - dataP.lastX;
-                        ry = r->uly - dataP.lastY;
+                        dataP.tau += (rx*fyt-ry*fxt);
 
-                        //dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        rx = r->ulx - dataT.x;
+                        ry = r->uly - dataT.y;
 
-                        rx = r->urx - dataP.lastX;
-                        ry = r->ury - dataP.lastY;
+                        dataP.tau += (rx*fyt-ry*fxt);
 
-                        //dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        rx = r->urx - dataT.x;
+                        ry = r->ury - dataT.y;
 
-                        rx = r->lrx - dataP.lastX;
-                        ry = r->lry - dataP.lastY;
+                        dataP.tau += (rx*fyt-ry*fxt);
 
-                        //dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+                        rx = r->lrx - dataT.x;
+                        ry = r->lry - dataT.y;
+
+                        dataP.tau += (rx*fyt-ry*fxt);
 
                     }
                 }
@@ -291,8 +307,8 @@ namespace Hop::System::Physics
         dataP.fx += fx;
         dataP.fy += fy;
 
-        rx = x - dataP.lastX;
-        ry = y - dataP.lastY;
+        rx = x - dataT.x;
+        ry = y - dataT.y;
 
         dataP.omega += (rx*fy-ry*fx)/PARTICLE_MASS;
 

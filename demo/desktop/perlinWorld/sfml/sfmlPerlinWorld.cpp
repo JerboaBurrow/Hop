@@ -52,8 +52,8 @@ double deltas[60];
 
 bool debug = false;
 
-const double deltaPhysics = 1.0/900.0;
-const unsigned subSamples = 1;
+const double deltaPhysics = 1.0/(5*900.0);
+const unsigned subSamples = 5;
 
 using Hop::Object::Component::cTransform;
 using Hop::Object::Component::cPhysics;
@@ -185,7 +185,7 @@ int main(int argc, char ** argv)
   auto res = std::make_unique<Hop::System::Physics::SpringDashpot>
   (
       deltaPhysics*10.0,
-      0.66,
+      0.5,
       0.0
   );
 

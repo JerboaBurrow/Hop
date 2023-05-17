@@ -29,13 +29,8 @@ namespace Hop::System::Physics
         kr = EFFECTIVE_MASS*alpha;
         kd = 2.0*EFFECTIVE_MASS*beta;
 
-        cor = 0.33;
-
-        alphaR = (std::log(cor) + M_PI*M_PI) / (tc * tc);
-        betaR = -std::log(cor) / tc;
-
-        krR = kr;
-        kdR = kd;
+        krR = kr*4.0;
+        kdR = kd*4.0;
 
         //std::cout << kr << ", " << kd << krR << ", " << kdR << "\n";
     }
@@ -238,12 +233,13 @@ namespace Hop::System::Physics
         pI.fx += fx;
         pI.fy += fy;
 
-        rx = px - pI.lastX;
-        ry = py - pI.lastY;
+        rx = px - pI.x;
+        ry = py - pI.y;
 
-        //pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
+        //std::cout << rx << ", " << ry << "\n";
 
-        std::cout << "o " << (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia) << "\n";
+        pI.tau -= (rx*fy-ry*fx);
+
     }
 
     void SpringDashpot::collisionForce
@@ -357,7 +353,7 @@ namespace Hop::System::Physics
         double nx, ny, nxt, nyt, dt, cx, cy, s, d, odod;
         bool collided = false;
 
-        collided = rectangleRectangleCollided(li,lj,nx,ny,s);
+        collided = rectangleRectangleCollided<double>(li,lj,nx,ny,s);
 
         if (!collided){ return; }
 
@@ -377,12 +373,145 @@ namespace Hop::System::Physics
 
         if (wall)
         {
-            springDashpotWallForce(pI, s, -nx, -ny, li->x,li->y);
+
+            double sdll = sdf<double>(lj,li->llx,li->lly);
+            double sdul = sdf<double>(lj,li->ulx,li->uly);
+            double sdur = sdf<double>(lj,li->urx,li->ury);
+            double sdlr = sdf<double>(lj,li->lrx,li->lry);
+
+            unsigned fs = 0;
+
+            if (sdll < 0.0)
+                fs += 1;
+
+            if ( sdul < 0.0) 
+                fs += 1;
+
+            if ( sdur < 0.0)
+                fs += 1;
+
+            if ( sdlr < 0.0) 
+                fs += 1;
+
+            if (fs == 0)
+            {
+                springDashpotWallForce(pI, s, -nx, -ny, li->x,li->y);
+            }
+            else
+            {
+
+                nx /= float(fs);
+                ny /= float(fs);
+
+                if (sdll < 0.0)
+                    springDashpotWallForce(pI, s, -nx, -ny, li->llx,li->lly);
+
+                if (sdul < 0.0)
+                    springDashpotWallForce(pI, s, -nx, -ny, li->ulx,li->uly);
+
+                if (sdur < 0.0)
+                    springDashpotWallForce(pI, s, -nx, -ny, li->urx,li->ury);
+
+                if (sdlr < 0.0)
+                    springDashpotWallForce(pI, s, -nx, -ny, li->lrx,li->lry);
+            
+            }
+
         }
         else
         {
-            springDashpotWallForce(pI, s, -nx, -ny, li->x,li->y);
-            springDashpotWallForce(pJ, s, nx, ny, lj->x,lj->y);
+            nxt = nx;
+            nyt = ny;
+
+            double sdll = sdf<double>(lj,li->llx,li->lly);
+            double sdul = sdf<double>(lj,li->ulx,li->uly);
+            double sdur = sdf<double>(lj,li->urx,li->ury);
+            double sdlr = sdf<double>(lj,li->lrx,li->lry);
+
+            unsigned fs = 0;
+
+            if (sdll < 0.0)
+                fs += 1;
+
+            if ( sdul < 0.0) 
+                fs += 1;
+
+            if ( sdur < 0.0)
+                fs += 1;
+
+            if ( sdlr < 0.0) 
+                fs += 1;
+
+            if (fs == 0)
+            {
+                springDashpotWallForce(pI, s, -nx, -ny, li->x,li->y);
+            }
+            else
+            {
+
+                nx /= float(fs);
+                ny /= float(fs);
+
+                if (sdll < 0.0)
+                    springDashpotWallForce(pI, s, -nx, -ny, li->llx,li->lly);
+
+                if (sdul < 0.0)
+                    springDashpotWallForce(pI, s, -nx, -ny, li->ulx,li->uly);
+
+                if (sdur < 0.0)
+                    springDashpotWallForce(pI, s, -nx, -ny, li->urx,li->ury);
+
+                if (sdlr < 0.0)
+                    springDashpotWallForce(pI, s, -nx, -ny, li->lrx,li->lry);
+
+            }
+
+
+
+            nx = nxt;
+            ny = nyt;
+
+            sdll = sdf<double>(li,lj->llx,lj->lly);
+            sdul = sdf<double>(li,lj->ulx,lj->uly);
+            sdur = sdf<double>(li,lj->urx,lj->ury);
+            sdlr = sdf<double>(li,lj->lrx,lj->lry);
+
+            fs = 0;
+
+            if (sdll < 0.0)
+                fs += 1;
+
+            if ( sdul < 0.0) 
+                fs += 1;
+
+            if ( sdur < 0.0)
+                fs += 1;
+
+            if ( sdlr < 0.0) 
+                fs += 1;
+
+            if (fs == 0)
+            {
+                springDashpotWallForce(pJ, s, nx, ny, lj->x,lj->y);
+            }
+            else
+            {
+
+                nx /= float(fs);
+                ny /= float(fs);
+
+                if (sdll < 0.0)
+                    springDashpotWallForce(pJ, s, nx, ny, lj->llx,lj->lly);
+
+                if (sdul < 0.0)
+                    springDashpotWallForce(pJ, s, nx, ny, lj->ulx,lj->uly);
+
+                if (sdur < 0.0)
+                    springDashpotWallForce(pJ, s, nx, ny, lj->urx,lj->ury);
+
+                if (sdlr < 0.0)
+                    springDashpotWallForce(pJ, s, nx, ny, lj->lrx,lj->lry);
+            }
         }
 
         // li's vertices

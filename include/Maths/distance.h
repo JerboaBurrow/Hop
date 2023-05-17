@@ -103,14 +103,14 @@ namespace Hop::Maths
         T s21 = 0.0;
         T s22 = 0.0;
         
-        s11 = axisOverlap(r1,r2,r1->axis1x,r1->axis1y);
+        s11 = axisOverlap<T>(r1,r2,r1->axis1x,r1->axis1y);
 
         if (s11 == 0.0){ return false; }
 
         // assume s11 is smallest overlap
         nx = r1->axis1x; ny = r1->axis1y; s = s11;
     
-        s12 = axisOverlap(r1,r2,r1->axis2x,r1->axis2y);
+        s12 = axisOverlap<T>(r1,r2,r1->axis2x,r1->axis2y);
  
         if (s12 == 0.0){ return false; }
 
@@ -119,7 +119,7 @@ namespace Hop::Maths
             nx = r1->axis2x; ny = r1->axis2y; s = s12;
         }
 
-        s21 = axisOverlap(r1,r2,r2->axis1x,r2->axis1y);
+        s21 = axisOverlap<T>(r1,r2,r2->axis1x,r2->axis1y);
 
         if (s21 == 0.0){ return false; }
 
@@ -128,7 +128,7 @@ namespace Hop::Maths
             nx = r2->axis1x; ny = r2->axis1y; s = s21;
         }
 
-        s22 = axisOverlap(r1,r2,r2->axis2x,r2->axis2y);
+        s22 = axisOverlap<T>(r1,r2,r2->axis2x,r2->axis2y);
 
         if (s22 == 0.0){ return false; }
 
