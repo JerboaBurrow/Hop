@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <map>
 #include <string>
+#include <iterator>
 
 #include <typeinfo>
 #include <exception>
@@ -105,6 +106,7 @@ namespace Hop::Object
             return handleToId[handle];
         }
 
+        const std::unordered_map<Id,std::shared_ptr<Object>> & getObjects() { return objects; }
 
         CollisionCallback collisionCallback;
 
