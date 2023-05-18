@@ -3,7 +3,6 @@ name: Hop
 on:
   push:
     branches-ignore: 'main'
-    tags:     'v*'
     paths-ignore:
       - 'doc/**'
       - '.github/**'

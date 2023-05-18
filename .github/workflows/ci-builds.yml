@@ -213,11 +213,11 @@ jobs:
         name: demoAndroid
         path: demo/android/perlinWorld/app/release/*.aab
 
-    - name: upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: screenshot-android
-        path: screenshot-android.png
+    # - name: upload artifact
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: screenshot-android
+    #     path: screenshot-android.png
   
   release:
     needs: [linuxXlinux, linuxXwindows, linuxXandroid]
