@@ -13,7 +13,7 @@ namespace Hop::System::Physics
         tupled dynamicsCoords = world->getWorldWidth();
         double width = (dynamicsCoords.second-dynamicsCoords.first)/2.0;
         
-        double unit = 0.1*world->worldUnitLength();
+        double unit = world->worldMaxCollisionPrimitiveSize();
         unsigned n = std::ceil(width/(2.0*unit));
 
         limX = dynamicsCoords;

@@ -44,10 +44,10 @@ if (RELEASE)
     if (ANDROID)
         # GOOGLE!! (Release is not a thing pos ndk 23 apparently..)
         add_compile_definitions(BUILD_TYPE="MinSizeRel")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signed-zeros -funsafe-math-optimizations")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signed-zeros")
     else()
         add_compile_definitions(BUILD_TYPE="Release")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signaling-nans -fno-signed-zeros -funsafe-math-optimizations")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signaling-nans -fno-signed-zeros")
     endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -O3")
 
@@ -183,6 +183,8 @@ IF (TEST_SUITE)
             ${TEST_SRC}
             "src/World/mapFile.cpp"
         )
+
+        target_compile_definitions(testSuite PUBLIC GLSL_VERSION="330")
 
         target_link_libraries(testSuite stduuid zlibstatic freetype glm)
         

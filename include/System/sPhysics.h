@@ -33,10 +33,18 @@ namespace Hop::System::Physics
         sPhysics(){dt=1.0/300.0;gravity=9.81;dtdt=dt*dt;}
 
         void update(EntityComponentSystem * m, ThreadPool * workers = nullptr);
+
+        void gravityForce
+        (
+            EntityComponentSystem * m,
+            double g,
+            double nx,
+            double ny
+        );
         
         void applyForce(
             EntityComponentSystem * m,
-            Id i,
+            Id & i,
             double x,
             double y,
             double fx,

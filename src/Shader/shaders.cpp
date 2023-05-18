@@ -157,6 +157,14 @@ namespace Hop::System::Rendering
             "circleObjectShader",
             log
         );
+
+        makeShader
+        (
+            Hop::System::Rendering::objectVertexShader,
+            Hop::System::Rendering::lineSegmentObjectFragmentShader,
+            "lineSegmentObjectShader",
+            log
+        );
     }
 
     void Shaders::makeShader(

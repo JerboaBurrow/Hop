@@ -54,19 +54,50 @@ namespace Hop::System::Physics
             AbstractWorld * world
         );
 
+        void springDashpotForce
+        (
+            cPhysics & pI, cPhysics & pJ,
+            double dd, double rx, double ry, double rc,
+            double pxi, double pyi, double pxj, double pyj
+        );
+
+        void springDashpotForce
+        (
+            cPhysics & pI, cPhysics & pJ,
+            double od, double nx, double ny,
+            double px, double py
+        );
+
+        void springDashpotWallForce
+        (
+            double nx,
+            double ny,
+            double d2,
+            double c,
+            double px, double py,
+            cPhysics & dataP
+        );
+
+        void springDashpotForce
+        (
+            cPhysics & pI,
+            double odod, double nx, double ny,
+            double px, double py
+        );
+
         void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
-            LineSegment * li,
-            LineSegment * lj,
-            double rx, double ry, double rc, double dd
+            Rectangle * li,
+            Rectangle * lj,
+            bool wall = false
         );
 
         void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
             CollisionPrimitive * c,
-            LineSegment * l,
+            Rectangle * l,
             double rx, double ry, double rc, double dd
         );
 
@@ -108,6 +139,7 @@ namespace Hop::System::Physics
             double & hy,
             double & lx,
             double & ly,
+            double s,
             bool & inside,
             bool neighbour = false
         );
@@ -126,22 +158,13 @@ namespace Hop::System::Physics
             TileBoundsData & tileBounds
         );
 
-        void applyForce
-        (
-            double nx,
-            double ny,
-            double d2,
-            double c,
-            cPhysics & dataP
-        );
-
     private:
 
         double collisionTime, coefficientOfRestitution;
 
         // pre-calculated collision parameters
         double alpha, beta, friction;
-        double kr, kd;
+        double kr, kd, krR, kdR, alphaR, betaR;
     };
 
 }
