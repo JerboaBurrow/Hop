@@ -174,7 +174,7 @@ int main(int argc, char ** argv)
 
     console.luaStore(&luaStore);
 
-    console.runFile("test.lua");
+    console.runFile("tests/circles.lua");
     std::string status = console.luaStatus();
     if (status != "LUA_OK") { WARN(status) >> log; }
 
@@ -199,6 +199,8 @@ int main(int argc, char ** argv)
         collisions.centreOn(world.get()->getMapCenter());
         
         collisions.update(&manager, world.get());
+
+        physics.gravityForce(&manager,9.81,0.0,-1.0);
 
         physics.update(&manager);
 

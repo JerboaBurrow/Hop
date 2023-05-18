@@ -58,7 +58,7 @@ SCENARIO("MapFile i/o", "[io]"){
     }
 }
 
-SCENARIO("Geometry","[maths]"){
+SCENARIO("Distance","[maths]"){
 
     GIVEN("A point [0.,1.]"){
         double px = 0.0; double py = 1.0;
@@ -331,6 +331,91 @@ SCENARIO("Geometry","[maths]"){
             {
                 double s = sdf(&r1,px,py);
                 REQUIRE(std::abs(s - 0.0141421356237309) < tol);
+            }
+        }
+    }
+}
+
+SCENARIO("Triangle","[maths]")
+{
+    GIVEN("The triangle (-3,2),(-3,3),(-2,3)")
+    {
+        double ax = -3.0;
+        double ay = 2.0;
+        double bx = -3.0;
+        double by = 3.0;
+        double cx = -2.0;
+        double cy = 3.0;
+        THEN("its area is 0.5")
+        {
+            double a = triangleArea<double>
+            (
+                ax, ay,
+                bx, by,
+                cx, cy
+            );
+            REQUIRE(std::abs(a-0.5)<tol);
+        }
+    }
+    GIVEN("The triangle (-4.3445039703337,1.5302054072105),(-3,3),(-2,3)")
+    {
+        double ax = -4.3445039703337;
+        double ay = 1.5302054072105;
+        double bx = -3.0;
+        double by = 3.0;
+        double cx = -2.0;
+        double cy = 3.0;
+        THEN("its area is 0.7348972963948")
+        {
+            double a = triangleArea<double>
+            (
+                ax, ay,
+                bx, by,
+                cx, cy
+            );
+            REQUIRE(std::abs(a-0.7348972963948)<tol);
+        }
+    }
+}
+
+SCENARIO("Topology","[maths]")
+{
+    GIVEN("The rectangle (-1.,-1.),(-1,1),(1,1),(1,-1)")
+    {
+        Rectangle r
+        (
+            -1.,-1.,
+            -1.,1.,
+            1.,1.,
+            1.,-1.
+        );
+
+        AND_GIVEN("The point (0,0)")
+        {
+            THEN("The point is inside the rectangle")
+            {
+                REQUIRE(pointInRectangle(0.0,0.0,&r));
+            }
+        }
+        AND_GIVEN("The point (1,0)")
+        {
+            THEN("The point is inside the rectangle")
+            {
+                REQUIRE(pointInRectangle(1.0,0.0,&r));
+            }
+        }
+        AND_GIVEN("The point (1,1)")
+        {
+            THEN("The point is inside the rectangle")
+            {
+                REQUIRE(pointInRectangle(1.,1.,&r));
+            }
+        }
+        AND_GIVEN("The point (1.1,1)")
+        {
+            THEN("The point is outside the rectangle")
+            {
+                REQUIRE(!pointInRectangle(1.1,1.,&r));
             }
         }
     }
