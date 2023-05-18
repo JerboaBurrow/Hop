@@ -42,6 +42,7 @@ add_compile_definitions(TIMESTAMP="${TODAY}")
 
 if (RELEASE)
     if (ANDROID)
+        message("ANDROID MinSizeRel!")
         # GOOGLE!! (Release is not a thing pos ndk 23 apparently..)
         add_compile_definitions(BUILD_TYPE="MinSizeRel")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-trapping-math -fno-rounding-math -fno-signed-zeros")
