@@ -6,7 +6,6 @@ on:
     paths-ignore:
       - 'doc/**'
       - '.github/**'
-  pull_request:
   workflow_dispatch:
 
 jobs:
