@@ -3,11 +3,9 @@ name: Hop
 on:
   push:
     branches-ignore: 'main'
-    tags:     'v*'
     paths-ignore:
       - 'doc/**'
       - '.github/**'
-  pull_request:
   workflow_dispatch:
 
 jobs:
