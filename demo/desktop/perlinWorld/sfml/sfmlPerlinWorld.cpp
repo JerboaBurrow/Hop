@@ -44,7 +44,7 @@ using namespace std::chrono;
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
-const unsigned MAX_THREADS = 8;
+const unsigned MAX_THREADS = 0;
 
 // for smoothing delta numbers
 uint8_t frameId = 0;
@@ -52,7 +52,8 @@ double deltas[60];
 
 bool debug = false;
 
-const double deltaPhysics = 1.0/900.0;
+const double deltaPhysics = 1.0/(900.0);
+const unsigned subSamples = 1;
 
 using Hop::Object::Component::cTransform;
 using Hop::Object::Component::cPhysics;
@@ -176,7 +177,6 @@ int main(int argc, char ** argv)
   // setup physics system
   sPhysics & physics = manager.getSystem<sPhysics>();
   physics.setTimeStep(deltaPhysics);
-  physics.setGravity(9.81);
 
   sCollision & collisions = manager.getSystem<sCollision>();
 
@@ -185,7 +185,7 @@ int main(int argc, char ** argv)
   auto res = std::make_unique<Hop::System::Physics::SpringDashpot>
   (
       deltaPhysics*10.0,
-      0.66,
+      0.5,
       0.0
   );
 
@@ -201,14 +201,16 @@ int main(int argc, char ** argv)
 
   console.luaStore(&luaStore);
 
-  console.runFile("test.lua");
+  console.runFile("tests/circles.lua");
   std::string status = console.luaStatus();
   if (status != "LUA_OK") { WARN(status) >> log; }
 
 
-  physics.stabaliseObjectParameters(&manager);
+  //physics.stabaliseObjectParameters(&manager);
 
   bool refreshObjectShaders = true;
+
+  bool paused = true;
 
   while (window.isOpen())
   {
@@ -239,40 +241,40 @@ int main(int argc, char ** argv)
         workers.joinThread();
         INFO("Thread: "+std::to_string(workers.size())) >> log;
       }
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
-      {
-        posX = 0.0; posY = 0.0;
-      }
 
       if (event.type == sf::Event::MouseWheelScrolled)
       {
         double z = event.mouseWheelScroll.delta;
         camera.incrementZoom(z);
       }
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)
+      {
+        paused = !paused;
+      }
     }
 
     if ( sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
 
-        posY += MAX_SPEED;
+        posY += MAX_SPEED/camera.getZoomLevel();
       
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
 
-        posY -= MAX_SPEED;
+        posY -= MAX_SPEED/camera.getZoomLevel();
       
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
 
-        posX -= MAX_SPEED;
+        posX -= MAX_SPEED/camera.getZoomLevel();
       
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
 
-        posX += MAX_SPEED;
+        posX += MAX_SPEED/camera.getZoomLevel();
       
     }
 
@@ -287,16 +289,24 @@ int main(int argc, char ** argv)
 
     collisions.centreOn(world.get()->getMapCenter());
     
-    if (workers.size() > 1)
+    if (!paused)
     {
-      collisions.update(&manager, world.get(),&workers);
-    }
-    else
-    {
-      collisions.update(&manager, world.get());
-    }
+      for (unsigned k = 0 ; k < subSamples; k++)
+      {
+        if (workers.size() > 1)
+        {
+          collisions.update(&manager, world.get(),&workers);
+        }
+        else
+        {
+          collisions.update(&manager, world.get());
+        }
 
-    physics.update(&manager);
+        physics.gravityForce(&manager,9.81,0.0,-1.0);
+
+        physics.update(&manager);
+      }
+    }
 
     tp1 = high_resolution_clock::now();
 
@@ -309,7 +319,24 @@ int main(int argc, char ** argv)
     rendering.update(&manager, &shaderPool, refreshObjectShaders);
     refreshObjectShaders = false;
 
-    rendering.draw(&shaderPool);
+    rendering.draw(&shaderPool); 
+
+    auto objects = manager.getObjects();  
+
+    auto citer = objects.cbegin();
+    auto cend = objects.cend();
+
+    while (citer != cend)
+    {
+      if (manager.hasComponent<cCollideable>(citer->first))
+      {
+        
+        cCollideable & c = manager.getComponent<cCollideable>(citer->first);
+
+        c.mesh.drawDebug(camera.getVP());
+      }
+      citer++;
+    }
 
     tr1 = high_resolution_clock::now();
 

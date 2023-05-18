@@ -63,7 +63,7 @@ jobs:
 
     - name: linux-X-windows
       run: |
-        ./dependencies.sh -w && ./build.sh -w -t -d -r
+        ./dependencies.sh -w && ./build.sh -w -d -r
         mkdir windowsbuild
         cp build/libHop.a windowsbuild/
         cp -r include windowsbuild/

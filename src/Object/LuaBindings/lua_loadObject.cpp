@@ -28,6 +28,7 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
     std::vector< std::vector<double> > collisionMesh;
     std::string shader = "", name = "";
     bool isMoveable = false;
+    unsigned renderComponents = 0;
     bool isRenderable = false;
     bool isPhysics = false;
 
@@ -59,7 +60,7 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
             return lua_error(lua);
         }
 
-        isRenderable = true;
+        renderComponents += 1;
     }
     else if (returnType == LUA_TNONE || returnType == LUA_TNIL)
     {
@@ -68,6 +69,7 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
 
     // don't need the table now
     lua_pop(lua,1);
+
 
     returnType = lua_getfield(lua, 1, "transform");
 
@@ -80,6 +82,8 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
             lua_pushliteral(lua,"transform requires 4 numbers");
             return lua_error(lua);
         }
+
+        renderComponents += 1;
     
     }
     else if (returnType == LUA_TNONE || returnType == LUA_TNIL)
@@ -95,13 +99,14 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
     if (returnType == LUA_TSTRING)
     {
         shader = lua_tostring(lua, 2);
-        isRenderable = true;
+        renderComponents += 1;
     }
     else if (returnType == LUA_TNONE || returnType == LUA_TNIL)
     {
-        lua_pushliteral(lua,"expecting string got none or nil");
-        return lua_error(lua);
+
     }
+
+    if (renderComponents == 3) { isRenderable = true; }
 
     lua_pop(lua,1);
 
@@ -207,7 +212,7 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
             addComponent<cPhysics>
             (
                 pid,
-                cPhysics(x,y,scale)
+                cPhysics(x,y,theta)
             );
 
             if (!isMoveable)
@@ -231,6 +236,24 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
                                 collisionMesh[i][0],
                                 collisionMesh[i][1],
                                 collisionMesh[i][2]
+                            )
+                        );
+                        goodInput = true;
+                    }
+                    else if (collisionMesh[i].size() == 8)
+                    {
+                        mesh.push_back
+                        (
+                            std::make_shared<Hop::System::Physics::Rectangle>
+                            (
+                                collisionMesh[i][0],
+                                collisionMesh[i][1],
+                                collisionMesh[i][2],
+                                collisionMesh[i][3],
+                                collisionMesh[i][4],
+                                collisionMesh[i][5],
+                                collisionMesh[i][6],
+                                collisionMesh[i][7]
                             )
                         );
                         goodInput = true;

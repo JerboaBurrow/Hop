@@ -12,38 +12,39 @@ namespace Hop::System::Physics
 
     using Hop::Maths::pointLineSegmentDistanceSquared;
     using Hop::Maths::pointLineHandedness;
+    using Hop::Maths::rectangleRectangleCollided;
+    using Hop::Maths::sdf;
+    using Hop::Maths::shortestDistanceSquared;
+    using Hop::Maths::pointInRectangle;
 
-
-    void SpringDashpot::collisionForce
-    (
-        cPhysics & pI, cPhysics & pJ,
-        LineSegment * li,
-        LineSegment * lj,
-        double rx, double ry, double rc, double dd
+    void SpringDashpot::updateParameters(
+    double tc,
+    double cor
     )
-    {}
+    {
+        collisionTime = tc;
+        coefficientOfRestitution = cor;
+        alpha = (std::log(cor) + M_PI*M_PI) / (tc * tc);
+        beta = -std::log(cor) / tc;
 
-    void SpringDashpot::collisionForce
+        kr = EFFECTIVE_MASS*alpha;
+        kd = 2.0*EFFECTIVE_MASS*beta;
+
+        krR = kr*4.0;
+        kdR = kd*4.0;
+
+    }
+
+    void SpringDashpot::springDashpotForce
     (
         cPhysics & pI, cPhysics & pJ,
-        CollisionPrimitive * c,
-        LineSegment * l,
-        double rx, double ry, double rc, double dd
-    )
-    {}
-
-    void SpringDashpot::collisionForce
-    (
-        cPhysics & pI, cPhysics & pJ,
-        CollisionPrimitive * c,
-        CollisionPrimitive * l,
-        double rx, double ry, double rc, double dd
+        double dd, double rx, double ry, double rc,
+        double pxi, double pyi, double pxj, double pyj
     )
     {
         double mag, fx, fy, dinv, nx, ny, vrx, vry, ddot, d;
 
         mag = 0.0;
-        
         d = std::sqrt(dd);
         dinv = 1.0 / d;
         nx = rx * dinv;
@@ -78,9 +79,292 @@ namespace Hop::System::Physics
         pI.fx += fx;
         pI.fy += fy;
 
-        
+        rx = pxi - pI.lastX;
+        ry = pyi - pI.lastY;
+
+        pI.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*pI.momentOfInertia);
+
         pJ.fx -= fx;
         pJ.fy -= fy;
+
+        rx = pxj - pI.lastX;
+        ry = pyj - pI.lastY;
+
+        pI.omega -= (rx*fy-ry*fx)/(PARTICLE_MASS*pJ.momentOfInertia);
+    }
+
+     void SpringDashpot::springDashpotWallForce
+    (
+        double nx,
+        double ny,
+        double d2,
+        double r,
+        double px, double py,
+        cPhysics & dataP
+    )
+    {
+        double meff, kr, kd, d, vrx, vry, ddot, mag, fx, fy, rx, ry;
+
+        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
+        kr = meff*alpha;
+        kd = 2.0*meff*beta;
+
+        vrx = dataP.vx;
+        vry = dataP.vy;
+
+        ddot = nx*vrx+ny*vry;
+
+        d = std::sqrt(d2);
+
+        mag = (kr*(r-d)-kd*ddot)*std::min(1.0/d,3.0);
+
+        fx = mag*nx;//+friction*std::abs(mag)*nxt;
+        fy = mag*ny;//+friction*std::abs(mag)*nyt;
+
+        dataP.fx += fx;
+        dataP.fy += fy;
+
+        rx = px - dataP.lastX;
+        ry = py - dataP.lastY;
+
+        dataP.omega += (rx*fy-ry*fx)/(PARTICLE_MASS*dataP.momentOfInertia);
+        
+    }
+
+
+    void SpringDashpot::springDashpotForce
+    (
+        cPhysics & pI,
+        double od, double nx, double ny,
+        double px, double py
+    )
+    {
+        double mag, fx, fy, dinv, vrx, vry, ddot, rx, ry, meff;
+
+        mag = 0.0;
+        fx = nx;
+        fy = ny;
+
+        mag = krR*od;
+
+        vrx = pI.vx;
+        vry = pI.vy;
+
+        ddot = nx*vrx+ny*vry;
+
+        mag -= kdR*ddot;
+
+        if (mag < 0.0) { return; }
+
+        fx *= mag;//+friction*std::abs(mag)*nxt;
+        fy *= mag;//+friction*std::abs(mag)*nyt;
+
+        pI.fx += fx;
+        pI.fy += fy;
+
+        rx = px - pI.x;
+        ry = py - pI.y;
+
+        pI.tau -= (rx*fy-ry*fx);
+
+    }
+
+    void SpringDashpot::collisionForce
+    (
+        cPhysics & pI, cPhysics & pJ,
+        Rectangle * li,
+        Rectangle * lj,
+        bool wall
+    )
+    {
+        double nx, ny, nxt, nyt, dt, cx, cy, s, d, odod;
+        bool collided = false;
+
+        collided = rectangleRectangleCollided<double>(li,lj,nx,ny,s);
+
+        if (!collided){ return; }
+
+        nxt = lj->x - li->x;
+        nyt = lj->y - li->y;
+
+        dt = std::sqrt(nxt*nxt+nyt*nyt);
+
+        nxt /= dt;
+        nyt /= dt;
+        
+        if (nx*nxt+ny*nyt < 0.0)
+        {
+            nx = -nx;
+            ny = -ny;
+        }
+
+        if (wall)
+        {
+
+            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj);
+            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj);
+            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj);
+            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj);
+
+            unsigned fs = sdll+sdul+sdur+sdlr;
+
+            if (fs == 0)
+            {
+                springDashpotForce(pI, s, -nx, -ny, li->x,li->y);
+            }
+            else
+            {
+
+                nx /= float(fs);
+                ny /= float(fs);
+
+                if (sdll)
+                    springDashpotForce(pI, s, -nx, -ny, li->llx,li->lly);
+
+                if (sdul)
+                    springDashpotForce(pI, s, -nx, -ny, li->ulx,li->uly);
+
+                if (sdur)
+                    springDashpotForce(pI, s, -nx, -ny, li->urx,li->ury);
+
+                if (sdlr)
+                    springDashpotForce(pI, s, -nx, -ny, li->lrx,li->lry);
+            
+            }
+
+        }
+        else
+        {
+            nxt = nx;
+            nyt = ny;
+
+            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj);
+            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj);
+            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj);
+            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj);
+
+            unsigned fs = sdll+sdul+sdur+sdlr;
+
+            if (fs == 0)
+            {
+                springDashpotForce(pI, s, -nx, -ny, li->x,li->y);
+            }
+            else
+            {
+
+                nx /= float(fs);
+                ny /= float(fs);
+
+                if (sdll)
+                    springDashpotForce(pI, s, -nx, -ny, li->llx,li->lly);
+
+                if (sdul)
+                    springDashpotForce(pI, s, -nx, -ny, li->ulx,li->uly);
+
+                if (sdur)
+                    springDashpotForce(pI, s, -nx, -ny, li->urx,li->ury);
+
+                if (sdlr)
+                    springDashpotForce(pI, s, -nx, -ny, li->lrx,li->lry);
+
+            }
+
+
+
+            nx = nxt;
+            ny = nyt;
+
+            sdll = pointInRectangle<double>(lj->llx,lj->lly,li);
+            sdul = pointInRectangle<double>(lj->ulx,lj->uly,li);
+            sdur = pointInRectangle<double>(lj->urx,lj->ury,li);
+            sdlr = pointInRectangle<double>(lj->lrx,lj->lry,li);
+
+            fs = sdll+sdul+sdur+sdlr;
+
+            if (fs == 0)
+            {
+                springDashpotForce(pJ, s, nx, ny, lj->x,lj->y);
+            }
+            else
+            {
+
+                nx /= float(fs);
+                ny /= float(fs);
+
+                if (sdll)
+                    springDashpotForce(pJ, s, nx, ny, lj->llx,lj->lly);
+
+                if (sdul)
+                    springDashpotForce(pJ, s, nx, ny, lj->ulx,lj->uly);
+
+                if (sdur)
+                    springDashpotForce(pJ, s, nx, ny, lj->urx,lj->ury);
+
+                if (sdlr)
+                    springDashpotForce(pJ, s, nx, ny, lj->lrx,lj->lry);
+            }
+        }
+        
+    }
+
+    void SpringDashpot::collisionForce
+    (
+        cPhysics & pI, cPhysics & pJ,
+        CollisionPrimitive * c,
+        Rectangle * l,
+        double rx, double ry, double rc, double dd
+    )
+    {
+        // double contactX, contactY, tc;
+        // double fx, fy, nx, ny, d, dinv, vrx, vry, ddot, mag, px, py;
+        // bool colliding = false;
+        double cx, cy, odod, nx, ny, nxt, nyt, dt, d;
+
+        shortestDistanceSquared(c->x, c->y, l, cx, cy, odod);
+
+        d = std::sqrt(odod);
+        nx = (cx-c->x)/d;
+        ny = (cy-c->y)/d;
+
+        nxt = l->x - c->x;
+        nyt = l->y - c->y;
+
+        dt = std::sqrt(nxt*nxt+nyt*nyt);
+
+        nxt /= dt;
+        nyt /= dt;
+        
+        if (nx*nxt+ny*nyt < 0.0)
+        {
+            nx = -nx;
+            ny = -ny;
+        }
+
+
+        if (d < c->r)
+        {
+            springDashpotForce(pI, c->r-d, -nx, -ny, cx, cy);
+            springDashpotForce(pJ, c->r-d, nx, ny, cx, cy);
+        }
+    }
+
+    /*
+        Circle - Circle collision is easy!
+    */
+    void SpringDashpot::collisionForce
+    (
+        cPhysics & pI, cPhysics & pJ,
+        CollisionPrimitive * c,
+        CollisionPrimitive * l,
+        double rx, double ry, double rc, double dd
+    )
+    {
+        double nx, ny;
+
+        nx = l->x-c->x;
+        ny = l->y-c->y;
+
+        springDashpotForce(pI,pJ,dd,nx,ny,rc,c->x,c->y,l->x,l->y);
 
     }
 
@@ -102,7 +386,7 @@ namespace Hop::System::Physics
 
         double ix, iy, jx, jy, rx, ry, rc, dd;
 
-        LineSegment * li, * lj;
+        Rectangle * li, * lj;
 
         rx = 0.0; ry = 0.0; rc = 0.0;
 
@@ -123,25 +407,25 @@ namespace Hop::System::Physics
         //float isContact = dd < rc*rc;
         if (dd < rc*rc)
         {
-            li = dynamic_cast<LineSegment*>(ci.get());
-            lj = dynamic_cast<LineSegment*>(cj.get());
+            li = dynamic_cast<Rectangle*>(ci.get());
+            lj = dynamic_cast<Rectangle*>(cj.get());
 
-            bool iIsLine = li != nullptr;
-            bool jIsLine = lj != nullptr;
+            bool iIsRectangle = li != nullptr;
+            bool jIsRectangle = lj != nullptr;
 
-            if (iIsLine && jIsLine)
+            if (iIsRectangle && jIsRectangle)
             {
-                collisionForce(pI,pJ,li,lj,rx,ry,rc,dd);
+                collisionForce(pI,pJ,li,lj);
             }
-            else if (iIsLine && !jIsLine)
+            else if (iIsRectangle && !jIsRectangle)
             {
                 collisionForce(pJ,pI,cj.get(),li,rx,ry,rc,dd);
             }
-            else if (!iIsLine && !jIsLine)
+            else if (!iIsRectangle && !jIsRectangle)
             {
                 collisionForce(pI,pJ,ci.get(),cj.get(),rx,ry,rc,dd);
             }
-            else if (!iIsLine && jIsLine)
+            else if (!iIsRectangle && jIsRectangle)
             {
                 collisionForce(pI,pJ,ci.get(),lj,rx,ry,rc,dd);
             }
@@ -243,6 +527,7 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
+                s,
                 inside
             );
 
@@ -316,6 +601,7 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
+                s,
                 inside
             );
             
@@ -332,22 +618,6 @@ namespace Hop::System::Physics
         }
 
     }
-
-
-    void SpringDashpot::updateParameters(
-        double tc,
-        double cor
-    )
-    {
-        collisionTime = tc;
-        coefficientOfRestitution = cor;
-        alpha = (std::log(cor) + M_PI*M_PI) / (tc * tc);
-        beta = -std::log(cor) / tc;
-
-        kr = EFFECTIVE_MASS*alpha;
-        kd = 2.0*EFFECTIVE_MASS*beta;
-    }
-
 
     void SpringDashpot::neighbourTilesCollision
     (
@@ -385,6 +655,7 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
+                s,
                 inside,
                 true
             );
@@ -414,6 +685,7 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
+                s,
                 inside,
                 true
             );
@@ -443,6 +715,7 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
+                s,
                 inside,
                 true
             );
@@ -472,6 +745,7 @@ namespace Hop::System::Physics
                 hy,
                 lx,
                 ly,
+                s,
                 inside,
                 true
             );
@@ -493,19 +767,118 @@ namespace Hop::System::Physics
         double & hx,
         double & hy,
         double & lx,
-        double & ly ,
+        double & ly,
+        double s,
         bool & inside,
         bool neighbour
     )
     {
         double d2, d2p;
+        double lx0, lx1, ly0, ly1;
+        double l2x0, l2x1, l2y0, l2y1;
         double nx = 0.0;
         double ny = 0.0;
         bool op = false;
         inside = false;
+        
         double thresh = c->r;
         double insideThresh = thresh*thresh;
         int handedness, handedness2;
+
+        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
+
+        bool isRectangle = li != nullptr;
+
+        Rectangle r1a, r1b, r1c;
+
+        Rectangle bottomLeft, bottomLeftSquare, bottomRight, bottomRightSquare;
+        Rectangle central, topLeft, topLeftSquare, topRight, topRightSquare;
+        Rectangle leftHalf, rightHalf, topHalf, bottomHalf;
+
+        bool bc = false;
+
+        if (isRectangle)
+        {
+
+            // Rectangle bottomLeft;
+            bottomLeft.llx = x0-s/2.0; bottomLeft.lly = y0;
+            bottomLeft.ulx = x0;       bottomLeft.uly = y0+s/2.0;
+            bottomLeft.urx = x0+s/2.0; bottomLeft.ury = y0;
+            bottomLeft.lrx = x0;       bottomLeft.lry = y0-s/2.0;
+
+            // Rectangle bottomLeftSquare;
+            bottomLeftSquare.llx = x0;       bottomLeftSquare.lly = y0;
+            bottomLeftSquare.ulx = x0;       bottomLeftSquare.uly = y0+s/2.0;
+            bottomLeftSquare.urx = x0+s/2.0; bottomLeftSquare.ury = y0+s/2.0;
+            bottomLeftSquare.lrx = x0+s/2.0; bottomLeftSquare.lry = y0;
+
+            // Rectangle central;
+            central.llx = x0;       central.lly = y0+s/2.0;
+            central.ulx = x0+s/2.0; central.uly = y0+s;
+            central.urx = x0+s;     central.ury = y0+s/2.0;
+            central.lrx = x0+s/2.0; central.lry = y0;
+
+            // Rectangle bottomRight;
+            bottomRight.llx = x0+s/2.0;     bottomRight.lly = y0;
+            bottomRight.ulx = x0+s;         bottomRight.uly = y0+s/2.0;
+            bottomRight.urx = x0+s*3.0/2.0; bottomRight.ury = y0;
+            bottomRight.lrx = x0+s;         bottomRight.lry = y0-s/2.0;
+
+            // Rectangle bottomRightSquare;
+            bottomRightSquare.llx = x0+s/2.0;     bottomRightSquare.lly = y0;
+            bottomRightSquare.ulx = x0+s/2.0;     bottomRightSquare.uly = y0+s/2.0;
+            bottomRightSquare.urx = x0+s;         bottomRightSquare.ury = y0+s/2.0;
+            bottomRightSquare.lrx = x0+s;         bottomRightSquare.lry = y0;
+
+            // Rectangle topLeft;
+            topLeft.llx = x0;           topLeft.lly = y0+s/2.0;
+            topLeft.ulx = x0-s/2.0;     topLeft.uly = y0+s;
+            topLeft.urx = x0;           topLeft.ury = y0+s*3.0/2.0;
+            topLeft.lrx = x0+s/2.0;     topLeft.lry = y0+s;
+
+            // Rectangle topLeftSquare;
+            topLeftSquare.llx = x0;           topLeftSquare.lly = y0+s/2.0;
+            topLeftSquare.ulx = x0;           topLeftSquare.uly = y0+s;
+            topLeftSquare.urx = x0+s/2.0;     topLeftSquare.ury = y0+s;
+            topLeftSquare.lrx = x0+s/2.0;     topLeftSquare.lry = y0+s/2.0;
+
+            // Rectangle topRight;
+            topRight.llx = x0+s/2.0;     topRight.lly = y0+s;
+            topRight.ulx = x0+s;         topRight.uly = y0+s*3.0/2.0;
+            topRight.urx = x0+s*3.0/2.0; topRight.ury = y0;
+            topRight.lrx = x0+s;         topRight.lry = y0+s/2.0;
+
+            // Rectangle topRightSquare;
+            topRightSquare.llx = x0+s/2.0;     topRightSquare.lly = y0+s;
+            topRightSquare.ulx = x0+s;         topRightSquare.uly = y0+s;
+            topRightSquare.urx = x0+s;         topRightSquare.ury = y0+s/2.0;
+            topRightSquare.lrx = x0+s/2.0;     topRightSquare.lry = y0+s/2.0;
+
+            // Rectangle rightHalf;
+            rightHalf.llx = x0+s/2.0;     rightHalf.lly = y0;
+            rightHalf.ulx = x0+s/2.0;     rightHalf.uly = y0+s;
+            rightHalf.urx = x0+s;         rightHalf.ury = y0+s;
+            rightHalf.lrx = x0+s;         rightHalf.lry = y0;
+
+            // Rectangle leftHalf;
+            leftHalf.llx = x0;           leftHalf.lly = y0;
+            leftHalf.ulx = x0;           leftHalf.uly = y0+s;
+            leftHalf.urx = x0+s/2.0;     leftHalf.ury = y0+s;
+            leftHalf.lrx = x0+s/2.0;     leftHalf.lry = y0;
+
+            // Rectangle bottomHalf;
+            bottomHalf.llx = x0;           bottomHalf.lly = y0;
+            bottomHalf.ulx = x0;           bottomHalf.uly = y0+s/2.0;
+            bottomHalf.urx = x0+s;         bottomHalf.ury = y0+s/2.0;
+            bottomHalf.lrx = x0+s;         bottomHalf.lry = y0;
+
+            // Rectangle topHalf;
+            topHalf.llx = x0;           topHalf.lly = y0+s/2.0;
+            topHalf.ulx = x0;           topHalf.uly = y0+s;
+            topHalf.urx = x0+s;         topHalf.ury = y0+s;
+            topHalf.lrx = x0+s;         topHalf.lry = y0+s/2.0;
+
+        }
 
         if (h == Tile::EMPTY)
         {   
@@ -533,6 +906,14 @@ namespace Hop::System::Physics
             x_____x
             
             */
+
+            if (isRectangle)
+            {
+                r1a.llx = x0;    r1a.lly = y0;
+                r1a.ulx = x0;    r1a.uly = y0+s;
+                r1a.urx = x0+s;  r1a.ury = y0+s;
+                r1a.lrx = x0+s;  r1a.lry = y0;
+            }
 
             double dw, dn, de, ds;
             dw = pointLineSegmentDistanceSquared<double>
@@ -647,6 +1028,20 @@ namespace Hop::System::Physics
                 x0,hy
             );
             inside = handedness == 1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = x0; ly1 = hy;
+
+
+            if (isRectangle && !neighbour)
+            {
+                r1a = bottomLeft;
+            }
+            else
+            {
+                r1a = bottomLeftSquare;
+            }
+
         }
         else if (h == Tile::EMPTY_BOTTOM_LEFT)
         {
@@ -669,6 +1064,19 @@ namespace Hop::System::Physics
                 x0,hy
             );
             inside = handedness == -1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = x0; ly1 = hy;
+
+
+            if (isRectangle)
+            {
+                r1a = central;
+                r1b = rightHalf;
+                r1c = topHalf;
+                bc = true;
+            }
+
         }
         else if (h == Tile::BOTTOM_RIGHT)
         {
@@ -691,6 +1099,19 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == -1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = lx; ly1 = hy;
+
+            if (isRectangle && !neighbour)
+            {
+                r1a = bottomRight;
+            }
+            else
+            {
+                r1a = bottomRightSquare;
+            }
+
         }
         else if (h == Tile::EMPTY_BOTTOM_RIGHT)
         {
@@ -713,6 +1134,19 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == 1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = lx; ly1 = hy;
+
+
+            if (isRectangle)
+            {
+                r1a = central;
+                r1b = leftHalf;
+                r1c = topHalf;
+                bc = true;
+            }
+
         }
         else if (h == Tile::TOP_RIGHT)
         {
@@ -735,6 +1169,19 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == -1;
+
+            lx0 = lx; ly0 = hy;
+            lx1 = hx; ly1 = ly;
+
+            if (isRectangle && !neighbour)
+            {
+                r1a = topRight;
+            }
+            else
+            {
+                r1a = topRightSquare;
+            }
+
         }
         else if (h == Tile::EMPTY_TOP_RIGHT)
         {
@@ -757,6 +1204,18 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == 1;
+
+            lx0 = lx; ly0 = hy;
+            lx1 = hx; ly1 = ly;
+
+            if (isRectangle)
+            {
+                r1a = central;
+                r1b = bottomHalf;
+                r1c = leftHalf;
+                bc = true;
+            }
+
         }
         else if (h == Tile::TOP_LEFT)
         {
@@ -779,6 +1238,19 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == 1;
+
+            lx0 = x0; ly0 = hy;
+            lx1 = hx; ly1 = ly;
+
+            if (isRectangle && !neighbour)
+            {
+                r1a = topLeft;
+            }
+            else
+            {
+                r1a = topLeftSquare;
+            }
+
         }
         else if (h == Tile::EMPTY_TOP_LEFT)
         {
@@ -801,6 +1273,18 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == -1;
+
+            lx0 = x0; ly0 = hy;
+            lx1 = hx; ly1 = ly;
+
+            if (isRectangle)
+            {
+                r1a = central;
+                r1b = bottomHalf;
+                r1c = rightHalf;
+                bc = true;
+            }
+
         }
         else if (h == Tile::BOTTOM_HALF)
         {
@@ -823,6 +1307,16 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == -1;
+
+            lx0 = x0; ly0 = hy;
+            lx1 = lx; ly1 = hy;
+
+
+            if (isRectangle)
+            {
+                r1a = bottomHalf;
+            }
+
         }
         else if (h == Tile::TOP_HALF)
         {
@@ -845,6 +1339,15 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == 1;
+            lx0 = x0; ly0 = hy;
+            lx1 = lx; ly1 = hy;
+
+
+            if (isRectangle)
+            {
+                r1a = topHalf;
+            }
+
         }
         else if (h == Tile::LEFT_HALF)
         {
@@ -867,6 +1370,16 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == 1;
+
+            lx0 = hx; ly0 = y0;
+            lx1 = hx; ly1 = ly;
+
+
+            if (isRectangle)
+            {
+                r1a = leftHalf;
+            }
+
         }
         else if (h == Tile::RIGHT_HALF)
         {
@@ -889,6 +1402,15 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == -1;
+            lx0 = hx; ly0 = y0;
+            lx1 = hx; ly1 = ly;
+
+
+            if (isRectangle)
+            {
+                r1a = rightHalf;
+            }
+
         }
         else if (h == Tile::BOTTOM_LEFT_AND_TOP_RIGHT)
         {
@@ -914,6 +1436,28 @@ namespace Hop::System::Physics
                 hx,ly
             );
 
+            lx0 = x0; ly0 = hy;
+            lx1 = hx; ly1 = ly;
+
+
+            if (isRectangle)
+            {
+                r1a = central;
+                
+                if (!neighbour)
+                {
+                    r1b = bottomLeft;
+                    r1c = topRight;
+                }
+                else
+                {
+                    r1b = bottomLeftSquare;
+                    r1c = topRightSquare;
+                }
+
+                bc = true;
+            }
+
             if (handedness == -1
             )
             {
@@ -932,6 +1476,9 @@ namespace Hop::System::Physics
                 hx,y0,
                 lx,hy
             );
+
+            l2x0 = hx; l2y0 = y0;
+            l2x1 = lx; l2y1 = hy;
 
             if (insideLeft && handedness2 == 1
             )
@@ -963,6 +1510,27 @@ namespace Hop::System::Physics
                 x0,hy
             );
 
+            lx0 = hx; ly0 = y0;
+            lx1 = x0; ly1 = hy;
+
+
+            if (isRectangle)
+            {
+                r1a = central;
+
+                if (!neighbour)
+                {
+                    r1b = topLeft;
+                    r1c = bottomRight;
+                }
+                else
+                {
+                    r1b = topLeftSquare;
+                    r1c = bottomRightSquare;                   
+                }
+                bc = true;
+            }
+
             if (handedness == -1
             )
             {
@@ -980,6 +1548,9 @@ namespace Hop::System::Physics
                 hx,ly
             );
 
+            l2x0 = lx; l2y0 = hy;
+            l2x1 = hx; l2y1 = ly;
+
             if (insideLeft && handedness2 == 1
             )
             {
@@ -989,11 +1560,20 @@ namespace Hop::System::Physics
 
         if (neighbour){inside = false;}
 
+
         if (inside){ 
-            if (!op && d2 > insideThresh){ c->setRecentlyInside(1); }
-            else{ double d = std::min(d2,d2p); if (d > insideThresh){ c->setRecentlyInside(1);} }
-            return; 
+            if (li != nullptr)
+            {
+                inside = false;
+            }
+            else
+            {
+                if (!op && d2 > insideThresh){ c->setRecentlyInside(1); }
+                else{ double d = std::min(d2,d2p); if (d > insideThresh){ c->setRecentlyInside(1);} }
+                return; 
+            }
         }
+
 
         if (c->recentlyInside())
         {
@@ -1022,52 +1602,52 @@ namespace Hop::System::Physics
             }
         }
 
-        double r2 = c->r*c->r;
+        double rr = c->r*c->r;
 
-        bool f1 = d2 < r2;
-        bool f2 = op && (d2p < r2);
 
-        if (f1)
+
+        bool f1 = d2 < rr;
+        bool f2 = op && (d2p < rr);
+
+        if (li == nullptr)
         {
-            applyForce(nx,ny,d2,c->r,dataP);
-        }
+            if (f1)
+            {
+                springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP);
+            }
 
-        if (f2)
+            if (f2)
+            {
+                springDashpotWallForce(-nx,-ny,d2p,c->r,c->x,c->y,dataP);
+            }
+        }
+        else 
         {
-            applyForce(-nx,-ny,d2p,c->r,dataP);
+            // rect-rect collision
+            cPhysics dataA(c->x,c->y,c->y);
+            cPhysics dataB(c->x,c->y,c->y);
+            cPhysics dataC(c->x,c->y,c->y);
+
+            r1a.resetAxes();
+            r1b.resetAxes();
+            r1c.resetAxes();
+
+            if (f1)
+            {
+
+                collisionForce(dataP, dataA, li, &r1a, true);
+
+            }
+
+            if ((f1 || f2) && bc)
+            {
+
+                collisionForce(dataP, dataB, li, &r1b, true);
+                collisionForce(dataP, dataC, li, &r1c, true);
+
+            }
+
         }
-    }
-
-    void SpringDashpot::applyForce
-    (
-        double nx,
-        double ny,
-        double d2,
-        double r,
-        cPhysics & dataP
-    )
-    {
-        double meff, kr, kd, d, vrx, vry, ddot, mag, fx, fy;
-
-        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
-        kr = meff*alpha;
-        kd = 2.0*meff*beta;
-
-        vrx = dataP.vx;
-        vry = dataP.vy;
-
-        ddot = nx*vrx+ny*vry;
-
-        d = std::sqrt(d2);
-
-        mag = std::min(1.0/d,3.0)*(kr*(r-d)-kd*ddot);
-
-        fx = mag*nx;//+friction*std::abs(mag)*nxt;
-        fy = mag*ny;//+friction*std::abs(mag)*nyt;
-
-        dataP.fx += fx;
-        dataP.fy += fy;
-        
     }
 
     void SpringDashpot::tileBoundariesCollision
@@ -1080,118 +1660,123 @@ namespace Hop::System::Physics
         double nx, ny, d2;
         double r2 = c->r*c->r;
 
+        double lx0, ly0, lx1, ly1;
+
+        bool colliding = false;
+
+        Rectangle r;
+
+        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
+
         // WEST
 
         if 
         (
-            tileBounds.wx0 == 0 &&
-            tileBounds.wx1 == 0 &&
-            tileBounds.wy0 == 0 &&
-            tileBounds.wy1 == 0
+            tileBounds.wx0 != 0 &&
+            tileBounds.wx1 != 0 &&
+            tileBounds.wy0 != 0 &&
+            tileBounds.wy1 != 0
         )
         {
-            // no collision here
-        }
-        else
-        {
             nx = 1.0; ny = 0.0;
-            d2 = pointLineSegmentDistanceSquared<double>
-            (
-                c->x,c->y,
-                tileBounds.wx0, tileBounds.wy0,
-                tileBounds.wx1, tileBounds.wy1
-            );
+            lx0 = tileBounds.wx0; ly0 = tileBounds.wy0;
+            lx1 = tileBounds.wx1; ly1 = tileBounds.wy1;
+            colliding = true;
 
-            if (d2 < r2)
-            {
-                applyForce(nx,ny,d2,c->r,dataP);
-            }
+            r.llx = lx0-1.0; r.lly = ly0;
+            r.ulx = r.llx;   r.uly = ly1;
+            r.urx = lx0;     r.ury = ly1;
+            r.lrx = lx0;     r.lry = ly0;
+            r.resetAxes();
         }
 
         // NORTH
 
         if 
         (
-            tileBounds.nx0 == 0 &&
-            tileBounds.nx1 == 0 &&
-            tileBounds.ny0 == 0 &&
-            tileBounds.ny1 == 0
+            tileBounds.nx0 != 0 &&
+            tileBounds.nx1 != 0 &&
+            tileBounds.ny0 != 0 &&
+            tileBounds.ny1 != 0
         )
         {
-            // no collision here
-        }
-        else
-        {
             nx = 0.0; ny = -1.0;
-            d2 = pointLineSegmentDistanceSquared<double>
-            (
-                c->x,c->y,
-                tileBounds.nx0, tileBounds.ny0,
-                tileBounds.nx1, tileBounds.ny1
-            );
+            lx0 = tileBounds.nx0; ly0 = tileBounds.ny0;
+            lx1 = tileBounds.nx1; ly1 = tileBounds.ny1;
+            colliding = true;
 
-            if (d2 < r2)
-            {
-                applyForce(nx,ny,d2,c->r,dataP);
-            }
+            r.llx = lx0;     r.lly = ly0;
+            r.ulx = lx0;     r.uly = ly0+1.0;
+            r.urx = lx1;     r.ury = ly0+1.0;
+            r.lrx = lx1;     r.lry = ly0;
+            r.resetAxes();
         }
 
         // EAST
 
         if 
         (
-            tileBounds.ex0 == 0 &&
-            tileBounds.ex1 == 0 &&
-            tileBounds.ey0 == 0 &&
-            tileBounds.ey1 == 0
+            tileBounds.ex0 != 0 &&
+            tileBounds.ex1 != 0 &&
+            tileBounds.ey0 != 0 &&
+            tileBounds.ey1 != 0
         )
         {
-            // no collision here
-        }
-        else
-        {
             nx = -1.0; ny = 0.0;
-            d2 = pointLineSegmentDistanceSquared<double>
-            (
-                c->x,c->y,
-                tileBounds.ex0, tileBounds.ey0,
-                tileBounds.ex1, tileBounds.ey1
-            );
+            lx0 = tileBounds.ex0; ly0 = tileBounds.ey0;
+            lx1 = tileBounds.ex1; ly1 = tileBounds.ey1;
+            colliding = true;
 
-            if (d2 < r2)
-            {
-                applyForce(nx,ny,d2,c->r,dataP);
-            }
+            r.llx = lx0;     r.lly = ly0;
+            r.ulx = lx0;     r.uly = ly0+1.0;
+            r.urx = lx0+1.0; r.ury = ly0+1.0;
+            r.lrx = lx0+1.0; r.lry = ly0;
+            r.resetAxes();
         }
 
         // SOUTH
 
         if 
         (
-            tileBounds.sx0 == 0 &&
-            tileBounds.sx1 == 0 &&
-            tileBounds.sy0 == 0 &&
-            tileBounds.sy1 == 0
+            tileBounds.sx0 != 0 &&
+            tileBounds.sx1 != 0 &&
+            tileBounds.sy0 != 0 &&
+            tileBounds.sy1 != 0
         )
         {
-            // no collision here
-        }
-        else
-        {
             nx = 0.0; ny = 1.0;
-            d2 = pointLineSegmentDistanceSquared<double>
-            (
-                c->x,c->y,
-                tileBounds.sx0, tileBounds.sy0,
-                tileBounds.sx1, tileBounds.sy1
-            );
+            lx0 = tileBounds.sx0; ly0 = tileBounds.sy0;
+            lx1 = tileBounds.sx1; ly1 = tileBounds.sy1;
+            colliding = true;
 
-            if (d2 < r2)
+            r.llx = lx0;     r.lly = ly0;
+            r.ulx = lx1;     r.uly = ly0;
+            r.urx = lx1;     r.ury = ly0-1.0;
+            r.lrx = lx0;     r.lry = ly0-1.0;
+            r.resetAxes();
+        }
+
+        if (colliding)
+        {
+            if (li == nullptr)
             {
-                applyForce(nx,ny,d2,c->r,dataP);
+                d2 = pointLineSegmentDistanceSquared<double>
+                (
+                    c->x,c->y,
+                    lx0, ly0,
+                    lx1, ly1
+                );
+
+                if (d2 < r2)
+                {
+                    springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP);
+                }
+            }
+            else
+            {
+                cPhysics dataTmp(0.,0.,0.);
+                collisionForce(dataP, dataTmp, li, &r, true);
             }
         }
-
     }
-
 }

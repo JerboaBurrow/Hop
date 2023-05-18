@@ -78,6 +78,7 @@ namespace Hop::System::Rendering
         void updateOffsets(std::string handle);
         void updateColours(std::string handle);
         void updateTexOffsets(std::string handle);
+        void updateUtil(std::string handle);
         
         /*
             Keep offsets in contiguous memory per shader
@@ -88,6 +89,8 @@ namespace Hop::System::Rendering
             std::string,
             std::pair<std::size_t,std::vector<float>>
         > offsets;
+
+        const unsigned OFFSET_COMPONENTS = 4;
 
         std::unordered_map<
             Id,
@@ -108,7 +111,8 @@ namespace Hop::System::Rendering
 
         GLuint quadVBO;
 
-        float quad[6*4] = {
+        float quad[6*4] = 
+        {
             // positions  / texture coords
             0.5f,  0.5f, 1.0f, 1.0f,   // top right
             0.5f,  -0.5f, 1.0f, 0.0f,   // bottom right
