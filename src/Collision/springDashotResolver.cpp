@@ -183,7 +183,10 @@ namespace Hop::System::Physics
 
         tau = (rx*fy-ry*fx);
 
-        if (std::abs(tau) < 0.02)
+        // this magic non-linearity dampens 
+        //  angular oscillations...
+
+        if (std::abs(tau) < 0.01)
         {
             if (tau > 0)
             {
@@ -205,7 +208,7 @@ namespace Hop::System::Physics
 
         tau = (rx*fy-ry*fx);
 
-        if (std::abs(tau) < 0.02)
+        if (std::abs(tau) < 0.01)
         {
             if (tau > 0)
             {
