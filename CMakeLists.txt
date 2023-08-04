@@ -183,6 +183,8 @@ IF (TEST_SUITE)
         add_executable(testSuite 
             ${TEST_SRC}
             "src/World/mapFile.cpp"
+            "src/Maths/topology.cpp"
+            "src/Maths/vertex.cpp"
         )
 
         target_compile_definitions(testSuite PUBLIC GLSL_VERSION="330")
