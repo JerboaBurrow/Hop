@@ -106,7 +106,7 @@ namespace Hop::System::Physics
             axis2x /= d;
             axis2y /= d;
         }
-
+        
         double height()
         {
 
@@ -121,7 +121,7 @@ namespace Hop::System::Physics
         {
 
             double u = ulx-llx;
-            double v = uly-llx;
+            double v = uly-lly;
 
             return std::sqrt(u*u+v*v);
 
@@ -200,6 +200,7 @@ namespace Hop::System::Physics
                 worldVertices.push_back(std::move(p));
  
             }
+            computeRadius();
         }
         
         size_t size(){return vertices.size();}
@@ -217,6 +218,8 @@ namespace Hop::System::Physics
         );
 
         double momentOfInertia();
+        void computeRadius();
+        double getRadius(){return radius;}
 
         void drawDebug(glm::mat4 & proj);
         void setupDebug();
@@ -232,10 +235,13 @@ namespace Hop::System::Physics
             glDeleteBuffers(1,&vboTh);
         }
         
+        
     private:
 
         std::vector<std::shared_ptr<CollisionPrimitive>> vertices;
         std::vector<std::shared_ptr<CollisionPrimitive>> worldVertices;
+
+        double radius;
 
         // for debug shapes
 

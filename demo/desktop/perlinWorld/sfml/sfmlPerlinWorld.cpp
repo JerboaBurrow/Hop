@@ -165,7 +165,7 @@ int main(int argc, char ** argv)
               2,
               &camera,
               64,
-              0,
+              1,
               &perlin,
               &pBounds  
           )
@@ -201,7 +201,7 @@ int main(int argc, char ** argv)
 
   console.luaStore(&luaStore);
 
-  console.runFile("tests/circles.lua");
+  console.runFile("tests/rectangles.lua");
   std::string status = console.luaStatus();
   if (status != "LUA_OK") { WARN(status) >> log; }
 
@@ -371,11 +371,11 @@ int main(int argc, char ** argv)
           "\n" <<
           "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
           "\n" <<
-          "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
-          "\n" << 
-          "update time: " << fixedLengthNumber(pdt+rdt,6) <<
-          "\n" <<
-          "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+          "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4);// << ")" <<
+          // "\n" << 
+          // "update time: " << fixedLengthNumber(pdt+rdt,6) <<
+          // "\n" <<
+          // "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
 
       textRenderer.renderText(
           font,

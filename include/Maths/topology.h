@@ -11,6 +11,8 @@ using Hop::System::Physics::Rectangle;
 namespace Hop::Maths
 {
 
+    bool pointInTriangle(Vertex v, Triangle tri);
+
     template <class T>
     int pointLineHandedness(
         T x, T y,
@@ -43,52 +45,37 @@ namespace Hop::Maths
     )
     {
 
-        T ax = r->ulx-r->llx;
-        T ay = r->uly-r->lly;
-
-        T bx = r->urx-r->ulx;
-        T by = r->ury-r->uly;
-
-        T a = std::sqrt(ax*ax+ay*ay);
-        T b = std::sqrt(bx*bx+by*by);
-
-        T area = a*b;
-
-        T tArea = triangleArea<T>
-        (
-            px, py,
-            r->llx, r->lly,
-            r->ulx, r->uly
-        );
-
-        tArea += triangleArea<T>
-        (
-            px, py,
-            r->ulx, r->uly,
-            r->urx, r->ury
-        );
-
-        tArea += triangleArea<T>
-        (
-            px, py,
-            r->urx, r->ury,
-            r->lrx, r->lry
-        );
-
-        tArea += triangleArea<T>
-        (
-            px, py,
-            r->lrx, r->lry,
-            r->llx, r->lly
-        );
-
-        if (tArea > area)
+        if (pointInTriangle
+            (
+                Vertex(px, py),
+                Triangle
+                (
+                    Vertex(r->llx, r->lly),
+                    Vertex(r->ulx, r->uly),
+                    Vertex(r->urx, r->ury)
+                )
+            )
+        )
         {
-            return false;
+            return true;
         }
 
-        return true;
+        if (pointInTriangle
+            (
+                Vertex(px, py),
+                Triangle
+                (
+                    Vertex(r->llx, r->lly),
+                    Vertex(r->urx, r->ury),
+                    Vertex(r->lrx, r->lry)
+                )
+            )
+        )
+        {
+            return true;
+        }
 
+        return false;
     }
 
 }

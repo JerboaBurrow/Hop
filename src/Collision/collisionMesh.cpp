@@ -127,6 +127,33 @@ namespace Hop::System::Physics
 
             }
         }
+
+        computeRadius();
+    }
+
+    void CollisionMesh::computeRadius()
+    {
+        double mx, Mx, my, My;
+        for (int i = 0; i < vertices.size(); i++)
+        {
+            std::shared_ptr<CollisionPrimitive> p = worldVertices[i];
+            if (i == 0){
+                mx = p->x-p->r;
+                Mx = p->x+p->r;
+                my = p->y-p->r;
+                My = p->y+p->r;
+            }
+            else
+            {
+                mx = std::min(p->x-p->r,mx);
+                Mx = std::max(p->x+p->r,Mx);
+                my = std::min(p->y-p->r,my);
+                My = std::max(p->y+p->r,My);
+            }
+        }
+        double x = Mx-mx;
+        double y = My-my;
+        this->radius = 0.5 * std::sqrt(x*x+y*y);
     }
 
     double CollisionMesh::momentOfInertia()
