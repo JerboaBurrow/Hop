@@ -205,7 +205,6 @@ int main(int argc, char ** argv)
   std::string status = console.luaStatus();
   if (status != "LUA_OK") { WARN(status) >> log; }
 
-
   //physics.stabaliseObjectParameters(&manager);
 
   bool refreshObjectShaders = true;
@@ -321,22 +320,22 @@ int main(int argc, char ** argv)
 
     rendering.draw(&shaderPool); 
 
-    auto objects = manager.getObjects();  
+    // auto objects = manager.getObjects();  
 
-    auto citer = objects.cbegin();
-    auto cend = objects.cend();
+    // auto citer = objects.cbegin();
+    // auto cend = objects.cend();
 
-    while (citer != cend)
-    {
-      if (manager.hasComponent<cCollideable>(citer->first))
-      {
+    // while (citer != cend)
+    // {
+    //   if (manager.hasComponent<cCollideable>(citer->first))
+    //   {
         
-        cCollideable & c = manager.getComponent<cCollideable>(citer->first);
+    //     cCollideable & c = manager.getComponent<cCollideable>(citer->first);
 
-        c.mesh.drawDebug(camera.getVP());
-      }
-      citer++;
-    }
+    //     c.mesh.drawDebug(camera.getVP());
+    //   }
+    //   citer++;
+    // }
 
     tr1 = high_resolution_clock::now();
 
