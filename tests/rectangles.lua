@@ -11,7 +11,7 @@ for i = 1,100 do
 
         ["transform"] = {x,y,0.45,s},
         ["colour"] = {200/255,200/255,250/255,1.0},
-        -- ["shader"] = "lineSegmentObjectShader",
+        ["shader"] = "lineSegmentObjectShader",
         ["moveable"] = true,
         ["collisionMesh"] =
         {
