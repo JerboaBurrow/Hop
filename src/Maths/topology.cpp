@@ -24,7 +24,7 @@ namespace Hop::Maths
 
         float t = (aDOTa*bDOTc-aDOTb*aDOTc)*inv;
 
-        if (t >= 0 && (u+t < 1)) 
+        if (t >= 0 && (u+t <= 1)) 
         {
             return true;
         }

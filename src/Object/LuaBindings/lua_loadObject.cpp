@@ -24,11 +24,12 @@
 */
 int EntityComponentSystem::lua_loadObject(lua_State * lua)
 {
-    std::vector<double> colour, transform;
+    std::vector<double> colour, transform, util;
     std::vector< std::vector<double> > collisionMesh;
     std::string shader = "", name = "";
     bool isMoveable = false;
-    unsigned renderComponents = 0;
+    bool hasColour = false;
+    bool hasTransform = false;
     bool isRenderable = false;
     bool isPhysics = false;
 
@@ -60,7 +61,8 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
             return lua_error(lua);
         }
 
-        renderComponents += 1;
+        hasColour = true;
+
     }
     else if (returnType == LUA_TNONE || returnType == LUA_TNIL)
     {
@@ -83,7 +85,7 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
             return lua_error(lua);
         }
 
-        renderComponents += 1;
+        hasTransform = true;
     
     }
     else if (returnType == LUA_TNONE || returnType == LUA_TNIL)
@@ -99,14 +101,13 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
     if (returnType == LUA_TSTRING)
     {
         shader = lua_tostring(lua, 2);
-        renderComponents += 1;
     }
     else if (returnType == LUA_TNONE || returnType == LUA_TNIL)
     {
 
     }
 
-    if (renderComponents == 3) { isRenderable = true; }
+    if (hasTransform && hasColour) { isRenderable = true; }
 
     lua_pop(lua,1);
 
@@ -200,10 +201,43 @@ int EntityComponentSystem::lua_loadObject(lua_State * lua)
                 shader = "circleObjectShader";
             }
 
+            float ua = 0.0f;
+            float ub = 0.0f;
+            float uc = 0.0f;
+            float ud = 0.0f;
+
+            if (shader == "lineSegmentObjectShader")
+            {
+                returnType = lua_getfield(lua, 1, "rectParameters");
+                if (returnType == LUA_TTABLE)
+                {
+                    std::vector<double> param = getNumericLuaTable(lua, 2);
+
+                    if (param.size() != 4)
+                    {
+                        lua_pushliteral(lua,"rectParameters requires 4 numbers, bottom left x-y, width, height");
+                        return lua_error(lua);
+                    }
+
+                    ua = param[0];
+                    ub = param[1];
+                    uc = param[2];
+                    ud = param[3];
+                
+                }
+                else if (returnType == LUA_TNONE || returnType == LUA_TNIL)
+                {
+
+                }
+
+                lua_pop(lua,1);
+                
+            }
+
             addComponent<cRenderable>
             (
                 pid,
-                cRenderable(shader,r,g,b,a)
+                cRenderable(shader,r,g,b,a,ua,ub,uc,ud)
             );
         }
 

@@ -37,7 +37,8 @@ extern "C"
                     pid,
                     Hop::Object::Component::cRenderable(
                             "circleObjectShader",
-                            r, g, b, a
+                            r, g, b, a,
+                            0.0f, 0.0f, 0.0f, 0.0f
                     )
             );
 

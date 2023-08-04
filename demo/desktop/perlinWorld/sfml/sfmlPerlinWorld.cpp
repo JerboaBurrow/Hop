@@ -165,7 +165,7 @@ int main(int argc, char ** argv)
               2,
               &camera,
               64,
-              0,
+              1,
               &perlin,
               &pBounds  
           )
@@ -201,10 +201,9 @@ int main(int argc, char ** argv)
 
   console.luaStore(&luaStore);
 
-  console.runFile("tests/circles.lua");
+  console.runFile("tests/rectangles.lua");
   std::string status = console.luaStatus();
   if (status != "LUA_OK") { WARN(status) >> log; }
-
 
   //physics.stabaliseObjectParameters(&manager);
 
@@ -321,22 +320,22 @@ int main(int argc, char ** argv)
 
     rendering.draw(&shaderPool); 
 
-    auto objects = manager.getObjects();  
+    // auto objects = manager.getObjects();  
 
-    auto citer = objects.cbegin();
-    auto cend = objects.cend();
+    // auto citer = objects.cbegin();
+    // auto cend = objects.cend();
 
-    while (citer != cend)
-    {
-      if (manager.hasComponent<cCollideable>(citer->first))
-      {
+    // while (citer != cend)
+    // {
+    //   if (manager.hasComponent<cCollideable>(citer->first))
+    //   {
         
-        cCollideable & c = manager.getComponent<cCollideable>(citer->first);
+    //     cCollideable & c = manager.getComponent<cCollideable>(citer->first);
 
-        c.mesh.drawDebug(camera.getVP());
-      }
-      citer++;
-    }
+    //     c.mesh.drawDebug(camera.getVP());
+    //   }
+    //   citer++;
+    // }
 
     tr1 = high_resolution_clock::now();
 
@@ -371,11 +370,11 @@ int main(int argc, char ** argv)
           "\n" <<
           "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
           "\n" <<
-          "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
-          "\n" << 
-          "update time: " << fixedLengthNumber(pdt+rdt,6) <<
-          "\n" <<
-          "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+          "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4);// << ")" <<
+          // "\n" << 
+          // "update time: " << fixedLengthNumber(pdt+rdt,6) <<
+          // "\n" <<
+          // "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
 
       textRenderer.renderText(
           font,

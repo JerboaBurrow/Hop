@@ -160,7 +160,7 @@ namespace Hop::System::Rendering
 
         makeShader
         (
-            Hop::System::Rendering::objectVertexShader,
+            Hop::System::Rendering::lineSegmentObjectVertexShader,
             Hop::System::Rendering::lineSegmentObjectFragmentShader,
             "lineSegmentObjectShader",
             log
