@@ -159,48 +159,71 @@ namespace Hop::System::Physics
                 bt = 1.0/(1.0+ct);
                 at = (1.0-ct)*bt;
 
-                nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
-                ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
+                sticktion = std::sqrt(dataP.fx*dataP.fx+dataP.fy*dataP.fy);
 
-                dataP.vx = (nx-dataP.lastX)/(dt*2.0);
-                dataP.vy = (ny-dataP.lastY)/(dt*2.0);
+                //std::cout << sticktion << ", ";
+                if (sticktion > 0.0){
 
-                dataP.lastX = dataT.x;
-                dataP.lastY = dataT.y;
+                    nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
+                    ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
 
-                dataP.fx = 0.0;
-                dataP.fy = 0.0;
+                    // nx = 2.0*dataT.x - dataP.lastX + dataP.fx*dtdt / PARTICLE_MASS;
+                    // ny = 2.0*dataT.y - dataP.lastY + dataP.fy*dtdt / PARTICLE_MASS;
 
-                sticktion = 1.0;
+                    dataP.vx = (nx-dataP.lastX)/(dt*2.0);
+                    dataP.vy = (ny-dataP.lastY)/(dt*2.0);
 
-                // std::cout << std::abs(dataP.phi) << "\n";
+                    dataP.lastX = dataT.x;
+                    dataP.lastY = dataT.y;
 
-                // if (std::abs(dataP.phi) < 10.0 && std::abs(dataP.phi) != 0.0) 
-                // { 
-                //     sticktion = std::min(10.0,10.0*1.0/std::abs(dataP.phi)); 
+                    dataP.fx = 0.0;
+                    dataP.fy = 0.0;
+
+                }
+                else{
+                    nx = dataT.x;
+                    ny = dataT.y;
+                    dataP.lastX = dataT.x;
+                    dataP.lastY = dataT.y;
+                }
+
+                if (collideables.hasComponent(*it))
+                {
+                    cCollideable & data = collideables.get(*it);
+                    double r = data.mesh.getRadius();
+                    dataP.tau -= dataP.phi * 50.0 * r*r;
+                }
+
+                dataP.omega += dataP.tau;
+
+                // cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
+                // br = 1.0/(1.0+cr);
+                // ar = (1.0-cr)*br;
+
+                // std::cout << dataP.omega << "\n";
+                // if (sticktion < 9.81){
+                //     dataP.omega *= std::min((dataP.omega * dataP.omega), 1.0);
                 // }
 
-                dataP.omega += dataP.tau / dataP.momentOfInertia;
-                dataP.tau = 0.0;
+                ntheta = 2.0*dataT.theta - dataP.lastTheta + dtdt*dataP.omega/dataP.momentOfInertia;
 
-                cr = dt *sticktion * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
-                br = 1.0/(1.0+cr);
-                ar = (1.0-cr)*br;
-
-                ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
+                // ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
 
                 dataP.phi = (ntheta-dataP.lastTheta)/(2.0*dt);
 
                 dataP.lastTheta = dataT.theta;
-
-                dataP.omega = 0.0;
-
+                
                 dataP.x = nx;
                 dataP.y = ny;
 
                 dataT.x = nx;
                 dataT.y = ny;
                 dataT.theta = ntheta;
+
+                dataP.fx = 0.0;
+                dataP.fy = 0.0;
+                dataP.tau = 0.0;
+                dataP.omega = 0.0;
 
             }
 
@@ -213,7 +236,7 @@ namespace Hop::System::Physics
                     dataT.theta,
                     dataT.scale
                 );
-                dataP.momentOfInertia = 0.25*data.mesh.momentOfInertia()*PARTICLE_MASS;
+                dataP.momentOfInertia = data.mesh.momentOfInertia()*PARTICLE_MASS;
             }
         }
     }
@@ -259,29 +282,6 @@ namespace Hop::System::Physics
                     {
                         dataP.fx += fx;
                         dataP.fy += fy;
-
-                        fxt = fx / 4.0;
-                        fyt = fy / 4.0;
-
-                        rx = r->llx - dataT.x;
-                        ry = r->lly - dataT.y;
-
-                        dataP.tau += (rx*fyt-ry*fxt);
-
-                        rx = r->ulx - dataT.x;
-                        ry = r->uly - dataT.y;
-
-                        dataP.tau += (rx*fyt-ry*fxt);
-
-                        rx = r->urx - dataT.x;
-                        ry = r->ury - dataT.y;
-
-                        dataP.tau += (rx*fyt-ry*fxt);
-
-                        rx = r->lrx - dataT.x;
-                        ry = r->lry - dataT.y;
-
-                        dataP.tau += (rx*fyt-ry*fxt);
 
                     }
                 }

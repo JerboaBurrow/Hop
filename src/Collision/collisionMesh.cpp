@@ -127,6 +127,33 @@ namespace Hop::System::Physics
 
             }
         }
+
+        computeRadius();
+    }
+
+    void CollisionMesh::computeRadius()
+    {
+        double mx, Mx, my, My;
+        for (int i = 0; i < vertices.size(); i++)
+        {
+            std::shared_ptr<CollisionPrimitive> p = worldVertices[i];
+            if (i == 0){
+                mx = p->x-p->r;
+                Mx = p->x+p->r;
+                my = p->y-p->r;
+                My = p->y+p->r;
+            }
+            else
+            {
+                mx = std::min(p->x-p->r,mx);
+                Mx = std::max(p->x+p->r,Mx);
+                my = std::min(p->y-p->r,my);
+                My = std::max(p->y+p->r,My);
+            }
+        }
+        double x = Mx-mx;
+        double y = My-my;
+        this->radius = 0.5 * std::sqrt(x*x+y*y);
     }
 
     double CollisionMesh::momentOfInertia()
@@ -155,345 +182,6 @@ namespace Hop::System::Physics
         }
 
         return m;
-    }
-
-    void CollisionMesh::setupDebug()
-    {
-        unsigned nc = 0;
-        unsigned nr = 0;
-
-        for (unsigned i = 0; i < vertices.size(); i++)
-        {
-
-            CollisionPrimitive * c = (vertices[i].get());
-            Rectangle * r = dynamic_cast<Rectangle*>(c);
-
-            if (r != nullptr)
-            {
-
-                nr += 1;
-                // thickness
-                float thx = r->llx-r->lrx;
-                float thy = r->lly-r->lry;
-                float th = std::sqrt(thx*thx+thy*thy);
-                // line through middle
-                float ax = r->llx - r->axis1x*th*0.5;
-                float ay = r->lly - r->axis1y*th*0.5;
-                float bx = r->ulx - r->axis1x*th*0.5;
-                float by = r->uly - r->axis1y*th*0.5;
-
-                parameters.push_back(ax);
-                parameters.push_back(ay);
-                parameters.push_back(bx);
-                parameters.push_back(by);
-
-                offsetsRectangle.push_back(x);
-                offsetsRectangle.push_back(y);
-                offsetsRectangle.push_back(theta);
-                offsetsRectangle.push_back(scale);
-
-                thickness.push_back(th);
-
-            }
-            else
-            {
-                nc += 1;
-                offsetsCircle.push_back(x);
-                offsetsCircle.push_back(y);
-                offsetsCircle.push_back(theta);
-                offsetsCircle.push_back(scale*c->r);
-            }
-        
-
-        }
-
-        glGenVertexArrays(1,&vaoC);
-        glGenVertexArrays(1,&vaoR);
-        glGenBuffers(1,&vboP);
-        glGenBuffers(1,&vboQuad);
-        glGenBuffers(1,&vboOC);
-        glGenBuffers(1,&vboOR);
-        glGenBuffers(1,&vboTh);
-
-        if (nc > 0)
-        {
-
-            glBindVertexArray(vaoC);
-
-            glBindBuffer(GL_ARRAY_BUFFER,vboQuad);
-            glBufferData(
-                GL_ARRAY_BUFFER,
-                4*6*sizeof(float),
-                &quad[0],
-                GL_STATIC_DRAW
-            );
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(
-                0,
-                4,
-                GL_FLOAT,
-                false,
-                4*sizeof(float),
-                0
-            );
-            glVertexAttribDivisor(0,0);
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            // offsets
-            glBindBuffer(GL_ARRAY_BUFFER,vboOC);
-            glBufferData(
-                GL_ARRAY_BUFFER,
-                4*nc*sizeof(float),
-                &offsetsCircle[0],
-                GL_DYNAMIC_DRAW
-            );
-
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(
-                1,
-                4,
-                GL_FLOAT,
-                false,
-                4*sizeof(float),
-                0
-            );
-            glVertexAttribDivisor(1,1);
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            glBindVertexArray(0);
-        }
-
-        if (nr > 0)
-        {
-
-            glBindVertexArray(vaoR);
-
-            glBindBuffer(GL_ARRAY_BUFFER,vboQuad);
-            glBufferData(
-                GL_ARRAY_BUFFER,
-                4*6*sizeof(float),
-                &quad[0],
-                GL_STATIC_DRAW
-            );
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(
-                0,
-                4,
-                GL_FLOAT,
-                false,
-                4*sizeof(float),
-                0
-            );
-            glVertexAttribDivisor(0,0);
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            // offsets
-            glBindBuffer(GL_ARRAY_BUFFER,vboOR);
-            glBufferData(
-                GL_ARRAY_BUFFER,
-                4*nr*sizeof(float),
-                &offsetsRectangle[0],
-                GL_DYNAMIC_DRAW
-            );
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(
-                1,
-                4,
-                GL_FLOAT,
-                false,
-                4*sizeof(float),
-                0
-            );
-            glVertexAttribDivisor(1,1);
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            // parameters
-            glBindBuffer(GL_ARRAY_BUFFER,vboP);
-            glBufferData(
-                GL_ARRAY_BUFFER,
-                4*nr*sizeof(float),
-                &parameters[0],
-                GL_DYNAMIC_DRAW
-            );
-            glEnableVertexAttribArray(2);
-            glVertexAttribPointer(
-                2,
-                4,
-                GL_FLOAT,
-                false,
-                4*sizeof(float),
-                0
-            );
-            glVertexAttribDivisor(2,1);
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            // thickness
-            glBindBuffer(GL_ARRAY_BUFFER,vboTh);
-            glBufferData(
-                GL_ARRAY_BUFFER,
-                nr*sizeof(float),
-                &thickness[0],
-                GL_DYNAMIC_DRAW
-            );
-            glEnableVertexAttribArray(3);
-            glVertexAttribPointer(
-                3,
-                1,
-                GL_FLOAT,
-                false,
-                1*sizeof(float),
-                0
-            );
-            glVertexAttribDivisor(3,1);
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            glBindVertexArray(0);
-        }
-
-        circleShader = glCreateProgram();
-        Hop::GL::compileShader(circleShader,collisionPrimitiveVertexShader,collisionPrimitiveFragmentShader);
-        
-        rectangleShader = glCreateProgram();
-        Hop::GL::compileShader(rectangleShader,rectangleVertexShader,rectangleFragmentShader);
-    
-        isDebugSetup = true;
-    }
-
-    void CollisionMesh::drawDebug(glm::mat4 & proj)
-    {
-
-        if (isDebugSetup == false)
-        {
-            setupDebug();
-        }
-
-        unsigned nc = 0;
-        unsigned nr = 0;
-
-        for (unsigned i = 0; i < vertices.size(); i++)
-        {
-
-            CollisionPrimitive * c = (vertices[i].get());
-            Rectangle * r = dynamic_cast<Rectangle*>(c);
-
-            if (r != nullptr)
-            {
-
-                // thickness
-                float thx = r->llx-r->lrx;
-                float thy = r->lly-r->lry;
-                float th = std::sqrt(thx*thx+thy*thy);
-                // line through middle
-                float ax = r->llx - r->axis1x*th*0.5;
-                float ay = r->lly - r->axis1y*th*0.5;
-                float bx = r->ulx - r->axis1x*th*0.5;
-                float by = r->uly - r->axis1y*th*0.5;
-
-                parameters[nr*4] = ax;
-                parameters[nr*4+1] = ay;
-                parameters[nr*4+2] = bx;
-                parameters[nr*4+3] = by;
-
-                offsetsRectangle[nr*4] = x;
-                offsetsRectangle[nr*4+1] = y;
-                offsetsRectangle[nr*4+2] = theta;
-                offsetsRectangle[nr*4+3] = scale*2.0;
-
-                thickness[nr] = th*0.5;
-
-                nr += 1;
-
-            }
-            else
-            {
-                offsetsCircle[nc*4] = x;
-                offsetsCircle[nc*4+1] = y;
-                offsetsCircle[nc*4+2] = theta;
-                offsetsCircle[nc*4+3] = scale*2.0;
-                nc += 1;
-            }
-        
-
-        }
-
-        if (nc > 0)
-        {
-
-            glBindVertexArray(vaoC);
-            glBindBuffer(GL_ARRAY_BUFFER,vboOC);
-
-            glBufferSubData(
-                GL_ARRAY_BUFFER,
-                0,
-                4*nc*sizeof(float),
-                &offsetsCircle[0]
-            );
-
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-            glBindVertexArray(0);
-
-            glBindVertexArray(vaoC);
-
-            glUseProgram(circleShader);
-
-            glUniformMatrix4fv(
-                glGetUniformLocation(circleShader,"proj"),
-                1, 0, &proj[0][0]
-            );
-
-            glDrawArraysInstanced(GL_TRIANGLES,0,6,nc);
-
-            glBindVertexArray(0);
-
-        }
-
-        if (nr > 0)
-        {
-            
-            glBindVertexArray(vaoR);
-
-            glBindBuffer(GL_ARRAY_BUFFER,vboOR);
-            glBufferSubData(
-                GL_ARRAY_BUFFER,
-                0,
-                4*nr*sizeof(float),
-                &offsetsRectangle[0]
-            );
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            glBindBuffer(GL_ARRAY_BUFFER,vboP);
-            glBufferSubData(
-                GL_ARRAY_BUFFER,
-                0,
-                4*nr*sizeof(float),
-                &parameters[0]
-            );
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            glBindBuffer(GL_ARRAY_BUFFER,vboTh);
-            glBufferSubData(
-                GL_ARRAY_BUFFER,
-                0,
-                nr*sizeof(float),
-                &thickness[0]
-            );
-            glBindBuffer(GL_ARRAY_BUFFER,0);
-
-            glUseProgram(rectangleShader);
-
-            glUniformMatrix4fv(
-                glGetUniformLocation(rectangleShader,"proj"),
-                1, 0, &proj[0][0]
-            );
-
-            glDrawArraysInstanced(GL_TRIANGLES,0,6,nr);
-
-            glBindVertexArray(0);
-
-        }
-
-        Hop::GL::glError("mesh draw debug");
-
     }
 
     std::ostream & operator<<(std::ostream & o, Rectangle const & r)

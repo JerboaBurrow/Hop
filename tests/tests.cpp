@@ -9,6 +9,20 @@ const double tol = 1e-6;
 #include <Maths/distance.h>
 #include <Collision/collisionMesh.h>
 
+
+namespace Hop::System::Physics
+{
+    std::ostream & operator<<(std::ostream & o, Rectangle const & r)
+    {
+        o << r.ulx << ", " << r.uly << "    " << r.urx << ", " << r.ury << "\n"
+            << r.llx << ", " << r.lly << "    " << r.lrx << ", " << r.lry << "\n"
+            << r.x   << ", " << r.y   << ", "   << r.r << "\n"
+            << r.axis1x << ", " << r.axis1y << ", " << r.axis2x << ", " << r.axis2y << "\n";
+
+        return o;
+    }
+}
+
 using namespace Hop::Maths;
 using namespace Hop::World;
 using namespace Hop::System::Physics;
@@ -380,6 +394,22 @@ SCENARIO("Triangle","[maths]")
 
 SCENARIO("Topology","[maths]")
 {
+    GIVEN("The rectangle 0.890625, 0.34375, 0.890625, 0.351562, 0.90625, 0.351562, 0.90625, 0.34375")
+    {
+        Rectangle r
+        (
+            0.890625, 0.34375, 0.890625, 0.351562,
+            0.90625, 0.351562, 0.90625, 0.34375
+        );
+
+        AND_GIVEN("The point (0.898818, 0.350784)")
+        {
+            THEN("The point is inside the rectangle")
+            {
+                REQUIRE(pointInRectangle(0.898818, 0.350784, &r));
+            }
+        }
+    }
     GIVEN("The rectangle (-1.,-1.),(-1,1),(1,1),(1,-1)")
     {
         Rectangle r

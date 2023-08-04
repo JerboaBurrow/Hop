@@ -63,6 +63,13 @@ namespace Hop::System::Rendering
                 offsets[handle].second[start+1+offset] = dataR.uy;
                 offsets[handle].second[start+2+offset] = dataR.vx;
                 offsets[handle].second[start+3+offset] = dataR.vy;
+
+
+                offset = 3*OFFSET_COMPONENTS*MAX_OBJECTS_PER_SHADER;
+                offsets[handle].second[start+offset] = dataR.uA;
+                offsets[handle].second[start+1+offset] = dataR.uB;
+                offsets[handle].second[start+2+offset] = dataR.uC;
+                offsets[handle].second[start+3+offset] = dataR.uD;
             }
         }
 
@@ -77,6 +84,7 @@ namespace Hop::System::Rendering
             if (newData){
                 updateColours(it->first);
                 updateTexOffsets(it->first);
+                updateUtil(it->first);
             }
 
             glError("updateOffsets");
