@@ -175,6 +175,9 @@ namespace Hop::System::Physics
         pI.fx += fx+0.5*std::abs(mag)*nxt;
         pI.fy += fy+0.5*std::abs(mag)*nyt;
 
+        pJ.fx -= fx;
+        pJ.fy -= fy;
+
         fx = nx*magC;
         fy = ny*magC;
 
@@ -199,9 +202,6 @@ namespace Hop::System::Physics
         }
 
         pI.tau -= tau;
-
-        pJ.fx -= fx;
-        pJ.fy -= fy;
 
         rx = px - pJ.x;
         ry = py - pJ.y;
@@ -236,11 +236,6 @@ namespace Hop::System::Physics
         bool collided = false;
 
         collided = rectangleRectangleCollided<double>(li,lj,nx,ny,s);
-
-        bool sdll = pointInRectangle<double>(li->llx,li->lly,lj);
-        bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj);
-        bool sdur = pointInRectangle<double>(li->urx,li->ury,lj);
-        bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj);
 
         if (!collided){ return; }
 
@@ -316,8 +311,8 @@ namespace Hop::System::Physics
             else
             {
 
-                nx /= float(fs);
-                ny /= float(fs);
+                //nx /= float(fs);
+                //ny /= float(fs);
 
                 if (sdll)
                 {
@@ -356,8 +351,8 @@ namespace Hop::System::Physics
             else
             {
 
-                nx /= float(fs);
-                ny /= float(fs);
+                //nx /= float(fs);
+                //ny /= float(fs);
 
                 if (sdll)
                 {
