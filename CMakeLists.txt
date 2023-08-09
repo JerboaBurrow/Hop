@@ -134,6 +134,7 @@ file(GLOB SRC
     "src/World/*.cpp" 
     "src/Maths/*.cpp" 
     "src/Util/*.cpp"
+    "src/Debug/*.cpp"
     "src/Console/*.cpp"
 )
 
@@ -143,8 +144,6 @@ if (NOT ANDROID)
 else()
     add_library(Hop STATIC ${SRC})
 endif()
-
-
 
 if(BENCHMARK)
     target_compile_definitions(Hop PUBLIC BENCHMARK)
