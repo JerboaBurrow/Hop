@@ -21,6 +21,8 @@ namespace Hop::System::Rendering
     
     using Hop::Object::Component::cRenderable;
     using Hop::Object::Component::cTransform;
+    using Hop::System::Physics::CollisionPrimitive;
+    using Hop::System::Physics::Rectangle;
     
     const int MAX_OBJECTS_PER_SHADER = 100000; // 0.4 megabytes per shader
     /*
