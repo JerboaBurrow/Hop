@@ -217,6 +217,11 @@ namespace Hop::System::Physics
         double momentOfInertia();
         void computeRadius();
         double getRadius(){return radius;}
+
+        double getX(){return x;}
+        double getY(){return y;}
+        double getTheta(){return theta;}
+        double getScale(){return scale;}
         
     private:
 
