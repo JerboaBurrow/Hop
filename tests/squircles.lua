@@ -1,11 +1,10 @@
-s = 0.5*hop.maxCollisionPrimitiveSize()
+s = 2.0*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
-for i = 1,256 do
+for i = 1,5 do
 
-    x = 0.892; y = 0.36+0.02*i;
-    -- x = math.random(); y = math.random();
+    x = math.random()+0.5; y = math.random()+0.5;
 
 
     object = {

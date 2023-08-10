@@ -101,7 +101,7 @@ namespace Hop::System::Physics
             }
         }
 
-        //pI.tau -= tau;
+        pI.tau -= tau;
 
         rx = pxj - pJ.x;
         ry = pyj - pJ.y;
@@ -120,20 +120,7 @@ namespace Hop::System::Physics
             }
         }
 
-        //pJ.tau += tau;
-
-    //     rx = pxi - pI.lastX;
-    //     ry = pyi - pI.lastY;
-
-    //     pI.tau -= (rx*fy-ry*fx)/(PARTICLE_MASS);
-
-    //     pJ.fx -= fx;
-    //     pJ.fy -= fy;
-
-    //     rx = pxj - pI.lastX;
-    //     ry = pyj - pI.lastY;
-
-    //     pI.tau += (rx*fy-ry*fx)/(PARTICLE_MASS);
+        pJ.tau += tau;
     }
 
      void SpringDashpot::springDashpotWallForce
@@ -197,7 +184,7 @@ namespace Hop::System::Physics
             }
         }
 
-        //dataP.tau -= tau;
+        dataP.tau -= tau;
         
     }
 
