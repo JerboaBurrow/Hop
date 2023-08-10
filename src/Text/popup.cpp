@@ -5,7 +5,7 @@ namespace Hop::System::Rendering
 
   void Popup::draw(TextRenderer & text, Type & type, float dt)
   {
-    for (int i = 0; i < popups.size(); i++)
+    for (unsigned i = 0; i < popups.size(); i++)
     {
 
       text.renderText(

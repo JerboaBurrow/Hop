@@ -16,7 +16,7 @@ namespace Hop::System::Physics
         unsigned njobs
     )
     {
-        double nx, ny, ntheta, ar, br, cr, at, bt, ct, rx, ry, tau, norm;
+        double nx, ny, ntheta, ar, br, cr, at, bt, ct;
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
         for (unsigned i = 0; i < njobs; i++)
@@ -105,7 +105,7 @@ namespace Hop::System::Physics
             }
         }
 
-        for (int j = 0; j < nThreads; j++)
+        for (unsigned j = 0; j < nThreads; j++)
         {
             workers->queueJob(
                 std::bind(
@@ -125,18 +125,17 @@ namespace Hop::System::Physics
     void sPhysics::update(EntityComponentSystem * m, ThreadPool * workers)
     {
 
-        if (workers != nullptr)
-        {
-            updateThreaded(m, workers);
-            return;
-        }
+        // if (workers != nullptr)
+        // {
+        //     updateThreaded(m, workers);
+        //     return;
+        // }
 
         ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
-        double nx, ny, ntheta, ar, br, cr, at, bt, ct, rx, ry, tau, norm, sticktion;
-        unsigned k = 0;
+        double nx, ny, ntheta, at, bt, ct, sticktion;
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
@@ -251,7 +250,7 @@ namespace Hop::System::Physics
     {
 
         double fx = nx*g; double fy = ny*g;
-        double rx, ry, fxt, fyt;
+        double rx, ry;
 
         for (auto it = objects.begin(); it != objects.end(); it++)
         {

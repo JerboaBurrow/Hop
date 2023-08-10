@@ -73,8 +73,8 @@ namespace Hop::System::Physics
 
     protected:
 
-        double lX, lY;
         tupled limX, limY;
+        double lX, lY;
 
     };
 

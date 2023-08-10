@@ -98,8 +98,8 @@ namespace Hop::Object::Component
         std::unordered_map<Id,size_t> idToIndex;
         std::unordered_map<size_t,Id> indexToId;
 
-        size_t nextIndex;
         uint32_t maxObjects;
+        size_t nextIndex;
 
     };
 

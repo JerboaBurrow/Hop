@@ -59,7 +59,7 @@ namespace Hop::Logging
 
     inline std::string get() {
       std::string l;
-      for (int i = 0; i < logStream.size(); i++){
+      for (unsigned i = 0; i < logStream.size(); i++){
         l += logStream[i] + "\n";
       }
       logStream.clear();

@@ -1,9 +1,5 @@
 #include <System/sCollision.h>
 
-#include <iostream>
-#include <chrono>
-using namespace std::chrono;
-
 namespace Hop::System::Physics
 {
 
@@ -14,8 +10,6 @@ namespace Hop::System::Physics
         ThreadPool * workers
     )
     {
-
-        high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
         ComponentArray<cCollideable> & dataC = m->getComponentArray<cCollideable>();
         ComponentArray<cPhysics> & dataP = m->getComponentArray<cPhysics>();
@@ -28,8 +22,6 @@ namespace Hop::System::Physics
             workers
         );
 
-        high_resolution_clock::time_point t2 = high_resolution_clock::now();
-
         detector->handleObjectWorldCollisions(
             dataC,
             dataP,
@@ -38,11 +30,6 @@ namespace Hop::System::Physics
             objects,
             workers
         );
-
-        high_resolution_clock::time_point t3 = high_resolution_clock::now();
-
-        // oot = duration_cast<duration<double>>(t2 - t1).count();
-        // owt = duration_cast<duration<double>>(t3 - t2).count();
 
     }
 

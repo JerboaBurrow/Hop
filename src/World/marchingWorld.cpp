@@ -27,9 +27,9 @@ namespace Hop::World
         renderRegionBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);
         renderRegionBackBuffer = std::make_unique<bool[]>(DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE);
 
-        for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE; i++)
+        for (unsigned i = 0; i < DYNAMICS_REGION_BUFFER_SIZE; i++)
         {
-            for (int j = 0; j < DYNAMICS_REGION_BUFFER_SIZE; j++)
+            for (unsigned j = 0; j < DYNAMICS_REGION_BUFFER_SIZE; j++)
             {
                 renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] = map->getAtCoordinate(i-int(RENDER_REGION_START),j-int(RENDER_REGION_START)) > 0;
             }
@@ -80,18 +80,18 @@ namespace Hop::World
         forceUpdate = false;
 
 
-        for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE; i++)
+        for (unsigned i = 0; i < DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE; i++)
         {
             renderRegionBackBuffer[i] = renderRegionBuffer[i];
         }
 
-        for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE; i++)
+        for (unsigned i = 0; i < DYNAMICS_REGION_BUFFER_SIZE; i++)
         {
-            for (int j = 0; j < DYNAMICS_REGION_BUFFER_SIZE; j++)
+            for (unsigned j = 0; j < DYNAMICS_REGION_BUFFER_SIZE; j++)
             {
                 int newIx = i+ox;
                 int newIy = j+oy;
-                if (newIx > 0 && newIx < DYNAMICS_REGION_BUFFER_SIZE && newIy > 0 && newIy < DYNAMICS_REGION_BUFFER_SIZE)
+                if (newIx > 0 && unsigned(newIx) < DYNAMICS_REGION_BUFFER_SIZE && newIy > 0 && unsigned(newIy) < DYNAMICS_REGION_BUFFER_SIZE)
                 {
                     // alread know the value, just shuffle it over!
                     renderRegionBackBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j] = renderRegionBuffer[newIx*DYNAMICS_REGION_BUFFER_SIZE+newIy];
@@ -104,7 +104,7 @@ namespace Hop::World
             }
         }
 
-        for (int i = 0; i < DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE; i++)
+        for (unsigned i = 0; i < DYNAMICS_REGION_BUFFER_SIZE*DYNAMICS_REGION_BUFFER_SIZE; i++)
         {
             renderRegionBuffer[i] = renderRegionBackBuffer[i];
         }
@@ -135,10 +135,10 @@ namespace Hop::World
         float w = 1.0/RENDER_REGION_SIZE;
         unsigned wi = 0;
         unsigned wj = 0;
-        for (int i = RENDER_REGION_START; i < RENDER_REGION_START+RENDER_REGION_SIZE; i++)
+        for (unsigned i = RENDER_REGION_START; i < RENDER_REGION_START+RENDER_REGION_SIZE; i++)
         {
             wj = 0;
-            for (int j = RENDER_REGION_START; j < RENDER_REGION_START+RENDER_REGION_SIZE; j++)
+            for (unsigned j = RENDER_REGION_START; j < RENDER_REGION_START+RENDER_REGION_SIZE; j++)
             {
                 uint8_t ul = renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j+1];
                 uint8_t ur = renderRegionBuffer[(i+1)*DYNAMICS_REGION_BUFFER_SIZE+j+1];
@@ -158,9 +158,9 @@ namespace Hop::World
 
         k = 0;
         w = 1.0/RENDER_REGION_SIZE;
-        for (int i = 0; i < DYNAMICS_REGION_SIZE; i++)
+        for (unsigned i = 0; i < DYNAMICS_REGION_SIZE; i++)
         {
-            for (int j = 0; j < DYNAMICS_REGION_SIZE; j++)
+            for (unsigned j = 0; j < DYNAMICS_REGION_SIZE; j++)
             {
                 uint8_t ul = renderRegionBuffer[i*DYNAMICS_REGION_BUFFER_SIZE+j+1];
                 uint8_t ur = renderRegionBuffer[(i+1)*DYNAMICS_REGION_BUFFER_SIZE+j+1];
@@ -190,7 +190,7 @@ namespace Hop::World
         }
         tileToIdCoord(ix,iy,i,j);
     
-        if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE)
+        if (i >= 0 && unsigned(i) < DYNAMICS_REGION_SIZE && j >= 0 && unsigned(j) < DYNAMICS_REGION_SIZE)
         {
             // data is buffered
             int k = i*DYNAMICS_REGION_SIZE+j;
@@ -220,7 +220,7 @@ namespace Hop::World
 
     Tile MarchingWorld::tileType(int i, int j)
     {
-        if (i >= 0 && i < DYNAMICS_REGION_SIZE && j >= 0 && j < DYNAMICS_REGION_SIZE)
+        if (i >= 0 && unsigned(i) < DYNAMICS_REGION_SIZE && j >= 0 && unsigned(j) < DYNAMICS_REGION_SIZE)
         {
             // data is buffered
             int k = i*DYNAMICS_REGION_SIZE+j;
@@ -260,7 +260,6 @@ namespace Hop::World
     {
 
         int ix,iy,i,j;
-        bool buffered = false;
 
         worldToTile(x,y,ix,iy);
 

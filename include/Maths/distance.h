@@ -42,7 +42,7 @@ namespace Hop::Maths
         T bx, T by
     )
     {
-        T nx, ny, cx, cy;
+        T cx, cy;
         return pointLineSegmentDistanceSquared(px,py,ax,ay,bx,by,cx,cy);
     }
 
@@ -184,7 +184,7 @@ namespace Hop::Maths
     template <class T>
     void shortestDistanceSquared(T px, T py, Rectangle * r, T & nx, T & ny, T & d)
     {
-        T d2, s, nxt, nyt, rx, ry;
+        T d2, nxt, nyt;
 
         d = pointLineSegmentDistanceSquared<T>(
             px, py,

@@ -202,6 +202,11 @@ namespace Hop::System::Physics
         
         size_t size(){return vertices.size();}
 
+        std::shared_ptr<CollisionPrimitive> getModelVertex(size_t i)
+        {
+            return vertices[i];
+        }
+
         std::shared_ptr<CollisionPrimitive> operator[](size_t i) 
         {
             return worldVertices[i];

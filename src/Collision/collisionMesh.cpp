@@ -93,7 +93,7 @@ namespace Hop::System::Physics
             *(worldVertices[i].get()) = *(vertices[i].get());
         }
 
-        for (int i = 0; i < vertices.size(); i++)
+        for (unsigned i = 0; i < vertices.size(); i++)
         {
             worldVertices[i]->x = (vertices[i]->x * c + vertices[i]->y*s)*scale+x;
             worldVertices[i]->y = (vertices[i]->y*c-vertices[i]->x*s)*scale+y;
@@ -134,7 +134,7 @@ namespace Hop::System::Physics
     void CollisionMesh::computeRadius()
     {
         double mx, Mx, my, My;
-        for (int i = 0; i < vertices.size(); i++)
+        for (unsigned i = 0; i < vertices.size(); i++)
         {
             std::shared_ptr<CollisionPrimitive> p = worldVertices[i];
             if (i == 0){
@@ -160,6 +160,8 @@ namespace Hop::System::Physics
     {
 
         double m = 0.0;
+        double dx = 0.0;
+        double dy = 0.0;
         // apply composite area method
         // assume non-overlapping
         // assume unit mass for each piece
@@ -170,14 +172,19 @@ namespace Hop::System::Physics
 
             if (r == nullptr)
             {
-                m += 0.5*c->r*c->r;
+                // an overestimate, ignore holes
+                dx = c->x - this->x;
+                dy = c->y - this->y; 
+                m += 0.5*c->r*c->r + dx*dx+dy*dy;
             }
             else
             {  
                 double h = r->height();
                 double w = r->width();
-
-                m += 0.08333333333333333 * (h*h+w*w);
+                // an overestimate, ignore holes
+                dx = c->x - this->x;
+                dy = c->y - this->y; 
+                m += 0.08333333333333333 * (h*h+w*w) + dx*dx+dy*dy;
             }
         }
 
