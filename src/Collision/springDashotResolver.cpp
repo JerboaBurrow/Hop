@@ -75,8 +75,11 @@ namespace Hop::System::Physics
         fx *= mag;
         fy *= mag;
 
-        pI.fx += fx+friction*std::abs(mag)*nxt;
-        pI.fy += fy+friction*std::abs(mag)*nyt;
+        fx += friction*std::abs(mag)*nxt;
+        fy += friction*std::abs(mag)*nyt;
+
+        pI.fx += fx;
+        pI.fy += fy;
 
         pJ.fx -= fx;
         pJ.fy -= fy;
@@ -756,11 +759,14 @@ namespace Hop::System::Physics
         float s = tileNeighbours.west.length;
         double halfS = double(s)*0.5;
         double S = double(s);
+        float ccrit = c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER;
+        float ccrit2 = ccrit*ccrit;
+
         // WEST
 
         float d = c->x - (tileNeighbours.west.x+s);
 
-        if (d < c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        if (d < ccrit)
         {
             inside = false;
             hx = tileNeighbours.west.x+halfS;
@@ -786,11 +792,42 @@ namespace Hop::System::Physics
             );
         }
 
+        // NORTH-WEST
+
+        float dx = c->x - (tileNeighbours.northWest.x+s);
+        float dy = c->y - (tileNeighbours.northWest.y);
+        d = dx*dx+dy*dy;
+
+        if (d < ccrit2)
+        {
+            inside = false;
+            hx = tileNeighbours.northWest.x+halfS;
+            hy = tileNeighbours.northWest.y+halfS;
+            lx = tileNeighbours.northWest.x+S;
+            ly = tileNeighbours.northWest.y+S;
+            x = tileNeighbours.northWest.x;
+            y = tileNeighbours.northWest.y;
+            tileCollision(
+                tileNeighbours.northWest.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                s,
+                inside,
+                true
+            );
+        }
+
         // NORTH
 
         d = tileNeighbours.north.y-c->y;
 
-        if (d < c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        if (d < ccrit)
         {
             inside = false;
             hx = tileNeighbours.north.x+halfS;
@@ -816,11 +853,42 @@ namespace Hop::System::Physics
             );
         }
 
+        // NORTH-EAST
+
+        dx = c->x - (tileNeighbours.northEast.x);
+        dy = c->y - (tileNeighbours.northEast.y);
+        d = dx*dx+dy*dy;
+
+        if (d < ccrit2)
+        {
+            inside = false;
+            hx = tileNeighbours.northEast.x+halfS;
+            hy = tileNeighbours.northEast.y+halfS;
+            lx = tileNeighbours.northEast.x+S;
+            ly = tileNeighbours.northEast.y+S;
+            x = tileNeighbours.northEast.x;
+            y = tileNeighbours.northEast.y;
+            tileCollision(
+                tileNeighbours.northEast.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                s,
+                inside,
+                true
+            );
+        }
+
         // EAST
 
         d = tileNeighbours.east.x-c->x;
 
-        if (d < c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        if (d < ccrit)
         {
             inside = false;
             hx = tileNeighbours.east.x+halfS;
@@ -846,11 +914,42 @@ namespace Hop::System::Physics
             );
         }
 
+        // SOUTH-EAST
+
+        dx = c->x - (tileNeighbours.southEast.x);
+        dy = c->y - (tileNeighbours.southEast.y+s);
+        d = dx*dx+dy*dy;
+
+        if (d < ccrit2)
+        {
+            inside = false;
+            hx = tileNeighbours.southEast.x+halfS;
+            hy = tileNeighbours.southEast.y+halfS;
+            lx = tileNeighbours.southEast.x+S;
+            ly = tileNeighbours.southEast.y+S;
+            x = tileNeighbours.southEast.x;
+            y = tileNeighbours.southEast.y;
+            tileCollision(
+                tileNeighbours.southEast.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                s,
+                inside,
+                true
+            );
+        }
+
         // SOUTH
 
         d = c->y-(tileNeighbours.south.y+s);
 
-        if (d < c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        if (d < ccrit)
         {
             inside = false;
             hx = tileNeighbours.south.x+halfS;
@@ -875,6 +974,38 @@ namespace Hop::System::Physics
                 true
             );
         }
+
+        // SOUTH-WEST
+
+        dx = c->x - (tileNeighbours.southWest.x+s);
+        dy = c->y - (tileNeighbours.southWest.y+s);
+        d = dx*dx+dy*dy;
+
+        if (d < ccrit2)
+        {
+            inside = false;
+            hx = tileNeighbours.southWest.x+halfS;
+            hy = tileNeighbours.southWest.y+halfS;
+            lx = tileNeighbours.southWest.x+S;
+            ly = tileNeighbours.southWest.y+S;
+            x = tileNeighbours.southWest.x;
+            y = tileNeighbours.southWest.y;
+            tileCollision(
+                tileNeighbours.southWest.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                s,
+                inside,
+                true
+            );
+        }
+
     }
 
     /*
@@ -1675,8 +1806,6 @@ namespace Hop::System::Physics
         }
 
         double rr = c->r*c->r;
-
-
 
         bool f1 = d2 < rr;
         bool f2 = op && (d2p < rr);

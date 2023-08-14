@@ -135,12 +135,13 @@ namespace Hop::System::Physics
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
-        double nx, ny, ntheta, at, bt, ct, sticktion;
+        double nx, ny, ntheta, at, bt, ct, sticktion, k, r, dx, dy, d;
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
+            r = 0.0;
             cTransform & dataT = transforms.get(*it);
             cPhysics & dataP = physics.get(*it);
 
@@ -158,9 +159,15 @@ namespace Hop::System::Physics
                 bt = 1.0/(1.0+ct);
                 at = (1.0-ct)*bt;
 
+                if (collideables.hasComponent(*it))
+                {
+                    cCollideable & data = collideables.get(*it);
+                    r = data.mesh.getRadius();
+                    dataP.tau -= dataP.phi * 50.0 * r*r;
+                }
+
                 sticktion = std::sqrt(dataP.fx*dataP.fx+dataP.fy*dataP.fy);
 
-                //std::cout << sticktion << ", ";
                 if (sticktion > 0.0){
 
                     nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
@@ -168,6 +175,20 @@ namespace Hop::System::Physics
 
                     // nx = 2.0*dataT.x - dataP.lastX + dataP.fx*dtdt / PARTICLE_MASS;
                     // ny = 2.0*dataT.y - dataP.lastY + dataP.fy*dtdt / PARTICLE_MASS;
+
+                    if (r > 0)
+                    {
+                        dx = nx - dataT.x;
+                        dy = ny - dataT.y;
+
+                        d = std::sqrt(dx*dx+dy*dy);
+
+                        if (d > r*movementLimitRadii)
+                        {
+                            nx = dataT.x + r*movementLimitRadii * dx / d;
+                            ny = dataT.y + r*movementLimitRadii * dy / d;
+                        }
+                    }
 
                     dataP.vx = (nx-dataP.lastX)/(dt*2.0);
                     dataP.vy = (ny-dataP.lastY)/(dt*2.0);
@@ -184,13 +205,6 @@ namespace Hop::System::Physics
                     ny = dataT.y;
                     dataP.lastX = dataT.x;
                     dataP.lastY = dataT.y;
-                }
-
-                if (collideables.hasComponent(*it))
-                {
-                    cCollideable & data = collideables.get(*it);
-                    double r = data.mesh.getRadius();
-                    dataP.tau -= dataP.phi * 50.0 * r*r;
                 }
 
                 dataP.omega += dataP.tau;

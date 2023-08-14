@@ -25,7 +25,7 @@ namespace Hop::System::Physics
     const double WALL_MASS_MULTIPLIER = 10.0;
     // will check collision with neigbhours tiles when
     // primitive is less than size*this away
-    const double NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER = 1.5;
+    const double NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER = 2.0;
 
     class SpringDashpot : public CollisionResolver 
     {

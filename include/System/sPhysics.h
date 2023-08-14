@@ -5,6 +5,8 @@
 
 #include <Component/cPhysics.h>
 
+#include <Maths/special.h>
+
 #include <Thread/threadPool.h>
 
 #include <Component/componentArray.h>
@@ -82,6 +84,7 @@ namespace Hop::System::Physics
         double dt;
         double dtdt;
         double gravity;
+        double movementLimitRadii = 0.33;
 
         // see implementation for details
         double stableDragUnderdampedLangevinWithGravityUnitMass(
