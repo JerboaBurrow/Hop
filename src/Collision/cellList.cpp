@@ -34,17 +34,17 @@ namespace Hop::System::Physics
         notEmpty = std::make_unique<bool[]>(nCells);
 
         lastElement = NULL_INDEX;
-        for (int i = 0; i < nCells; i++)
+        for (unsigned i = 0; i < nCells; i++)
         {
             notEmpty[i] = false;
-            for (int j = 0; j < MAX_PARTICLES_PER_CELL; j++)
+            for (unsigned j = 0; j < MAX_PARTICLES_PER_CELL; j++)
             {
                 cells[i*MAX_PARTICLES_PER_CELL+j] = NULL_INDEX;
             }
             
             lastElementInCell[i] = NULL_INDEX;
         }
-        for (int i = 0; i < MAX_PARTICLES; i++)
+        for (unsigned i = 0; i < MAX_PARTICLES; i++)
         {
             id[i] = std::pair(NULL_ID,NULL_INDEX);
         }
@@ -70,17 +70,17 @@ namespace Hop::System::Physics
         notEmpty = std::make_unique<bool[]>(nCells);
 
         lastElement = NULL_INDEX;
-        for (int i = 0; i < nCells; i++)
+        for (unsigned i = 0; i < nCells; i++)
         {
             notEmpty[i] = false;
-            for (int j = 0; j < MAX_PARTICLES_PER_CELL; j++)
+            for (unsigned j = 0; j < MAX_PARTICLES_PER_CELL; j++)
             {
                 cells[i*MAX_PARTICLES_PER_CELL+j] = NULL_INDEX;
             }
             
             lastElementInCell[i] = NULL_INDEX;
         }
-        for (int i = 0; i < MAX_PARTICLES; i++)
+        for (unsigned i = 0; i < MAX_PARTICLES; i++)
         {
             id[i] = std::pair(NULL_ID,NULL_INDEX);
         }
@@ -88,7 +88,7 @@ namespace Hop::System::Physics
 
     void CellList::clear(bool full)
     {
-        for (int l = 0; l < nCells; l++)
+        for (unsigned l = 0; l < nCells; l++)
         {
             uint64_t last;
             notEmpty[l] = false;
@@ -101,7 +101,7 @@ namespace Hop::System::Physics
 
             if (last >= 0)
             {
-                for (int i = 0; i < last; i++)
+                for (unsigned i = 0; i < last; i++)
                 {
                     cells[l*MAX_PARTICLES_PER_CELL+i] = NULL_INDEX;
                 }
@@ -120,7 +120,7 @@ namespace Hop::System::Physics
         
         if (last >= 0)
         {
-            for (int i = 0; i < last; i++)
+            for (unsigned i = 0; i < last; i++)
             {
                 id[i] = std::pair(NULL_ID,NULL_INDEX);
             }
@@ -145,7 +145,7 @@ namespace Hop::System::Physics
 
             uint64_t meshSize = data.mesh.size();
 
-            for (int i = 0; i < meshSize; i++)
+            for (unsigned i = 0; i < meshSize; i++)
             {
             
                 std::shared_ptr<CollisionPrimitive> p = data.mesh[i];
@@ -289,7 +289,6 @@ namespace Hop::System::Physics
 
         if (workers != nullptr){
 
-            unsigned thread = 0;
             unsigned nThreads = workers->size();
 
             unsigned jobsPerThread = std::floor(nCells / nThreads);
@@ -328,7 +327,7 @@ namespace Hop::System::Physics
             //high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
 
-            for (int t = 0; t < nThreads; t++)
+            for (unsigned t = 0; t < nThreads; t++)
             {
                 workers->queueJob(
                     std::bind(
@@ -351,10 +350,10 @@ namespace Hop::System::Physics
         else
         {
 
-            for (int a = 0; a < rootNCells; a++)
+            for (unsigned a = 0; a < rootNCells; a++)
             {
                 a1 = a+1;
-                for (int b = 0; b < rootNCells; b++)
+                for (unsigned b = 0; b < rootNCells; b++)
                 {
                     b1 = b+1;
                     // takes advantage of symmetry

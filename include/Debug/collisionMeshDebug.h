@@ -105,12 +105,11 @@ namespace Hop::Debugging
         "precision lowp float;\n precision lowp int;\n"
         "in vec4 oColour;\n"
         "in vec2 texCoord;\n"
-        "in float theta;\n"
         "out vec4 colour;\n"
         "void main()"
         "{\n"
         "   vec2 c = texCoord-vec2(0.5,0.5);\n"
-        "   if (dot(c,c) > 0.5*0.5) {colour = vec4(oColour.rgb,0.1);}\n"
+        "   if (dot(c,c) > 0.5*0.5) {discard;}\n"
         "   else { colour = oColour; }\n"
         "}";
 

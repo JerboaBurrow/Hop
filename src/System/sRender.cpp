@@ -8,7 +8,6 @@ namespace Hop::System::Rendering
     {
         
         bool newData = false;
-        bool staleData = false;
         std::string handle;
         std::size_t start, offset;
         for (auto it = objects.begin(); it != objects.end(); it++)
@@ -155,7 +154,7 @@ namespace Hop::System::Rendering
         offsets[handle] = std::pair(-1,std::vector<float>());
         offsets[handle].second.reserve(4*MAX_OBJECTS_PER_SHADER*OFFSET_COMPONENTS);
 
-        for (int i = 0; i < 4*MAX_OBJECTS_PER_SHADER*OFFSET_COMPONENTS; i++)
+        for (unsigned i = 0; i < 4*MAX_OBJECTS_PER_SHADER*OFFSET_COMPONENTS; i++)
         {
             offsets[handle].second.push_back(0.0);
         }

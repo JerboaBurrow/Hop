@@ -5,7 +5,7 @@
 namespace Hop::System::Rendering
 {
     // Layout MUST be specified for Android!! (else shit fps)
-    static const char * objectVertexShader = "#version " GLSL_VERSION "\n"
+    static const char * objectVertexShader __attribute__((unused)) = "#version " GLSL_VERSION "\n"
         "precision lowp float;\n precision lowp int;\n"
         "layout(location=0) in vec4 a_position;\n"
         "layout(location=1) in vec4 a_offset;\n"
@@ -35,7 +35,7 @@ namespace Hop::System::Rendering
 
     // circle
 
-    static const char * circleObjectFragmentShader = "#version " GLSL_VERSION "\n"
+    static const char * circleObjectFragmentShader __attribute__((unused)) = "#version " GLSL_VERSION "\n"
         "precision lowp float;\n precision lowp int;\n"
         "in vec2 texCoord;\n"
         "in vec2 atlasTexCoord;\n"
@@ -51,7 +51,7 @@ namespace Hop::System::Rendering
 
     // line-segment
 
-    static const char * lineSegmentObjectVertexShader = "#version " GLSL_VERSION "\n"
+    static const char * lineSegmentObjectVertexShader __attribute__((unused)) = "#version " GLSL_VERSION "\n"
         "precision lowp float;\n precision lowp int;\n"
         "layout(location=0) in vec4 a_position;\n"
         "layout(location=1) in vec4 a_offset;\n"
@@ -80,7 +80,7 @@ namespace Hop::System::Rendering
             "b = rot * vec2(a_util.x+a_util.z*0.5,a_util.y+a_util.w);\n"
         "}";
 
-    static const char * lineSegmentObjectFragmentShader = "#version " GLSL_VERSION "\n"
+    static const char * lineSegmentObjectFragmentShader __attribute__((unused)) = "#version " GLSL_VERSION "\n"
         "precision lowp float;\n precision lowp int;\n"
         "in vec2 texCoord;\n"
         "in vec2 atlasTexCoord;\n"

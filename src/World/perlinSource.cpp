@@ -11,7 +11,7 @@ namespace Hop::World
         std::vector<uint64_t> ret = std::vector<uint64_t>(length);
         std::vector<uint64_t> table = std::vector<uint64_t>(length);
 
-        for (int i = 0; i < length; i++)
+        for (unsigned i = 0; i < length; i++)
         {
             table[i] = i;
         }
