@@ -4,7 +4,7 @@
 
 namespace Hop::System::Rendering
 {
-  static const char * marchingQuadVertexShader = "#version " GLSL_VERSION "\n"
+  static const char * marchingQuadVertexShader __attribute__((unused)) = "#version " GLSL_VERSION "\n"
     "precision lowp float;\n precision lowp int;\n"
     "layout(location=0) in vec4 a_position;\n"
     "layout(location=1) in vec3 a_offset;\n"
@@ -22,7 +22,7 @@ namespace Hop::System::Rendering
     " texCoord = a_position.zw;\n"
     "}";
 
-  static const char * marchingQuadFragmentShader = "#version " GLSL_VERSION "\n"
+  static const char * marchingQuadFragmentShader __attribute__((unused)) = "#version " GLSL_VERSION "\n"
     "precision lowp float;\n precision lowp int;\n"
     "in vec2 texCoord;\n"
     "flat in int id;\n"

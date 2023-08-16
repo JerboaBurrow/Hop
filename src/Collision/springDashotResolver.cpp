@@ -18,13 +18,13 @@ namespace Hop::System::Physics
     using Hop::Maths::pointInRectangle;
 
     void SpringDashpot::updateParameters(
-    double tc,
-    double cor
+        double tc,
+        double cor
     )
     {
         collisionTime = tc;
         coefficientOfRestitution = cor;
-        alpha = (std::log(cor) + M_PI*M_PI) / (tc * tc);
+        alpha = (std::log(cor)*std::log(cor) + M_PI*M_PI) / (tc * tc);
         beta = -std::log(cor) / tc;
 
         kr = EFFECTIVE_MASS*alpha;
@@ -42,7 +42,7 @@ namespace Hop::System::Physics
         double pxi, double pyi, double pxj, double pyj
     )
     {
-        double mag, fx, fy, dinv, nx, ny, vrx, vry, ddot, d;
+        double mag, fx, fy, dinv, nx, ny, vrx, vry, ddot, d, dot, tau, nxt, nyt;
 
         mag = 0.0;
         d = std::sqrt(dd);
@@ -58,39 +58,75 @@ namespace Hop::System::Physics
         vrx = pI.vx-pJ.vx;
         vry = pI.vy-pJ.vy;
 
-        // nxt = ny;
-        // nyt = -nx;
         ddot = nx*vrx+ny*vry;
-
-        // vnorm = vrx*vrx+vry*vry;
-
-        // if ( (-nxt*vrx-nyt*vry) < (nxt*vrx+nyt*vry) )
-        // {
-        //     nxt *= -1.0;
-        //     nyt *= -1.0;
-        // }
 
         mag -= kd*ddot*dinv;
 
-        fx *= mag;//+friction*std::abs(mag)*nxt;
-        fy *= mag;//+friction*std::abs(mag)*nyt;
+        nxt = -ny;
+        nyt = nx;
 
+        dot = nxt*vrx + nyt*vry;
+
+        if (dot > 0.0){
+            nxt = -nxt;
+            nyt = -nyt;
+        }
+
+        // i -> j
+        mag = std::min(0.0, mag);
+
+        fx *= mag;
+        fy *= mag;
+
+        fx += friction*std::abs(mag)*nxt;
+        fy += friction*std::abs(mag)*nyt;
 
         pI.fx += fx;
         pI.fy += fy;
 
-        rx = pxi - pI.lastX;
-        ry = pyi - pI.lastY;
-
-        pI.tau += (rx*fy-ry*fx)/(PARTICLE_MASS);
-
         pJ.fx -= fx;
         pJ.fy -= fy;
 
-        rx = pxj - pI.lastX;
-        ry = pyj - pI.lastY;
+        rx = pxi - pI.x;
+        ry = pyi - pI.y;
 
-        pI.tau -= (rx*fy-ry*fx)/(PARTICLE_MASS);
+        tau = (rx*fy-ry*fx);
+
+        // this magic non-linearity dampens 
+        //  angular oscillations...
+
+        if (std::abs(tau) < 0.01)
+        {
+            if (tau > 0)
+            {
+                tau = tau*tau; 
+            }
+            else
+            {
+                tau = -tau*tau;
+            }
+        }
+
+        pI.tau -= tau;
+
+        rx = pxj - pJ.x;
+        ry = pyj - pJ.y;
+
+        tau = (rx*fy-ry*fx);
+
+        if (std::abs(tau) < 0.01)
+        {
+            if (tau > 0)
+            {
+                tau = tau*tau; 
+            }
+            else
+            {
+                tau = -tau*tau;
+            }
+        }
+
+        pJ.tau += tau;
     }
 
      void SpringDashpot::springDashpotWallForce
@@ -103,7 +139,7 @@ namespace Hop::System::Physics
         cPhysics & dataP
     )
     {
-        double meff, kr, kd, d, vrx, vry, ddot, mag, fx, fy, rx, ry, nxt, nyt, dot;
+        double meff, kr, kd, d, vrx, vry, ddot, mag, fx, fy, rx, ry, nxt, nyt, dot, tau;
 
         meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
         kr = meff*alpha;
@@ -118,16 +154,46 @@ namespace Hop::System::Physics
 
         mag = (kr*(r-d)-kd*ddot)*std::min(1.0/d,3.0);
 
-        fx = mag*nx;//+1.0*std::abs(mag)*nxt;
-        fy = mag*ny;//+1.0*std::abs(mag)*nyt;
+        nxt = -ny;
+        nyt = nx;
 
-        dataP.fx += fx;
-        dataP.fy += fy;
+        dot = nxt*vrx + nyt*vry;
 
-        rx = px - dataP.lastX;
-        ry = py - dataP.lastY;
+        if (dot > 0.0){
+            nxt = -nxt;
+            nyt = -nyt;
+        }
 
-        dataP.tau += (rx*fy-ry*fx)/(PARTICLE_MASS);
+        // j -> i
+        mag = std::max(0.0, mag);
+
+        fx = mag*nx;
+        fy = mag*ny;
+
+        dataP.fx += fx+0.5*std::abs(mag)*nxt;
+        dataP.fy += fy+0.5*std::abs(mag)*nyt;
+
+        rx = px - dataP.x;
+        ry = py - dataP.y;
+
+        tau = (rx*fy-ry*fx)/(PARTICLE_MASS);
+
+        // this magic non-linearity dampens 
+        //  angular oscillations...
+
+        if (std::abs(tau) < 0.01)
+        {
+            if (tau > 0)
+            {
+                tau = tau*tau; 
+            }
+            else
+            {
+                tau = -tau*tau;
+            }
+        }
+
+        dataP.tau -= tau;
         
     }
 
@@ -140,7 +206,7 @@ namespace Hop::System::Physics
         double px, double py
     )
     {
-        double mag, magC, fx, fy, dinv, vrx, vry, ddot, rx, ry, meff, dot, nxt, nyt, tau;
+        double mag, magC, fx, fy, vrx, vry, ddot, rx, ry, dot, nxt, nyt, tau;
 
         mag = 0.0;
         magC = 0.0;
@@ -232,7 +298,7 @@ namespace Hop::System::Physics
         bool wall
     )
     {
-        double nx, ny, nxt, nyt, dt, cx, cy, s, d, odod;
+        double nx, ny, nxt, nyt, dt, s;
         bool collided = false;
 
         collided = rectangleRectangleCollided<double>(li,lj,nx,ny,s);
@@ -443,7 +509,7 @@ namespace Hop::System::Physics
         cPhysics & pI, cPhysics & pJ
     )
     {
-
+        
         // the branched code appears marginally faster (avoids? )
 
         //float objectsNotEqual = !(objectI == objectJ);
@@ -452,7 +518,7 @@ namespace Hop::System::Physics
         //high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
 
-        double ix, iy, jx, jy, rx, ry, rc, dd;
+        double rx, ry, rc, dd;
 
         Rectangle * li, * lj;
 
@@ -699,11 +765,14 @@ namespace Hop::System::Physics
         float s = tileNeighbours.west.length;
         double halfS = double(s)*0.5;
         double S = double(s);
+        float ccrit = c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER;
+        float ccrit2 = ccrit*ccrit;
+
         // WEST
 
         float d = c->x - (tileNeighbours.west.x+s);
 
-        if (d < c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        if (d < ccrit)
         {
             inside = false;
             hx = tileNeighbours.west.x+halfS;
@@ -729,11 +798,42 @@ namespace Hop::System::Physics
             );
         }
 
+        // NORTH-WEST
+
+        float dx = c->x - (tileNeighbours.northWest.x+s);
+        float dy = c->y - (tileNeighbours.northWest.y);
+        d = dx*dx+dy*dy;
+
+        if (d < ccrit2)
+        {
+            inside = false;
+            hx = tileNeighbours.northWest.x+halfS;
+            hy = tileNeighbours.northWest.y+halfS;
+            lx = tileNeighbours.northWest.x+S;
+            ly = tileNeighbours.northWest.y+S;
+            x = tileNeighbours.northWest.x;
+            y = tileNeighbours.northWest.y;
+            tileCollision(
+                tileNeighbours.northWest.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                s,
+                inside,
+                true
+            );
+        }
+
         // NORTH
 
         d = tileNeighbours.north.y-c->y;
 
-        if (d < c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        if (d < ccrit)
         {
             inside = false;
             hx = tileNeighbours.north.x+halfS;
@@ -759,11 +859,42 @@ namespace Hop::System::Physics
             );
         }
 
+        // NORTH-EAST
+
+        dx = c->x - (tileNeighbours.northEast.x);
+        dy = c->y - (tileNeighbours.northEast.y);
+        d = dx*dx+dy*dy;
+
+        if (d < ccrit2)
+        {
+            inside = false;
+            hx = tileNeighbours.northEast.x+halfS;
+            hy = tileNeighbours.northEast.y+halfS;
+            lx = tileNeighbours.northEast.x+S;
+            ly = tileNeighbours.northEast.y+S;
+            x = tileNeighbours.northEast.x;
+            y = tileNeighbours.northEast.y;
+            tileCollision(
+                tileNeighbours.northEast.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                s,
+                inside,
+                true
+            );
+        }
+
         // EAST
 
         d = tileNeighbours.east.x-c->x;
 
-        if (d < c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        if (d < ccrit)
         {
             inside = false;
             hx = tileNeighbours.east.x+halfS;
@@ -789,11 +920,42 @@ namespace Hop::System::Physics
             );
         }
 
+        // SOUTH-EAST
+
+        dx = c->x - (tileNeighbours.southEast.x);
+        dy = c->y - (tileNeighbours.southEast.y+s);
+        d = dx*dx+dy*dy;
+
+        if (d < ccrit2)
+        {
+            inside = false;
+            hx = tileNeighbours.southEast.x+halfS;
+            hy = tileNeighbours.southEast.y+halfS;
+            lx = tileNeighbours.southEast.x+S;
+            ly = tileNeighbours.southEast.y+S;
+            x = tileNeighbours.southEast.x;
+            y = tileNeighbours.southEast.y;
+            tileCollision(
+                tileNeighbours.southEast.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                s,
+                inside,
+                true
+            );
+        }
+
         // SOUTH
 
         d = c->y-(tileNeighbours.south.y+s);
 
-        if (d < c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER)
+        if (d < ccrit)
         {
             inside = false;
             hx = tileNeighbours.south.x+halfS;
@@ -818,6 +980,38 @@ namespace Hop::System::Physics
                 true
             );
         }
+
+        // SOUTH-WEST
+
+        dx = c->x - (tileNeighbours.southWest.x+s);
+        dy = c->y - (tileNeighbours.southWest.y+s);
+        d = dx*dx+dy*dy;
+
+        if (d < ccrit2)
+        {
+            inside = false;
+            hx = tileNeighbours.southWest.x+halfS;
+            hy = tileNeighbours.southWest.y+halfS;
+            lx = tileNeighbours.southWest.x+S;
+            ly = tileNeighbours.southWest.y+S;
+            x = tileNeighbours.southWest.x;
+            y = tileNeighbours.southWest.y;
+            tileCollision(
+                tileNeighbours.southWest.tileType,
+                x,
+                y,
+                c,
+                dataP,
+                hx,
+                hy,
+                lx,
+                ly,
+                s,
+                inside,
+                true
+            );
+        }
+
     }
 
     /*
@@ -842,8 +1036,6 @@ namespace Hop::System::Physics
     )
     {
         double d2, d2p;
-        double lx0, lx1, ly0, ly1;
-        double l2x0, l2x1, l2y0, l2y1;
         double nx = 0.0;
         double ny = 0.0;
         bool op = false;
@@ -1097,10 +1289,6 @@ namespace Hop::System::Physics
             );
             inside = handedness == 1;
 
-            lx0 = hx; ly0 = y0;
-            lx1 = x0; ly1 = hy;
-
-
             if (isRectangle && !neighbour)
             {
                 r1a = bottomLeft;
@@ -1133,10 +1321,6 @@ namespace Hop::System::Physics
             );
             inside = handedness == -1;
 
-            lx0 = hx; ly0 = y0;
-            lx1 = x0; ly1 = hy;
-
-
             if (isRectangle)
             {
                 r1a = central;
@@ -1167,9 +1351,6 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == -1;
-
-            lx0 = hx; ly0 = y0;
-            lx1 = lx; ly1 = hy;
 
             if (isRectangle && !neighbour)
             {
@@ -1203,9 +1384,6 @@ namespace Hop::System::Physics
             );
             inside = handedness == 1;
 
-            lx0 = hx; ly0 = y0;
-            lx1 = lx; ly1 = hy;
-
 
             if (isRectangle)
             {
@@ -1237,9 +1415,6 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == -1;
-
-            lx0 = lx; ly0 = hy;
-            lx1 = hx; ly1 = ly;
 
             if (isRectangle && !neighbour)
             {
@@ -1273,9 +1448,6 @@ namespace Hop::System::Physics
             );
             inside = handedness == 1;
 
-            lx0 = lx; ly0 = hy;
-            lx1 = hx; ly1 = ly;
-
             if (isRectangle)
             {
                 r1a = central;
@@ -1306,9 +1478,6 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == 1;
-
-            lx0 = x0; ly0 = hy;
-            lx1 = hx; ly1 = ly;
 
             if (isRectangle && !neighbour)
             {
@@ -1342,9 +1511,6 @@ namespace Hop::System::Physics
             );
             inside = handedness == -1;
 
-            lx0 = x0; ly0 = hy;
-            lx1 = hx; ly1 = ly;
-
             if (isRectangle)
             {
                 r1a = central;
@@ -1376,9 +1542,6 @@ namespace Hop::System::Physics
             );
             inside = handedness == -1;
 
-            lx0 = x0; ly0 = hy;
-            lx1 = lx; ly1 = hy;
-
 
             if (isRectangle)
             {
@@ -1407,9 +1570,6 @@ namespace Hop::System::Physics
                 lx,hy
             );
             inside = handedness == 1;
-            lx0 = x0; ly0 = hy;
-            lx1 = lx; ly1 = hy;
-
 
             if (isRectangle)
             {
@@ -1439,10 +1599,6 @@ namespace Hop::System::Physics
             );
             inside = handedness == 1;
 
-            lx0 = hx; ly0 = y0;
-            lx1 = hx; ly1 = ly;
-
-
             if (isRectangle)
             {
                 r1a = leftHalf;
@@ -1470,9 +1626,6 @@ namespace Hop::System::Physics
                 hx,ly
             );
             inside = handedness == -1;
-            lx0 = hx; ly0 = y0;
-            lx1 = hx; ly1 = ly;
-
 
             if (isRectangle)
             {
@@ -1503,9 +1656,6 @@ namespace Hop::System::Physics
                 x0,hy,
                 hx,ly
             );
-
-            lx0 = x0; ly0 = hy;
-            lx1 = hx; ly1 = ly;
 
 
             if (isRectangle)
@@ -1545,9 +1695,6 @@ namespace Hop::System::Physics
                 lx,hy
             );
 
-            l2x0 = hx; l2y0 = y0;
-            l2x1 = lx; l2y1 = hy;
-
             if (insideLeft && handedness2 == 1
             )
             {
@@ -1577,9 +1724,6 @@ namespace Hop::System::Physics
                 hx,y0,
                 x0,hy
             );
-
-            lx0 = hx; ly0 = y0;
-            lx1 = x0; ly1 = hy;
 
 
             if (isRectangle)
@@ -1615,9 +1759,6 @@ namespace Hop::System::Physics
                 lx,hy,
                 hx,ly
             );
-
-            l2x0 = lx; l2y0 = hy;
-            l2x1 = hx; l2y1 = ly;
 
             if (insideLeft && handedness2 == 1
             )
@@ -1671,8 +1812,6 @@ namespace Hop::System::Physics
         }
 
         double rr = c->r*c->r;
-
-
 
         bool f1 = d2 < rr;
         bool f2 = op && (d2p < rr);
