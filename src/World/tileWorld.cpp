@@ -18,9 +18,9 @@ namespace Hop::World
 
         float w = 1.0 / RENDER_REGION_SIZE;
         int k = 0;
-        for (int i = RENDER_REGION_SIZE; i < RENDER_REGION_SIZE*2; i++)
+        for (unsigned i = RENDER_REGION_SIZE; i < RENDER_REGION_SIZE*2; i++)
         {
-            for (int j = RENDER_REGION_SIZE; j < RENDER_REGION_SIZE*2; j++)
+            for (unsigned j = RENDER_REGION_SIZE; j < RENDER_REGION_SIZE*2; j++)
             {
                 renderOffsets[k*3] = (i-RENDER_REGION_SIZE)*w;
                 renderOffsets[k*3+1] = (j-RENDER_REGION_SIZE)*w;
@@ -306,11 +306,11 @@ namespace Hop::World
         if 
         (
             boundary->outOfBounds(ix-1,iy-1)    ||
-            se == Tile::FULL                    ||
-            se == Tile::TOP_HALF                ||
-            se == Tile::RIGHT_HALF              ||
-            se == Tile::TOP_RIGHT               ||
-            se == Tile::BOTTOM_LEFT_AND_TOP_RIGHT
+            sw == Tile::FULL                    ||
+            sw == Tile::TOP_HALF                ||
+            sw == Tile::RIGHT_HALF              ||
+            sw == Tile::TOP_RIGHT               ||
+            sw == Tile::BOTTOM_LEFT_AND_TOP_RIGHT
         )
         {
             // sw corner
@@ -343,11 +343,10 @@ namespace Hop::World
 
         forceUpdate = false;
 
-        int wi, wj;
         int k = 0;
-        for (int i = 0; i < RENDER_REGION_SIZE; i++)
+        for (unsigned i = 0; i < RENDER_REGION_SIZE; i++)
         {
-            for (int j = 0; j < RENDER_REGION_SIZE; j++)
+            for (unsigned j = 0; j < RENDER_REGION_SIZE; j++)
             {
 
 

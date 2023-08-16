@@ -66,9 +66,7 @@ namespace Hop::System::Rendering
       glBindVertexArray(VAO);
 
       float initialX = x;
-      float initialY = y;
       float centreX = 0;
-      float centreY = 0;
       std::string::const_iterator c;
       if (centre)
       {
@@ -78,7 +76,6 @@ namespace Hop::System::Rendering
         for (c = text.begin(); c != text.end(); c++/*ayy lmao*/)
         {
             Glyph ch = type[*c];
-            float h = ch.size.y * scale;
             if (*c == '\n') {
                 break;
             }

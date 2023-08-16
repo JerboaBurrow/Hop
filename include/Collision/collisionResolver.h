@@ -76,6 +76,8 @@ namespace Hop::System::Physics
             double rx, double ry, double rc, double dd
         ) = 0;
 
+        virtual void setCoefRestitution(double cor) = 0;
+
     };
 
 }

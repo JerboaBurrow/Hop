@@ -7,6 +7,7 @@ const double tol = 1e-6;
 #include <World/mapFile.h>
 #include <Maths/topology.h>
 #include <Maths/distance.h>
+#include <Maths/special.h>
 #include <Collision/collisionMesh.h>
 
 
@@ -388,6 +389,59 @@ SCENARIO("Triangle","[maths]")
                 cx, cy
             );
             REQUIRE(std::abs(a-0.7348972963948)<tol);
+        }
+    }
+}
+
+SCENARIO("Special functions", "[maths]")
+{
+    GIVEN("The int x = 1")
+    {
+        int x = 1;
+        THEN("sgn(x) == 1")
+        {
+            REQUIRE(sgn<int>(x)==1);
+        }
+    }
+    GIVEN("The int x = -1")
+    {
+        int x = -1;
+        THEN("sgn(x) == -1")
+        {
+            REQUIRE(sgn<int>(x)==-1);
+        }
+    }
+    GIVEN("The int x = 0")
+    {
+        int x = 0;
+        THEN("sgn(x) == 0")
+        {
+            REQUIRE(sgn<int>(x)==0);
+        }
+    }
+
+    GIVEN("The float x = 1.0f")
+    {
+        float x = 1.0f;
+        THEN("sgn(x) == 1.0f")
+        {
+            REQUIRE(sgn<float>(x)==1.0f);
+        }
+    }
+    GIVEN("The float x = -1.0f")
+    {
+        float x = -1.0f;
+        THEN("sgn(x) == -1.0f")
+        {
+            REQUIRE(sgn<float>(x)==-1.0f);
+        }
+    }
+    GIVEN("The float x = 0.0f")
+    {
+        float x = 0.0f;
+        THEN("sgn(x) == 0.0f")
+        {
+            REQUIRE(sgn<float>(x)==0.0f);
         }
     }
 }

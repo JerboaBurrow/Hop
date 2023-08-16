@@ -16,7 +16,7 @@ namespace Hop::System::Physics
         unsigned njobs
     )
     {
-        double nx, ny, ntheta, ar, br, cr, at, bt, ct, rx, ry, tau, norm;
+        double nx, ny, ntheta, ar, br, cr, at, bt, ct;
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
         for (unsigned i = 0; i < njobs; i++)
@@ -105,7 +105,7 @@ namespace Hop::System::Physics
             }
         }
 
-        for (int j = 0; j < nThreads; j++)
+        for (unsigned j = 0; j < nThreads; j++)
         {
             workers->queueJob(
                 std::bind(
@@ -125,23 +125,23 @@ namespace Hop::System::Physics
     void sPhysics::update(EntityComponentSystem * m, ThreadPool * workers)
     {
 
-        if (workers != nullptr)
-        {
-            updateThreaded(m, workers);
-            return;
-        }
+        // if (workers != nullptr)
+        // {
+        //     updateThreaded(m, workers);
+        //     return;
+        // }
 
         ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
-        double nx, ny, ntheta, ar, br, cr, at, bt, ct, rx, ry, tau, norm, sticktion;
-        unsigned k = 0;
+        double nx, ny, ntheta, at, bt, ct, sticktion, k, r, dx, dy, d;
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
+            r = 0.0;
             cTransform & dataT = transforms.get(*it);
             cPhysics & dataP = physics.get(*it);
 
@@ -159,9 +159,15 @@ namespace Hop::System::Physics
                 bt = 1.0/(1.0+ct);
                 at = (1.0-ct)*bt;
 
+                if (collideables.hasComponent(*it))
+                {
+                    cCollideable & data = collideables.get(*it);
+                    r = data.mesh.getRadius();
+                    dataP.tau -= dataP.phi * 50.0 * r*r;
+                }
+
                 sticktion = std::sqrt(dataP.fx*dataP.fx+dataP.fy*dataP.fy);
 
-                //std::cout << sticktion << ", ";
                 if (sticktion > 0.0){
 
                     nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
@@ -169,6 +175,20 @@ namespace Hop::System::Physics
 
                     // nx = 2.0*dataT.x - dataP.lastX + dataP.fx*dtdt / PARTICLE_MASS;
                     // ny = 2.0*dataT.y - dataP.lastY + dataP.fy*dtdt / PARTICLE_MASS;
+
+                    if (r > 0)
+                    {
+                        dx = nx - dataT.x;
+                        dy = ny - dataT.y;
+
+                        d = std::sqrt(dx*dx+dy*dy);
+
+                        if (d > r*movementLimitRadii)
+                        {
+                            nx = dataT.x + r*movementLimitRadii * dx / d;
+                            ny = dataT.y + r*movementLimitRadii * dy / d;
+                        }
+                    }
 
                     dataP.vx = (nx-dataP.lastX)/(dt*2.0);
                     dataP.vy = (ny-dataP.lastY)/(dt*2.0);
@@ -185,13 +205,6 @@ namespace Hop::System::Physics
                     ny = dataT.y;
                     dataP.lastX = dataT.x;
                     dataP.lastY = dataT.y;
-                }
-
-                if (collideables.hasComponent(*it))
-                {
-                    cCollideable & data = collideables.get(*it);
-                    double r = data.mesh.getRadius();
-                    dataP.tau -= dataP.phi * 50.0 * r*r;
                 }
 
                 dataP.omega += dataP.tau;
@@ -251,7 +264,7 @@ namespace Hop::System::Physics
     {
 
         double fx = nx*g; double fy = ny*g;
-        double rx, ry, fxt, fyt;
+        double rx, ry;
 
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
@@ -259,33 +272,30 @@ namespace Hop::System::Physics
             cPhysics & dataP = m->getComponent<cPhysics>(it->id);
             cTransform & dataT = m->getComponent<cTransform>(it->id);
 
-            if (m->hasComponent<cCollideable>(it->id))
-            {
-                cCollideable & dataC = m->getComponent<cCollideable>(it->id);
+            dataP.fx += fx;
+            dataP.fy += fy;
 
-                for (unsigned i = 0; i < dataC.mesh.size(); i++)
-                {
-                    std::shared_ptr<CollisionPrimitive> p = dataC.mesh[i];
-                    Rectangle * r = dynamic_cast<Rectangle*>(p.get());
+            // if (m->hasComponent<cCollideable>(it->id))
+            // {
+            //     cCollideable & dataC = m->getComponent<cCollideable>(it->id);
 
-                    if (r == nullptr)
-                    {
-                        dataP.fx += fx;
-                        dataP.fy += fy;
+            //     for (unsigned i = 0; i < dataC.mesh.size(); i++)
+            //     {
+            //         std::shared_ptr<CollisionPrimitive> p = dataC.mesh[i];
+            //         Rectangle * r = dynamic_cast<Rectangle*>(p.get());
 
-                        rx = p->x - dataT.x;
-                        ry = p->y - dataT.y;
-
-                        dataP.tau += (rx*fy-ry*fx);
-                    }
-                    else
-                    {
-                        dataP.fx += fx;
-                        dataP.fy += fy;
-
-                    }
-                }
-            }
+            //         if (r == nullptr)
+            //         {
+            //             dataP.fx += fx;
+            //             dataP.fy += fy;
+            //         }
+            //         else
+            //         {
+            //             dataP.fx += fx;
+            //             dataP.fy += fy;
+            //         }
+            //     }
+            // }
         }
 
     }

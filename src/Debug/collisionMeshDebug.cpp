@@ -15,7 +15,6 @@ namespace Hop::Debugging
             
             uploadedCircles = cachedCircles;
             uploadedRects = cachedRects;
-            std::cout << "reset\n";
 
             glGenBuffers(1, &quadVBO);
             glGenBuffers(1, &cOffset);
@@ -190,14 +189,14 @@ namespace Hop::Debugging
             theta = c.mesh.getTheta();
             scale = c.mesh.getScale();
 
-            for (int i = 0; i < c.mesh.size(); i++)
+            for (unsigned i = 0; i < c.mesh.size(); i++)
             {
                 CollisionPrimitive * cp = (c.mesh[i].get());
+                CollisionPrimitive * cpmodel = c.mesh.getModelVertex(i).get();
                 Rectangle * r = dynamic_cast<Rectangle*>(cp);
 
                 if (r != nullptr)
                 {
-                    nRectangles += 1;
                     if (nRectangles > cachedRects)
                     {
                         rectanglesOffset.insert(rectanglesOffset.end(), 64*4, 0.0f);
@@ -227,20 +226,23 @@ namespace Hop::Debugging
                     rectanglesOffset[nRectangles*4+3] = scale*2.0;
 
                     rectanglesThickness[nRectangles] = th*0.5;
+
+                    nRectangles += 1;
                 }
                 else
                 {
-                    nCircles += 1;
                     if (nCircles > cachedCircles)
                     {
                         circles.insert(circles.end(), 64*4, 0.0f);
                         cachedCircles += 64;
                     }
 
-                    circles[nCircles*4] = x;
-                    circles[nCircles*4+1] = y;
+                    circles[nCircles*4] = cp->x;
+                    circles[nCircles*4+1] = cp->y;
                     circles[nCircles*4+2] = theta;
-                    circles[nCircles*4+3] = scale*2.0;
+                    circles[nCircles*4+3] = scale*2.0*cpmodel->r;
+
+                    nCircles += 1;
 
                 }
 

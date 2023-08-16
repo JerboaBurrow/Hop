@@ -7,7 +7,7 @@ namespace Hop::Util
     {
     std::string d = std::to_string(x);
     std::string dtrunc(length,' ');
-    for (int c = 0; c < dtrunc.length(); c++/*ayy lmao*/)
+    for (unsigned c = 0; c < dtrunc.length(); c++/*ayy lmao*/)
     {
         dtrunc[c] = d[c];
     }
