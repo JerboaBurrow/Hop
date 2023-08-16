@@ -62,6 +62,29 @@ namespace Hop::System::Physics
         // automatically compute stable simulation parameters
         // updating all objects
         void stabaliseObjectParameters(Hop::Object::EntityComponentSystem * m);
+        
+        int lua_setTimeStep(lua_State * lua)
+        {   
+            int n = lua_gettop(lua);
+            
+            if (n != 1)
+            {
+                lua_pushliteral(lua, "requires 1 argument, delta");
+                return lua_error(lua);
+            }
+
+            if (!lua_isnumber(lua, 1))
+            {
+                lua_pushliteral(lua, "requires a numeric argument for delta");
+                return lua_error(lua);
+            }
+
+            double delta = lua_tonumber(lua, 1);
+            setTimeStep(delta);
+
+            return 0;
+        }
+        
         void setTimeStep(double delta){dt = delta; dtdt = dt*dt;}
         void setGravity(double g){gravity=g;}
 

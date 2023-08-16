@@ -37,8 +37,14 @@ namespace Hop::System::Physics
         )
         {
             updateParameters(tc,cor);
+            collisionTime = tc;
+            coefficientOfRestitution = cor;
             friction = f;
         }
+
+        SpringDashpot()
+        : collisionTime(1.0/90.0), coefficientOfRestitution(0.75)
+        {}
 
         void handleObjectObjectCollision(
             Id & objectI, uint64_t particleI,
@@ -121,6 +127,8 @@ namespace Hop::System::Physics
             double tc,
             double cor
         );
+
+        void setCoefRestitution(double cor){ return updateParameters(collisionTime, cor); }
 
         void tileCollision
         (

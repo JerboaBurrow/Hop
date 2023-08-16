@@ -5,6 +5,8 @@
 #include <Object/entityComponentSystem.h>
 #include <World/world.h>
 #include <Console/lua.h>
+#include <System/sPhysics.h>
+#include <System/sCollision.h>
 #include <iostream>
 
 namespace Hop
@@ -12,11 +14,15 @@ namespace Hop
 
     using Hop::Object::EntityComponentSystem;
     using Hop::World::AbstractWorld;
+    using Hop::System::Physics::sPhysics;
+    using Hop::System::Physics::sCollision;
 
     struct LuaExtraSpace
     {
         EntityComponentSystem * ecs;
         AbstractWorld * world;
+        sPhysics * physics;
+        sCollision * resolver;
     };
 
     // ECS 
@@ -43,12 +49,38 @@ namespace Hop
         return ((*ptr).*function)(lua);
     }
 
+    // Physics
+    
+    typedef int (sPhysics::*sPhysicsMember)(lua_State * lua);
+
+    template <sPhysicsMember function>
+    int dispatchsPhysics(lua_State * lua)
+    {
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        sPhysics * ptr = store->physics;
+        return ((*ptr).*function)(lua);
+    }
+
+    // sCollision
+    
+    typedef int (sCollision::*sCollisionMember)(lua_State * lua);
+
+    template <sCollisionMember function>
+    int dispatchsCollision(lua_State * lua)
+    {
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        sCollision * ptr = store->resolver;
+        return ((*ptr).*function)(lua);
+    }
+
     // register lib
 
     const luaL_Reg hopLib[] =
     {
         {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
         {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
+        {"setPhysicsTimeStep",&dispatchsPhysics<&sPhysics::lua_setTimeStep>},
+        {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
         {NULL, NULL}
     };
 

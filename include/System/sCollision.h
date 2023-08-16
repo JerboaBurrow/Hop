@@ -55,6 +55,30 @@ namespace Hop::System::Physics
 
         void centreOn(double x, double y);
 
+        void setCoefRestitution(double cor){ resolver->setCoefRestitution(cor); }
+
+        int lua_setCOR(lua_State * lua)
+        {  
+            int n = lua_gettop(lua);
+            
+            if (n != 1)
+            {
+                lua_pushliteral(lua, "requires 1 argument, cor");
+                return lua_error(lua);
+            }
+
+            if (!lua_isnumber(lua, 1))
+            {
+                lua_pushliteral(lua, "requires a numeric argument for cor");
+                return lua_error(lua);
+            }
+
+            double cor = lua_tonumber(lua, 1);
+            setCoefRestitution(cor);
+
+            return 0;
+        }
+
     private:
 
         std::unique_ptr<CollisionDetector> detector;

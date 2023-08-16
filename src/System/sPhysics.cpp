@@ -272,33 +272,30 @@ namespace Hop::System::Physics
             cPhysics & dataP = m->getComponent<cPhysics>(it->id);
             cTransform & dataT = m->getComponent<cTransform>(it->id);
 
-            if (m->hasComponent<cCollideable>(it->id))
-            {
-                cCollideable & dataC = m->getComponent<cCollideable>(it->id);
+            dataP.fx += fx;
+            dataP.fy += fy;
 
-                for (unsigned i = 0; i < dataC.mesh.size(); i++)
-                {
-                    std::shared_ptr<CollisionPrimitive> p = dataC.mesh[i];
-                    Rectangle * r = dynamic_cast<Rectangle*>(p.get());
+            // if (m->hasComponent<cCollideable>(it->id))
+            // {
+            //     cCollideable & dataC = m->getComponent<cCollideable>(it->id);
 
-                    if (r == nullptr)
-                    {
-                        dataP.fx += fx;
-                        dataP.fy += fy;
+            //     for (unsigned i = 0; i < dataC.mesh.size(); i++)
+            //     {
+            //         std::shared_ptr<CollisionPrimitive> p = dataC.mesh[i];
+            //         Rectangle * r = dynamic_cast<Rectangle*>(p.get());
 
-                        rx = p->x - dataT.x;
-                        ry = p->y - dataT.y;
-
-                        dataP.tau += (rx*fy-ry*fx);
-                    }
-                    else
-                    {
-                        dataP.fx += fx;
-                        dataP.fy += fy;
-
-                    }
-                }
-            }
+            //         if (r == nullptr)
+            //         {
+            //             dataP.fx += fx;
+            //             dataP.fy += fy;
+            //         }
+            //         else
+            //         {
+            //             dataP.fx += fx;
+            //             dataP.fy += fy;
+            //         }
+            //     }
+            // }
         }
 
     }

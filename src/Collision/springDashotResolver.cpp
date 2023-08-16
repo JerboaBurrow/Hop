@@ -18,13 +18,13 @@ namespace Hop::System::Physics
     using Hop::Maths::pointInRectangle;
 
     void SpringDashpot::updateParameters(
-    double tc,
-    double cor
+        double tc,
+        double cor
     )
     {
         collisionTime = tc;
         coefficientOfRestitution = cor;
-        alpha = (std::log(cor) + M_PI*M_PI) / (tc * tc);
+        alpha = (std::log(cor)*std::log(cor) + M_PI*M_PI) / (tc * tc);
         beta = -std::log(cor) / tc;
 
         kr = EFFECTIVE_MASS*alpha;
@@ -71,6 +71,9 @@ namespace Hop::System::Physics
             nxt = -nxt;
             nyt = -nyt;
         }
+
+        // i -> j
+        mag = std::min(0.0, mag);
 
         fx *= mag;
         fy *= mag;
@@ -160,6 +163,9 @@ namespace Hop::System::Physics
             nxt = -nxt;
             nyt = -nyt;
         }
+
+        // j -> i
+        mag = std::max(0.0, mag);
 
         fx = mag*nx;
         fy = mag*ny;
