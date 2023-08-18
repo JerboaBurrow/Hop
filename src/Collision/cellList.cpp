@@ -14,7 +14,7 @@ namespace Hop::System::Physics
         double width = (dynamicsCoords.second-dynamicsCoords.first)/2.0;
         
         double unit = world->worldMaxCollisionPrimitiveSize();
-        unsigned n = std::ceil(width/(2.0*unit));
+        unsigned n = std::ceil(width/(unit));
 
         limX = dynamicsCoords;
         limY = dynamicsCoords;
@@ -246,9 +246,83 @@ namespace Hop::System::Physics
         }
     }
 
+
     void CellList::cellCollisionsThreaded(
-        ComponentArray<cCollideable> & dataC,
-        ComponentArray<cPhysics> & dataP,
+        uint64_t a1,
+        uint64_t b1,
+        uint64_t a2,
+        uint64_t b2,
+        cCollideable * dataC,
+        const std::unordered_map<Id,size_t> & idToIndexC,
+        cPhysics * dataP,
+        const std::unordered_map<Id,size_t> & idToIndexP,
+        CollisionResolver * resolver
+    )
+    {
+        if (a1 < 0 || a1 >= rootNCells || b1 < 0 || b2 >= rootNCells || a2 < 0 || a2 >= rootNCells || b2 < 0 || b2 >= rootNCells){
+            return;
+        }
+
+        if (!notEmpty[a1*rootNCells+b1] || !notEmpty[a2*rootNCells+b2])
+        {
+            return;
+        }
+
+        uint64_t c1 = (a1*rootNCells+b1)*MAX_PARTICLES_PER_CELL;
+        uint64_t c2 = (a2*rootNCells+b2)*MAX_PARTICLES_PER_CELL;
+
+        uint64_t p1 = 0;
+        uint64_t p2 = 0;
+        uint64_t i, j;
+
+        uint64_t n1 = 0;
+        uint64_t n2 = 0;
+
+        while(cells[c1+p1] != NULL_INDEX)
+        {
+            n1++;
+            p1++;
+        }
+        while(cells[c2+p2] != NULL_INDEX)
+        {
+            n2++;
+            p2++;
+        }
+
+        p1 = 0; p2 = 0;
+
+        while (p1 < n1)
+        {
+            p2 = 0;
+            i = cells[c1+p1]; 
+            auto idi = id[i];
+            cCollideable & collidableI = dataC[idToIndexC.at(idi.first)];
+            cPhysics & physicsI = dataP[idToIndexP.at(idi.first)];
+
+            while (p2 < n2)
+            {
+                j = cells[c2+p2];
+                auto idj = id[j];
+                cCollideable & collidableJ = dataC[idToIndexC.at(idj.first)];
+                cPhysics & physicsJ = dataP[idToIndexP.at(idj.first)];
+
+                resolver->handleObjectObjectCollision(
+                    idi.first,idi.second,
+                    idj.first,idj.second,
+                    collidableI, collidableJ,
+                    physicsI, physicsJ
+                );
+                p2++;
+            }
+            p1++;
+        }
+    }
+
+    void CellList::handleObjectObjectCollisionsThreaded(
+        cCollideable * dataC,
+        const std::unordered_map<Id,size_t> & idToIndexC,
+        cPhysics * dataP,
+        const std::unordered_map<Id,size_t> & idToIndexP,
         CollisionResolver * resolver,
         std::pair<unsigned,unsigned> * jobs,
         unsigned njobs
@@ -267,11 +341,11 @@ namespace Hop::System::Physics
             //  i.e cell a-1,b-1 will collide with
             //  cell a,b so no need to double up!
             
-            cellCollisions(a,b,a,b,dataC,dataP,resolver);
-            cellCollisions(a,b,a1,b1,dataC,dataP,resolver);
-            cellCollisions(a,b,a,b1,dataC,dataP,resolver);
-            cellCollisions(a,b,a1,b,dataC,dataP,resolver);
-            cellCollisions(a,b,a1,b-1,dataC,dataP,resolver);
+            cellCollisionsThreaded(a,b,a,b,dataC,idToIndexC,dataP,idToIndexP,resolver);
+            cellCollisionsThreaded(a,b,a1,b1,dataC,idToIndexC,dataP,idToIndexP,resolver);
+            cellCollisionsThreaded(a,b,a,b1,dataC,idToIndexC,dataP,idToIndexP,resolver);
+            cellCollisionsThreaded(a,b,a1,b,dataC,idToIndexC,dataP,idToIndexP,resolver);
+            cellCollisionsThreaded(a,b,a1,b-1,dataC,idToIndexC,dataP,idToIndexP,resolver);
         }
     }
 
@@ -307,34 +381,69 @@ namespace Hop::System::Physics
             for (unsigned t = 0; t < nThreads; t++)
             {
                 unsigned k = 0;
-                if (t % 2 == 0)
+                for (unsigned j = 0; j < jobsPerThread; j++)
                 {
-                    for (unsigned j = t*jobsPerThread; j < (t+1)*jobsPerThread; j++)
-                    {
-                        threadJobs[t][k] = jobs[j];
-                        k++;
-                    }
-                }
-                else
-                {
-                    for (unsigned j = (t+1)*jobsPerThread-1; j > t*jobsPerThread; j--)
-                    {
-                        threadJobs[t][k] = jobs[j];
-                        k++;
-                    }  
+                    threadJobs[t][k] = jobs[j+jobsPerThread*t];
+                    k++;
                 }
             }
-            //high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
+            //high_resolution_clock::time_point t0 = high_resolution_clock::now();
+
+            if (dataC.allocatedWorkerData() < nThreads)
+            {
+                dataC.allocateWorkerData(nThreads);
+            }
+
+            if (dataP.allocatedWorkerData() < nThreads)
+            {
+                dataP.allocateWorkerData(nThreads);
+            }
 
             for (unsigned t = 0; t < nThreads; t++)
             {
-                workers->queueJob(
-                    std::bind(
-                        &CellList::cellCollisionsThreaded,
+                workers->queueJob
+                (
+                    std::bind
+                    (
+                        &ComponentArray<cCollideable>::scatter,
+                        &dataC,
+                        t
+                    )
+                );
+
+                workers->queueJob
+                (
+                    std::bind
+                    (
+                        &ComponentArray<cPhysics>::scatter,
+                        &dataP,
+                        t
+                    )
+                );
+
+            }
+
+            workers->wait();
+
+            //high_resolution_clock::time_point t2 = high_resolution_clock::now();
+
+            //std::cout << "Thread collisions: scatter" << duration_cast<duration<double>>(t2-t0).count() << "\n";
+
+            //high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+            for (unsigned t = 0; t < nThreads; t++)
+            {
+                workers->queueJob
+                (
+                    std::bind
+                    (
+                        &CellList::handleObjectObjectCollisionsThreaded,
                         this,
-                        std::ref(dataC),
-                        std::ref(dataP),
+                        dataC.getWorkerData(t),
+                        std::ref(dataC.getIdToIndex()),
+                        dataP.getWorkerData(t),
+                        std::ref(dataP.getIdToIndex()),
                         resolver,
                         &threadJobs[t][0],
                         jobsPerThread
@@ -342,14 +451,25 @@ namespace Hop::System::Physics
                 );
             }
             workers->wait();
-            //high_resolution_clock::time_point t3 = high_resolution_clock::now();
 
-            //std::cout << "Thread collisions: " << duration_cast<duration<double>>(t2-t1).count() << ", " << duration_cast<duration<double>>(t3-t2).count() << "\n";
+            //t2 = high_resolution_clock::now();
 
+            //std::cout << "Thread collisions: " << duration_cast<duration<double>>(t2-t1).count() << "\n";
+
+            //t1 = high_resolution_clock::now();
+
+            dataP.reduce();
+
+            //t2 = high_resolution_clock::now();
+
+            //std::cout << "Thread collisions: reduce" << duration_cast<duration<double>>(t2-t1).count() << "\n";
+
+            //std::cout << "Thread collisions: total" << duration_cast<duration<double>>(t2-t0).count() << "\n";
+            
         }
         else
         {
-
+            //high_resolution_clock::time_point t1 = high_resolution_clock::now();
             for (unsigned a = 0; a < rootNCells; a++)
             {
                 a1 = a+1;
@@ -367,6 +487,8 @@ namespace Hop::System::Physics
                     cellCollisions(a,b,a1,b-1,dataC,dataP,resolver);
                 }
             }
+            //high_resolution_clock::time_point t2 = high_resolution_clock::now();
+            //std::cout << "collisions: " << duration_cast<duration<double>>(t2-t1).count() << "\n";
         }
         
     }
@@ -381,16 +503,63 @@ namespace Hop::System::Physics
     )
     {
 
-        for (auto it = objects.begin(); it != objects.end(); it++)
+        //high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+        unsigned nThreads = 0;
+        SpringDashpot * res = static_cast<SpringDashpot*>(resolver);
+
+        if (workers != nullptr)
         {
-            cCollideable & c = dataC.get(*it);
-            cPhysics & p = dataP.get(*it);
-            resolver->handleObjectWorldCollision(
-                *it,
-                c,
-                p,
-                world
-            );
+            nThreads = workers->size();
         }
+
+        if (nThreads > 1 && res != nullptr)
+        {
+
+            unsigned step = std::floor(float(objects.size())/float(nThreads));
+
+            for (unsigned t = 0; t < nThreads; t++)
+            {
+
+                std::set<Id>::iterator start = objects.begin();
+                std::advance(start, t*step);
+                std::set<Id>::iterator end = objects.begin();
+                std::advance(end, (t+1)*step);
+
+                workers->queueJob
+                (
+                    std::bind
+                    (
+                        &SpringDashpot::handleObjectWorldCollisions,
+                        res,
+                        std::ref(dataC),
+                        std::ref(dataP),
+                        start,
+                        end,
+                        world
+                    )
+                );
+            }
+            workers->wait();
+
+            dataP.reduce(Hop::Object::Component::REDUCTION_TYPE::SUM_EQUALS_SUM);
+        }
+        else
+        {
+            for (auto it = objects.begin(); it != objects.end(); it++)
+            {
+                cCollideable & c = dataC.get(*it);
+                cPhysics & p = dataP.get(*it);
+                resolver->handleObjectWorldCollision(
+                    *it,
+                    c,
+                    p,
+                    world
+                );
+            }
+        }
+
+        //high_resolution_clock::time_point t2 = high_resolution_clock::now();
+        //std::cout << "world collisions: " << duration_cast<duration<double>>(t2-t1).count() << "\n";
     }
 }

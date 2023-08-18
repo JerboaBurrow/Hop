@@ -74,7 +74,7 @@ namespace Hop::System::Physics
             if (collideables.hasComponent(id))
             {
                 cCollideable & data = collideables.get(id);
-                data.mesh.updateWorldMesh(
+                data.updateWorldMesh(
                     dataT.x,
                     dataT.y,
                     dataT.theta,

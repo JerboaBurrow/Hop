@@ -77,6 +77,5 @@ namespace Hop::Maths
 
         return false;
     }
-
 }
 #endif /* TOPOLOGY_H */
