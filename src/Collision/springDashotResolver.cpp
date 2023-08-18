@@ -566,6 +566,52 @@ namespace Hop::System::Physics
         }
     }
 
+    void SpringDashpot::handleObjectWorldCollisions(
+        ComponentArray<cCollideable> & dataC,
+        ComponentArray<cPhysics> & dataP,
+        std::set<Id>::iterator start,
+        std::set<Id>::iterator end,
+        AbstractWorld * world
+    )
+    {
+        
+        TileWorld * tw = dynamic_cast<TileWorld*>(world);
+
+        if (tw != nullptr)
+        {
+            while (start != end)
+            {
+                cCollideable & c = dataC.get(*start);
+                cPhysics & p = dataP.get(*start);
+                handleObjectWorldCollision(
+                    *start,
+                    c,
+                    p,
+                    tw
+                );
+                start++;
+            }
+        }
+
+        MarchingWorld * mw = dynamic_cast<MarchingWorld*>(world);
+
+        if (mw != nullptr)
+        {
+            while (start != end)
+            {
+                cCollideable & c = dataC.get(*start);
+                cPhysics & p = dataP.get(*start);
+                handleObjectWorldCollision(
+                    *start,
+                    c,
+                    p,
+                    mw
+                );
+                start++;
+            }
+        }
+    }
+
     void SpringDashpot::handleObjectWorldCollision(
         Id id,
         cCollideable & dataC,

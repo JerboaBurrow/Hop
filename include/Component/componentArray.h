@@ -4,9 +4,19 @@
 #include <Object/id.h>
 #include <exception>
 #include <unordered_map>
+#include <Component/cPhysics.h>
+#include <Component/cCollideable.h>
+
+
+namespace Hop::Object
+{
+    class EntityComponentSystem;
+}
 
 namespace Hop::Object::Component
 {
+
+    enum class REDUCTION_TYPE {EQUALS_SUM, SUM_EQUALS_SUM};
 
     class NoComponentForId: public std::exception 
     {
@@ -47,6 +57,7 @@ namespace Hop::Object::Component
         : maxObjects(m), nextIndex(0)
         {
             componentData = std::make_unique<T[]>(maxObjects);
+            backBuffered = false;
         }
 
         ComponentArray(const ComponentArray<T> & a)
@@ -79,6 +90,14 @@ namespace Hop::Object::Component
             return componentData[idToIndex[i]];
         }
 
+        inline T & get(const Id & i, const size_t worker)
+        {
+            // if (!idTaken(i)){
+            //     throw NoComponentForId("In ComponentArray.get(i)");
+            // }
+            return workerData[worker][idToIndex[i]];
+        }
+
         inline void objectFreed(Id i)
         {
             if (!idTaken(i))
@@ -87,14 +106,62 @@ namespace Hop::Object::Component
             }
             remove(i);
         }
-        
 
+        inline void allocateBackBuffer()
+        {
+            if (backBuffered){ return; }
+            backBuffer = std::make_unique<T[]>(maxObjects);
+            backBuffered = true;
+        }
 
-    private:
+        size_t allocatedWorkerData(){ return workerData.size(); }
+
+        inline T * getWorkerData(size_t worker) { return workerData[worker].get(); }
+        inline const std::unordered_map<Id,size_t> & getIdToIndex() const { return idToIndex; }
+
+        inline void allocateWorkerData(size_t workers)
+        {
+            if (workerData.size() != workers)
+            {
+                workerData.clear();
+                for (unsigned i = 0; i < workers; i++)
+                {
+                    workerData.push_back
+                    (
+                        std::move
+                        (
+                            std::make_unique<T[]>(maxObjects)
+                        )
+                    );
+
+                }
+            }
+        }
+
+        inline void scatter(size_t worker)
+        {
+            unsigned start = std::floor(float(nextIndex)/float(workerData.size()))*worker;
+            unsigned idx = 0;
+            for (unsigned j = 0; j < nextIndex; j++)
+            {   
+                idx = (j+start) % nextIndex;
+                workerData[worker][idx] = componentData[idx];
+            }
+        }
+
+        inline void reduce(REDUCTION_TYPE t = REDUCTION_TYPE::EQUALS_SUM);
+
+    protected:
+
+        friend class Hop::Object::EntityComponentSystem;
 
         bool idTaken(const Id & id) const {return idToIndex.find(id) != idToIndex.end();}
+        bool backBuffered;
 
-        std::unique_ptr<T[]> componentData;
+        std::unique_ptr<T[]> componentData, backBuffer;
+
+        std::vector<std::unique_ptr<T[]>> workerData;
+
         std::unordered_map<Id,size_t> idToIndex;
         std::unordered_map<size_t,Id> indexToId;
 
