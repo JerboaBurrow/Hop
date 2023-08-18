@@ -107,13 +107,6 @@ namespace Hop::Object::Component
             remove(i);
         }
 
-        inline void allocateBackBuffer()
-        {
-            if (backBuffered){ return; }
-            backBuffer = std::make_unique<T[]>(maxObjects);
-            backBuffered = true;
-        }
-
         size_t allocatedWorkerData(){ return workerData.size(); }
 
         inline T * getWorkerData(size_t worker) { return workerData[worker].get(); }
@@ -158,7 +151,7 @@ namespace Hop::Object::Component
         bool idTaken(const Id & id) const {return idToIndex.find(id) != idToIndex.end();}
         bool backBuffered;
 
-        std::unique_ptr<T[]> componentData, backBuffer;
+        std::unique_ptr<T[]> componentData;
 
         std::vector<std::unique_ptr<T[]>> workerData;
 
