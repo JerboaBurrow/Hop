@@ -10,6 +10,8 @@
 
 #include <Maths/topology.h>
 #include <Maths/distance.h>
+#include <set>
+#include <iterator>
 
 namespace Hop::System::Physics
 {
@@ -25,7 +27,7 @@ namespace Hop::System::Physics
     const double WALL_MASS_MULTIPLIER = 10.0;
     // will check collision with neigbhours tiles when
     // primitive is less than size*this away
-    const double NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER = 2.0;
+    const double NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER = 1.5;
 
     class SpringDashpot : public CollisionResolver 
     {
@@ -57,6 +59,14 @@ namespace Hop::System::Physics
             Id id,
             cCollideable & dataC,
             cPhysics & dataP,
+            AbstractWorld * world
+        );
+
+        void handleObjectWorldCollisions(
+            ComponentArray<cCollideable> & dataC,
+            ComponentArray<cPhysics> & dataP,
+            std::set<Id>::iterator start,
+            std::set<Id>::iterator end,
             AbstractWorld * world
         );
 
