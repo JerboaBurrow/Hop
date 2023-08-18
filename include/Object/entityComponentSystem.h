@@ -248,9 +248,10 @@ namespace Hop::Object
         bool componentRegistered(const char * h){return registeredComponents.find(h)!=registeredComponents.end();}
 
         uint32_t nextComponentIndex;
-        std::unordered_map<const char *,uint32_t> registeredComponents;
 
-        std::unordered_map<const char*, std::shared_ptr<AbstractComponentArray>> componentData;
+        std::unordered_map<const char *, uint32_t> registeredComponents;
+
+        std::unordered_map<const char *, std::shared_ptr<AbstractComponentArray>> componentData;
 
     };
 }
