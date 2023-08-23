@@ -204,8 +204,11 @@ namespace Hop
         Log & log;
 
         static int traceback(lua_State * lua) {
-            stackTrace = lua_tostring(lua, -1);
-            lua_pop(lua, 1);
+            if (lua_isstring(lua, -1))
+            {
+                stackTrace = lua_tostring(lua, -1);
+                lua_pop(lua, 1);
+            }
             luaL_traceback(lua, lua, NULL, 1);
             stackTrace += std::string("\n") + lua_tostring(lua, -1);
             lua_pop(lua, 1);
