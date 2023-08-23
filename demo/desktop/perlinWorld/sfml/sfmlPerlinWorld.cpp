@@ -39,12 +39,14 @@ using namespace std::chrono;
 #include <Util/util.h>
 #include <log.h>
 
+#include <Debug/collisionMeshDebug.h>
+
 using namespace std::chrono;
 
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
-const unsigned MAX_THREADS = 0;
+const unsigned MAX_THREADS = 2;
 
 // for smoothing delta numbers
 uint8_t frameId = 0;
@@ -114,9 +116,9 @@ int main(int argc, char ** argv)
 
   EntityComponentSystem manager;
 
-  Hop::Console console;
-
   Hop::Logging::Log log;
+
+  Hop::Console console(log);
 
   ThreadPool workers(MAX_THREADS);
 
@@ -177,6 +179,7 @@ int main(int argc, char ** argv)
   // setup physics system
   sPhysics & physics = manager.getSystem<sPhysics>();
   physics.setTimeStep(deltaPhysics);
+  physics.setGravity(9.81, 0.0, -1.0);
 
   sCollision & collisions = manager.getSystem<sCollision>();
 
@@ -189,27 +192,34 @@ int main(int argc, char ** argv)
       0.0
   );
 
+  uint64_t rootNCells = det->getRootNCells();
+
   collisions.setDetector(std::move(det));
   collisions.setResolver(std::move(res));
 
-  high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
+  high_resolution_clock::time_point t0, t1, tp0, tp1, tc0, tc1, tr0, tr1, tri0, tri1;
 
   Hop::LuaExtraSpace luaStore;
 
   luaStore.ecs = &manager;
   luaStore.world = world.get();
+  luaStore.physics = &physics;
+  luaStore.resolver = &collisions;
 
   console.luaStore(&luaStore);
-
-  console.runFile("tests/rectangles.lua");
+  console.runFile("config.lua");
+  console.runFile("tests/runtest.lua");
   std::string status = console.luaStatus();
   if (status != "LUA_OK") { WARN(status) >> log; }
+
+  Hop::Debugging::CollisionMeshDebug collisionMeshDebug;
 
   //physics.stabaliseObjectParameters(&manager);
 
   bool refreshObjectShaders = true;
 
   bool paused = true;
+  bool meshes = true;
 
   while (window.isOpen())
   {
@@ -228,6 +238,10 @@ int main(int argc, char ** argv)
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F1)
       {
         debug = !debug;
+      }
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F2)
+      {
+        meshes = !meshes;
       }
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
       {
@@ -284,27 +298,11 @@ int main(int argc, char ** argv)
     glClearColor(1.0f,1.0f,1.0f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    tp0 = high_resolution_clock::now();
-
     collisions.centreOn(world.get()->getMapCenter());
     
     if (!paused)
     {
-      for (unsigned k = 0 ; k < subSamples; k++)
-      {
-        if (workers.size() > 1)
-        {
-          collisions.update(&manager, world.get(),&workers);
-        }
-        else
-        {
-          collisions.update(&manager, world.get());
-        }
-
-        physics.gravityForce(&manager,9.81,0.0,-1.0);
-
-        physics.update(&manager);
-      }
+      physics.step(&manager, &collisions, world.get(), &workers);
     }
 
     tp1 = high_resolution_clock::now();
@@ -318,24 +316,15 @@ int main(int argc, char ** argv)
     rendering.update(&manager, &shaderPool, refreshObjectShaders);
     refreshObjectShaders = false;
 
-    rendering.draw(&shaderPool); 
+    if (!meshes)
+    {
+      rendering.draw(&shaderPool); 
+    }
 
-    // auto objects = manager.getObjects();  
-
-    // auto citer = objects.cbegin();
-    // auto cend = objects.cend();
-
-    // while (citer != cend)
-    // {
-    //   if (manager.hasComponent<cCollideable>(citer->first))
-    //   {
-        
-    //     cCollideable & c = manager.getComponent<cCollideable>(citer->first);
-
-    //     c.mesh.drawDebug(camera.getVP());
-    //   }
-    //   citer++;
-    // }
+    if (meshes)
+    {
+      collisionMeshDebug.debugCollisionMesh(&manager, camera.getVP());
+    }
 
     tr1 = high_resolution_clock::now();
 
@@ -351,6 +340,7 @@ int main(int argc, char ** argv)
 
       double pdt = duration_cast<duration<double>>(tp1 - tp0).count();
       double rdt = duration_cast<duration<double>>(tr1 - tr0).count();
+      double cdt = duration_cast<duration<double>>(tc1 - tc0).count();
 
       sf::Vector2i mouse = sf::Mouse::getPosition(window);
 
@@ -370,11 +360,12 @@ int main(int argc, char ** argv)
           "\n" <<
           "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
           "\n" <<
-          "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4);// << ")" <<
-          // "\n" << 
-          // "update time: " << fixedLengthNumber(pdt+rdt,6) <<
-          // "\n" <<
-          // "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+          "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
+          "\n" << 
+          "update time: " << fixedLengthNumber(pdt+rdt,6) <<
+          "\n" <<
+          "Col / Phys update / draw time: " << fixedLengthNumber(cdt,6) << "/" << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+          
 
       textRenderer.renderText(
           font,

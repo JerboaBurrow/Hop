@@ -35,7 +35,7 @@ namespace Hop::Debugging
             GL_STATIC_DRAW
         );
         glEnableVertexAttribArray(0);
-            glVertexAttribPointer(
+        glVertexAttribPointer(
                 0,
                 4,
                 GL_FLOAT,

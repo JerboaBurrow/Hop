@@ -8,6 +8,31 @@ using namespace std::chrono;
 namespace Hop::System::Physics
 {
 
+    void sPhysics::step
+    (
+        EntityComponentSystem * m, 
+        sCollision * collisions,
+        AbstractWorld * world,
+        ThreadPool * workers
+    )
+    {
+        for (unsigned k = 0 ; k < subSamples; k++)
+        {
+            if (workers->size() > 1)
+            {
+                collisions->update(m, world, workers);
+            }
+            else
+            {
+                collisions->update(m, world);
+            };
+
+            gravityForce(m);
+            update(m);
+        }
+    }
+
+
     void sPhysics::processThreaded(
         ComponentArray<cCollideable> & collideables,
         ComponentArray<cPhysics> & physics,
@@ -256,14 +281,11 @@ namespace Hop::System::Physics
 
     void sPhysics::gravityForce
     (
-        EntityComponentSystem * m,
-        double g,
-        double nx,
-        double ny
+        EntityComponentSystem * m
     )
     {
 
-        double fx = nx*g; double fy = ny*g;
+        double fx = ngx*gravity; double fy = ngy*gravity;
         double rx, ry;
 
         for (auto it = objects.begin(); it != objects.end(); it++)
