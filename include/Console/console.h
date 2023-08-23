@@ -92,7 +92,7 @@ namespace Hop
         {NULL, NULL}
     };
 
-    int load_hopLib(lua_State * lua)
+    static int load_hopLib(lua_State * lua)
     {
         luaL_newlib(lua,hopLib);
         return 1;
@@ -103,7 +103,7 @@ namespace Hop
         public:
 
             Console(Log & l)
-            : lastCommandOrProgram(""), stackTrace(""), lastStatus(false), log(l)
+            : lastCommandOrProgram(""), lastStatus(false), log(l)
             {
                 lua = luaL_newstate();
                 luaL_openlibs(lua);
@@ -118,7 +118,12 @@ namespace Hop
                 if (luaIsOk())
                 {
                     lastCommandOrProgram = file;
-                    lastStatus = luaL_dofile(lua,file.c_str());
+                    lastStatus = luaL_loadfile(lua, file.c_str());
+                    int epos = lua_gettop(lua);
+                    lua_pushcfunction(lua, traceback);
+                    lua_insert(lua, epos);
+                    lastStatus = lastStatus || lua_pcall(lua, 0, LUA_MULTRET, epos);
+                    lua_remove(lua, epos);
                     return handleErrors();
                 }
                 return false;
@@ -174,7 +179,6 @@ namespace Hop
                 if (lastStatus)
                 {
                     std::string msg = "Exited with error running "+lastCommandOrProgram+"\n";
-                    traceback(lua);
                     msg += stackTrace;
                     ERROR(ERRORCODE::LUA, msg) >> log;
                 }
@@ -193,16 +197,19 @@ namespace Hop
 
         lua_State * lua;
 
-        std::string lastCommandOrProgram, stackTrace;
+        std::string lastCommandOrProgram;
+        static std::string stackTrace;
         bool lastStatus;
 
         Log & log;
 
-        void traceback(lua_State * lua) {
+        static int traceback(lua_State * lua) {
             stackTrace = lua_tostring(lua, -1);
             lua_pop(lua, 1);
             luaL_traceback(lua, lua, NULL, 1);
             stackTrace += std::string("\n") + lua_tostring(lua, -1);
+            lua_pop(lua, 1);
+            return 0;
         }
     };
 }

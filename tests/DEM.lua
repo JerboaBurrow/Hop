@@ -1,3 +1,24 @@
+require("tests/mesh")
+
+vertices =
+{
+    {-0.5, 0.5},
+    {-0.5, 0.5},
+    {0.08, 0.5},
+    {0.33, 0.16},
+    {0.33, -0.16},
+    {0.08, -0.5}
+}
+
+function foo(a)
+    b = {1., 2.}
+    return a-b
+end
+
+foo({1., 0.})
+
+mesh = createMesh(vertices, 0.1)
+
 -- s = 2.8*hop.maxCollisionPrimitiveSize()
 
 -- math.randomseed(os.time())
@@ -26,7 +47,3 @@
 -- }
 
 -- hop.loadObject(D)
-
-a = {0.0, 0.0}
-b = {1.0, 0.0}
-print(b-a)
