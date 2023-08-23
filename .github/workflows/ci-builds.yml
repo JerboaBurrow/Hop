@@ -22,7 +22,7 @@ jobs:
 
     - name: linux-linux
       run: |
-        ./dependencies.sh && ./build.sh -t -d -r
+        ./dependencies.sh && ./build.sh -t -d
         mkdir linuxbuild 
         cp build/libHop.a linuxbuild/
         cp -r include linuxbuild/
