@@ -40,6 +40,14 @@ namespace Hop::Debugging
             nRectangles = 0;
             cachedCircles = 20000;
             cachedRects = 20000;
+            uploadedCircles = 0;
+            uploadedRects = 0;
+
+            circleShader = glCreateProgram();
+            Hop::GL::compileShader(circleShader,collisionPrimitiveVertexShader,collisionPrimitiveFragmentShader);
+            
+            rectangleShader = glCreateProgram();
+            Hop::GL::compileShader(rectangleShader,rectangleVertexShader,rectangleFragmentShader);
 
             setupGL();
         }

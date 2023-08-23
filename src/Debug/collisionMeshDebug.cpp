@@ -153,12 +153,6 @@ namespace Hop::Debugging
 
         glBindVertexArray(0);
 
-        circleShader = glCreateProgram();
-        Hop::GL::compileShader(circleShader,collisionPrimitiveVertexShader,collisionPrimitiveFragmentShader);
-        
-        rectangleShader = glCreateProgram();
-        Hop::GL::compileShader(rectangleShader,rectangleVertexShader,rectangleFragmentShader);
-
         uploadedCircles = cachedCircles;
         uploadedRects = cachedRects;
 
