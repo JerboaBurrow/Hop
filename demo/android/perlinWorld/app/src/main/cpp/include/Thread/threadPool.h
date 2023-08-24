@@ -33,7 +33,7 @@ public:
     : nThreads(n), terminate(false), working(0)
     {
       threads.resize(n);
-      for (int i = 0; i < n; i++)
+      for (unsigned i = 0; i < n; i++)
       {
         threads[i] = std::thread(&ThreadPool::main,this);
       }
@@ -98,7 +98,7 @@ public:
         terminate = false;
         threads.resize(n-1);
 
-        for (int i = 0; i < n-1; i++)
+        for (unsigned i = 0; i < n-1; i++)
         {
           threads[i] = std::thread(&ThreadPool::main,this);
         }
@@ -121,7 +121,7 @@ public:
         stop();
         terminate = false;
         threads.resize(n+1);
-        for (int i = 0; i < n+1; i++)
+        for (unsigned i = 0; i < n+1; i++)
         {
           threads[i] = std::thread(&ThreadPool::main,this);
         }

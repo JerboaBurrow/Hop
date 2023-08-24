@@ -181,6 +181,7 @@ namespace Hop
                     std::string msg = "Exited with error running "+lastCommandOrProgram+"\n";
                     msg += stackTrace;
                     ERROR(ERRORCODE::LUA, msg) >> log;
+                    return true;
                 }
                 else
                 {

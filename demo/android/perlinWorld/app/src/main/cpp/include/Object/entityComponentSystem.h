@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <map>
 #include <string>
+#include <iterator>
 
 #include <typeinfo>
 #include <exception>
@@ -105,6 +106,7 @@ namespace Hop::Object
             return handleToId[handle];
         }
 
+        const std::unordered_map<Id,std::shared_ptr<Object>> & getObjects() { return objects; }
 
         CollisionCallback collisionCallback;
 
@@ -246,9 +248,10 @@ namespace Hop::Object
         bool componentRegistered(const char * h){return registeredComponents.find(h)!=registeredComponents.end();}
 
         uint32_t nextComponentIndex;
-        std::unordered_map<const char *,uint32_t> registeredComponents;
 
-        std::unordered_map<const char*, std::shared_ptr<AbstractComponentArray>> componentData;
+        std::unordered_map<const char *, uint32_t> registeredComponents;
+
+        std::unordered_map<const char *, std::shared_ptr<AbstractComponentArray>> componentData;
 
     };
 }

@@ -2,12 +2,12 @@
 #define SPHYSICS_H
 
 #include <Object/entityComponentSystem.h>
-
 #include <Component/cPhysics.h>
-
+#include <Maths/special.h>
 #include <Thread/threadPool.h>
-
 #include <Component/componentArray.h>
+#include <System/sCollision.h>
+#include <World/world.h>
 
 namespace Hop::Object
 {
@@ -17,11 +17,17 @@ namespace Hop::Object
 
 namespace Hop::System::Physics
 {
+
+    class sCollision;
+
     using Hop::Object::EntityComponentSystem;
     using Hop::Object::Component::ComponentArray;
     using Hop::Object::Component::cPhysics;
     using Hop::Object::Component::cCollideable;
     using Hop::Object::Component::cTransform;
+    using Hop::System::Physics::sCollision;
+    using Hop::World::AbstractWorld;
+
     /*
         System to update cPhysics components given forces
     */
@@ -30,13 +36,38 @@ namespace Hop::System::Physics
         
     public:
 
-        sPhysics(){dt=1.0/300.0;gravity=9.81;dtdt=dt*dt;}
+        sPhysics()
+        : dt(1.0/900.0), 
+          dtdt(dt*dt),
+          gravity(9.81),
+          ngx(0.0),
+          ngy(-1.0),
+          subSamples(1)
+        {}
 
-        void update(EntityComponentSystem * m, ThreadPool * workers = nullptr);
+        void step
+        (
+            EntityComponentSystem * m, 
+            sCollision * collisions,
+            AbstractWorld * world,
+            ThreadPool * workers = nullptr
+        );
+
+        void setGravityForce
+        (
+            double g,
+            double nx,
+            double ny
+        )
+        {
+            gravity = g;
+            ngx = nx;
+            ngy = ny;
+        }
         
         void applyForce(
             EntityComponentSystem * m,
-            Id i,
+            Id & i,
             double x,
             double y,
             double fx,
@@ -52,10 +83,63 @@ namespace Hop::System::Physics
         // automatically compute stable simulation parameters
         // updating all objects
         void stabaliseObjectParameters(Hop::Object::EntityComponentSystem * m);
+        
+        int lua_setTimeStep(lua_State * lua)
+        {   
+            int n = lua_gettop(lua);
+            
+            if (n != 1)
+            {
+                lua_pushliteral(lua, "requires 1 argument, delta");
+                return lua_error(lua);
+            }
+
+            if (!lua_isnumber(lua, 1))
+            {
+                lua_pushliteral(lua, "requires a numeric argument for delta");
+                return lua_error(lua);
+            }
+
+            double delta = lua_tonumber(lua, 1);
+            setTimeStep(delta);
+
+            return 0;
+        }
+
+        int lua_setSubSamples(lua_State * lua)
+        {   
+            int n = lua_gettop(lua);
+            
+            if (n != 1)
+            {
+                lua_pushliteral(lua, "requires 1 argument, subsamples");
+                return lua_error(lua);
+            }
+
+            if (!lua_isinteger(lua, 1))
+            {
+                lua_pushliteral(lua, "requires an integer argument for subsamples");
+                return lua_error(lua);
+            }
+
+            unsigned subSamples = lua_tointeger(lua, 1);
+            setSubSamples(subSamples);
+
+            return 0;
+        }
+        
         void setTimeStep(double delta){dt = delta; dtdt = dt*dt;}
-        void setGravity(double g){gravity=g;}
+        void setSubSamples(unsigned s){subSamples = s;}
+        void setGravity(double g, double nx, double ny){gravity = g; ngx = nx; ngy = ny;}
 
     private:
+
+        void update(EntityComponentSystem * m, ThreadPool * workers = nullptr);
+
+        void gravityForce
+        (
+            EntityComponentSystem * m
+        );
 
         void processThreaded
         (
@@ -73,7 +157,9 @@ namespace Hop::System::Physics
 
         double dt;
         double dtdt;
-        double gravity;
+        double gravity, ngx, ngy;
+        double movementLimitRadii = 0.33;
+        unsigned subSamples;
 
         // see implementation for details
         double stableDragUnderdampedLangevinWithGravityUnitMass(
