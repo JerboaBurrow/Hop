@@ -35,7 +35,7 @@ namespace Hop::Debugging
             GL_STATIC_DRAW
         );
         glEnableVertexAttribArray(0);
-            glVertexAttribPointer(
+        glVertexAttribPointer(
                 0,
                 4,
                 GL_FLOAT,
@@ -152,12 +152,6 @@ namespace Hop::Debugging
         glBindBuffer(GL_ARRAY_BUFFER,0);
 
         glBindVertexArray(0);
-
-        circleShader = glCreateProgram();
-        Hop::GL::compileShader(circleShader,collisionPrimitiveVertexShader,collisionPrimitiveFragmentShader);
-        
-        rectangleShader = glCreateProgram();
-        Hop::GL::compileShader(rectangleShader,rectangleVertexShader,rectangleFragmentShader);
 
         uploadedCircles = cachedCircles;
         uploadedRects = cachedRects;

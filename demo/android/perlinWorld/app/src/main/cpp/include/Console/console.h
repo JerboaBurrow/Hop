@@ -5,18 +5,31 @@
 #include <Object/entityComponentSystem.h>
 #include <World/world.h>
 #include <Console/lua.h>
-#include <iostream>
+#include <System/sPhysics.h>
+#include <System/sCollision.h>
+#include <log.h>
+
 
 namespace Hop
 {
 
     using Hop::Object::EntityComponentSystem;
     using Hop::World::AbstractWorld;
+    using Hop::System::Physics::sPhysics;
+    using Hop::System::Physics::sCollision;
+
+    using Hop::Logging::INFO;
+    using Hop::Logging::WARN;
+    using Hop::Logging::ERROR;
+    using Hop::Logging::Log;
+    using Hop::Logging::ERRORCODE;
 
     struct LuaExtraSpace
     {
         EntityComponentSystem * ecs;
         AbstractWorld * world;
+        sPhysics * physics;
+        sCollision * resolver;
     };
 
     // ECS 
@@ -43,16 +56,43 @@ namespace Hop
         return ((*ptr).*function)(lua);
     }
 
+    // Physics
+    
+    typedef int (sPhysics::*sPhysicsMember)(lua_State * lua);
+
+    template <sPhysicsMember function>
+    int dispatchsPhysics(lua_State * lua)
+    {
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        sPhysics * ptr = store->physics;
+        return ((*ptr).*function)(lua);
+    }
+
+    // sCollision
+    
+    typedef int (sCollision::*sCollisionMember)(lua_State * lua);
+
+    template <sCollisionMember function>
+    int dispatchsCollision(lua_State * lua)
+    {
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        sCollision * ptr = store->resolver;
+        return ((*ptr).*function)(lua);
+    }
+
     // register lib
 
     const luaL_Reg hopLib[] =
     {
         {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
         {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
+        {"setPhysicsTimeStep",&dispatchsPhysics<&sPhysics::lua_setTimeStep>},
+        {"setPhysicsSubSamples",&dispatchsPhysics<&sPhysics::lua_setSubSamples>},
+        {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
         {NULL, NULL}
     };
 
-    int load_hopLib(lua_State * lua)
+    static int load_hopLib(lua_State * lua)
     {
         luaL_newlib(lua,hopLib);
         return 1;
@@ -62,13 +102,13 @@ namespace Hop
     {
         public:
 
-            Console()
+            Console(Log & l)
+            : lastCommandOrProgram(""), lastStatus(false), log(l)
             {
                 lua = luaL_newstate();
                 luaL_openlibs(lua);
                 luaL_requiref(lua,"hop",load_hopLib,1);
                 runString("print(\"process running\")");
-                std::cout << luaStatus() << "\n";
             }
 
             ~Console(){ lua_close(lua); }
@@ -78,7 +118,13 @@ namespace Hop
                 if (luaIsOk())
                 {
                     lastCommandOrProgram = file;
-                    return luaL_dofile(lua,file.c_str());
+                    lastStatus = luaL_loadfile(lua, file.c_str());
+                    int epos = lua_gettop(lua);
+                    lua_pushcfunction(lua, traceback);
+                    lua_insert(lua, epos);
+                    lastStatus = lastStatus || lua_pcall(lua, 0, LUA_MULTRET, epos);
+                    lua_remove(lua, epos);
+                    return handleErrors();
                 }
                 return false;
             }
@@ -87,7 +133,8 @@ namespace Hop
             {
                 if (luaIsOk())
                 {   lastCommandOrProgram = program;
-                    return luaL_dostring(lua,program.c_str());
+                    lastStatus = luaL_dostring(lua,program.c_str());
+                    return handleErrors();
                 }
                 return false;
             }
@@ -127,6 +174,21 @@ namespace Hop
                 return status;
             }
 
+            bool handleErrors()
+            {
+                if (lastStatus)
+                {
+                    std::string msg = "Exited with error running "+lastCommandOrProgram+"\n";
+                    msg += stackTrace;
+                    ERROR(ERRORCODE::LUA, msg) >> log;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
             void luaStore(LuaExtraSpace * ptr)
             {
 	            *static_cast<LuaExtraSpace**>(lua_getextraspace(lua)) = ptr;
@@ -137,7 +199,22 @@ namespace Hop
         lua_State * lua;
 
         std::string lastCommandOrProgram;
+        static std::string stackTrace;
+        bool lastStatus;
 
+        Log & log;
+
+        static int traceback(lua_State * lua) {
+            if (lua_isstring(lua, -1))
+            {
+                stackTrace = lua_tostring(lua, -1);
+                lua_pop(lua, 1);
+            }
+            luaL_traceback(lua, lua, NULL, 1);
+            stackTrace += std::string("\n") + lua_tostring(lua, -1);
+            lua_pop(lua, 1);
+            return 0;
+        }
     };
 }
 

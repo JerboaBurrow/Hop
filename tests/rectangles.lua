@@ -1,4 +1,4 @@
-s = 0.5*hop.maxCollisionPrimitiveSize()
+s = 0.9*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(1)
 

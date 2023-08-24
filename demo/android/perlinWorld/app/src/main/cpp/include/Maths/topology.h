@@ -4,8 +4,14 @@
 #include <Maths/triangle.h>
 #include <Maths/vertex.h>
 
+#include <Collision/collisionMesh.h>
+
+using Hop::System::Physics::Rectangle;
+
 namespace Hop::Maths
 {
+
+    bool pointInTriangle(Vertex v, Triangle tri);
 
     template <class T>
     int pointLineHandedness(
@@ -31,5 +37,45 @@ namespace Hop::Maths
         else return 0;
     }
 
+    template <class T>
+    bool pointInRectangle
+    (
+        T px, T py,
+        Rectangle * r
+    )
+    {
+
+        if (pointInTriangle
+            (
+                Vertex(px, py),
+                Triangle
+                (
+                    Vertex(r->llx, r->lly),
+                    Vertex(r->ulx, r->uly),
+                    Vertex(r->urx, r->ury)
+                )
+            )
+        )
+        {
+            return true;
+        }
+
+        if (pointInTriangle
+            (
+                Vertex(px, py),
+                Triangle
+                (
+                    Vertex(r->llx, r->lly),
+                    Vertex(r->urx, r->ury),
+                    Vertex(r->lrx, r->lry)
+                )
+            )
+        )
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
 #endif /* TOPOLOGY_H */

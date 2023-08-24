@@ -71,6 +71,8 @@ static EntityComponentSystem * manager = nullptr;
 
 static Hop::Logging::Log * hopLog = nullptr;
 
+static sPhysics * physics = nullptr;
+static sCollision * collisions = nullptr;
 static CollisionDetector * detector = nullptr;
 static CollisionResolver * resolver = nullptr;
 
@@ -142,11 +144,11 @@ extern "C"
             sRender & rendering = manager->getSystem<sRender>();
 
             // setup physics system
-            sPhysics & physics = manager->getSystem<sPhysics>();
-            physics.setTimeStep(1.0/900.0);
-            physics.setGravity(9.81);
+            physics = &manager->getSystem<sPhysics>();
+            physics->setTimeStep(1.0/900.0);
+            physics->setGravity(9.81, 0.0, -1.0);
 
-            sCollision & collisions = manager->getSystem<sCollision>();
+            collisions = &manager->getSystem<sCollision>();
 
             auto det = std::make_unique<Hop::System::Physics::CellList>(world);
 
@@ -157,8 +159,8 @@ extern "C"
                             0.0
                     );
 
-            collisions.setDetector(std::move(det));
-            collisions.setResolver(std::move(res));
+            collisions->setDetector(std::move(det));
+            collisions->setResolver(std::move(res));
         }
 
     #include <world.cpp>

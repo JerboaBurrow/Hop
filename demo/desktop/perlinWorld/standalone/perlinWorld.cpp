@@ -88,9 +88,9 @@ int main(int argc, char ** argv)
 
     EntityComponentSystem manager;
 
-    Hop::Console console;
-
     Hop::Logging::Log log;
+
+    Hop::Console console(log);
 
     ThreadPool workers(MAX_THREADS);
 
@@ -151,7 +151,7 @@ int main(int argc, char ** argv)
     // setup physics system
     sPhysics & physics = manager.getSystem<sPhysics>();
     physics.setTimeStep(deltaPhysics);
-    physics.setGravity(9.81);
+    physics.setGravity(9.81, 0.0, -1.0);
 
     sCollision & collisions = manager.getSystem<sCollision>();
 
@@ -198,11 +198,7 @@ int main(int argc, char ** argv)
 
         collisions.centreOn(world.get()->getMapCenter());
         
-        collisions.update(&manager, world.get());
-
-        physics.gravityForce(&manager,9.81,0.0,-1.0);
-
-        physics.update(&manager);
+        physics.step(&manager, &collisions, world.get(), &workers);
 
         tp1 = high_resolution_clock::now();
 
