@@ -35,8 +35,7 @@ namespace Hop::World
 
     private:
 
-        const uint64_t RENDER_REGION_BUFFER_SIZE, DYNAMICS_REGION_BUFFER_SIZE;
-        const uint64_t RENDER_REGION_START;
+        const uint64_t RENDER_REGION_BUFFER_SIZE, RENDER_REGION_START, DYNAMICS_REGION_BUFFER_SIZE;
 
         std::unique_ptr<bool[]> renderRegionBuffer;
         std::unique_ptr<bool[]> renderRegionBackBuffer;

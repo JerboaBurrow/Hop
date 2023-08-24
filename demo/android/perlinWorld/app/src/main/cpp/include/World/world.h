@@ -196,12 +196,12 @@ namespace Hop::World
     protected:
 
         uint64_t seed;
+
+        OrthoCam * camera;
         
         const uint64_t RENDER_REGION_SIZE, DYNAMICS_REGION_SIZE;
 
         const uint64_t dynamicsShell;
-
-        OrthoCam * camera;
 
         glm::mat4 modelView, projection, invProjection, vp;
 

@@ -19,6 +19,9 @@ namespace Hop::Logging
       case ERRORCODE::UNSPECIFIED:
         return s+std::string("UNSPECIFIED");
         break;
+      case ERRORCODE::LUA:
+        return s+std::string("LUA");
+        break;
       default:
         return s+std::string("UNSPECIFIED");
     }

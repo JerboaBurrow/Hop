@@ -55,16 +55,16 @@ namespace Hop::System::Physics
         virtual void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
-            LineSegment * li,
-            LineSegment * lj,
-            double rx, double ry, double rc, double dd
+            Rectangle * li,
+            Rectangle * lj,
+            bool wall
         ) = 0;
 
         virtual void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
             CollisionPrimitive * c,
-            LineSegment * l,
+            Rectangle * l,
             double rx, double ry, double rc, double dd
         ) = 0;
 
@@ -75,6 +75,8 @@ namespace Hop::System::Physics
             CollisionPrimitive * l,
             double rx, double ry, double rc, double dd
         ) = 0;
+
+        virtual void setCoefRestitution(double cor) = 0;
 
     };
 
