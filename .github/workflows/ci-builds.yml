@@ -22,7 +22,7 @@ jobs:
 
     - name: linux-linux
       run: |
-        ./dependencies.sh && ./build.sh -t -d -r
+        ./dependencies.sh && ./build.sh -t -d
         mkdir linuxbuild 
         cp build/libHop.a linuxbuild/
         cp -r include linuxbuild/
@@ -30,8 +30,10 @@ jobs:
         mkdir demos && mkdir demos/sfml && mkdir demos/standalone
         cp build/sfmlPerlinWorld demos/sfml
         cp tile.hmap demos/sfml/
+        cp config.lua demos/sfml
         cp build/perlinWorld demos/standalone
         cp tile.hmap demos/standalone
+        cp config.lua demos/standalone
         cd demos && zip -r ../demos.zip * && cd ..
 
     - name: Tests

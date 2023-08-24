@@ -10,13 +10,7 @@ extern "C"
     {
         if (manager != nullptr)
         {
-            sPhysics & physics = manager->getSystem<sPhysics>();
-            sCollision & collisions = manager->getSystem<sCollision>();
-
-            collisions.centreOn(world->getMapCenter());
-            collisions.update(manager, world);
-
-            physics.update(manager);
+            physics->step(manager, collisions, world, nullptr);
         }
     }
 }

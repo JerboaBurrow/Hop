@@ -1,11 +1,11 @@
-s = 2.0*hop.maxCollisionPrimitiveSize()
+s = 1.4*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
-for i = 1,5 do
+x = 0.9;
+y = 0.5;
 
-    x = math.random()+0.5; y = math.random()+0.5;
-
+for i = 1,100 do
 
     object = {
 
@@ -16,6 +16,7 @@ for i = 1,5 do
         ["moveable"] = true,
         ["collisionMesh"] =
         {
+            -- {0.0,0.0,1.0}
             {-0.5,-0.5,0.5},
             {0.5,0.5,0.5},
             {-0.5,0.5,0.5},
@@ -26,4 +27,11 @@ for i = 1,5 do
     }
 
     hop.loadObject(object)
+
+    x = x + 0.04;
+    if x > 1.75 then
+        x = 0.9;
+        y = y + 0.04
+    end
+
 end

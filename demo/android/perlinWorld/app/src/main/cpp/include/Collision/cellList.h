@@ -2,11 +2,14 @@
 #define CELLLIST_H
 
 #include <Collision/collisionDetector.h>
+#include <Collision/springDashpotResolver.h>
 #include <memory>
 #include <utility>
 
 #include <World/tileWorld.h>
 #include <World/marchingWorld.h>
+
+#include <Component/componentArray.h>
 
 #include <chrono>
 using namespace std::chrono;
@@ -28,6 +31,8 @@ namespace Hop::System::Physics
         CellList(AbstractWorld * world);
         
         CellList(uint64_t n, tupled lx = tupled(0.0,1.0), tupled ly = tupled(0.0,1.0));
+
+        uint64_t getRootNCells(){ return rootNCells; }
 
     private:
 
@@ -69,8 +74,22 @@ namespace Hop::System::Physics
         );
 
         void cellCollisionsThreaded(
-            ComponentArray<cCollideable> & dataC,
-            ComponentArray<cPhysics> & dataP,
+            uint64_t a1,
+            uint64_t b1,
+            uint64_t a2,
+            uint64_t b2,
+            cCollideable * dataC,
+            const std::unordered_map<Id,size_t> & idToIndexC,
+            cPhysics * dataP,
+            const std::unordered_map<Id,size_t> & idToIndexP,
+            CollisionResolver * resolver
+        );
+
+        void handleObjectObjectCollisionsThreaded(
+            cCollideable * dataC,
+            const std::unordered_map<Id,size_t> & idToIndexC,
+            cPhysics * dataP,
+            const std::unordered_map<Id,size_t> & idToIndexP,
             CollisionResolver * resolver,
             std::pair<unsigned,unsigned> * jobs,
             unsigned njobs

@@ -59,7 +59,7 @@ namespace Hop::Logging
 
     inline std::string get() {
       std::string l;
-      for (int i = 0; i < logStream.size(); i++){
+      for (unsigned i = 0; i < logStream.size(); i++){
         l += logStream[i] + "\n";
       }
       logStream.clear();
@@ -123,7 +123,7 @@ namespace Hop::Logging
     finally a msg
   */
 
-  enum ERRORCODE { UNSPECIFIED };
+  enum ERRORCODE { UNSPECIFIED, LUA};
 
   std::string operator+ (std::string s, const ERRORCODE e);
 
