@@ -63,7 +63,10 @@ namespace Hop::System::Physics
 
     void CollisionMesh::computeRadius()
     {
-        double mx, Mx, my, My;
+        double mx = 0.0;
+        double Mx = 0.0;
+        double my = 0.0;
+        double My = 0.0;
         for (unsigned i = 0; i < vertices.size(); i++)
         {
             std::shared_ptr<CollisionPrimitive> p = worldVertices[i];

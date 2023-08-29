@@ -458,7 +458,21 @@ namespace Hop::System::Physics
 
             //t1 = high_resolution_clock::now();
 
-            dataP.reduce();
+            for (unsigned t = 0; t < nThreads; t++)
+            {
+                workers->queueJob
+                (
+                    std::bind
+                    (
+                        &ComponentArray<cPhysics>::reduce,
+                        &dataP,
+                        t,
+                        REDUCTION_TYPE::SUM_EQUALS
+                    )
+                );
+            }
+
+            workers->wait();
 
             //t2 = high_resolution_clock::now();
 
@@ -542,7 +556,21 @@ namespace Hop::System::Physics
             }
             workers->wait();
 
-            dataP.reduce(Hop::Object::Component::REDUCTION_TYPE::SUM_EQUALS_SUM);
+            for (unsigned t = 0; t < nThreads; t++)
+            {
+                workers->queueJob
+                (
+                    std::bind
+                    (
+                        &ComponentArray<cPhysics>::reduce,
+                        &dataP,
+                        t,
+                        REDUCTION_TYPE::SUM_EQUALS
+                    )
+                );
+            }
+
+            workers->wait();
         }
         else
         {

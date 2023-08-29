@@ -1081,7 +1081,8 @@ namespace Hop::System::Physics
         bool neighbour
     )
     {
-        double d2, d2p;
+        double d2 = 0.0;
+        double d2p = 0.0;
         double nx = 0.0;
         double ny = 0.0;
         bool op = false;
@@ -1095,11 +1096,14 @@ namespace Hop::System::Physics
 
         bool isRectangle = li != nullptr;
 
+        #pragma GCC diagnostic push                             
+        #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
         Rectangle r1a, r1b, r1c;
 
         Rectangle bottomLeft, bottomLeftSquare, bottomRight, bottomRightSquare;
         Rectangle central, topLeft, topLeftSquare, topRight, topRightSquare;
         Rectangle leftHalf, rightHalf, topHalf, bottomHalf;
+        #pragma GCC diagnostic pop
 
         bool bc = false;
 
