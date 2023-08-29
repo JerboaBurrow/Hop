@@ -160,7 +160,7 @@ namespace Hop::System::Physics
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
-        double nx, ny, ntheta, at, bt, ct, sticktion, k, r, dx, dy, d;
+        double nx, ny, ntheta, at, bt, ct, sticktion, r, dx, dy, d;
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
@@ -286,13 +286,11 @@ namespace Hop::System::Physics
     {
 
         double fx = ngx*gravity; double fy = ngy*gravity;
-        double rx, ry;
 
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
 
             cPhysics & dataP = m->getComponent<cPhysics>(it->id);
-            cTransform & dataT = m->getComponent<cTransform>(it->id);
 
             dataP.fx += fx;
             dataP.fy += fy;
