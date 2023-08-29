@@ -1,1 +1,1 @@
-require("tests/circles")
+require("tests/DEM")

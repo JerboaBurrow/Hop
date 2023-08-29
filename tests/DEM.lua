@@ -1,8 +1,8 @@
 require("tests/mesh")
 
-vertices =
+D_vertices =
 {
-    {-0.5, 0.5},
+    {-0.5, -0.5},
     {-0.5, 0.5},
     {0.08, 0.5},
     {0.33, 0.16},
@@ -10,40 +10,93 @@ vertices =
     {0.08, -0.5}
 }
 
-function foo(a)
-    b = {1., 2.}
-    return a-b
+E_vertices =
+{
+    {0.1, -0.5},
+    {-0.5, -0.5},
+    {-0.5,  0.5},
+    {0.25,   0.5},
+    {},
+    {-0.5, 0.0},
+    {0.25, 0.0},
+    {}
+}
+
+M_vertices =
+{
+    {-0.5, -0.5},
+    {-0.5, 0.5},
+    {0.0,  0.0},
+    {0.5,  0.5},
+    {0.5, -0.5},
+    {}
+}
+
+E_mesh = createMesh(E_vertices, 0.1)
+-- table.remove(E_mesh, 1)
+D_mesh = createMesh(D_vertices, 0.1)
+M_mesh = createMesh(M_vertices, 0.1)
+
+s = 6.8*hop.maxCollisionPrimitiveSize()
+
+math.randomseed(os.time())
+
+xx = -1.1-s;
+x = xx
+y = 1.23;
+
+for i = 1, 128 do
+
+    if (x > -0.475) then
+        x = xx 
+        y = y + s*1.5
+    end
+
+    x = x + s*1.5
+
+    o = {
+
+        ["transform"] = {x,y,0.0,s},
+        ["colour"] = {200/255,200/255,250/255,1.0},
+        -- ["shader"] = "circleObjectShader",
+        -- ["shader"] = "lineSegmentObjectShader",
+        ["moveable"] = true,
+        ["collisionMesh"] = D_mesh,
+        ["name"] = ""
+
+    }
+
+    hop.loadObject(o)
+
+    x = x + s
+
+    o = {
+
+        ["transform"] = {x,y,0.0,s},
+        ["colour"] = {200/255,200/255,250/255,1.0},
+        -- ["shader"] = "circleObjectShader",
+        -- ["shader"] = "lineSegmentObjectShader",
+        ["moveable"] = true,
+        ["collisionMesh"] = E_mesh,
+        ["name"] = ""
+
+    }
+
+    hop.loadObject(o)
+
+    x = x + s*0.75
+
+    o = {
+
+        ["transform"] = {x,y,0.0,s},
+        ["colour"] = {200/255,200/255,250/255,1.0},
+        -- ["shader"] = "circleObjectShader",
+        -- ["shader"] = "lineSegmentObjectShader",
+        ["moveable"] = true,
+        ["collisionMesh"] = M_mesh,
+        ["name"] = ""
+
+    }
+
+    hop.loadObject(o)
 end
-
-foo({1., 0.})
-
-mesh = createMesh(vertices, 0.1)
-
--- s = 2.8*hop.maxCollisionPrimitiveSize()
-
--- math.randomseed(os.time())
-
--- x = 0.9;
--- y = 0.5;
-
--- D = {
-
---     ["transform"] = {x,y,0.0,s},
---     ["colour"] = {200/255,200/255,250/255,1.0},
---     -- ["shader"] = "circleObjectShader",
---     -- ["shader"] = "lineSegmentObjectShader",
---     ["moveable"] = true,
---     ["collisionMesh"] = 
---     {
---         {-0.5, 0.5, 0.125},
---         {-0.5, 0.25, 0.125},
---         {-0.5, 0.0, 0.125},
---         {-0.5, -0.25, 0.125},
---         {-0.5, -0.5, 0.125},
---         {-0.25, 0.5, 0.125},
---     },
---     ["name"] = ""
-
--- }
-
--- hop.loadObject(D)
