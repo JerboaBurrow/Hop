@@ -208,6 +208,7 @@ int main(int argc, char ** argv)
 
   console.luaStore(&luaStore);
   console.runFile("config.lua");
+  console.runFile("tests/runtest.lua");
   std::string status = console.luaStatus();
   if (status != "LUA_OK") { WARN(status) >> log; }
 

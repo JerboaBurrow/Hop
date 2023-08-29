@@ -52,7 +52,12 @@ namespace Hop::System::Physics
 
     struct Rectangle : public CollisionPrimitive 
     {
-        Rectangle() = default;
+        Rectangle()
+        : Rectangle(0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0)
+        {}
 
         Rectangle
         (        
