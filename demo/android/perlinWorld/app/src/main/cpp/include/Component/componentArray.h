@@ -16,7 +16,7 @@ namespace Hop::Object
 namespace Hop::Object::Component
 {
 
-    enum class REDUCTION_TYPE {EQUALS_SUM, SUM_EQUALS_SUM};
+    enum class REDUCTION_TYPE {SUM_EQUALS};
 
     class NoComponentForId: public std::exception 
     {
@@ -142,7 +142,7 @@ namespace Hop::Object::Component
             }
         }
 
-        inline void reduce(REDUCTION_TYPE t = REDUCTION_TYPE::EQUALS_SUM);
+        inline void reduce(unsigned worker, REDUCTION_TYPE t = REDUCTION_TYPE::SUM_EQUALS);
 
     protected:
 

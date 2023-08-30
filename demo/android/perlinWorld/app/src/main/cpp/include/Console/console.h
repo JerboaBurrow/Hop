@@ -80,6 +80,8 @@ namespace Hop
         return ((*ptr).*function)(lua);
     }
 
+    int configure(lua_State * lua);
+
     // register lib
 
     const luaL_Reg hopLib[] =
@@ -89,6 +91,7 @@ namespace Hop
         {"setPhysicsTimeStep",&dispatchsPhysics<&sPhysics::lua_setTimeStep>},
         {"setPhysicsSubSamples",&dispatchsPhysics<&sPhysics::lua_setSubSamples>},
         {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
+        {"configure", &configure},
         {NULL, NULL}
     };
 
