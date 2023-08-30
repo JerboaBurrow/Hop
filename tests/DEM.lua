@@ -41,13 +41,13 @@ s = 6.8*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
-xx = -1.1-s;
+xx = 0.89-s;
 x = xx
-y = 1.23;
+y = 0.47;
 
-for i = 1, 128 do
+for i = 1, 16 do
 
-    if (x > -0.475) then
+    if (x > 1.5) then
         x = xx 
         y = y + s*1.5
     end
@@ -57,7 +57,7 @@ for i = 1, 128 do
     o = {
 
         ["transform"] = {x,y,0.0,s},
-        ["colour"] = {200/255,200/255,250/255,1.0},
+        -- ["colour"] = {200/255,200/255,250/255,1.0},
         -- ["shader"] = "circleObjectShader",
         -- ["shader"] = "lineSegmentObjectShader",
         ["moveable"] = true,
@@ -73,7 +73,7 @@ for i = 1, 128 do
     o = {
 
         ["transform"] = {x,y,0.0,s},
-        ["colour"] = {200/255,200/255,250/255,1.0},
+        -- ["colour"] = {200/255,200/255,250/255,1.0},
         -- ["shader"] = "circleObjectShader",
         -- ["shader"] = "lineSegmentObjectShader",
         ["moveable"] = true,
@@ -89,7 +89,7 @@ for i = 1, 128 do
     o = {
 
         ["transform"] = {x,y,0.0,s},
-        ["colour"] = {200/255,200/255,250/255,1.0},
+        -- ["colour"] = {200/255,200/255,250/255,1.0},
         -- ["shader"] = "circleObjectShader",
         -- ["shader"] = "lineSegmentObjectShader",
         ["moveable"] = true,
