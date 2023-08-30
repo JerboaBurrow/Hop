@@ -1,14 +1,17 @@
 #ifndef SRENDER_H
 #define SRENDER_H
 
-#include <Shader/shaders.h>
 #include <vector>
 #include <unordered_map>
 #include <map>
+#include <chrono>
+
+#include <Shader/shaders.h>
 #include <Component/cRenderable.h>
 #include <System/system.h>
 #include <Object/entityComponentSystem.h>
 #include <gl.h>
+#include <World/world.h>
 
 namespace Hop::Object
 {
@@ -23,6 +26,7 @@ namespace Hop::System::Rendering
     using Hop::Object::Component::cTransform;
     using Hop::System::Physics::CollisionPrimitive;
     using Hop::System::Physics::Rectangle;
+    using Hop::World::AbstractWorld;
     
     const int MAX_OBJECTS_PER_SHADER = 100000; // 0.4 megabytes per shader
     /*
@@ -59,20 +63,25 @@ namespace Hop::System::Rendering
     public:
 
         sRender()
+        : accumulatedTime(0.0), clock(std::chrono::high_resolution_clock::now())
         {
             initialise();
         }
 
         ~sRender();
 
-        // update float verts, loop over all object
+        // update float verts, loop over all objects
         //  with matching signature
         void update(EntityComponentSystem * m, Shaders * s, bool refresh);
+        double draw(Shaders * s, AbstractWorld * world);
+        double updateAndDraw(EntityComponentSystem * m, AbstractWorld * world, Shaders * s, bool refresh);
 
-        void draw(Shaders * s, bool debug = false);
         void initialise();
 
     private:
+
+        double accumulatedTime;
+        std::chrono::time_point<std::chrono::high_resolution_clock> clock;
 
         void addNewShader(std::string handle);
         void addNewObject(Id i, std::string handle);

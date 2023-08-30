@@ -311,15 +311,8 @@ int main(int argc, char ** argv)
 
     shaderPool.setProjection(camera.getVP());
 
-    world.get()->draw(*shaderPool.get("worldShader").get());
-
-    rendering.update(&manager, &shaderPool, refreshObjectShaders);
+    rendering.updateAndDraw(&manager, world.get(), &shaderPool, refreshObjectShaders); 
     refreshObjectShaders = false;
-
-    if (!meshes)
-    {
-      rendering.draw(&shaderPool); 
-    }
 
     if (meshes)
     {

@@ -14,11 +14,12 @@ extern "C"
 
         shaderPool->setProjection(camera->getVP());
 
-        world->draw(*shaderPool->get("worldShader").get());
+//        world->draw(*shaderPool->get("worldShader").get());
+//
+//        rendering.update(manager, shaderPool, refresh);
+        rendering.updateAndDraw(manager, world, shaderPool, refresh);
 
-        rendering.update(manager, shaderPool, refresh);
-
-        rendering.draw(shaderPool);
+//        rendering.draw(shaderPool);
         //hop->log<Hop::Logging::INFO>("refresh = "+std::to_string(refresh));
     }
 
