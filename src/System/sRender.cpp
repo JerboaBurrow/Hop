@@ -336,7 +336,14 @@ namespace Hop::System::Rendering
         }
     }
 
-    void sRender::draw(Shaders * s, bool debug){
+    double sRender::updateAndDraw(EntityComponentSystem * m, AbstractWorld * world, Shaders * s, bool refresh)
+    {
+        update(m, s, refresh);
+        return draw(s, world);
+    }
+
+    double sRender::draw(Shaders * s, AbstractWorld * world){
+
         for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++)
         {
             glBindVertexArray(it->second.first);
@@ -350,6 +357,13 @@ namespace Hop::System::Rendering
             
             glError("sRender draw");
         }
+
+        world->draw(*(s->get("worldShader").get()));
+
+        auto t = std::chrono::high_resolution_clock::now();
+        accumulatedTime += std::chrono::duration_cast<duration<double>>(t-clock).count();
+        clock = t;
+        return accumulatedTime;
     }
 
 }
