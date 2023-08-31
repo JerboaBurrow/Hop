@@ -8,6 +8,7 @@ const double tol = 1e-6;
 #include <Maths/topology.h>
 #include <Maths/distance.h>
 #include <Maths/special.h>
+#include <Maths/polygon.h>
 #include <Collision/collisionMesh.h>
 
 
@@ -501,6 +502,28 @@ SCENARIO("Topology","[maths]")
             {
                 REQUIRE(!pointInRectangle(1.1,1.,&r));
             }
+        }
+    }
+}
+
+SCENARIO("Polygon","[maths]")
+{
+    GIVEN("A polygon with vertices [0,0], [1, 0], and [0, 1]")
+    {
+        Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(1.0, 0.0), Vertex(0.0, 1.0)});
+        
+        THEN("The Polygon is left handed")
+        {
+            REQUIRE(p.getHandedness() == HAND::LEFT);
+        }
+    }
+    GIVEN("A polygon with vertices [0,0], [0, 1], and [1, 0]")
+    {
+        Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(0.0, 1.0), Vertex(1.0, 0.0)});
+        
+        THEN("The Polygon is right handed")
+        {
+            REQUIRE(p.getHandedness() == HAND::RIGHT);
         }
     }
 }
