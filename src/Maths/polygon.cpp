@@ -2,7 +2,7 @@
 
 namespace Hop::Maths
 {
-    HAND Polygon::getHandedness()
+    HAND Polygon::getHandedness() const 
     {
         double s = 0.0;
         for (unsigned i = 0; i < vertices.size(); i++)

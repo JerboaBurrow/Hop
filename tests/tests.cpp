@@ -515,6 +515,11 @@ SCENARIO("Polygon","[maths]")
         THEN("The Polygon is left handed")
         {
             REQUIRE(p.getHandedness() == HAND::LEFT);
+            AND_THEN("After reversing the polygon is right handed")
+            {
+                p.reverse();
+                REQUIRE(p.getHandedness() == HAND::RIGHT);
+            }
         }
     }
     GIVEN("A polygon with vertices [0,0], [0, 1], and [1, 0]")
@@ -524,6 +529,11 @@ SCENARIO("Polygon","[maths]")
         THEN("The Polygon is right handed")
         {
             REQUIRE(p.getHandedness() == HAND::RIGHT);
+            AND_THEN("After reversing the polygon is left handed")
+            {
+                p.reverse();
+                REQUIRE(p.getHandedness() == HAND::LEFT);
+            }
         }
     }
 }

@@ -14,6 +14,9 @@ namespace Hop::Maths
         double y;
     };
 
+    bool operator==(const Vertex & lhs, const Vertex & rhs);
+    bool operator!=(const Vertex & lhs, const Vertex & rhs) { return !(lhs == rhs); }
+
     Vertex operator/(Vertex const lhs, double const rhs);
 
     Vertex operator*(Vertex const lhs, double const rhs);

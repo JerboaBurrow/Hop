@@ -3,6 +3,11 @@
 namespace Hop::Maths
 {
 
+    bool operator==(const Vertex & lhs, const Vertex & rhs)
+    {
+        return lhs.x == rhs.x && lhs.y == rhs.y;
+    }
+
     Vertex operator/(Vertex const lhs, double const rhs)
     {
         return Vertex(lhs.x/rhs,lhs.y/rhs);
