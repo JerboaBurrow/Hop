@@ -6,7 +6,8 @@
 namespace Hop::Maths
 {
 
-    struct Vertex {
+    struct Vertex 
+    {
         Vertex(double x, double y)
         : x(x), y(y)
         {}
@@ -14,9 +15,25 @@ namespace Hop::Maths
         double y;
     };
 
+    struct Line 
+    {
+        Line(Vertex a, Vertex b)
+        : a(a), b(b)
+        {}
+
+        Vertex a;
+        Vertex b;
+    };
+
+    bool operator==(const Line lhs, const Line rhs);
+    bool operator==(const Vertex lhs, const Vertex rhs);
+    bool operator!=(const Vertex lhs, const Vertex rhs);
+
     Vertex operator/(Vertex const lhs, double const rhs);
 
     Vertex operator*(Vertex const lhs, double const rhs);
+
+    Vertex operator*(double const lhs, const Vertex rhs);
 
     Vertex operator+(Vertex const lhs, Vertex const rhs);
 
@@ -25,6 +42,8 @@ namespace Hop::Maths
     Vertex operator-(Vertex const lhs, Vertex const rhs);
 
     double dot(Vertex v, Vertex u);
+
+    double cross(Vertex v, Vertex u);
 
     double norm(Vertex v);
 

@@ -3,6 +3,21 @@
 namespace Hop::Maths
 {
 
+    bool operator==(const Line lhs, const Line rhs)
+    {
+        return lhs.a == rhs.a && lhs.b == rhs.b;
+    }
+
+    bool operator==(const Vertex lhs, const Vertex rhs)
+    {
+        return lhs.x == rhs.x && lhs.y == rhs.y;
+    }
+
+    bool operator!=(const Vertex lhs, const Vertex rhs)
+    {
+        return !(lhs.x == rhs.x && lhs.y == rhs.y);
+    }
+
     Vertex operator/(Vertex const lhs, double const rhs)
     {
         return Vertex(lhs.x/rhs,lhs.y/rhs);
@@ -12,6 +27,8 @@ namespace Hop::Maths
     {
         return Vertex(lhs.x*rhs,lhs.y*rhs);
     }
+
+    Vertex operator*(double const lhs, const Vertex rhs) { return rhs * lhs; }
 
     Vertex operator+(Vertex const lhs, Vertex const rhs)
     {
@@ -33,6 +50,11 @@ namespace Hop::Maths
     double dot(Vertex v, Vertex u)
     {
         return v.x*u.x+v.y*u.y;
+    }
+
+    double cross(Vertex v, Vertex u)
+    {
+        return v.x*u.y - v.y*u.x;
     }
 
     double norm(Vertex v){
