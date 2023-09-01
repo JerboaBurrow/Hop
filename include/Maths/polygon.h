@@ -2,15 +2,13 @@
 #define POLYGON
 
 #include <Maths/vertex.h>
-#include <Util/util.h>
+#include <Maths/triangle.h>
 
 #include <vector>
 #include <algorithm>
 
 namespace Hop::Maths 
 {
-
-    using Hop::Util::Triple;
 
     class Triangulation;
 
@@ -39,9 +37,21 @@ namespace Hop::Maths
 
         size_t length() const { return vertices.size(); }
 
-        Triple<unsigned> centeredTriangle(unsigned i) { return Triple<unsigned> (last(i), i, next(i));}
+        Triangle centeredTriangle(unsigned i) const { return Triangle(vertices[last(i)], vertices[i], vertices[next(i)]);}
 
-        HAND getHandedness() const ;
+        HAND angleSign(unsigned i) const 
+        {
+            Triangle abc = centeredTriangle(i);
+            Vertex a = abc.a;
+            Vertex b = abc.b;
+            Vertex c = abc.c;
+            return (b.x-a.x)*(c.y-b.y)-(b.y-a.y)*(c.x-b.x) > 0 ? HAND::LEFT : HAND::RIGHT;
+        }
+
+        const std::vector<Vertex> & getVertices() const { return vertices; }
+        std::vector<Line> edges() const ;
+
+        HAND getHandedness() const;
 
         void reverse() {std::reverse(vertices.begin(), vertices.end());}
 

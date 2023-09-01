@@ -9,6 +9,7 @@ const double tol = 1e-6;
 #include <Maths/distance.h>
 #include <Maths/special.h>
 #include <Maths/polygon.h>
+#include <Maths/triangulation.h>
 #include <Collision/collisionMesh.h>
 
 
@@ -533,6 +534,32 @@ SCENARIO("Polygon","[maths]")
             {
                 p.reverse();
                 REQUIRE(p.getHandedness() == HAND::LEFT);
+            }
+        }
+    }
+}
+
+SCENARIO("Triangulation", "[maths]")
+{
+    GIVEN("A (right) polygon with vertices [0,0], [0, 1], and [1, 0]")
+    {
+        Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(0.0, 1.0), Vertex(1.0, 0.0)});
+
+        WHEN("A triangulation is created from it")
+        {
+            Triangulation t(p);
+            THEN("Its triangulation has 1 triangle")
+            {
+                REQUIRE(t.size() == size_t(1));
+            }
+            AND_THEN("The polygon is its own triangulation")
+            {
+                auto tris = t.getTriangles();
+                auto pv = p.getVertices();
+
+                REQUIRE(tris[0].a == pv[0]);
+                REQUIRE(tris[0].b == pv[1]);
+                REQUIRE(tris[0].c == pv[2]);
             }
         }
     }

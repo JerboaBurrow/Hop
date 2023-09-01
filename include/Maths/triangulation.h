@@ -3,13 +3,11 @@
 
 #include <vector>
 #include <Maths/polygon.h>
-
-#include <Util/util.h>
+#include <Maths/topology.h>
+#include <Maths/triangle.h>
 
 namespace Hop::Maths
 {
-
-    using Hop::Util::Triple;
 
     class Triangulation 
     {
@@ -20,10 +18,13 @@ namespace Hop::Maths
 
         Triangulation(const Polygon & p);
 
+        size_t size() const {return triangles.size();}
+
+        const std::vector<Triangle> & getTriangles() const { return triangles; }
+
     private:
 
-        std::vector<Vertex> vertices;
-        std::vector<Triple<unsigned>> triangles;
+        std::vector<Triangle> triangles;
 
     };
 }

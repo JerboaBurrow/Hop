@@ -8,12 +8,12 @@ namespace Hop::Maths
 
         if (q.getHandedness() == HAND::LEFT){ q.reverse(); }
 
-        vertices.clear();
         triangles.clear();
 
         while (q.length() > 3)
         {
             Vertex ear = findEar(q, q, 0);
+
             unsigned earId = 0;
 
             std::vector<Vertex> newVertices;
@@ -31,8 +31,14 @@ namespace Hop::Maths
             }
 
             triangles.push_back(q.centeredTriangle(earId));
+
+            q.vertices = newVertices;
         }
 
+        if (q.vertices.size() == 3)
+        {
+            triangles.push_back(Triangle(q.vertices[0], q.vertices[1], q.vertices[2]));
+        }
 
     }
 }

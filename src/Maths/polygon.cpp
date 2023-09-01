@@ -2,6 +2,19 @@
 
 namespace Hop::Maths
 {
+
+    std::vector<Line> Polygon::edges() const
+    {
+        std::vector<Line> e;
+
+        for (unsigned i = 0; i < vertices.size(); i++)
+        {
+            e.push_back(Line(vertices[i], vertices[next(i)]));
+        }
+
+        return e;
+    }
+
     HAND Polygon::getHandedness() const 
     {
         double s = 0.0;
