@@ -56,7 +56,7 @@ namespace Hop::Maths
         void reverse() {std::reverse(vertices.begin(), vertices.end());}
 
         unsigned next(unsigned i) const { return (i+1)%vertices.size();}
-        unsigned last(unsigned i) const { unsigned j = i-1; return j < 0 ? vertices.size()+j : j;}
+        unsigned last(unsigned i) const { int j = int(i)-1; return j < 0 ? vertices.size()+j : j;}
 
     private:
 

@@ -563,4 +563,40 @@ SCENARIO("Triangulation", "[maths]")
             }
         }
     }
+
+    GIVEN("A polygon with vertices [0,0], [0, 1], and [1, 0], [0.5, 0.5]")
+    {
+        Polygon p
+        (
+            std::vector<Vertex> 
+            {
+                Vertex(0.0 ,0.0), 
+                Vertex(0.0, 1.0),
+                Vertex(1.0, 0.0),
+                Vertex(0.5, 0.5)
+            }
+        );
+
+        WHEN("A triangulation is created from it")
+        {
+            Triangulation t(p);
+            THEN("Its triangulation has 2 triangles")
+            {
+                REQUIRE(t.size() == size_t(2));
+            }
+            AND_THEN("The polygon is [p.3, p.0, p.1], [p.1, p.2, p.3]")
+            {
+                auto tris = t.getTriangles();
+                auto pv = p.getVertices();
+
+                REQUIRE(tris[0].a == pv[3]);
+                REQUIRE(tris[0].b == pv[0]);
+                REQUIRE(tris[0].c == pv[1]);
+
+                REQUIRE(tris[1].a == pv[1]);
+                REQUIRE(tris[1].b == pv[2]);
+                REQUIRE(tris[1].c == pv[3]);
+            }
+        }
+    }
 }
