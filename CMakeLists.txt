@@ -176,14 +176,12 @@ IF (TEST_SUITE)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wa,-mbig-obj")
         endif()
 
-        file(GLOB TEST_SRC "tests/*.cpp")
+        file(GLOB TEST_SRC "tests/*.cpp" "src/Maths/*.cpp")
         include_directories(include "tests/")
 
         add_executable(testSuite 
             ${TEST_SRC}
             "src/World/mapFile.cpp"
-            "src/Maths/topology.cpp"
-            "src/Maths/vertex.cpp"
         )
 
         target_compile_definitions(testSuite PUBLIC GLSL_VERSION="330")
