@@ -18,7 +18,7 @@
 #include <Object/entityComponentSystem.h>
 
 #include <System/sPhysics.h>
-#include <System/sRender.h>
+#include <System/Rendering/sRender.h>
 #include <System/sCollision.h>
 
 #include <World/world.h>

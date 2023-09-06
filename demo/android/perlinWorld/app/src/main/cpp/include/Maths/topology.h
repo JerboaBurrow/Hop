@@ -5,11 +5,16 @@
 #include <Maths/vertex.h>
 
 #include <Collision/collisionMesh.h>
+#include <Maths/polygon.h>
+
+#include <algorithm>
 
 using Hop::System::Physics::Rectangle;
 
 namespace Hop::Maths
 {
+
+    Vertex lineLineSegementIntersection(Vertex p, Vertex q, Vertex u, Vertex v);
 
     bool pointInTriangle(Vertex v, Triangle tri);
 
@@ -77,5 +82,17 @@ namespace Hop::Maths
 
         return false;
     }
+
+    Vertex findEar(const Polygon & p, const Polygon & q, unsigned i);
+
+    bool isEar(const Polygon & p, unsigned i);
+
+    bool isEar(const Polygon & p, const Vertex & v);
+
+    Line findDiagonal(const Polygon & p, unsigned i);
+
+    bool isGood(const Polygon & p, const Polygon & q);
+
+    Polygon goodSubPolygon(const Polygon & p, const Polygon & q, unsigned i, unsigned j);
 }
 #endif /* TOPOLOGY_H */
