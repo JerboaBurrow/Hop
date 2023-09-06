@@ -80,7 +80,6 @@ static sRender * renderer = nullptr;
 static OrthoCam * camera = nullptr;
 static TextRenderer * textRenderer = nullptr;
 static Type * font;
-static Shaders * shaderPool = nullptr;
 
 std::string jstring2string(JNIEnv *env, jstring jStr) {
     if (!jStr)
@@ -135,9 +134,6 @@ extern "C"
             font = new Hop::System::Rendering::Type(48);
 
             hopLog = new Hop::Logging::Log;
-
-            shaderPool = new Hop::System::Rendering::Shaders;
-            shaderPool->defaultShaders(*hopLog);
 
             manager = new EntityComponentSystem;
 

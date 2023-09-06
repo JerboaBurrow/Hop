@@ -12,12 +12,13 @@ extern "C"
 
         sRender & rendering = manager->getSystem<sRender>();
 
-        shaderPool->setProjection(camera->getVP());
+        rendering.setProjection(camera->getVP());
 
 //        world->draw(*shaderPool->get("worldShader").get());
 //
 //        rendering.update(manager, shaderPool, refresh);
-        rendering.updateAndDraw(manager, world, shaderPool, refresh);
+        if (refresh){ rendering.refreshShaders(); }
+        rendering.draw(manager, world);
 
 //        rendering.draw(shaderPool);
         //hop->log<Hop::Logging::INFO>("refresh = "+std::to_string(refresh));
