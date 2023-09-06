@@ -136,6 +136,7 @@ file(GLOB SRC
     "src/Util/*.cpp"
     "src/Debug/*.cpp"
     "src/Console/*.cpp"
+    "src/System/Rendering/*.cpp"
 )
 
 if (NOT ANDROID)
