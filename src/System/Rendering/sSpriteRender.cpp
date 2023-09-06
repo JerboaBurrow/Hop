@@ -1,10 +1,10 @@
-#include <System/sRender.h>
+#include <System/Rendering/sSpriteRender.h>
 
 
 namespace Hop::System::Rendering
 {
 
-    void sRender::update(EntityComponentSystem * m, Shaders * s, bool refresh)
+    void sSpriteRender::update(EntityComponentSystem * m, Shaders * s, bool refresh)
     {
         
         bool newData = false;
@@ -93,7 +93,7 @@ namespace Hop::System::Rendering
 
     }
 
-    void sRender::updateOffsets(std::string handle)
+    void sSpriteRender::updateOffsets(std::string handle)
     {
         size_t cnt = offsets[handle].first+1;
         GLuint oBuffer = shaderBufferObjects[handle].second[0];
@@ -107,7 +107,7 @@ namespace Hop::System::Rendering
         glBindBuffer(GL_ARRAY_BUFFER,0);
     }
 
-    void sRender::updateColours(std::string handle)
+    void sSpriteRender::updateColours(std::string handle)
     {
         size_t cnt = offsets[handle].first+1;
         GLuint cBuffer = shaderBufferObjects[handle].second[1];
@@ -121,7 +121,7 @@ namespace Hop::System::Rendering
         glBindBuffer(GL_ARRAY_BUFFER,0);
     }
 
-    void sRender::updateTexOffsets(std::string handle)
+    void sSpriteRender::updateTexOffsets(std::string handle)
     {
         size_t cnt = offsets[handle].first+1;
         GLuint tBuffer = shaderBufferObjects[handle].second[2];
@@ -135,7 +135,7 @@ namespace Hop::System::Rendering
         glBindBuffer(GL_ARRAY_BUFFER,0);
     }
 
-    void sRender::updateUtil(std::string handle)
+    void sSpriteRender::updateUtil(std::string handle)
     {
         size_t cnt = offsets[handle].first+1;
         GLuint tBuffer = shaderBufferObjects[handle].second[3];
@@ -149,7 +149,7 @@ namespace Hop::System::Rendering
         glBindBuffer(GL_ARRAY_BUFFER,0);
     }
 
-    void sRender::addNewShader(std::string handle)
+    void sSpriteRender::addNewShader(std::string handle)
     {
         offsets[handle] = std::pair(-1,std::vector<float>());
         offsets[handle].second.reserve(4*MAX_OBJECTS_PER_SHADER*OFFSET_COMPONENTS);
@@ -277,7 +277,7 @@ namespace Hop::System::Rendering
         glError("add new shader");
     }
 
-    void sRender::addNewObject(Id i,std::string handle)
+    void sSpriteRender::addNewObject(Id i,std::string handle)
     {
         std::size_t lastComponent = offsets[handle].first;
         idToIndex[i] = std::pair(handle,lastComponent+1);
@@ -285,7 +285,7 @@ namespace Hop::System::Rendering
         offsets[handle].first++;
     }
 
-    void sRender::moveOffsets(Id i, std::string oldShader, std::string newShader)
+    void sSpriteRender::moveOffsets(Id i, std::string oldShader, std::string newShader)
     {
         
         std::size_t start = idToIndex[i].second;
@@ -318,12 +318,12 @@ namespace Hop::System::Rendering
 
     }
 
-    void sRender::initialise()
+    void sSpriteRender::initialise()
     {
         glGenBuffers(1,&quadVBO);
     }
 
-    sRender::~sRender()
+    sSpriteRender::~sSpriteRender()
     {
         glDeleteBuffers(1,&quadVBO);
         for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++)
@@ -336,18 +336,18 @@ namespace Hop::System::Rendering
         }
     }
 
-    double sRender::updateAndDraw(EntityComponentSystem * m, AbstractWorld * world, Shaders * s, bool refresh)
+    void sSpriteRender::updateAndDraw(EntityComponentSystem * m, Shaders * s, bool refresh)
     {
         update(m, s, refresh);
-        return draw(s, world);
+        draw(s);
     }
 
-    double sRender::draw(Shaders * s, AbstractWorld * world){
+    void sSpriteRender::draw(Shaders * s){
 
         for (auto it = shaderBufferObjects.begin(); it != shaderBufferObjects.end(); it++)
         {
             glBindVertexArray(it->second.first);
-            //glError("sRender draw vao");
+            //glError("sSpriteRender draw vao");
             std::shared_ptr<Shader> shader = s->get(it->first);
             shader->use();
 
@@ -355,15 +355,9 @@ namespace Hop::System::Rendering
             
             glDrawArraysInstanced(GL_TRIANGLES,0,6,count);
             
-            glError("sRender draw");
+            glError("sSpriteRender draw");
         }
 
-        world->draw(*(s->get("worldShader").get()));
-
-        auto t = std::chrono::high_resolution_clock::now();
-        accumulatedTime += std::chrono::duration_cast<duration<double>>(t-clock).count();
-        clock = t;
-        return accumulatedTime;
     }
 
 }
