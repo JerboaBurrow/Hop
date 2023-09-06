@@ -38,8 +38,10 @@ namespace Hop::Object
         registerComponent<cRenderable>();
         registerComponent<cPhysics>();
         registerComponent<cCollideable>();
+        registerComponent<cPolygon>();
 
         registerSystem<sRender>();
+        registerSystem<sSpriteRender>();
         registerSystem<sPhysics>();
         registerSystem<sCollision>();
 
@@ -47,28 +49,55 @@ namespace Hop::Object
         uint32_t rId = getComponentId<cRenderable>();
         uint32_t pId = getComponentId<cPhysics>();
         uint32_t cId = getComponentId<cCollideable>();
+        uint32_t polyId = getComponentId<cPolygon>();
 
         Signature sRenderSig = Signature();
 
-        sRenderSig.set(
+        sRenderSig.set
+        (
             rId,
             true
         );
 
-        sRenderSig.set(
+        sRenderSig.set
+        (
             tId,
             true
         );
 
         systemManager.setSignature<sRender>(sRenderSig);
 
+        Signature sSpriteRenderSig = Signature();
+
+        sSpriteRenderSig.set
+        (
+            rId,
+            true
+        );
+
+        sSpriteRenderSig.set
+        (
+            tId,
+            true
+        );
+
+        sSpriteRenderSig.set
+        (
+            polyId,
+            false
+        );
+
+        systemManager.setSignature<sSpriteRender>(sSpriteRenderSig);
+
         Signature sPhysicsSig = Signature();
 
-        sPhysicsSig.set(
+        sPhysicsSig.set
+        (
             pId,
             true
         );
-        sPhysicsSig.set(
+        sPhysicsSig.set
+        (
             tId,
             true
         );
@@ -77,11 +106,13 @@ namespace Hop::Object
         
         Signature sCollisionSig = Signature();
 
-        sCollisionSig.set(
+        sCollisionSig.set
+        (
             pId,
             true
         );
-        sCollisionSig.set(
+        sCollisionSig.set
+        (
             cId,
             true
         );
