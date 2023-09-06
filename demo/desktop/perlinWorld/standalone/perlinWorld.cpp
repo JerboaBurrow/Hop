@@ -21,7 +21,7 @@ using namespace std::chrono;
 #include <Object/entityComponentSystem.h>
 
 #include <System/sPhysics.h>
-#include <System/sRender.h>
+#include <System/Rendering/sRender.h>
 #include <System/sCollision.h>
 
 #include <World/world.h>
@@ -36,7 +36,7 @@ using namespace std::chrono;
 const int resX = 1000;
 const int resY = 1000;
 const float MAX_SPEED = 1.0/60.0;
-const unsigned MAX_THREADS = 2;
+const unsigned MAX_THREADS = 0;
 
 // for smoothing delta numbers
 uint8_t frameId = 0;
@@ -204,9 +204,9 @@ int main(int argc, char ** argv)
 
         tr0 = high_resolution_clock::now();
 
-        shaderPool.setProjection(camera.getVP());
-
-        rendering.updateAndDraw(&manager, world.get(), &shaderPool, refreshObjectShaders); 
+        rendering.setProjection(camera.getVP());
+        if (refreshObjectShaders) { rendering.refreshShaders(); }
+        rendering.draw(&manager, world.get()); 
         refreshObjectShaders = false;
 
         tr1 = high_resolution_clock::now();

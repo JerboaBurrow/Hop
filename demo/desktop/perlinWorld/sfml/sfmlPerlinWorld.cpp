@@ -27,7 +27,7 @@ using namespace std::chrono;
 #include <Object/entityComponentSystem.h>
 
 #include <System/sPhysics.h>
-#include <System/sRender.h>
+#include <System/Rendering/sRender.h>
 #include <System/sCollision.h>
 
 #include <World/world.h>
@@ -309,9 +309,10 @@ int main(int argc, char ** argv)
 
     tr0 = high_resolution_clock::now();
 
-    shaderPool.setProjection(camera.getVP());
+    rendering.setProjection(camera.getVP());
+    if (refreshObjectShaders) { rendering.refreshShaders(); }
+    rendering.draw(&manager, world.get()); 
 
-    rendering.updateAndDraw(&manager, world.get(), &shaderPool, refreshObjectShaders); 
     refreshObjectShaders = false;
 
     if (meshes)

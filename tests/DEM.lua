@@ -45,7 +45,7 @@ xx = 0.89-s;
 x = xx
 y = 0.47;
 
-for i = 1, 16 do
+for i = 1, 8 do
 
     if (x > 1.5) then
         x = xx 

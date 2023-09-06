@@ -10,8 +10,10 @@
 #include <Component/cRenderable.h>
 #include <Component/cPhysics.h>
 #include <Component/cCollideable.h>
+#include <Component/cPolygon.h>
 
-#include <System/sRender.h>
+#include <System/Rendering/sRender.h>
+#include <System/Rendering/sSpriteRender.h>
 #include <System/sPhysics.h>
 #include <System/sCollision.h>
 
@@ -38,6 +40,7 @@ namespace Hop
 namespace Hop::System::Rendering
 {
     class sRender;
+    class sSpriteRender;
 }
 
 namespace Hop::System::Physics
@@ -55,6 +58,7 @@ namespace Hop::Object
     using Hop::System::Physics::sPhysics;
     using Hop::System::Physics::sCollision;
     using Hop::System::Rendering::sRender;
+    using Hop::System::Rendering::sSpriteRender;
     using Hop::Console;
 
 
