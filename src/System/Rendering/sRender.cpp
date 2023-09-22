@@ -24,6 +24,8 @@ namespace Hop::System::Rendering
             auto t = std::chrono::high_resolution_clock::now();
             accumulatedTime += std::chrono::duration_cast<duration<double>>(t-clock).count();
             clock = t;
+
+            return accumulatedTime;
         }
 
         void sRender::update(EntityComponentSystem * ecs)
