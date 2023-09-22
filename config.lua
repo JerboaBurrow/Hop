@@ -1,7 +1,7 @@
 config = 
 {
-    ["timeStep"]  = 1.0/900.0,
-    ["subSample"] = 1,
+    ["timeStep"]  = 1.0/1800.0,
+    ["subSample"] = 2,
     ["cofr"]      = 0.75 
 }
 
