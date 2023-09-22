@@ -77,16 +77,19 @@ for i = 1,1000 do
 
         object = {
 
-            ["transform"] = {x,y,0.45,s},
+            ["transform"] = {x,y,0.0,s},
             ["colour"] = {250/255,200/255,250/255,1.0},
             -- ["shader"] = "circleObjectShader",
             -- ["shader"] = "lineSegmentObjectShader",
             ["moveable"] = true,
             ["collisionMesh"] =
             {
-                {-0.5,0.0,0.25},
-                {0.0,0.0,0.25},
-                {0.5,0.0,0.25}
+                {-0.5,-0.5, 0.25},
+                {0.0,-0.5, 0.25},
+                {0.5,-0.5, 0.25},
+                {0.0, 0.5, 0.25},
+                {-0.25, 0.0, 0.25},
+                {0.25, 0.0, 0.25}
             },
             ["name"] = ""
     

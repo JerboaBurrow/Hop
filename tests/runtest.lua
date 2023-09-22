@@ -1,1 +1,1 @@
-require("tests/jacks")
+require("tests/mix")
