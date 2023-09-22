@@ -6,7 +6,7 @@ x = 0.9;
 y = 0.5;
 
 
-for i = 1,1000 do
+for i = 1,100 do
 
     selection = math.random(4)
 
