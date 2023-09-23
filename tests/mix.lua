@@ -2,19 +2,24 @@ s = 3.0*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
-x = 0.9;
-y = 0.5;
+xs = 0.5
+ys = 0.75
+xw = 1.0
 
+x = xs;
+y = ys;
 
 for i = 1,100 do
 
-    selection = math.random(4)
+    selection = math.random(6)
+
+    theta = 2.0*3.14159 * math.random(10000) / 10000.0;
 
     if selection == 1 then
 
         object = {
 
-            ["transform"] = {x,y,0.45,s},
+            ["transform"] = {x,y,theta,s},
             ["colour"] = {200/255,200/255,250/255,1.0},
             -- ["shader"] = "circleObjectShader",
             -- ["shader"] = "lineSegmentObjectShader",
@@ -37,7 +42,7 @@ for i = 1,100 do
 
         object = {
 
-            ["transform"] = {x,y,0.45,s},
+            ["transform"] = {x,y,theta,s},
             ["colour"] = {250/255,200/255,200/255,1.0},
             -- ["shader"] = "circleObjectShader",
             -- ["shader"] = "lineSegmentObjectShader",
@@ -58,7 +63,7 @@ for i = 1,100 do
 
         object = {
 
-            ["transform"] = {x,y,0.45,s},
+            ["transform"] = {x,y,theta,s},
             ["colour"] = {200/255,250/255,200/255,1.0},
             -- ["shader"] = "circleObjectShader",
             -- ["shader"] = "lineSegmentObjectShader",
@@ -95,15 +100,61 @@ for i = 1,100 do
     
         }
 
+    elseif selection == 5 then
+
+        object = {
+
+            ["transform"] = {x,y,theta,s},
+            ["colour"] = {200/255,250/255,250/255,1.0},
+            -- ["shader"] = "circleObjectShader",
+            -- ["shader"] = "lineSegmentObjectShader",
+            ["moveable"] = true,
+            ["collisionMesh"] =
+            {
+                {-0.5, 0.5, 0.25},
+                {-0.0, 0.5, 0.25},
+                {-0.0, 0.0, 0.25},
+                {0.5, 0.0, 0.25},
+                {0.5, -0.5, 0.25}
+            },
+            ["name"] = ""
+    
+        }
+
+    elseif selection == 6 then
+
+        object = {
+
+            ["transform"] = {x,y,theta,s},
+            ["colour"] = {250/255,250/255,200/255,1.0},
+            -- ["shader"] = "circleObjectShader",
+            -- ["shader"] = "lineSegmentObjectShader",
+            ["moveable"] = true,
+            ["collisionMesh"] =
+            {
+                {0.5,0.0, 0.25},
+                {0.3536, 0.3536, 0.25},
+                {0.0, 0.5, 0.25},
+                {-0.3536, 0.3536, 0.25},
+                {-0.5, 0.0, 0.25},
+                {-0.3536, -0.3536, 0.25},
+                {0.3536, -0.3536, 0.25},
+                {0.5, 0.0, 0.25}
+            },
+            ["name"] = ""
+    
+        }
+
     end
 
 
     hop.loadObject(object)
 
     x = x + 0.04;
-    if x > 1.75 then
-        x = 0.9;
+    if x > xs + xw then
+        x = xs;
         y = y + 0.04
     end
+
 
 end

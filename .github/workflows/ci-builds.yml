@@ -150,6 +150,18 @@ jobs:
           name: screenshot-map-standalone
           path: standalone/screenshot-map.png
 
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshot-sfml
+          path: sfml/screenshot.png
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshot-map-sfml
+          path: sfml/screenshot-map.png
+
   linuxXandroid:
     runs-on: ubuntu-20.04
 
