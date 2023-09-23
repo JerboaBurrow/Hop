@@ -2,8 +2,12 @@ s = 3.0*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
-x = 0.9;
-y = 0.5;
+xs = 2.75
+ys = 0.75
+xw = 1.0
+
+x = xs;
+y = ys;
 
 for i = 1,256 do
 
@@ -32,8 +36,8 @@ for i = 1,256 do
     hop.loadObject(object)
 
     x = x + 0.04;
-    if x > 1.75 then
-        x = 0.9;
+    if x > xs + xw then
+        x = xs;
         y = y + 0.04
     end
 
