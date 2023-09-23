@@ -9,6 +9,7 @@ namespace Hop::Debugging
         {
             freeGL();
             circles = std::vector<float>(cachedCircles*4,0.0f);
+            circlesColour = std::vector<float>(cachedCircles*4,0.0f);
             rectanglesOffset = std::vector<float>(cachedRects*4,0.0f);
             rectanglesParameters = std::vector<float>(cachedRects*4,0.0f);
             rectanglesThickness = std::vector<float>(cachedRects,0.0f);
@@ -18,6 +19,7 @@ namespace Hop::Debugging
 
             glGenBuffers(1, &quadVBO);
             glGenBuffers(1, &cOffset);
+            glGenBuffers(1, &cColour);
             glGenBuffers(1, &rThickness);
             glGenBuffers(1, &rOffset);
             glGenBuffers(1, &rParameters);
@@ -66,6 +68,28 @@ namespace Hop::Debugging
         );
         glVertexAttribDivisor(1,1);
         glBindBuffer(GL_ARRAY_BUFFER,0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, cColour);
+        glBufferData
+        (
+            GL_ARRAY_BUFFER,
+            4*sizeof(float)*circles.size(),
+            &circlesColour[0],
+            GL_DYNAMIC_DRAW
+        );
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer
+        (
+            2,
+            4,
+            GL_FLOAT,
+            false,
+            4*sizeof(float),
+            0
+        );
+        glVertexAttribDivisor(2,1);
+        glBindBuffer(GL_ARRAY_BUFFER,0);
+
         glBindVertexArray(0);
 
         // RECTANGLES
@@ -177,6 +201,7 @@ namespace Hop::Debugging
           {
             
             cCollideable & c = m->getComponent<cCollideable>(citer->first);
+            cRenderable & ren = m->getComponent<cRenderable>(citer->first);
 
             x = c.mesh.getX();
             y = c.mesh.getY();
@@ -236,6 +261,11 @@ namespace Hop::Debugging
                     circles[nCircles*4+2] = theta;
                     circles[nCircles*4+3] = scale*2.0*cpmodel->r;
 
+                    circlesColour[nCircles*4] = ren.r;
+                    circlesColour[nCircles*4+1] = ren.g;
+                    circlesColour[nCircles*4+2] = ren.b;
+                    circlesColour[nCircles*4+3] = ren.a;
+
                     nCircles += 1;
 
                 }
@@ -264,6 +294,20 @@ namespace Hop::Debugging
                 0,
                 4*sizeof(float)*nCircles,
                 &circles[0]
+            );
+
+            glBindBuffer(GL_ARRAY_BUFFER,0);
+            
+            glBindVertexArray(0);
+
+            glBindBuffer(GL_ARRAY_BUFFER, cColour);
+
+            glBufferSubData
+            (
+                GL_ARRAY_BUFFER,
+                0,
+                4*sizeof(float)*nCircles,
+                &circlesColour[0]
             );
 
             glBindBuffer(GL_ARRAY_BUFFER,0);

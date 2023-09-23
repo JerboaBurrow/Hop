@@ -3,6 +3,7 @@
 
 #include <Collision/collisionMesh.h>
 #include <Object/entityComponentSystem.h>
+#include <Component/cRenderable.h>
 #include <gl.h>
 
 namespace Hop::Object
@@ -16,6 +17,7 @@ namespace Hop::Debugging
     using Hop::Object::Component::cCollideable;
     using Hop::System::Physics::CollisionPrimitive;
     using Hop::System::Physics::Rectangle;
+    using Hop::Object::Component::cRenderable;
 
     class CollisionMeshDebug
     {
@@ -26,12 +28,14 @@ namespace Hop::Debugging
         {
             glGenBuffers(1, &quadVBO);
             glGenBuffers(1, &cOffset);
+            glGenBuffers(1, &cColour);
             glGenBuffers(1, &rThickness);
             glGenBuffers(1, &rOffset);
             glGenBuffers(1, &rParameters);
             glGenVertexArrays(1, &cVao);
             glGenVertexArrays(1, &rVao);
             circles = std::vector<float>(20000*4,0.0f);
+            circlesColour = std::vector<float>(20000*4,0.0f);
             rectanglesOffset = std::vector<float>(20000*4,0.0f);
             rectanglesParameters = std::vector<float>(20000*4,0.0f);
             rectanglesThickness = std::vector<float>(20000,0.0f);
@@ -63,17 +67,18 @@ namespace Hop::Debugging
 
         void setupGL(bool reset = false);
 
-        std::vector<float> circles, rectanglesOffset, rectanglesParameters, rectanglesThickness;
+        std::vector<float> circles, circlesColour, rectanglesOffset, rectanglesParameters, rectanglesThickness;
 
         uint32_t nCircles, nRectangles, cachedCircles, cachedRects, uploadedCircles, uploadedRects;
 
-        GLuint quadVBO, cOffset, rThickness, rOffset, rParameters;
+        GLuint quadVBO, cOffset, cColour, rThickness, rOffset, rParameters;
         GLuint cVao, rVao, rectangleShader, circleShader;
 
         void freeGL()
         {
             glDeleteBuffers(1, &quadVBO);
             glDeleteBuffers(1, &cOffset);
+            glDeleteBuffers(1, &cColour);
             glDeleteBuffers(1, &rThickness);
             glDeleteBuffers(1, &rOffset);
             glDeleteBuffers(1, &rParameters);
@@ -99,6 +104,7 @@ namespace Hop::Debugging
         "precision lowp float;\n precision lowp int;\n"
         "layout(location=0) in vec4 a_position;\n"
         "layout(location=1) in vec4 a_offset;\n"
+        "layout(location=2) in vec4 a_colour;\n"
         "uniform mat4 proj;\n"
         "out vec2 texCoord;\n"
         "out vec4 oColour;\n"
@@ -106,7 +112,7 @@ namespace Hop::Debugging
         "{\n"
             "gl_Position = proj*vec4(a_offset.w*a_position.xy+a_offset.xy,0.0,1.0);\n"
             "texCoord = a_position.zw;\n"
-            "oColour = vec4(0.0,0.0,1.0,1.0);\n"
+            "oColour = a_colour;\n"
         "}";
 
         const char * collisionPrimitiveFragmentShader = "#version " GLSL_VERSION "\n"
@@ -114,11 +120,17 @@ namespace Hop::Debugging
         "in vec4 oColour;\n"
         "in vec2 texCoord;\n"
         "out vec4 colour;\n"
+        "float t0 = 0.12;\n"
+        "float t1 = 0.2025;\n"
+        "float t2 = 0.25;\n"
         "void main()"
         "{\n"
         "   vec2 c = texCoord-vec2(0.5,0.5);\n"
-        "   if (dot(c,c) > 0.5*0.5) {discard;}\n"
-        "   else { colour = oColour; }\n"
+        "   float d2 = dot(c,c);"
+        "   if (d2 > t2) {discard;}\n"
+        "   float alpha = 1.0-smoothstep(t1, t2, d2);"
+        "   float mixer = 1.0-smoothstep(t0, t1, d2);"
+        "   colour = vec4( mix(vec3(0.0,0.0,0.0),oColour.rgb, mixer), alpha );"
         "}";
 
         const char * rectangleVertexShader = "#version " GLSL_VERSION "\n"

@@ -36,7 +36,7 @@ namespace Hop::System::Rendering
     "void main()\n"
       "{\n"
       "bk = vec4(u_background,1.0);"
-      "colour=vec4(1.,0.,0.,u_alpha);"
+      "colour=vec4(221.0f/255.0f,141.0f/255.0f,134.0f/255.0f,u_alpha);"
       "if (id == 0){background();}\n"
       "if (id == 1 && texCoord.x+texCoord.y > 0.5) {background();}"
       "if (id == 2 && (1.0-texCoord.x)+texCoord.y > 0.5) {background();}"
