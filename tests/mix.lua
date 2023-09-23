@@ -2,7 +2,7 @@ s = 3.0*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
-xs = 2.75
+xs = 0.5
 ys = 0.75
 xw = 1.0
 
