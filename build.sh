@@ -65,6 +65,7 @@ DEMO=0
 ANDROID_NDK=""
 BENCHMARK=0
 STANDALONE=0
+CLEAN=1
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -109,6 +110,10 @@ while [[ $# -gt 0 ]]; do
       BENCHMARK=1
       shift
       ;;
+    -c|--continue)
+      CLEAN=0
+      shift
+      ;;
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -120,24 +125,21 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-for file in build CMakeFiles cmake_install.cmake CMakeCache.txt Makefile Jerboa
-do
-  if [ -d $file ];
+if [[ $CLEAN -eq 1 ]]; 
+then
+  if [ -d build ];
   then
-    rm -rf $file
+    rm -rf build
   fi
-  if [ -f $file ];
-  then
-    rm $file
-  fi
-done
+  cmake -E make_directory build
+fi
 
 echo "release ${RELEASE}"
 
 if [[ $WINDOWS -eq 0 ]];
 then 
-  cmake -E make_directory build
-  cmake -E chdir build cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8 -C build
+  cd build
+  cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8
   # now copy dlls
   PREFIX="x86_64-w64-mingw32"
 
@@ -179,10 +181,12 @@ then
       cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
       cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
   fi
+  cd ..
 elif [[ $OSX -eq 0 ]];
 then
-  cmake -E make_directory build
-  cmake -E chdir build cmake .. -D OSX=ON -D STANDALONE=$STANDALONE -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8 -C build
+  cd build
+  cmake .. -D OSX=ON -D STANDALONE=$STANDALONE -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8
+  cd ..
 elif [[ ! -z "$ANDROID_NDK" ]]
 then
   TOOL_CHAIN="$ANDROID_NDK/build/cmake/android.toolchain.cmake"
@@ -200,8 +204,9 @@ then
   buildAndroid x86_64
 
 else
-  cmake -E make_directory build
-  cmake -E chdir build cmake -D BUILD_DEMOS=$DEMO -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8 -C build
+  cd build
+  cmake -D BUILD_DEMOS=$DEMO -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8
+  cd ..
 fi
 
 

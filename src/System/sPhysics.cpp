@@ -160,7 +160,7 @@ namespace Hop::System::Physics
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
-        double nx, ny, ntheta, at, bt, ct, sticktion, r, dx, dy, d;
+        double nx, ny, ntheta, at, bt, ct, sticktion, r, dx, dy, d, ar, br, cr;
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
@@ -184,12 +184,12 @@ namespace Hop::System::Physics
                 bt = 1.0/(1.0+ct);
                 at = (1.0-ct)*bt;
 
-                if (collideables.hasComponent(*it))
-                {
-                    cCollideable & data = collideables.get(*it);
-                    r = data.mesh.getRadius();
-                    dataP.tau -= dataP.phi * 50.0 * r*r;
-                }
+                // if (collideables.hasComponent(*it))
+                // {
+                //     cCollideable & data = collideables.get(*it);
+                //     r = data.mesh.getRadius();
+                //     dataP.tau -= dataP.phi * 50.0 * r*r;
+                // }
 
                 sticktion = std::sqrt(dataP.fx*dataP.fx+dataP.fy*dataP.fy);
 
@@ -234,18 +234,18 @@ namespace Hop::System::Physics
 
                 dataP.omega += dataP.tau;
 
-                // cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
-                // br = 1.0/(1.0+cr);
-                // ar = (1.0-cr)*br;
+                cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
+                br = 1.0/(1.0+cr);
+                ar = (1.0-cr)*br;
 
                 // std::cout << dataP.omega << "\n";
                 // if (sticktion < 9.81){
                 //     dataP.omega *= std::min((dataP.omega * dataP.omega), 1.0);
                 // }
 
-                ntheta = 2.0*dataT.theta - dataP.lastTheta + dtdt*dataP.omega/dataP.momentOfInertia;
+                // ntheta = 2.0*dataT.theta - dataP.lastTheta + dtdt*dataP.omega/dataP.momentOfInertia;
 
-                // ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
+                ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
 
                 dataP.phi = (ntheta-dataP.lastTheta)/(2.0*dt);
 
