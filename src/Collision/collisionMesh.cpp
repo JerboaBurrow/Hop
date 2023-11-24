@@ -121,7 +121,7 @@ namespace Hop::System::Physics
             }
         }
 
-        return m;
+        return m * (1.0/float(size()));
     }
 
     std::ostream & operator<<(std::ostream & o, Rectangle const & r)

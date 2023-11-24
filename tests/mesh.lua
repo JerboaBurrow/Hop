@@ -15,6 +15,16 @@ function createMesh(vertices, radius)
     v = {}
     N = #vertices
 
+    place = {0.0, 0.0}
+    place[1] = vertices[1][1]
+    place[2] = vertices[1][2]
+    lastPlace = {0.0, 0.0}
+    lastPlace[1] = place[1]
+    lastPlace[2] = place[2]
+    table.insert(v, {place[1], place[2], radius})
+    postCorner = false
+    cornerDist = 0.0
+
     for i = 1, N do
 
         if (#vertices[i] > 0 and #vertices[next(i, N)] > 0) then
@@ -25,68 +35,62 @@ function createMesh(vertices, radius)
             n[2] = vertices[next(i, N)][2] - vertices[i][2]
 
             d = norm(n)
+            diff = {place[1]-lastPlace[1], place[2]-lastPlace[2]}
 
             if (d > 0) then
-                dm = math.floor(d/(2.0*radius))
-                dm = math.max(dm, 2)
-                m = 0.0
-                for j = 0, dm do
-                    c = {0.0, 0.0, radius}
-                    c[1] = vertices[i][1] + n[1] * m/d
-                    c[2] = vertices[i][2] + n[2] * m/d
-                    table.insert(v, c)
-                    m = m + 2.0*radius
+
+                l = 0.0
+
+                while l <= d do
+
+                    if postCorner then
+                        l = cornerDist
+                        postCorner = false
+                    end
+                    nextPlace = {vertices[i][1]+l*n[1]/d, vertices[i][2]+l*n[2]/d}
+                    if (l <= d) then 
+                        if (i == N) then 
+                            diff = {nextPlace[1]-v[1][1], nextPlace[2]-v[1][2]}
+                            if (norm(diff)<radius) then
+                                break
+                            end
+                        end
+                        -- can place, not off end
+                        place[1] = nextPlace[1]
+                        place[2] = nextPlace[2]
+                        print(place[1], place[2])
+                        table.insert(v, {place[1], place[2], radius})
+                    end
+
+                    l = l + radius*2.0
                 end
+
             end
             
         end
 
-    end
+        lastPlace[1] = place[1]
+        lastPlace[2] = place[2]
 
-    n = {0.0, 0.0}
-    
-    n[1] = vertices[next(1, N)][1] - vertices[1][1]
-    n[2] = vertices[next(1, N)][2] - vertices[1][2]
+        postCorner = true
+        l = norm({vertices[next(i, N)][1]-lastPlace[1], vertices[next(i, N)][2]-lastPlace[2]})
+        ai = i
+        bi = next(i,N)
+        ci = next(next(i,N),N)
 
-    nt = {n[2], -n[1]}
-    dnt = norm(nt)
-    nt[1] = nt[1] / dnt
-    nt[2] = nt[2] / dnt 
+        s = {vertices[ai][1] - vertices[bi][1], vertices[ai][2] - vertices[bi][2]}
+        t = {vertices[ci][1] - vertices[bi][1], vertices[ci][2] - vertices[bi][2]}
 
-    d = norm(n)
-
-    t = {0.0, 0.0}
-    t[1] = vertices[1][1] + n[1] * 0.5
-    t[2] = vertices[1][2] + n[2] * 0.5
-
-    c = {0.0, 0.0}
-    c[1] = t[1] + nt[1]*radius
-    c[2] = t[2] + nt[2]*radius
-
-    com = {0.0, 0.0}
-
-    for i = 1, N do 
-        if (#vertices[i] > 0) then
-            com[1] = com[1] + vertices[i][1]
-            com[2] = com[2] + vertices[i][2]
+        ctheta = (s[1]*t[1]+s[2]*t[2])/(norm(s)*norm(t))
+        if (math.abs(ctheta) < 1e-3) then 
+            cornerDist = math.sqrt(l*l+4.0*radius*radius)
+        elseif ((ctheta*ctheta-1.0)*l*l+4.0*radius*radius < 0.0) then
+                cornerDist = math.sqrt(l*l+4.0*radius*radius)
+        else
+            s1 = l*ctheta + math.sqrt((ctheta*ctheta-1.0)*l*l+4.0*radius*radius)
+            s2 = l*ctheta - math.sqrt((ctheta*ctheta-1.0)*l*l+4.0*radius*radius)
+            cornerDist = math.max(s1,s2)
         end
-    end 
-    com[1] = com[1] / N
-    com[2] = com[2] / N
-
-    a = {0.0, 0.0}
-    b = {0.0, 0.0}
-
-    a[1] = c[1]-com[1]
-    a[2] = c[2]-com[2]
-    b[1] = t[1]-com[1]
-    b[2] = t[2]-com[2]
-
-    s = norm(a) / norm(b)
-
-    for i = 1, #v do
-        v[i][1] = s*(v[i][1]-com[1])+com[1]
-        v[i][2] = s*(v[i][2]-com[2])+com[2]
     end
 
     return v
