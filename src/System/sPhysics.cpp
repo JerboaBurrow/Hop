@@ -150,12 +150,6 @@ namespace Hop::System::Physics
     void sPhysics::update(EntityComponentSystem * m, ThreadPool * workers)
     {
 
-        // if (workers != nullptr)
-        // {
-        //     updateThreaded(m, workers);
-        //     return;
-        // }
-
         ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
@@ -184,22 +178,12 @@ namespace Hop::System::Physics
                 bt = 1.0/(1.0+ct);
                 at = (1.0-ct)*bt;
 
-                // if (collideables.hasComponent(*it))
-                // {
-                //     cCollideable & data = collideables.get(*it);
-                //     r = data.mesh.getRadius();
-                //     dataP.tau -= dataP.phi * 50.0 * r*r;
-                // }
-
                 sticktion = std::sqrt(dataP.fx*dataP.fx+dataP.fy*dataP.fy);
 
                 if (sticktion > 0.0){
 
                     nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
                     ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
-
-                    // nx = 2.0*dataT.x - dataP.lastX + dataP.fx*dtdt / PARTICLE_MASS;
-                    // ny = 2.0*dataT.y - dataP.lastY + dataP.fy*dtdt / PARTICLE_MASS;
 
                     if (r > 0)
                     {
@@ -237,13 +221,6 @@ namespace Hop::System::Physics
                 cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
                 br = 1.0/(1.0+cr);
                 ar = (1.0-cr)*br;
-
-                // std::cout << dataP.omega << "\n";
-                // if (sticktion < 9.81){
-                //     dataP.omega *= std::min((dataP.omega * dataP.omega), 1.0);
-                // }
-
-                // ntheta = 2.0*dataT.theta - dataP.lastTheta + dtdt*dataP.omega/dataP.momentOfInertia;
 
                 ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
 
@@ -294,28 +271,7 @@ namespace Hop::System::Physics
 
             dataP.fx += fx;
             dataP.fy += fy;
-
-            // if (m->hasComponent<cCollideable>(it->id))
-            // {
-            //     cCollideable & dataC = m->getComponent<cCollideable>(it->id);
-
-            //     for (unsigned i = 0; i < dataC.mesh.size(); i++)
-            //     {
-            //         std::shared_ptr<CollisionPrimitive> p = dataC.mesh[i];
-            //         Rectangle * r = dynamic_cast<Rectangle*>(p.get());
-
-            //         if (r == nullptr)
-            //         {
-            //             dataP.fx += fx;
-            //             dataP.fy += fy;
-            //         }
-            //         else
-            //         {
-            //             dataP.fx += fx;
-            //             dataP.fy += fy;
-            //         }
-            //     }
-            // }
+            
         }
 
     }
