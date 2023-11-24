@@ -140,6 +140,7 @@ if [[ $WINDOWS -eq 0 ]];
 then 
   cd build
   cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8
+  cd ..
   # now copy dlls
   PREFIX="x86_64-w64-mingw32"
 
