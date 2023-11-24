@@ -10,32 +10,7 @@ D_vertices =
     {0.08, -0.5}
 }
 
-E_vertices =
-{
-    {0.1, -0.5},
-    {-0.5, -0.5},
-    {-0.5,  0.5},
-    {0.25,   0.5},
-    {},
-    {-0.5, 0.0},
-    {0.25, 0.0},
-    {}
-}
-
-M_vertices =
-{
-    {-0.5, -0.5},
-    {-0.5, 0.5},
-    {0.0,  0.0},
-    {0.5,  0.5},
-    {0.5, -0.5},
-    {}
-}
-
-E_mesh = createMesh(E_vertices, 0.1)
--- table.remove(E_mesh, 1)
 D_mesh = createMesh(D_vertices, 0.1)
-M_mesh = createMesh(M_vertices, 0.1)
 
 s = 6.8*hop.maxCollisionPrimitiveSize()
 
@@ -57,7 +32,7 @@ for i = 1, 8 do
     o = {
 
         ["transform"] = {x,y,0.0,s},
-        -- ["colour"] = {200/255,200/255,250/255,1.0},
+        ["colour"] = {200/255,200/255,250/255,1.0},
         -- ["shader"] = "circleObjectShader",
         -- ["shader"] = "lineSegmentObjectShader",
         ["moveable"] = true,
@@ -68,35 +43,4 @@ for i = 1, 8 do
 
     hop.loadObject(o)
 
-    x = x + s
-
-    o = {
-
-        ["transform"] = {x,y,0.0,s},
-        -- ["colour"] = {200/255,200/255,250/255,1.0},
-        -- ["shader"] = "circleObjectShader",
-        -- ["shader"] = "lineSegmentObjectShader",
-        ["moveable"] = true,
-        ["collisionMesh"] = E_mesh,
-        ["name"] = ""
-
-    }
-
-    hop.loadObject(o)
-
-    x = x + s*0.75
-
-    o = {
-
-        ["transform"] = {x,y,0.0,s},
-        -- ["colour"] = {200/255,200/255,250/255,1.0},
-        -- ["shader"] = "circleObjectShader",
-        -- ["shader"] = "lineSegmentObjectShader",
-        ["moveable"] = true,
-        ["collisionMesh"] = M_mesh,
-        ["name"] = ""
-
-    }
-
-    hop.loadObject(o)
 end
