@@ -153,7 +153,7 @@ namespace Hop::Debugging
             "texCoord = pos;\n"
             "parameters.xy = rot * a_parameters.xy;\n"
             "parameters.zw = rot * a_parameters.zw;\n"
-            "oColour = vec4(0.0,0.0,1.0,1.0);\n"
+            "oColour = vec4(200.0/255.0,200.0/255.0,250.0/255.0,1.0);\n"
             "th = a_thickness;\n"
         "}";
 
@@ -173,7 +173,7 @@ namespace Hop::Debugging
             "q = mat2(d.x,-d.y,d.y,d.x)*q;\n"
             "q = abs(q)-vec2(l*0.5,th);\n"
             "float sd = length(max(q,0.0)) + min(max(q.x,q.y),0.0);"
-            "float alpha = 0.1;"
+            "float alpha = 1.0;"
             "if (sd <= 0.0) { colour = vec4(oColour.rgb,0.5); }"
             //"if (sd <= 0.1){ alpha = 1.0-smoothstep(0.0,0.1,sd); colour = vec4(oColour.rgb,alpha); }"
             "else { colour = vec4(oColour.rgb,alpha); }"
