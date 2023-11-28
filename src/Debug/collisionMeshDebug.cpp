@@ -211,7 +211,7 @@ namespace Hop::Debugging
             for (unsigned i = 0; i < c.mesh.size(); i++)
             {
                 CollisionPrimitive * cp = (c.mesh[i].get());
-                CollisionPrimitive * cpmodel = c.mesh.getModelVertex(i).get();
+                MeshPoint * cpmodel = c.mesh.getModelVertex(i).get();
                 Rectangle * r = dynamic_cast<Rectangle*>(cp);
 
                 if (r != nullptr)

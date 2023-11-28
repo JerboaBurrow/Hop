@@ -20,9 +20,12 @@ namespace Hop::Object::Component
             double x,
             double y, 
             double theta, 
-            double scale
+            double scale,
+            double stiffness = CollisionPrimitive::RIGID,
+            double damping = 1.0,
+            double mass = 1.0
         )
-        : mesh(CollisionMesh(v,x,y,theta,scale)), x(x), y(y)
+        : mesh(CollisionMesh(v,x,y,theta,scale, stiffness, damping, mass)), x(x), y(y)
         {}
 
         cCollideable(){}
@@ -31,10 +34,11 @@ namespace Hop::Object::Component
             double x,
             double y,
             double theta, 
-            double scale
+            double scale,
+            double dt
         )
         {
-            mesh.updateWorldMesh(x, y, theta, scale);
+            mesh.updateWorldMesh(x, y, theta, scale, dt);
             this->x = x;
             this->y = y;
         }

@@ -1,5 +1,5 @@
-#ifndef COLLISIONMESH_H
-#define COLLISIONMESH_H
+#ifndef COLLISIONMESH
+#define COLLISIONMESH
 
 #include <vector>
 #include <cmath>
@@ -17,49 +17,32 @@ namespace Hop::System::Physics
 
     const uint8_t LAST_INSIDE_COUNTER_MAX = 60;
 
-    struct CollisionPrimitive 
+    struct MeshPoint
     {
-        CollisionPrimitive() = default;
-
-        CollisionPrimitive(double x, double y, double r)
-        : x(x),y(y),r(r),lastInside(0)
+        MeshPoint(double x, double y, double r)
+        : x(x), y(y), r(r)
         {}
 
-        virtual ~CollisionPrimitive() = default;
-        // x position, y position, radius (model space)
-        //  of a collision point
-        double x, y, r;
-        uint8_t lastInside;
+        MeshPoint()
+        : x(0.0), y(0.0), r(0.0)
+        {}
 
-        void setRecentlyInside(int i){ lastInside =  i; }
-        bool recentlyInside() const { return lastInside > 0; }
+        virtual ~MeshPoint() = default;
+
+        double x; double y; double r;
     };
 
-    // struct LineSegment : public CollisionPrimitive 
-    // {
-    //     LineSegment(double x0, double x1, double y0, double y1, double th = 0.5)
-    //     : x0(x0), y0(y0), x1(x1), y1(y1)
-    //     {
-    //         r = std::sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
-    //         double nx = x1 > x0 ? 1.0 : -1.0;
-    //         double ny = y1 > y0 ? 1.0 : -1.0;
-    //         x = x0 + r/2.0 * nx;
-    //         y = y0 + r/2.0 * ny;
-    //         thickness = r*th;
-    //     }
-    //     double x0, x1, y0, y1, thickness;
-    // };
-
-    struct Rectangle : public CollisionPrimitive 
+    struct MeshRectangle : public MeshPoint
     {
-        Rectangle()
-        : Rectangle(0.0, 0.0,
+
+        MeshRectangle()
+        : MeshRectangle(0.0, 0.0,
                     0.0, 0.0,
                     0.0, 0.0,
                     0.0, 0.0)
         {}
 
-        Rectangle
+        MeshRectangle
         (        
             double llx, double lly,
             double ulx, double uly,
@@ -73,6 +56,143 @@ namespace Hop::System::Physics
         {
             x = (llx+ulx+urx+lrx)/4.0;
             y = (lly+uly+ury+lry)/4.0;
+
+            double dx = llx-x;
+            double dy = lly-y;
+
+            r = std::sqrt(dx*dx+dy*dy);
+        }
+
+        double llx, lly, ulx, uly, urx, ury, lrx, lry;
+    };
+
+    struct CollisionPrimitive 
+    {
+
+        static constexpr double RIGID = 1e6;
+
+        CollisionPrimitive() = default;
+
+        CollisionPrimitive
+        (
+            double x, 
+            double y, 
+            double r, 
+            double k = CollisionPrimitive::RIGID,
+            double d = 1.0,
+            double m = 1.0
+        )
+        : x(x),y(y),r(r),lastInside(0),
+          ox(x),oy(y),fx(0),fy(0),
+          xp(x),yp(y),
+          vx(0),vy(0),
+          stiffness(k), mass(m), damping(d)
+        {}
+
+        virtual ~CollisionPrimitive() = default;
+        // x position, y position, radius (model space)
+        //  of a collision point
+        double x, y, r;
+        uint8_t lastInside;
+
+        double ox, oy;
+
+        double fx, fy, xp, yp, vx, vy;
+
+        double stiffness = CollisionPrimitive::RIGID;
+        double mass, damping;
+
+        void setRecentlyInside(int i){ lastInside =  i; }
+        bool recentlyInside() const { return lastInside > 0; }
+
+        bool isRigid() { return stiffness >= RIGID; }
+
+        void applyForce(double x, double y)
+        {
+            fx+=x;
+            fy+=y;
+        }
+
+        void setOrigin
+        (
+            double nox, 
+            double noy
+        )
+        {
+            ox = nox;
+            oy = noy;
+            x = ox;
+            y = oy;
+            xp = ox;
+            yp = oy;
+        }
+
+        void step
+        (
+            double dt,
+            double nox,
+            double noy
+        )
+        {
+
+            ox = nox;
+            oy = noy;
+
+            double rox = x-ox;
+            double roy = y-oy;
+
+            std::cout << ox << ", " << oy << ", " << x << ", " << y << ", " << fx << ", " << fy << ", " << vx << ", " << vy << "\n";
+
+            // spring with relaxed state at ox, oy;
+            double ax = (fx-stiffness*rox-damping*vx)/mass;
+            double ay = (fy-stiffness*roy-damping*vy)/mass;
+
+            fx = 0.0;
+            fy = 0.0;
+
+            double xtp = x;
+            double ytp = y;
+
+            x = 2.0*x - xp + ax * dt*dt;
+            y = 2.0*y - yp + ay * dt*dt;
+
+            vx = (x-xtp)/(2.0*dt);
+            vy = (y-ytp)/(2.0*dt);
+
+            xp = xtp;
+            yp = ytp;
+        }
+
+    };
+
+    struct Rectangle : public CollisionPrimitive 
+    {
+        Rectangle()
+        : Rectangle(0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0,
+                    0.0, 0.0)
+        {
+            stiffness = CollisionPrimitive::RIGID;
+        }
+
+        Rectangle
+        (        
+            double llx, double lly,
+            double ulx, double uly,
+            double urx, double ury,
+            double lrx, double lry,
+            double k = CollisionPrimitive::RIGID
+        )
+        : llx(llx), lly(lly),
+          ulx(ulx), uly(uly),
+          urx(urx), ury(ury),
+          lrx(lrx), lry(lry)
+        {
+            x = (llx+ulx+urx+lrx)/4.0;
+            y = (lly+uly+ury+lry)/4.0;
+
+            stiffness = k;
 
             double dx = llx-x;
             double dy = lly-y;
@@ -157,29 +277,56 @@ namespace Hop::System::Physics
             double x,
             double y, 
             double theta, 
-            double scale
+            double scale,
+            double stiffness = CollisionPrimitive::RIGID,
+            double damping = 1.0,
+            double mass = 1.0
         )
-        : CollisionMesh(std::move(v))
+        : CollisionMesh(std::move(v), stiffness, damping, mass)
         {
-            updateWorldMesh(x,y,theta,scale);
+            updateWorldMesh(x,y,theta,scale, 0.0, true);
         }
 
         CollisionMesh
         (
-            std::vector<std::shared_ptr<CollisionPrimitive>> v
+            std::vector<std::shared_ptr<CollisionPrimitive>> v,
+            double stiffness = CollisionPrimitive::RIGID,
+            double damping = 1.0,
+            double mass = 1.0
         )
         {
-            vertices=std::move(v);
-            worldVertices.clear();
-            for (unsigned i = 0; i < vertices.size(); i++)
+            if (stiffness >= CollisionPrimitive::RIGID)
             {
-                CollisionPrimitive * c = (vertices[i].get());
+                rigid = true;
+            }
+            else 
+            {
+                rigid = false;
+            }
+            worldVertices.clear();
+            for (unsigned i = 0; i < v.size(); i++)
+            {
+                CollisionPrimitive * c = (v[i].get());
                 Rectangle * l = dynamic_cast<Rectangle*>(c);
 
                 std::shared_ptr<CollisionPrimitive> p;
 
                 if (l != nullptr)
                 {
+                    vertices.push_back
+                    (
+                        std::move
+                        (
+                            std::make_shared<MeshRectangle>
+                            (
+                                l->llx, l->lly,
+                                l->ulx, l->uly,
+                                l->urx, l->ury,
+                                l->lrx, l->lry
+                            )
+                        )
+                    );
+
                     p = std::make_shared<Rectangle>
                     (
                         Rectangle
@@ -187,15 +334,27 @@ namespace Hop::System::Physics
                             l->llx, l->lly,
                             l->ulx, l->uly,
                             l->urx, l->ury,
-                            l->lrx, l->lry
+                            l->lrx, l->lry,
+                            stiffness
                         )
                     );
+
                 }
                 else
                 {
+                    vertices.push_back
+                    (
+                        std::move
+                        (
+                            std::make_shared<MeshPoint>
+                            (
+                                c->x, c->y, c->r
+                            )
+                        )
+                    );
                     p = std::make_shared<CollisionPrimitive>
                     (
-                        CollisionPrimitive(c->x,c->y,c->r)
+                        CollisionPrimitive(c->x,c->y,c->r, stiffness, damping, mass)
                     );
                 }
 
@@ -207,7 +366,7 @@ namespace Hop::System::Physics
         
         size_t size(){return vertices.size();}
 
-        std::shared_ptr<CollisionPrimitive> getModelVertex(size_t i)
+        std::shared_ptr<MeshPoint> getModelVertex(size_t i)
         {
             return vertices[i];
         }
@@ -221,8 +380,41 @@ namespace Hop::System::Physics
             double x,
             double y,
             double theta, 
-            double scale
+            double scale,
+            double dt,
+            bool init = false
+        )
+        {
+            if (isRigid())
+            {
+                return updateWorldMeshRigid(x, y, theta, scale, dt, init);
+            }
+            else 
+            {
+                return updateWorldMeshSoft(x, y, theta, scale, dt, init);
+            }
+        }
+
+        void updateWorldMeshRigid(
+            double x,
+            double y,
+            double theta, 
+            double scale,
+            double dt,
+            bool init = false
         );
+
+        void updateWorldMeshSoft(
+            double x,
+            double y,
+            double theta, 
+            double scale,
+            double dt,
+            bool init = false
+        );
+
+        double bestAngle();
+        void centerOfMass(double & cx, double & cy);
 
         double momentOfInertia();
         void computeRadius();
@@ -232,16 +424,27 @@ namespace Hop::System::Physics
         double getY(){return y;}
         double getTheta(){return theta;}
         double getScale(){return scale;}
+
+        bool isRigid(){ return rigid; }
+
+        void applyForce(double fx, double fy)
+        {
+            for (auto w : worldVertices)
+            {
+                w->applyForce(fx/size(), fy/size());
+            }
+        }
         
     private:
 
-        std::vector<std::shared_ptr<CollisionPrimitive>> vertices;
+        std::vector<std::shared_ptr<MeshPoint>> vertices;
         std::vector<std::shared_ptr<CollisionPrimitive>> worldVertices;
 
         double radius, x, y, theta, scale;
 
+        bool rigid = true;
     };
 
 }
 
-#endif /* COLLISIONMESH_H */
+#endif /* COLLISIONMESH */

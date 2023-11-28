@@ -103,7 +103,8 @@ namespace Hop::System::Physics
                     dataT.x,
                     dataT.y,
                     dataT.theta,
-                    dataT.scale
+                    dataT.scale,
+                    dt
                 );
             }
         }
@@ -158,11 +159,19 @@ namespace Hop::System::Physics
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
+        bool rigid = false;
+
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
             r = 0.0;
             cTransform & dataT = transforms.get(*it);
             cPhysics & dataP = physics.get(*it);
+
+            if (collideables.hasComponent(*it))
+            {
+                cCollideable & data = collideables.get(*it);
+                rigid = data.mesh.isRigid();
+            }
 
             if (!dataP.isMoveable)
             {
@@ -171,7 +180,7 @@ namespace Hop::System::Physics
                 dataP.vx = 0.0;
                 dataP.vy = 0.0;
             }
-            else
+            else if (rigid)
             {
                 
                 ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
@@ -245,13 +254,28 @@ namespace Hop::System::Physics
             if (collideables.hasComponent(*it))
             {
                 cCollideable & data = collideables.get(*it);
-                data.mesh.updateWorldMesh(
+                data.updateWorldMesh(
                     dataT.x,
                     dataT.y,
                     dataT.theta,
-                    dataT.scale
+                    dataT.scale,
+                    dt
                 );
                 dataP.momentOfInertia = data.mesh.momentOfInertia()*PARTICLE_MASS;
+
+                if (!rigid)
+                {
+                    dataT.x = data.mesh.getX();
+                    dataP.x = dataT.x;
+                    dataP.lastX = dataT.x;
+
+                    dataT.y = data.mesh.getY();
+                    dataP.y = dataT.y;
+                    dataP.lastY = dataT.y;
+
+                    dataT.theta = data.mesh.getTheta();
+                    dataP.lastTheta = dataT.theta;
+                }
             }
         }
     }
@@ -264,9 +288,20 @@ namespace Hop::System::Physics
 
         double fx = ngx*gravity; double fy = ngy*gravity;
 
+        ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
+
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
 
+            if (collideables.hasComponent(*it))
+            {
+                cCollideable & data = collideables.get(*it);
+                if (!data.mesh.isRigid())
+                {   
+                    data.mesh.applyForce(fx, fy);
+                    continue;
+                }
+            }
             cPhysics & dataP = m->getComponent<cPhysics>(it->id);
 
             dataP.fx += fx;
