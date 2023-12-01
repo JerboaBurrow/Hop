@@ -44,7 +44,7 @@ for i = 1, 1 do
         ["colour"] = {200/255,250/255,250/255,1.0},
         ["moveable"] = true,
         ["collisionMesh"] = S_mesh,
-        ["meshParameters"] = {1000.0, 0.0, 0.1},
+        ["meshParameters"] = {10000.0, 10.0, 0.1},
         ["name"] = ""
 
     }

@@ -99,7 +99,7 @@ namespace Hop::System::Physics
             if (collideables.hasComponent(id))
             {
                 cCollideable & data = collideables.get(id);
-                data.updateWorldMesh(
+                data.updateMesh(
                     dataT.x,
                     dataT.y,
                     dataT.theta,
@@ -254,7 +254,7 @@ namespace Hop::System::Physics
             if (collideables.hasComponent(*it))
             {
                 cCollideable & data = collideables.get(*it);
-                data.updateWorldMesh(
+                data.updateMesh(
                     dataT.x,
                     dataT.y,
                     dataT.theta,

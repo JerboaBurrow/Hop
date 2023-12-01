@@ -31,10 +31,11 @@ namespace Hop::Object::Component
             double x,
             double y,
             double theta, 
-            double scale
+            double scale,
+            double dt
         )
         {
-            mesh.updateWorldMesh(x, y, theta, scale);
+            mesh.updateWorldMesh(x, y, theta, scale, dt);
             this->x = x;
             this->y = y;
         }

@@ -141,8 +141,6 @@ namespace Hop::System::Physics
             double rox = x-ox;
             double roy = y-oy;
 
-            std::cout << ox << ", " << oy << ", " << x << ", " << y << ", " << fx << ", " << fy << ", " << vx << ", " << vy << "\n";
-
             // spring with relaxed state at ox, oy;
             double ax = (fx-stiffness*rox-damping*vx)/mass;
             double ay = (fy-stiffness*roy-damping*vy)/mass;
@@ -414,11 +412,13 @@ namespace Hop::System::Physics
         );
 
         double bestAngle();
-        void centerOfMass(double & cx, double & cy);
+        void centerOfMassWorld(double & cx, double & cy);
+        void modelToCenterOfMassFrame();
 
         double momentOfInertia();
         void computeRadius();
         double getRadius(){return radius;}
+        double netTorque();
 
         double getX(){return x;}
         double getY(){return y;}
@@ -431,7 +431,7 @@ namespace Hop::System::Physics
         {
             for (auto w : worldVertices)
             {
-                w->applyForce(fx/size(), fy/size());
+                w->applyForce(fx, fy);
             }
         }
         

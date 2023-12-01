@@ -30,7 +30,7 @@ namespace Hop::Object::Component
 
         cCollideable(){}
 
-        void updateWorldMesh(
+        void updateMesh(
             double x,
             double y,
             double theta, 
@@ -39,8 +39,8 @@ namespace Hop::Object::Component
         )
         {
             mesh.updateWorldMesh(x, y, theta, scale, dt);
-            this->x = x;
-            this->y = y;
+            this->x = mesh.getX();
+            this->y = mesh.getY();
         }
 
     };

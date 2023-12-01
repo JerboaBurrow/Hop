@@ -64,7 +64,7 @@ namespace Hop::System::Physics
         computeRadius();
     }
 
-    void CollisionMesh::centerOfMass(double & cx, double & cy)
+    void CollisionMesh::centerOfMassWorld(double & cx, double & cy)
     {
         cx = 0.0;
         cy = 0.0;
@@ -73,15 +73,34 @@ namespace Hop::System::Physics
             cx += worldVertices[i]->x;
             cy += worldVertices[i]->y;
         }
-        cx /= float(worldVertices.size());
-        cy /= float(worldVertices.size());
+        cx /= double(worldVertices.size());
+        cy /= double(worldVertices.size());
+    }
+
+    void CollisionMesh::modelToCenterOfMassFrame()
+    {
+        double cx = 0.0;
+        double cy = 0.0;
+        for (unsigned i = 0; i < vertices.size(); i++)
+        {
+            cx += vertices[i]->x;
+            cy += vertices[i]->y;
+        }
+        cx /= double(vertices.size());
+        cy /= double(vertices.size());
+
+        for (unsigned i = 0; i < vertices.size(); i++)
+        {
+            vertices[i]->x -= cx;
+            vertices[i]->y -= cy;
+        }
     }
 
     double CollisionMesh::bestAngle()
     {
         double cx = 0.0;
         double cy = 0.0;
-        centerOfMass(cx, cy);
+        centerOfMassWorld(cx, cy);
         double a = 0.0;
         double b = 0.0;
         double refx, refy;
@@ -100,7 +119,17 @@ namespace Hop::System::Physics
 
         double omega = std::atan2(a, b);
 
-        return omega < 0.0 ? 2.0*M_PI+omega : omega;
+        return omega;
+    }
+    
+    double CollisionMesh::netTorque()
+    {
+        double tau = 0.0;
+        for (auto p : worldVertices)
+        {
+            tau += (p->x - x) * p->fx - (p->y - y) * p->fy;
+        }
+        return tau;
     }
 
     void CollisionMesh::updateWorldMeshSoft(
@@ -119,18 +148,21 @@ namespace Hop::System::Physics
             this->y = y;
             this->theta = theta;
             this->scale = scale;
+            modelToCenterOfMassFrame();
         }
         
         double c = std::cos(theta);
         double s = std::sin(theta);
 
         double omega = bestAngle();
+        this->theta = omega;
 
         double co = std::cos(omega);
         double so = std::sin(omega);
 
-        std::vector<uint8_t> inside(worldVertices.size());
 
+        std::vector<uint8_t> inside(worldVertices.size());
+        
         for (unsigned i = 0; i < vertices.size(); i++)
         {
             inside[i] = worldVertices[i]->lastInside;
@@ -138,8 +170,8 @@ namespace Hop::System::Physics
             {
                 worldVertices[i]->setOrigin
                 (
-                    (vertices[i]->x*c + vertices[i]->y*s)*scale + x,
-                    (vertices[i]->y*c - vertices[i]->x*s)*scale + y
+                    (vertices[i]->x*c + vertices[i]->y*s)*this->scale + this->x,
+                    (vertices[i]->y*c - vertices[i]->x*s)*this->scale + this->y
                 );
             }
             else
@@ -147,12 +179,12 @@ namespace Hop::System::Physics
                 worldVertices[i]->step
                 (
                     dt,
-                    (vertices[i]->x*co + vertices[i]->y*so)*scale + x,
-                    (vertices[i]->y*co - vertices[i]->x*so)*scale + y
+                    (vertices[i]->x*co + vertices[i]->y*so)*this->scale + this->x,
+                    (vertices[i]->y*co - vertices[i]->x*so)*this->scale + this->y
                 );
             }
 
-            worldVertices[i]->r = vertices[i]->r*scale;
+            worldVertices[i]->r = vertices[i]->r*this->scale;
             worldVertices[i]->lastInside = inside[i]; 
 
             Rectangle * lw = dynamic_cast<Rectangle*>(worldVertices[i].get());
@@ -183,13 +215,25 @@ namespace Hop::System::Physics
             }
         }
 
-        if (!init)
+        this->theta = omega;
+        centerOfMassWorld(this->x, this->y);
+
+        if (init)
         {
-            this->theta = omega;
-            centerOfMass(this->x, this->y);
+            double c = std::cos(this->theta);
+            double s = std::sin(this->theta);
+            for (unsigned i = 0; i < vertices.size(); i++)
+            {
+                worldVertices[i]->setOrigin
+                (
+                    (vertices[i]->x*c + vertices[i]->y*s)*this->scale + this->x,
+                    (vertices[i]->y*c - vertices[i]->x*s)*this->scale + this->y
+                );
+            }
         }
 
         computeRadius();
+
     }
 
     void CollisionMesh::computeRadius()
