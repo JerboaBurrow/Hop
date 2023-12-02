@@ -16,6 +16,7 @@ namespace Hop::Debugging
     using Hop::Object::EntityComponentSystem;
     using Hop::Object::Component::cCollideable;
     using Hop::System::Physics::CollisionPrimitive;
+    using Hop::System::Physics::MeshPoint;
     using Hop::System::Physics::Rectangle;
     using Hop::Object::Component::cRenderable;
 
