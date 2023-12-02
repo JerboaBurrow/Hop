@@ -12,8 +12,6 @@ namespace Hop::Object::Component
     {
         CollisionMesh mesh;
 
-        double x, y;
-
         cCollideable
         (
             std::vector<std::shared_ptr<CollisionPrimitive>> v,
@@ -25,22 +23,17 @@ namespace Hop::Object::Component
             double damping = 1.0,
             double mass = 1.0
         )
-        : mesh(CollisionMesh(v,x,y,theta,scale, stiffness, damping, mass)), x(x), y(y)
+        : mesh(CollisionMesh(v,x,y,theta,scale, stiffness, damping, mass))
         {}
 
         cCollideable(){}
 
         void updateMesh(
-            double x,
-            double y,
-            double theta, 
-            double scale,
+            cTransform & transform,
             double dt
         )
         {
-            mesh.updateWorldMesh(x, y, theta, scale, dt);
-            this->x = mesh.getX();
-            this->y = mesh.getY();
+            mesh.updateWorldMesh(transform, dt);
         }
 
     };

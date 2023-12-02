@@ -3,14 +3,17 @@
 
 #include <vector>
 #include <cmath>
-#include <Maths/vertex.h>
-#include <Maths/transform.h>
 #include <limits>
 #include <cstdint>
 #include <memory>
 #include <iostream>
 
+#include <Maths/vertex.h>
+#include <Maths/transform.h>
+#include <Component/cTransform.h>
+
 using Hop::Maths::Vertex;
+using Hop::Object::Component::cTransform;
 
 namespace Hop::System::Physics
 {
@@ -282,7 +285,8 @@ namespace Hop::System::Physics
         )
         : CollisionMesh(std::move(v), stiffness, damping, mass)
         {
-            updateWorldMesh(x,y,theta,scale, 0.0, true);
+            cTransform transform(x,y,theta,scale);
+            updateWorldMesh(transform, 0.0, true);
         }
 
         CollisionMesh
@@ -375,55 +379,40 @@ namespace Hop::System::Physics
         }
 
         void updateWorldMesh(
-            double x,
-            double y,
-            double theta, 
-            double scale,
+            cTransform & transform,
             double dt,
             bool init = false
         )
         {
             if (isRigid())
             {
-                return updateWorldMeshRigid(x, y, theta, scale, dt, init);
+                return updateWorldMeshRigid(transform, dt, init);
             }
             else 
             {
-                return updateWorldMeshSoft(x, y, theta, scale, dt, init);
+                return updateWorldMeshSoft(transform, dt, init);
             }
         }
 
         void updateWorldMeshRigid(
-            double x,
-            double y,
-            double theta, 
-            double scale,
+            const cTransform & transform,
             double dt,
             bool init = false
         );
 
         void updateWorldMeshSoft(
-            double x,
-            double y,
-            double theta, 
-            double scale,
+            cTransform & transform,
             double dt,
             bool init = false
         );
 
-        double bestAngle();
+        double bestAngle(double x, double y, double scale);
         void centerOfMassWorld(double & cx, double & cy);
         void modelToCenterOfMassFrame();
 
-        double momentOfInertia();
+        double momentOfInertia(double x, double y);
         void computeRadius();
         double getRadius(){return radius;}
-        double netTorque();
-
-        double getX(){return x;}
-        double getY(){return y;}
-        double getTheta(){return theta;}
-        double getScale(){return scale;}
 
         bool isRigid(){ return rigid; }
 
@@ -440,7 +429,7 @@ namespace Hop::System::Physics
         std::vector<std::shared_ptr<MeshPoint>> vertices;
         std::vector<std::shared_ptr<CollisionPrimitive>> worldVertices;
 
-        double radius, x, y, theta, scale;
+        double radius;
 
         bool rigid = true;
     };
