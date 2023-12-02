@@ -15,6 +15,7 @@ callgrind*
 !zlib.map
 zlib_build/*
 demo/android/perlinWorld/app/.cxx/*
+/home/jerboa/Hop/demo/android/perlinWorld/app/src/main/include/*
 demo/desktop/include/SFML-2.5.1/build
 perf.*
 **.gradle

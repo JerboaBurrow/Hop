@@ -200,8 +200,8 @@ jobs:
 
     - name: linux-android-demo
       run: |
+        cp -r include/ demo/android/perlinWorld/app/src/main/cpp/
         cp -r build/*.a demo/android/perlinWorld/app/src/main/cpp/include/
-        cp -r include/* demo/android/perlinWorld/app/src/main/cpp/include/
         cd demo/android/perlinWorld
         ./gradlew assembleDebug
         cd ~/

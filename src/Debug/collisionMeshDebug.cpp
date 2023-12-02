@@ -202,16 +202,17 @@ namespace Hop::Debugging
             
             cCollideable & c = m->getComponent<cCollideable>(citer->first);
             cRenderable & ren = m->getComponent<cRenderable>(citer->first);
+            cTransform & trans = m->getComponent<cTransform>(citer->first);
 
-            x = c.mesh.getX();
-            y = c.mesh.getY();
-            theta = c.mesh.getTheta();
-            scale = c.mesh.getScale();
+            x = trans.x;
+            y = trans.y;
+            theta = trans.theta;
+            scale = trans.scale;
 
             for (unsigned i = 0; i < c.mesh.size(); i++)
             {
                 CollisionPrimitive * cp = (c.mesh[i].get());
-                CollisionPrimitive * cpmodel = c.mesh.getModelVertex(i).get();
+                MeshPoint * cpmodel = c.mesh.getModelVertex(i).get();
                 Rectangle * r = dynamic_cast<Rectangle*>(cp);
 
                 if (r != nullptr)
