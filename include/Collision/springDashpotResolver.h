@@ -74,7 +74,8 @@ namespace Hop::System::Physics
         (
             cPhysics & pI, cPhysics & pJ,
             double dd, double rx, double ry, double rc,
-            double pxi, double pyi, double pxj, double pyj
+            double pxi, double pyi, double pxj, double pyj,
+            double & fx, double & fy
         );
 
         void springDashpotWallForce
@@ -84,7 +85,8 @@ namespace Hop::System::Physics
             double d2,
             double c,
             double px, double py,
-            cPhysics & dataP
+            cPhysics & dataP,
+            double & fx, double & fy
         );
 
         void springDashpotForce
@@ -92,7 +94,8 @@ namespace Hop::System::Physics
             cPhysics & pI,
             cPhysics & pJ,
             double odod, double nx, double ny,
-            double px, double py
+            double px, double py,
+            double & fx, double & fy
         );
 
         void collisionForce

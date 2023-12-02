@@ -298,6 +298,8 @@ int main(int argc, char ** argv)
     glClearColor(1.0f,1.0f,1.0f,1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    tp0 = high_resolution_clock::now();
+
     collisions.centreOn(world.get()->getMapCenter());
     
     if (!paused)

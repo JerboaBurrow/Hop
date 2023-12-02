@@ -78,7 +78,7 @@ namespace Hop::Maths
             }
         }
 
-        if (i == j)
+        if (int(i) == j)
         {
             return v[i];
         }
@@ -126,7 +126,6 @@ namespace Hop::Maths
 
     Line findDiagonal(const Polygon & p, unsigned i)
     {
-        unsigned n = p.length();
         Triangle abc = p.centeredTriangle(i);
 
         Vertex a = abc.a;
@@ -235,7 +234,6 @@ namespace Hop::Maths
 
         tri = Triangle(b, intersection, pk);
 
-        Vertex z = a;
         std::vector<unsigned> S;
         s = p.next(i);
 

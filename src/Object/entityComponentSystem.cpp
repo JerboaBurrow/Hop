@@ -120,9 +120,8 @@ namespace Hop::Object
         systemManager.setSignature<sCollision>(sCollisionSig);
         
     }
-
-    // Lua bindings
-
-    #include <Object/LuaBindings/lua_loadObject.cpp>
-
 }
+
+// Lua bindings
+
+#include <Object/LuaBindings/lua_loadObject.cpp>

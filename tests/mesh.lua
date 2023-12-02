@@ -58,7 +58,6 @@ function createMesh(vertices, radius)
                         -- can place, not off end
                         place[1] = nextPlace[1]
                         place[2] = nextPlace[2]
-                        print(place[1], place[2])
                         table.insert(v, {place[1], place[2], radius})
                     end
 

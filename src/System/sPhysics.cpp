@@ -32,121 +32,6 @@ namespace Hop::System::Physics
         }
     }
 
-
-    void sPhysics::processThreaded(
-        ComponentArray<cCollideable> & collideables,
-        ComponentArray<cPhysics> & physics,
-        ComponentArray<cTransform> & transforms,
-        Id * jobs,
-        unsigned njobs
-    )
-    {
-        double nx, ny, ntheta, ar, br, cr, at, bt, ct;
-        double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
-
-        for (unsigned i = 0; i < njobs; i++)
-        {
-
-            Id id = jobs[i];
-
-            cTransform & dataT = transforms.get(id);
-            cPhysics & dataP = physics.get(id);
-
-            if (!dataP.isMoveable)
-            {
-                dataP.fx = 0.0;
-                dataP.fy = 0.0;
-                dataP.vx = 0.0;
-                dataP.vy = 0.0;
-            }
-            else
-            {
-
-                ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
-                bt = 1.0/(1.0+ct);
-                at = (1.0-ct)*bt;
-
-                nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
-                ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
-
-                dataP.vx = (nx-dataP.lastX)/(dt*2.0);
-                dataP.vy = (ny-dataP.lastY)/(dt*2.0);
-
-                dataP.lastX = dataT.x;
-                dataP.lastY = dataT.y;
-
-                dataP.fx = 0.0;
-                dataP.fy = 0.0;
-
-                cr = dt * dataP.rotationalDrag / (2.0*dataP.momentOfInertia);
-                br = 1.0/(1.0+cr);
-                ar = (1.0-cr)*br;
-
-                ntheta = 2.0*br*dataT.theta-ar*dataP.lastTheta+br*dataP.omega*dtdt/dataP.momentOfInertia;
-
-                dataP.phi = (ntheta-dataP.lastTheta)/2.0;
-
-                dataP.lastTheta = dataT.theta;
-
-                dataP.omega = 0.0;
-
-                dataT.x = nx;
-                dataT.y = ny;
-                dataT.theta = ntheta;
-
-            }
-        
-            if (collideables.hasComponent(id))
-            {
-                cCollideable & data = collideables.get(id);
-                data.updateWorldMesh(
-                    dataT.x,
-                    dataT.y,
-                    dataT.theta,
-                    dataT.scale
-                );
-            }
-        }
-    }
-
-    void sPhysics::updateThreaded(EntityComponentSystem * m,  ThreadPool * workers)
-    {
-
-        ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
-        ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
-        ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
-
-        unsigned nThreads = workers->size();
-        unsigned jobsPerThread = std::floor(objects.size()/nThreads);
-        Id jobs[nThreads][jobsPerThread];
-
-        auto iter = objects.begin();
-        for (unsigned t = 0; t < nThreads; t++)
-        {
-            for (unsigned j = t*jobsPerThread; j < (t+1)*jobsPerThread; j++)
-            {
-                jobs[t][j] = *iter;
-                iter++;
-            }
-        }
-
-        for (unsigned j = 0; j < nThreads; j++)
-        {
-            workers->queueJob(
-                std::bind(
-                    &sPhysics::processThreaded,
-                    this,
-                    collideables,
-                    physics,
-                    transforms,
-                    &jobs[j][0],
-                    jobsPerThread
-                )
-            );
-        }
-        workers->wait();
-    }
-
     void sPhysics::update(EntityComponentSystem * m, ThreadPool * workers)
     {
 
@@ -158,11 +43,19 @@ namespace Hop::System::Physics
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
+        bool rigid = false;
+
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
             r = 0.0;
             cTransform & dataT = transforms.get(*it);
             cPhysics & dataP = physics.get(*it);
+
+            if (collideables.hasComponent(*it))
+            {
+                cCollideable & data = collideables.get(*it);
+                rigid = data.mesh.isRigid();
+            }
 
             if (!dataP.isMoveable)
             {
@@ -171,7 +64,7 @@ namespace Hop::System::Physics
                 dataP.vx = 0.0;
                 dataP.vy = 0.0;
             }
-            else
+            else if (rigid)
             {
                 
                 ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
@@ -245,13 +138,11 @@ namespace Hop::System::Physics
             if (collideables.hasComponent(*it))
             {
                 cCollideable & data = collideables.get(*it);
-                data.mesh.updateWorldMesh(
-                    dataT.x,
-                    dataT.y,
-                    dataT.theta,
-                    dataT.scale
+                data.updateMesh(
+                    dataT,
+                    dt
                 );
-                dataP.momentOfInertia = data.mesh.momentOfInertia()*PARTICLE_MASS;
+                dataP.momentOfInertia = data.mesh.momentOfInertia(dataT.x, dataT.y)*PARTICLE_MASS;
             }
         }
     }
@@ -264,9 +155,20 @@ namespace Hop::System::Physics
 
         double fx = ngx*gravity; double fy = ngy*gravity;
 
+        ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
+
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
 
+            if (collideables.hasComponent(*it))
+            {
+                cCollideable & data = collideables.get(*it);
+                if (!data.mesh.isRigid())
+                {   
+                    data.mesh.applyForce(fx, fy);
+                    continue;
+                }
+            }
             cPhysics & dataP = m->getComponent<cPhysics>(it->id);
 
             dataP.fx += fx;
