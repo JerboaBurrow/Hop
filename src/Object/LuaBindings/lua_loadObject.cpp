@@ -28,9 +28,9 @@
 
 namespace Hop::Object
 {
-    using System::Physics::CollisionMesh;
-    using System::Physics::CollisionPrimitive;
-    using System::Physics::Rectangle;
+    using Hop::System::Physics::CollisionMesh;
+    using Hop::System::Physics::CollisionPrimitive;
+    using Hop::System::Physics::Rectangle;
 
     int EntityComponentSystem::lua_loadObject(lua_State * lua)
     {
