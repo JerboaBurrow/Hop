@@ -123,7 +123,7 @@ namespace Hop::Logging
     finally a msg
   */
 
-  enum ERRORCODE { UNSPECIFIED, LUA};
+  enum ERRORCODE { UNSPECIFIED, LUA_ERROR};
 
   std::string operator+ (std::string s, const ERRORCODE e);
 
