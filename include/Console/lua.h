@@ -1,8 +1,11 @@
-#ifndef LUAUTILS_H
-#define LUAUTILS_H
+#ifndef LUA
+#define LUA
 
 #include <vector>
+#include <array>
 #include <string>
+#include <stdexcept>
+#include <algorithm>
 
 extern "C"
 {
@@ -20,4 +23,4 @@ namespace Hop
 
 }
 
-#endif /* LUAUTILS_H */
+#endif /* LUA */
