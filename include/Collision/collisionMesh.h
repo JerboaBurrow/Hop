@@ -185,7 +185,8 @@ namespace Hop::System::Physics
             double lrx, double lry,
             double k = CollisionPrimitive::RIGID
         )
-        : llx(llx), lly(lly),
+        :
+          llx(llx), lly(lly),
           ulx(ulx), uly(uly),
           urx(urx), ury(ury),
           lrx(lrx), lry(lry)
@@ -203,6 +204,18 @@ namespace Hop::System::Physics
             lastInside = 0;
 
             resetAxes();
+
+            damping = 0.0;
+            stiffness = k;
+            mass = 1.0;
+            xp = x;
+            yp = y;
+            ox = x;
+            oy = y;
+            vx = 0.0;
+            vy = 0.0;
+            fx = 0.0;
+            fy = 0.0;
         }
 
         void resetAxes()
