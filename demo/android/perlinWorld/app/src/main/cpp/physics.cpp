@@ -10,7 +10,7 @@ extern "C"
     {
         if (manager != nullptr)
         {
-            physics->step(manager, collisions, world, nullptr);
+            physics->step(manager, collisions, world);
         }
     }
 }

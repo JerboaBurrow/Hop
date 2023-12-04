@@ -198,7 +198,7 @@ int main(int argc, char ** argv)
 
         collisions.centreOn(world.get()->getMapCenter());
         
-        physics.step(&manager, &collisions, world.get(), &workers);
+        physics.step(&manager, &collisions, world.get());
 
         tp1 = high_resolution_clock::now();
 
