@@ -1,92 +1,4 @@
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <iomanip>
-
-#include <gl.h>
-
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
-
-#include <time.h>
-#include <random>
-#include <math.h>
-#include <vector>
-
-#include <chrono>
-using namespace std::chrono;
-
-#include <logo.h>
-
-#include <Display/display.h>
-#include <orthoCam.h>
-
-#include <Text/textRenderer.h>
-
-#include <Object/entityComponentSystem.h>
-
-#include <System/sPhysics.h>
-#include <System/Rendering/sRender.h>
-#include <System/sCollision.h>
-
-#include <World/world.h>
-#include <World/marchingWorld.h>
-#include <World/tileWorld.h>
-
-#include <Console/console.h>
-
-#include <Util/util.h>
-#include <log.h>
-
-#include <Debug/collisionMeshDebug.h>
-
-using namespace std::chrono;
-
-const int resX = 1000;
-const int resY = 1000;
-const float MAX_SPEED = 1.0/60.0;
-const unsigned MAX_THREADS = 0;
-
-// for smoothing delta numbers
-uint8_t frameId = 0;
-double deltas[60];
-
-bool debug = false;
-
-const double deltaPhysics = 1.0/(900.0);
-const unsigned subSamples = 1;
-
-using Hop::Object::Component::cTransform;
-using Hop::Object::Component::cPhysics;
-using Hop::Object::Component::cRenderable;
-using Hop::Object::Component::cCollideable;
-using Hop::Object::EntityComponentSystem;
-using Hop::Object::Id;
-
-using Hop::System::Rendering::OrthoCam;
-using Hop::System::Rendering::Type;
-using Hop::System::Rendering::TextRenderer;
-using Hop::System::Rendering::sRender;
-using Hop::System::Rendering::Shaders;
-
-using Hop::System::Physics::CollisionDetector;
-using Hop::System::Physics::CollisionResolver;
-using Hop::System::Physics::sPhysics;
-using Hop::System::Physics::sCollision;
-
-using Hop::System::Signature;
-
-using Hop::World::MapSource;
-using Hop::World::Boundary;
-using Hop::World::AbstractWorld;
-using Hop::World::TileWorld;
-using Hop::World::MarchingWorld;
-
-using Hop::Logging::INFO;
-using Hop::Logging::WARN;
-
-using Hop::Util::fixedLengthNumber;
+#include <main.h>
 
 int main(int argc, char ** argv)
 {
@@ -97,7 +9,7 @@ int main(int argc, char ** argv)
 
   sf::RenderWindow window(
     sf::VideoMode(resX,resY),
-    "Jerboa",
+    "Soft Body Tetris",
     sf::Style::Close|sf::Style::Titlebar,
     contextSettings);
 
@@ -120,8 +32,6 @@ int main(int argc, char ** argv)
 
   Hop::Console console(log);
 
-  ThreadPool workers(MAX_THREADS);
-
   TextRenderer textRenderer(glm::ortho(0.0,double(resX),0.0,double(resY)));
   Type font(48);
 
@@ -138,41 +48,17 @@ int main(int argc, char ** argv)
 
   Hop::World::FiniteBoundary mapBounds(0,0,16,16);
   Hop::World::FixedSource mapSource;
-  mapSource.load("tile",false);
+  mapSource.load("bordered",false);
 
-  Hop::World::InfiniteBoundary pBounds;
-  Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
-  perlin.setThreshold(0.2);
-  perlin.setSize(64*3+1);
-
-  if (argc > 1 && argv[1] == std::string("map"))
-  {
-
-      world = std::make_unique<TileWorld>
-      (
-          2,
-          &camera,
-          16,
-          1,
-          &mapSource,
-          &mapBounds  
-      );
-  }
-  else
-  {
-      world = static_cast<std::unique_ptr<AbstractWorld>>
-      (
-          std::make_unique<MarchingWorld>
-          (
-              2,
-              &camera,
-              64,
-              1,
-              &perlin,
-              &pBounds  
-          )
-      );
-  }
+  world = std::make_unique<TileWorld>
+  (
+      2,
+      &camera,
+      16,
+      1,
+      &mapSource,
+      &mapBounds  
+  );
 
   sRender & rendering = manager.getSystem<sRender>();
 
@@ -208,13 +94,11 @@ int main(int argc, char ** argv)
 
   console.luaStore(&luaStore);
   console.runFile("config.lua");
-  console.runFile("mix.lua");
+  console.runFile("tetris.lua");
   std::string status = console.luaStatus();
   if (status != "LUA_OK") { WARN(status) >> log; }
 
   Hop::Debugging::CollisionMeshDebug collisionMeshDebug;
-
-  //physics.stabaliseObjectParameters(&manager);
 
   bool refreshObjectShaders = true;
 
@@ -242,17 +126,6 @@ int main(int argc, char ** argv)
       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F2)
       {
         meshes = !meshes;
-      }
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M)
-      {
-        workers.createThread();
-        INFO("Thread: "+std::to_string(workers.size())) >> log;
-      }
-
-      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::L)
-      {
-        workers.joinThread();
-        INFO("Thread: "+std::to_string(workers.size())) >> log;
       }
 
       if (event.type == sf::Event::MouseWheelScrolled)
@@ -304,7 +177,7 @@ int main(int argc, char ** argv)
     
     if (!paused)
     {
-      physics.step(&manager, &collisions, world.get(), &workers);
+      physics.step(&manager, &collisions, world.get());
     }
 
     tp1 = high_resolution_clock::now();

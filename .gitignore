@@ -10,8 +10,6 @@ build/*
 .cmake/*
 callgrind*
 *.ipynb
-*.hmap
-*.hmap.z
 !zlib.map
 zlib_build/*
 demo/android/perlinWorld/app/.cxx/*
