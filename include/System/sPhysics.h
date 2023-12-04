@@ -49,8 +49,7 @@ namespace Hop::System::Physics
         (
             EntityComponentSystem * m, 
             sCollision * collisions,
-            AbstractWorld * world,
-            ThreadPool * workers = nullptr
+            AbstractWorld * world
         );
 
         void setGravityForce

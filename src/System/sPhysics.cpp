@@ -3,8 +3,6 @@
 #include <chrono>
 using namespace std::chrono;
 
-#include <thread>
-
 namespace Hop::System::Physics
 {
 
@@ -12,20 +10,13 @@ namespace Hop::System::Physics
     (
         EntityComponentSystem * m, 
         sCollision * collisions,
-        AbstractWorld * world,
-        ThreadPool * workers
+        AbstractWorld * world
     )
     {
         for (unsigned k = 0 ; k < subSamples; k++)
         {
-            if (workers->size() > 1)
-            {
-                collisions->update(m, world, workers);
-            }
-            else
-            {
-                collisions->update(m, world);
-            };
+
+            collisions->update(m, world);
 
             gravityForce(m);
             update(m);
