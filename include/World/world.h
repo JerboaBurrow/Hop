@@ -54,6 +54,30 @@ namespace Hop::World
         bool se;
         float sx0, sy0, sx1, sy1;
         bool sw;
+
+        bool operator ==(const TileBoundsData & rhs)
+        {
+            return wx0 == rhs.wx0 &&
+                wy0 == rhs.wy0 &&
+                wx1 == rhs.wx1 &&
+                wy1 == rhs.wy1 &&
+                nx0 == rhs.nx0 &&
+                ny0 == rhs.ny0 &&
+                nx1 == rhs.nx1 &&
+                ny1 == rhs.ny1 &&
+                ex0 == rhs.ex0 &&
+                ey0 == rhs.ey0 &&
+                ex1 == rhs.ex1 &&
+                ey1 == rhs.ey1 &&
+                sx0 == rhs.sx0 &&
+                sy0 == rhs.sy0 &&
+                sx1 == rhs.sx1 &&
+                sy1 == rhs.sy1 &&
+                nw == rhs.nw &&
+                ne == rhs.ne &&
+                se == rhs.se &&
+                sw == rhs.sw;
+        }
     };
 
     struct TileData 
