@@ -1,4 +1,4 @@
-require("tests/mesh")
+require("mesh")
 
 Square =
 {
