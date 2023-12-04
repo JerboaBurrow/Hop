@@ -1,4 +1,6 @@
-set(OUTPUT_NAME PerlinWorld)
+set(OUTPUT_NAME SoftBodyTetris)
+
+include_directories(.)
 
 if (WINDOWS)
     add_compile_definitions(WINDOWS)
@@ -11,11 +13,11 @@ else ()
     add_link_options(-no-pie)
 endif()
 
-add_executable(${OUTPUT_NAME} "perlinWorld.cpp")
+add_executable(${OUTPUT_NAME} "main.cpp")
 
 target_link_libraries(${OUTPUT_NAME} Hop)
 
-set_target_properties(${OUTPUT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")
+set_target_properties(${OUTPUT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}")
 
 file(GLOB LUA "../*.lua")
 file(GLOB MAP "../*.hmap")
