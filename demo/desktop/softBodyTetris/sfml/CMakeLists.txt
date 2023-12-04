@@ -1,6 +1,7 @@
-set(OUTPUT_NAME PerlinWorld-sfml)
+set(OUTPUT_NAME SoftBodyTetris-sfml)
 
 include_directories(../../include/SFML-2.5.1/include)
+include_directories(.)
 
 if (WINDOWS)
     add_compile_definitions(WINDOWS)
@@ -28,7 +29,7 @@ add_library(FreeType ALIAS freetype)
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 
 add_executable(${OUTPUT_NAME}
-    "sfmlPerlinWorld.cpp"
+    "main.cpp"
 )
 
 target_link_libraries(${OUTPUT_NAME}
@@ -41,5 +42,5 @@ set_target_properties(${OUTPUT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAK
 file(GLOB LUA "../*.lua")
 file(GLOB MAP "../*.hmap")
 
-file(COPY ${LUA} DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}")
-file(COPY ${MAP} DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}")
+file(COPY ${LUA} DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")
+file(COPY ${MAP} DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")

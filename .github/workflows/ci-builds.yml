@@ -27,13 +27,9 @@ jobs:
         cp build/libHop.a linuxbuild/
         cp -r include linuxbuild/
         cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
-        mkdir demos && mkdir demos/sfml && mkdir demos/standalone
-        cp build/sfmlPerlinWorld demos/sfml
-        cp tile.hmap demos/sfml/
-        cp config.lua demos/sfml
-        cp build/perlinWorld demos/standalone
-        cp tile.hmap demos/standalone
-        cp config.lua demos/standalone
+        mkdir demos
+        cp -r build/PerlinWorld demos/
+        cp -r build/PerlinWorld-sfml demos/
         cd demos && zip -r ../demos.zip * && cd ..
 
     - name: Tests
@@ -70,12 +66,10 @@ jobs:
         cp build/libHop.a windowsbuild/
         cp -r include windowsbuild/
         cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
-        mkdir demos && mkdir demos/sfml && mkdir demos/standalone
-        cp build/sfmlPerlinWorld.exe demos/sfml
-        cp tile.hmap demos/sfml/
-        cp build/perlinWorld.exe demos/standalone
-        cp tile.hmap demos/standalone
-        cp -r build/*.dll demos/sfml
+        mkdir demos
+        cp -r build/PerlinWorld demos/
+        cp -r build/PerlinWorld-sfml demos/
+        cp -r build/*.dll demos/PerlinWorld-sfml/
         cd demos && zip -r ../demos.zip * && cd ..
     
     - name: buildArtifact
@@ -106,32 +100,32 @@ jobs:
       - name: launch and screenshot
         run: |
           unzip demos.zip
-          cd sfml
-          chmod +x sfmlPerlinWorld
+          cd PerlinWorld-sfml
+          chmod +x PerlinWorld-sfml
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
           sleep 5
-          MESA_GL_VERSION_OVERRIDE=3.3 ./sfmlPerlinWorld &
+          MESA_GL_VERSION_OVERRIDE=3.3 ./PerlinWorld-sfml &
           export PID=$!
           sleep 10
           xwd -root -silent | convert xwd:- png:screenshot.png
           sleep 5 && kill $PID
-          MESA_GL_VERSION_OVERRIDE=3.3 ./sfmlPerlinWorld map &
+          MESA_GL_VERSION_OVERRIDE=3.3 ./PerlinWorld-sfml map &
           export PID=$!
           sleep 10
           xwd -root -silent | convert xwd:- png:screenshot-map.png
           sleep 5 && kill $PID
-          cd ../standalone
-          chmod +x perlinWorld
+          cd ../PerlinWorld
+          chmod +x PerlinWorld
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
           sleep 5
-          MESA_GL_VERSION_OVERRIDE=3.3 ./perlinWorld &
+          MESA_GL_VERSION_OVERRIDE=3.3 ./PerlinWorld &
           export PID=$!
           sleep 10
           xwd -root -silent | convert xwd:- png:screenshot.png
           sleep 5 && kill $PID
-          MESA_GL_VERSION_OVERRIDE=3.3 ./perlinWorld map &
+          MESA_GL_VERSION_OVERRIDE=3.3 ./PerlinWorld map &
           export PID=$!
           sleep 10
           xwd -root -silent | convert xwd:- png:screenshot-map.png
@@ -142,25 +136,25 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: screenshot-standalone
-          path: standalone/screenshot.png
+          path: PerlinWorld/screenshot.png
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: screenshot-map-standalone
-          path: standalone/screenshot-map.png
+          path: PerlinWorld/screenshot-map.png
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: screenshot-sfml
-          path: sfml/screenshot.png
+          path: PerlinWorld-sfml/screenshot.png
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: screenshot-map-sfml
-          path: sfml/screenshot-map.png
+          path: PerlinWorld-sfml/screenshot-map.png
 
   linuxXandroid:
     runs-on: ubuntu-20.04
