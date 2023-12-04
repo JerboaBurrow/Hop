@@ -17,11 +17,11 @@ namespace Hop
             unsigned length = lua_rawlen(lua,index);
             data.resize(length);
 
-            for (unsigned i = 0; i < length; i++)
+            for (unsigned i = 1; i <= length; i++)
             {
                 lua_pushnumber(lua, i);
                 lua_gettable(lua, index);
-                data[i].read(lua, lua_gettop(lua));
+                data[i-1].read(lua, lua_gettop(lua));
                 lua_pop(lua, 1);
             }
         }
