@@ -634,6 +634,7 @@ namespace Hop::System::Physics
             {
                 cCollideable & c = dataC.get(*start);
                 cPhysics & p = dataP.get(*start);
+
                 handleObjectWorldCollision(
                     *start,
                     c,
@@ -652,6 +653,7 @@ namespace Hop::System::Physics
             {
                 cCollideable & c = dataC.get(*start);
                 cPhysics & p = dataP.get(*start);
+
                 handleObjectWorldCollision(
                     *start,
                     c,
@@ -733,6 +735,11 @@ namespace Hop::System::Physics
 
             std::shared_ptr<CollisionPrimitive> c = dataC.mesh[p];
 
+            if (world->pointOutOfBounds(c->x, c->y))
+            {
+                continue;
+            }
+
             TileNeighbourData neighbours;
 
             world->neighourTileData(
@@ -757,6 +764,11 @@ namespace Hop::System::Physics
                 y0,
                 s
             );  
+
+            if (tileBounds == TileBoundsData())
+            {
+                continue;
+            }
 
             halfS = double(s)*0.5;
             S = double(s);
@@ -793,9 +805,9 @@ namespace Hop::System::Physics
 
                 neighbourTilesCollision
                 (
-                c,
-                dataP,
-                neighbours
+                    c,
+                    dataP,
+                    neighbours
                 );
             }
 
@@ -819,6 +831,10 @@ namespace Hop::System::Physics
 
             std::shared_ptr<CollisionPrimitive> c = dataC.mesh[p];
 
+            if (world->pointOutOfBounds(c->x, c->y))
+            {
+                continue;
+            }
             
             TileNeighbourData neighbours;
 
