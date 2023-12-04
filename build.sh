@@ -21,6 +21,7 @@ function mergeLibs()
 
   for lib in *.a
   do
+      cp $lib $lib.tmp
       echo -e "\033[1;34mMerging $lib\033[0m"
       if [[ $WINDOWS -eq 0 ]];
       then 
@@ -36,6 +37,7 @@ function mergeLibs()
         ar -r libHopMerged.a "$lib-o/"*
         rm -rf "$lib-o"
       fi
+      mv $lib.tmp $lib
   done
 
   mv libHopMerged.a libHop.a
@@ -47,7 +49,7 @@ function buildAndroid()
 {
 
   cmake -E make_directory build-$1
-  cmake -E chdir build-$1 cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=21 -D ANDROID_ABI=$1 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 8 -C build-$1
+  cmake -E chdir build-$1 cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=21 -D ANDROID_ABI=$1 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 4 -C build-$1
 
   mergeLibs "build-$1"
   mv build-$1/libHop.a build/libHop-$1.a
@@ -132,82 +134,82 @@ then
     rm -rf build
   fi
   cmake -E make_directory build
-fi
 
-echo "release ${RELEASE}"
+  if [[ $WINDOWS -eq 0 ]];
+  then 
+    cd build
+    cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 4
+    cd ..
+    # now copy dlls
+    PREFIX="x86_64-w64-mingw32"
 
-if [[ $WINDOWS -eq 0 ]];
-then 
-  cd build
-  cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 8
-  cd ..
-  # now copy dlls
-  PREFIX="x86_64-w64-mingw32"
+    paths=("/usr/local/mingw64/bin"
+      "/usr/local/mingw64/bin/x64"
+      "/usr/$PREFIX/bin"
+      "/usr/$PREFIX/lib"
+    )
 
-  paths=("/usr/local/mingw64/bin"
-    "/usr/local/mingw64/bin/x64"
-     "/usr/$PREFIX/bin"
-    "/usr/$PREFIX/lib"
-  )
+    for p in /usr/lib/gcc/$PREFIX/*
+    do 
+      paths+=($p)
+    done
 
-  for p in /usr/lib/gcc/$PREFIX/*
-  do 
-    paths+=($p)
-  done
+    echo -e "\n###############\nChecking Paths: \n"
+    for p in "${paths[@]}"
+    do
+      echo -e "$p\n"
+    done 
+    echo -e "###############\n"
 
-  echo -e "\n###############\nChecking Paths: \n"
-  for p in "${paths[@]}"
-  do
-    echo -e "$p\n"
-  done 
-  echo -e "###############\n"
+    dll=("libgcc_s_seh-1.dll"
+      "libstdc++-6.dll"
+      "libwinpthread-1.dll"
+    )
 
-  dll=("libgcc_s_seh-1.dll"
-    "libstdc++-6.dll"
-    "libwinpthread-1.dll"
-  )
+    for j in "${dll[@]}"
+    do
+      findAndCopyDLL $j || echo "Could not find $j"
+    done
 
-  for j in "${dll[@]}"
-  do
-    findAndCopyDLL $j || echo "Could not find $j"
-  done
-
-  if [[ $RELEASE -eq 1 ]];
+    if [[ $RELEASE -eq 1 ]];
+    then
+        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-system-2.dll build/
+        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-2.dll build/
+        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-2.dll build/
+    else
+        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-system-d-2.dll build/
+        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
+        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
+    fi
+    cd ..
+  elif [[ $OSX -eq 0 ]];
   then
-      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-system-2.dll build/
-      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-2.dll build/
-      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-2.dll build/
+    cd build
+    cmake .. -D OSX=ON -D STANDALONE=$STANDALONE -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 4
+    cd ..
+  elif [[ ! -z "$ANDROID_NDK" ]]
+  then
+    TOOL_CHAIN="$ANDROID_NDK/build/cmake/android.toolchain.cmake"
+    if [[ ! -f "$TOOL_CHAIN" ]]
+    then
+      echo -e "\nCould not find tool chain file at $TOOL_CHAIN\n"
+      exit 1
+    fi
+    echo -e "\nFound Android tool chain $TOOL_CHAIN\n"
+    mkdir build
+
+    buildAndroid arm64-v8a
+    buildAndroid armeabi-v7a
+    buildAndroid x86
+    buildAndroid x86_64
+
   else
-      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-system-d-2.dll build/
-      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
-      cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
+    cd build
+    cmake -D BUILD_DEMOS=$DEMO -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 4
+    cd ..
   fi
-  cd ..
-elif [[ $OSX -eq 0 ]];
-then
-  cd build
-  cmake .. -D OSX=ON -D STANDALONE=$STANDALONE -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 8
-  cd ..
-elif [[ ! -z "$ANDROID_NDK" ]]
-then
-  TOOL_CHAIN="$ANDROID_NDK/build/cmake/android.toolchain.cmake"
-  if [[ ! -f "$TOOL_CHAIN" ]]
-  then
-    echo -e "\nCould not find tool chain file at $TOOL_CHAIN\n"
-    exit 1
-  fi
-  echo -e "\nFound Android tool chain $TOOL_CHAIN\n"
-  mkdir build
-
-  buildAndroid arm64-v8a
-  buildAndroid armeabi-v7a
-  buildAndroid x86
-  buildAndroid x86_64
-
-else
-  cd build
-  cmake -D BUILD_DEMOS=$DEMO -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 8
-  cd ..
+else 
+  cd build && make -j 4 && cd ..
 fi
 
 
