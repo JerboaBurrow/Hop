@@ -26,7 +26,6 @@ function createMesh(vertices, radius)
     cornerDist = 0.0
 
     for i = 1, N do
-        print(i, N)
         if (#vertices[i] > 0 and #vertices[next(i, N)] > 0) then
         
             n = {0.0, 0.0}
