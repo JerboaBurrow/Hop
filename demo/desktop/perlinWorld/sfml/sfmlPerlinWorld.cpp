@@ -304,7 +304,7 @@ int main(int argc, char ** argv)
     
     if (!paused)
     {
-      physics.step(&manager, &collisions, world.get(), &workers);
+      physics.step(&manager, &collisions, world.get());
     }
 
     tp1 = high_resolution_clock::now();
