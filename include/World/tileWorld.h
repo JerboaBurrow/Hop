@@ -31,6 +31,8 @@ namespace Hop::World
 
     private:
 
+        bool hardOutOfBounds = false;
+
     };
 
 }

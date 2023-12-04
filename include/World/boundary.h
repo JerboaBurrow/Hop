@@ -12,6 +12,11 @@ namespace Hop::World
         Boundary() = default;
 
         virtual bool outOfBounds(int ix, int iy){return false;}
+        virtual const bool isHard() const { return false; }
+
+    protected:
+
+        bool hardOutOfBounds = false;
 
     };
 
@@ -31,7 +36,8 @@ namespace Hop::World
             int Mx, 
             int My,
             int px = 0,
-            int py = 0
+            int py = 0,
+            bool hard = false
         )
         :   minX(mx), 
             minY(my), 
@@ -39,7 +45,9 @@ namespace Hop::World
             maxY(My), 
             periodicX(px), 
             periodicY(py)
-        {}
+        {
+            hardOutOfBounds = hard;
+        }
 
 
         bool outOfBounds(int ix, int iy)
@@ -55,6 +63,8 @@ namespace Hop::World
             }
             return false;
         }
+
+        const bool isHard() const { return hardOutOfBounds; }
 
     private:
 
