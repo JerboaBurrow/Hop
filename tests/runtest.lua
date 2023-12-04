@@ -1,1 +1,1 @@
-require("tests/mix")
+require("tests/tetris")
