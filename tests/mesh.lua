@@ -26,7 +26,6 @@ function createMesh(vertices, radius)
     cornerDist = 0.0
 
     for i = 1, N do
-
         if (#vertices[i] > 0 and #vertices[next(i, N)] > 0) then
         
             n = {0.0, 0.0}
@@ -40,18 +39,17 @@ function createMesh(vertices, radius)
             if (d > 0) then
 
                 l = 0.0
+                if postCorner then
+                    l = cornerDist
+                    postCorner = false
+                end
 
-                while l <= d do
-
-                    if postCorner then
-                        l = cornerDist
-                        postCorner = false
-                    end
+                while l < d or math.abs(l - d) < 1e-15 do
                     nextPlace = {vertices[i][1]+l*n[1]/d, vertices[i][2]+l*n[2]/d}
-                    if (l <= d) then 
-                        if (i == N) then 
+                    if (l < d or math.abs(l - d) < 1e-15) then 
+                        if (i == N-1) then 
                             diff = {nextPlace[1]-v[1][1], nextPlace[2]-v[1][2]}
-                            if (norm(diff)<radius) then
+                            if (norm(diff)<2.0*radius) then
                                 break
                             end
                         end
@@ -82,14 +80,15 @@ function createMesh(vertices, radius)
 
         ctheta = (s[1]*t[1]+s[2]*t[2])/(norm(s)*norm(t))
         if (math.abs(ctheta) < 1e-3) then 
-            cornerDist = math.sqrt(l*l+4.0*radius*radius)
+            cornerDist = math.sqrt(4.0*radius*radius-l*l)
         elseif ((ctheta*ctheta-1.0)*l*l+4.0*radius*radius < 0.0) then
-                cornerDist = math.sqrt(l*l+4.0*radius*radius)
+                cornerDist = math.sqrt(4.0*radius*radius-l*l)
         else
             s1 = l*ctheta + math.sqrt((ctheta*ctheta-1.0)*l*l+4.0*radius*radius)
             s2 = l*ctheta - math.sqrt((ctheta*ctheta-1.0)*l*l+4.0*radius*radius)
             cornerDist = math.max(s1,s2)
         end
+
     end
 
     return v
