@@ -299,16 +299,17 @@ namespace Hop::System::Physics
         : CollisionMesh(std::move(v), stiffness, damping, mass)
         {
             cTransform transform(x,y,theta,scale);
-            updateWorldMesh(transform, 0.0, true);
+            updateWorldMesh(transform, 0.0);
         }
 
         CollisionMesh
         (
             std::vector<std::shared_ptr<CollisionPrimitive>> v,
-            double stiffness = CollisionPrimitive::RIGID,
-            double damping = 1.0,
-            double mass = 1.0
+            double s = CollisionPrimitive::RIGID,
+            double d = 1.0,
+            double m = 1.0
         )
+        : stiffness(s), damping(d), mass(m)
         {
             if (stiffness >= CollisionPrimitive::RIGID)
             {
@@ -321,64 +322,76 @@ namespace Hop::System::Physics
             worldVertices.clear();
             for (unsigned i = 0; i < v.size(); i++)
             {
-                CollisionPrimitive * c = (v[i].get());
-                Rectangle * l = dynamic_cast<Rectangle*>(c);
-
-                std::shared_ptr<CollisionPrimitive> p;
-
-                if (l != nullptr)
-                {
-                    vertices.push_back
-                    (
-                        std::move
-                        (
-                            std::make_shared<MeshRectangle>
-                            (
-                                l->llx, l->lly,
-                                l->ulx, l->uly,
-                                l->urx, l->ury,
-                                l->lrx, l->lry
-                            )
-                        )
-                    );
-
-                    p = std::make_shared<Rectangle>
-                    (
-                        Rectangle
-                        (
-                            l->llx, l->lly,
-                            l->ulx, l->uly,
-                            l->urx, l->ury,
-                            l->lrx, l->lry,
-                            stiffness
-                        )
-                    );
-
-                }
-                else
-                {
-                    vertices.push_back
-                    (
-                        std::move
-                        (
-                            std::make_shared<MeshPoint>
-                            (
-                                c->x, c->y, c->r
-                            )
-                        )
-                    );
-                    p = std::make_shared<CollisionPrimitive>
-                    (
-                        CollisionPrimitive(c->x,c->y,c->r, stiffness, damping, mass)
-                    );
-                }
-
-                worldVertices.push_back(std::move(p));
- 
+                add(v[i]);
             }
             computeRadius();
         }
         
+        void add(std::shared_ptr<CollisionPrimitive> c)
+        {
+            Rectangle * l = dynamic_cast<Rectangle*>(c.get());
+
+            std::shared_ptr<CollisionPrimitive> p;
+
+            if (l != nullptr)
+            {
+                vertices.push_back
+                (
+                    std::move
+                    (
+                        std::make_shared<MeshRectangle>
+                        (
+                            l->llx, l->lly,
+                            l->ulx, l->uly,
+                            l->urx, l->ury,
+                            l->lrx, l->lry
+                        )
+                    )
+                );
+
+                p = std::make_shared<Rectangle>
+                (
+                    Rectangle
+                    (
+                        l->llx, l->lly,
+                        l->ulx, l->uly,
+                        l->urx, l->ury,
+                        l->lrx, l->lry,
+                        stiffness
+                    )
+                );
+
+            }
+            else
+            {
+                vertices.push_back
+                (
+                    std::move
+                    (
+                        std::make_shared<MeshPoint>
+                        (
+                            c->x, c->y, c->r
+                        )
+                    )
+                );
+                p = std::make_shared<CollisionPrimitive>
+                (
+                    CollisionPrimitive(c->x,c->y,c->r, stiffness, damping, mass)
+                );
+            }
+
+            worldVertices.push_back(std::move(p));
+
+            needsInit = true;
+        }
+
+        void remove(size_t i)
+        {
+            vertices.erase(vertices.begin()+i);
+            worldVertices.erase(worldVertices.begin()+i);
+            needsInit = true;
+        }
+
         size_t size(){return vertices.size();}
 
         std::shared_ptr<MeshPoint> getModelVertex(size_t i)
@@ -393,30 +406,29 @@ namespace Hop::System::Physics
 
         void updateWorldMesh(
             cTransform & transform,
-            double dt,
-            bool init = false
+            double dt
         )
         {
             if (isRigid())
             {
-                return updateWorldMeshRigid(transform, dt, init);
+                return updateWorldMeshRigid(transform, dt);
             }
             else 
             {
-                return updateWorldMeshSoft(transform, dt, init);
+                return updateWorldMeshSoft(transform, dt);
             }
+
+            needsInit = false;
         }
 
         void updateWorldMeshRigid(
             const cTransform & transform,
-            double dt,
-            bool init = false
+            double dt
         );
 
         void updateWorldMeshSoft(
             cTransform & transform,
-            double dt,
-            bool init = false
+            double dt
         );
 
         double bestAngle(double x, double y, double scale);
@@ -442,9 +454,13 @@ namespace Hop::System::Physics
         std::vector<std::shared_ptr<MeshPoint>> vertices;
         std::vector<std::shared_ptr<CollisionPrimitive>> worldVertices;
 
+        double stiffness, damping, mass;
+
         double radius;
 
         bool rigid = true;
+
+        bool needsInit = false;
     };
 
 }
