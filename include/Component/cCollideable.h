@@ -36,6 +36,9 @@ namespace Hop::Object::Component
             mesh.updateWorldMesh(transform, dt);
         }
 
+        void add(std::shared_ptr<CollisionPrimitive> c) { mesh.add(c); }
+        void remove(size_t i) { mesh.remove(i); }
+
     };
 
 }
