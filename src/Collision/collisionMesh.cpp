@@ -4,8 +4,7 @@ namespace Hop::System::Physics
 {
     void CollisionMesh::updateWorldMeshRigid(
         const cTransform & transform,
-        double dt,
-        bool init
+        double dt
     )
     {
         double c = std::cos(transform.theta);
@@ -54,6 +53,7 @@ namespace Hop::System::Physics
         }
 
         computeRadius();
+        needsInit = false;
     }
 
     void CollisionMesh::centerOfMassWorld(double & cx, double & cy)
@@ -116,12 +116,10 @@ namespace Hop::System::Physics
 
     void CollisionMesh::updateWorldMeshSoft(
         cTransform & transform,
-        double dt,
-        bool init
+        double dt
     )
     {
-
-        if (init)
+        if (needsInit)
         {
             modelToCenterOfMassFrame();
         }
@@ -141,7 +139,7 @@ namespace Hop::System::Physics
         for (unsigned i = 0; i < vertices.size(); i++)
         {
             inside[i] = worldVertices[i]->lastInside;
-            if (init)
+            if (needsInit)
             {
                 worldVertices[i]->setOrigin
                 (
@@ -193,7 +191,7 @@ namespace Hop::System::Physics
         transform.theta = omega;
         centerOfMassWorld(transform.x, transform.y);
 
-        if (init)
+        if (needsInit)
         {
             double c = std::cos(transform.theta);
             double s = std::sin(transform.theta);
@@ -208,6 +206,7 @@ namespace Hop::System::Physics
         }
 
         computeRadius();
+        needsInit = false;
 
     }
 

@@ -29,7 +29,7 @@ namespace Hop::System::Rendering
     "uniform float u_alpha;\n"
     "uniform int u_transparentBackground;\n"
     "uniform vec3 u_background;\n"
-    "float line = 0.04;\n"
+    "uniform float gridWidth;\n"
     "vec4 bk;\n"
     "out vec4 colour;\n"
     "void background(){if(u_transparentBackground==1){discard;}else{colour=bk;}}\n"
@@ -53,7 +53,8 @@ namespace Hop::System::Rendering
       "if (id == 13 && (1.0-texCoord.x)+texCoord.y < 0.5) {background();}"
       "if (id == 14 && texCoord.x+texCoord.y < 0.5) {background();}"
       "if (id == 15) {true;}"
-      //"if (texCoord.x <line || texCoord.y < line || texCoord.x > (1.0-line) || texCoord.y > (1.0-line)){colour=vec4(0.,0.,0.,1.);}"
+      "if (gridWidth > 0.0)"
+      "{if (texCoord.x <gridWidth || texCoord.y < gridWidth || texCoord.x > (1.0-gridWidth) || texCoord.y > (1.0-gridWidth)){colour=vec4(0.,0.,0.,1.);}}"
     "\n}";
 }
 

@@ -8,6 +8,48 @@
 namespace Hop
 {
 
+    Display::EventType glfwCodeToEvent(int action)
+    {
+        switch (action)
+        {
+            case GLFW_PRESS:
+                return Display::EventType::PRESS;
+
+            case GLFW_RELEASE:
+                return Display::EventType::RELEASE;
+
+            case GLFW_REPEAT:
+                return Display::EventType::HOLD;
+
+            default:
+                return Display::EventType::NONE;
+        }
+    }
+
+    void parseAction
+    (
+        GLFWwindow * window,
+        int code,
+        int action
+    )
+    {
+        auto data = reinterpret_cast<Display::WindowData*>(glfwGetWindowUserPointer(window));
+
+        double x, y;
+        glfwGetCursorPos(window,&x,&y);
+
+        Display::Event e(x, y, glfwCodeToEvent(action));
+
+        if (data->events.find(code) == data->events.cend())
+        {
+            (*data).events[code] = {e};
+        }
+        else
+        {
+            (*data).events[code].push_back(e);
+        }
+    }
+
     void defaultKeyEventCallback
     (
         GLFWwindow * window,
@@ -21,6 +63,33 @@ namespace Hop
         {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
+
+        parseAction(window, key, action);
+        
+    }
+
+    void defaultMouseButtonCallback
+    (
+        GLFWwindow * window,
+        int button,
+        int action,
+        int mods
+    )
+    {
+        parseAction(window, button, action);
+    }
+
+    void defaultScrollCallback
+    (
+        GLFWwindow * window,
+        double x,
+        double y
+    )
+    {
+        auto e = reinterpret_cast<Display::WindowData*>(glfwGetWindowUserPointer(window));
+        e->scrolled = true;
+        e->scrollX = x;
+        e->scrollY = y;
     }
 
     Display::Display
@@ -28,7 +97,9 @@ namespace Hop
         unsigned x, 
         unsigned y, 
         const char * title,
-        GLFWkeyfun keyCallback
+        GLFWkeyfun keyCallback,
+        GLFWmousebuttonfun mouseButtonCallback,
+        GLFWscrollfun mouseScrollCallback
     )
     : x(x), y(y), title(title)
     {
@@ -38,7 +109,8 @@ namespace Hop
         if ( !isOpen() ) { exit(EXIT_FAILURE); }
         setAsFocus();
         glfwSetKeyCallback(glfwWindow, keyCallback);
-        
+        glfwSetMouseButtonCallback(glfwWindow, mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, mouseScrollCallback);
         logo = new GLFWimage;
 
         logo->pixels = stbi_load_from_memory
@@ -52,6 +124,10 @@ namespace Hop
         );
 
         glfwSetWindowIcon(glfwWindow,1,logo);
+
+        data.clear();
+
+        glfwSetWindowUserPointer(glfwWindow, &this->data);
     }
 
     Display::Display
@@ -60,6 +136,6 @@ namespace Hop
         unsigned y, 
         const char * title
     )
-    : Display(x,y,title,defaultKeyEventCallback)
+    : Display(x,y,title,defaultKeyEventCallback, defaultMouseButtonCallback, defaultScrollCallback)
     {}
 }
