@@ -33,6 +33,11 @@ namespace Hop::System::Physics
         virtual ~MeshPoint() = default;
 
         double x; double y; double r;
+
+        bool operator==(const MeshPoint & rhs)
+        {
+            return x == rhs.x && y == rhs.y && r == rhs.r;
+        }
     };
 
     struct MeshRectangle : public MeshPoint
@@ -64,6 +69,18 @@ namespace Hop::System::Physics
             double dy = lly-y;
 
             r = std::sqrt(dx*dx+dy*dy);
+        }
+
+        bool operator==(const MeshRectangle & rhs)
+        {
+            return llx == rhs.llx && 
+                   lly == rhs.lly &&
+                   ulx == rhs.ulx &&
+                   uly == rhs.uly &&
+                   urx == rhs.urx &&
+                   ury == rhs.ury &&
+                   lrx == rhs.lrx &&
+                   lry == rhs.lry;
         }
 
         double llx, lly, ulx, uly, urx, ury, lrx, lry;
@@ -329,6 +346,21 @@ namespace Hop::System::Physics
         
         void add(std::shared_ptr<CollisionPrimitive> c)
         {
+
+            auto circ = std::make_shared<MeshPoint>
+            (
+                c->x, c->y, c->r
+            );
+
+            for (auto c : vertices)
+            {
+                if (*c.get() == *circ.get())
+                {
+                    return;
+                }
+            }
+
+
             Rectangle * l = dynamic_cast<Rectangle*>(c.get());
 
             std::shared_ptr<CollisionPrimitive> p;
@@ -368,10 +400,7 @@ namespace Hop::System::Physics
                 (
                     std::move
                     (
-                        std::make_shared<MeshPoint>
-                        (
-                            c->x, c->y, c->r
-                        )
+                        circ
                     )
                 );
                 p = std::make_shared<CollisionPrimitive>
@@ -390,6 +419,24 @@ namespace Hop::System::Physics
             vertices.erase(vertices.begin()+i);
             worldVertices.erase(worldVertices.begin()+i);
             needsInit = true;
+        }
+
+        int clicked(float x, float y)
+        {
+
+            for (int j = 0; j < int(worldVertices.size()); j++)
+            {
+                double rx = worldVertices[j]->x - x;
+                double ry = worldVertices[j]->y - y;
+                double d2 = rx*rx+ry*ry;
+
+                if (d2 < worldVertices[j]->r*worldVertices[j]->r)
+                {
+                    return j;
+                }
+            }
+
+            return -1;
         }
 
         size_t size(){return vertices.size();}
@@ -417,8 +464,6 @@ namespace Hop::System::Physics
             {
                 return updateWorldMeshSoft(transform, dt);
             }
-
-            needsInit = false;
         }
 
         void updateWorldMeshRigid(
