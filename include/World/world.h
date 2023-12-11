@@ -209,6 +209,8 @@ namespace Hop::World
             glDeleteVertexArrays(1,&VAO);
         }
 
+        void setGridWidth(double d){ gridWidth = d; }
+
         // Lua bindings
 
         int lua_worldMaxCollisionPrimitiveSize(lua_State * lua)
@@ -241,6 +243,8 @@ namespace Hop::World
         int posY;
 
         int tilePosX, tilePosY;
+
+        float gridWidth = 0.0f;
 
         bool forceUpdate;
 
