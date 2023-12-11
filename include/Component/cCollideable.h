@@ -36,7 +36,16 @@ namespace Hop::Object::Component
             mesh.updateWorldMesh(transform, dt);
         }
 
-        void add(std::shared_ptr<CollisionPrimitive> c) { mesh.add(c); }
+        void add
+        (
+            std::shared_ptr<CollisionPrimitive> c, 
+            cTransform & transform
+        ) 
+        { 
+            mesh.add(c); 
+            mesh.updateWorldMesh(transform, 0.0);
+        }
+
         void remove(size_t i) { mesh.remove(i); }
 
     };

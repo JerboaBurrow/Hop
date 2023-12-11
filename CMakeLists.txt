@@ -158,6 +158,7 @@ else()
     target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw Lua)
 endif()
 
+add_subdirectory(tools/)
 
 IF (BUILD_DEMOS)
 

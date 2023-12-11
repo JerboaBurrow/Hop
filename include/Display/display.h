@@ -63,6 +63,14 @@ namespace Hop
 
         void mousePosition(double & x, double & y){ if (glfwWindow != NULL){ glfwGetCursorPos(glfwWindow,&x,&y); } }
 
+        void setMousePosition(double x, double y)
+        {
+            if (glfwWindow != NULL)
+            {
+                glfwSetCursorPos(glfwWindow, x, y);
+            }
+        }
+
         int getKeyLastState(int key) { return glfwGetKey(glfwWindow, key); }
 
         void loop() 

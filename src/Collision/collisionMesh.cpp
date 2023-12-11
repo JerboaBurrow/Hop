@@ -53,6 +53,7 @@ namespace Hop::System::Physics
         }
 
         computeRadius();
+        needsInit = false;
     }
 
     void CollisionMesh::centerOfMassWorld(double & cx, double & cy)
@@ -118,7 +119,6 @@ namespace Hop::System::Physics
         double dt
     )
     {
-
         if (needsInit)
         {
             modelToCenterOfMassFrame();
@@ -206,6 +206,7 @@ namespace Hop::System::Physics
         }
 
         computeRadius();
+        needsInit = false;
 
     }
 
