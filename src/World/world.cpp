@@ -159,6 +159,7 @@ namespace Hop::World
         s.set1f(1.0f,"u_scale");
         s.set1i(0,"u_transparentBackground");
         s.set3f(1.0f,1.0f,1.0f,"u_background");
+        s.set1f(0.5*gridWidth,"gridWidth");
 
         glDrawArraysInstanced(GL_TRIANGLES,0,6,RENDER_REGION_SIZE*RENDER_REGION_SIZE);
 

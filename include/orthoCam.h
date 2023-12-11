@@ -45,6 +45,12 @@ namespace Hop::System::Rendering
       return invProjection*ndc;
     }
 
+    glm::vec2 worldToScreen(float x, float y)
+    {
+      glm::vec4 pos = vp*glm::vec4(x, y, 0.0, 1.0);
+      return glm::vec2( (pos.x+1.0)*resolution.x*0.5, -1.0*((pos.y+1.0)*resolution.y*0.5-resolution.y) );
+    }
+
     glm::mat4 & getVP(){return vp;}
 
     glm::mat4 getProjection() const {return projection;}
