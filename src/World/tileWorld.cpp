@@ -81,7 +81,74 @@ namespace Hop::World
         double & y0,
         double & s
     )
-    {
+{
+
+        int ix,iy,i,j;
+
+        worldToTile(x,y,ix,iy);
+
+        if (boundary->outOfBounds(ix,iy))
+        {
+            h = Tile::EMPTY;
+            s = 0.0; x0 = 0.0; y0 = 0.0;
+        }
+
+        tileToIdCoord(ix,iy,i,j);
+
+        h = tileType(i,j);
+
+        s =  1.0 / RENDER_REGION_SIZE;
+        x0 = ix*s;
+        y0 = iy*s;
+
+        nData.west.tileType = tileType(i-1,j);
+
+        nData.west.length = s;
+        nData.west.x = (ix-1)*s;
+        nData.west.y = iy*s;
+
+        nData.northWest.tileType = tileType(i-1,j+1);
+
+        nData.northWest.length = s;
+        nData.northWest.x = (ix-1)*s;
+        nData.northWest.y = (iy+1)*s;
+
+        nData.north.tileType = tileType(i,j+1);
+
+        nData.north.length = s;
+        nData.north.x = ix*s;
+        nData.north.y = (iy+1)*s;
+
+        nData.northEast.tileType = tileType(i+1,j+1);
+
+        nData.northEast.length = s;
+        nData.northEast.x = (ix+1)*s;
+        nData.northEast.y = (iy+1)*s;
+
+
+        nData.east.tileType = tileType(i+1,j);
+
+        nData.east.length = s;
+        nData.east.x = (ix+1)*s;
+        nData.east.y = iy*s;
+
+        nData.southEast.tileType = tileType(i+1,j-1);
+
+        nData.southEast.length = s;
+        nData.southEast.x = (ix+1)*s;
+        nData.southEast.y = (iy-1)*s;
+        
+        nData.south.tileType = tileType(i,j-1);
+
+        nData.south.length = s;
+        nData.south.x = ix*s;
+        nData.south.y = (iy-1)*s;
+
+        nData.southWest.tileType = tileType(i-1,j-1);
+
+        nData.southWest.length = s;
+        nData.southWest.x = (ix-1)*s;
+        nData.southWest.y = (iy-1)*s;
     }
 
     void TileWorld::boundsTileData(
