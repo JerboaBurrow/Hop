@@ -73,7 +73,6 @@ int main(int argc, char ** argv)
 
     console.luaStore(&luaStore);
     console.runFile("config.lua");
-    console.runFile("tetris.lua");
     std::string status = console.luaStatus();
     if (status != "LUA_OK") { WARN(status) >> log; }
 
@@ -81,10 +80,20 @@ int main(int argc, char ** argv)
 
     physics.stabaliseObjectParameters(&manager);
 
+    Hop::Debugging::CollisionMeshDebug collisionMeshDebug;
+
     bool refreshObjectShaders = true;
 
     while (display.isOpen())
     {
+
+        if (display.getEvent(GLFW_KEY_SPACE).type == Hop::Display::EventType::PRESS) { paused = !paused; }
+
+        if (!paused)
+        {
+            console.runFile("loop.lua");
+            rendering.refreshShaders();
+        }
 
         t0 = high_resolution_clock::now();
 
@@ -97,7 +106,10 @@ int main(int argc, char ** argv)
 
         collisions.centreOn(world.get()->getMapCenter());
         
-        physics.step(&manager, &collisions, world.get());
+        if (!paused)
+        {
+            physics.step(&manager, &collisions, world.get());
+        }
 
         tp1 = high_resolution_clock::now();
 
@@ -107,6 +119,8 @@ int main(int argc, char ** argv)
         if (refreshObjectShaders) { rendering.refreshShaders(); }
         rendering.draw(&manager, world.get()); 
         refreshObjectShaders = false;
+
+        collisionMeshDebug.debugCollisionMesh(&manager, camera.getVP());
 
         tr1 = high_resolution_clock::now();
 
@@ -146,7 +160,9 @@ int main(int argc, char ** argv)
                 "\n" << 
                 "update time: " << fixedLengthNumber(pdt+rdt,6) <<
                 "\n" <<
-                "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+                "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6) <<
+                "\n" <<
+                "Kinetic Energy: " << fixedLengthNumber(physics.kineticEnergy(),6);
 
             textRenderer.renderText(
                 font,
