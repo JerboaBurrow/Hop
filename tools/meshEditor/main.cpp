@@ -125,14 +125,32 @@ int main(int argc, char ** argv)
         if (display.getEvent(GLFW_KEY_G).type == Hop::Display::EventType::PRESS) { grid = !grid; }
         if (display.getEvent(GLFW_KEY_SPACE).type == Hop::Display::EventType::PRESS) { paused = !paused; }
 
+        if (display.getEvent(GLFW_KEY_C).type == Hop::Display::EventType::PRESS) 
+        {
+            unsigned n = object.mesh.size();
+            for (unsigned i = 0; i < n; i++)
+            {
+                object.mesh.remove(0);
+            }
+        }
+
         if (display.getEvent(GLFW_KEY_E).type == Hop::Display::EventType::PRESS) 
         {
+            double x = 0.0;
+            double y = 0.0;
+            for (unsigned i = 0; i < object.mesh.size(); i++)
+            {
+                x += object.mesh.getModelVertex(i)->x;
+                y += object.mesh.getModelVertex(i)->y;
+            }
+            x /= object.mesh.size();
+            y /= object.mesh.size();
             std::ofstream file("mesh");
             file << "{\n";
             for (unsigned i = 0; i < object.mesh.size(); i++)
             {
-                file << "    {" << object.mesh.getModelVertex(i)->x 
-                     << ", " << object.mesh.getModelVertex(i)->y 
+                file << "    {" << object.mesh.getModelVertex(i)->x - x
+                     << ", " << object.mesh.getModelVertex(i)->y - y
                      << ", " << object.mesh.getModelVertex(i)->r
                      << "}";
 
