@@ -57,4 +57,11 @@ namespace Hop
         return 0;
     }
 
+    int timeMillis(lua_State * lua)
+    {
+        int64_t millis = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        lua_pushnumber(lua, millis);
+        return 1;
+    }
+
 }

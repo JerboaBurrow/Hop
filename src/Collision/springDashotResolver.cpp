@@ -740,18 +740,6 @@ namespace Hop::System::Physics
                 continue;
             }
 
-            TileNeighbourData neighbours;
-
-            world->neighourTileData(
-                c->x,
-                c->y,
-                neighbours,
-                h,
-                x0,
-                y0,
-                s
-            );
-
             TileBoundsData tileBounds;
 
             world->boundsTileData
@@ -765,10 +753,27 @@ namespace Hop::System::Physics
                 s
             );  
 
-            if (tileBounds == TileBoundsData())
+            if (tileBounds != TileBoundsData())
             {
-                continue;
+                tileBoundariesCollision
+                (
+                    c,
+                    dataP,
+                    tileBounds
+                );
             }
+
+            TileNeighbourData neighbours;
+
+            world->neighourTileData(
+                c->x,
+                c->y,
+                neighbours,
+                h,
+                x0,
+                y0,
+                s
+            );
 
             halfS = double(s)*0.5;
             S = double(s);
@@ -795,13 +800,6 @@ namespace Hop::System::Physics
 
             if (!inside && !c->recentlyInside())
             {
-
-                tileBoundariesCollision
-                (
-                    c,
-                    dataP,
-                    tileBounds
-                );
 
                 neighbourTilesCollision
                 (
@@ -1147,9 +1145,24 @@ namespace Hop::System::Physics
     }
 
     /*
-        Find the correct normal vector and distance for a possible force
+        Find the correct normal vector and distance for a possible force.
             op indicates also applying the opposing vector in
-            cases with two lines, id in (5,10)
+            cases with two lines in a tile, id in (5,10)
+
+            Possible tiles are marching squares types (16)
+
+            Tile anatomy:
+
+              x's indicate a filled point in the marching squares 
+              sense, so for a full tile (code 15) we have the 
+              coordinates:
+
+                x0, ly  _____  lx, ly
+                       x     x
+                       |     |
+                x0, y0 x_____x lx, y0
+
+              where lx = x0 + s, for example 
     */
     void SpringDashpot::tileCollision
     (
@@ -1336,8 +1349,8 @@ namespace Hop::System::Physics
             ds = pointLineSegmentDistanceSquared<double>
             (
                 c->x,c->y,
-                x0, y0,
-                lx, ly
+                lx, ly,
+                x0, y0
             );
 
             double d = std::min(std::min(dw,dn),std::min(de,ds));
@@ -1351,8 +1364,6 @@ namespace Hop::System::Physics
                 }
                 return;
             }
-            
-
 
             if (dw < dn && dw < de && dw < ds)
             {
@@ -1376,7 +1387,7 @@ namespace Hop::System::Physics
             }
             else if (dw == dn)
             {
-                d2 = d2;
+                d2 = dw;
                 nx = -1.0; ny = 1.0;
             }
             else if (dn == de)
@@ -2005,12 +2016,9 @@ namespace Hop::System::Physics
         TileBoundsData & tileBounds
     )
     {
-        double nx, ny, d2;
-        double r2 = c->r*c->r;
+        double nx, ny;
 
         double lx0, ly0, lx1, ly1;
-
-        bool colliding = false;
 
         Rectangle r;
 
@@ -2029,13 +2037,26 @@ namespace Hop::System::Physics
             nx = 1.0; ny = 0.0;
             lx0 = tileBounds.wx0; ly0 = tileBounds.wy0;
             lx1 = tileBounds.wx1; ly1 = tileBounds.wy1;
-            colliding = true;
 
             r.llx = lx0-1.0; r.lly = ly0;
             r.ulx = r.llx;   r.uly = ly1;
             r.urx = lx0;     r.ury = ly1;
             r.lrx = lx0;     r.lry = ly0;
             r.resetAxes();
+
+            tileBoundariesCollisionForce
+            (
+                c,
+                dataP,
+                li,
+                r,
+                lx0,
+                ly0,
+                lx1,
+                ly1,
+                nx,
+                ny
+            );
         }
 
         // NORTH
@@ -2051,13 +2072,26 @@ namespace Hop::System::Physics
             nx = 0.0; ny = -1.0;
             lx0 = tileBounds.nx0; ly0 = tileBounds.ny0;
             lx1 = tileBounds.nx1; ly1 = tileBounds.ny1;
-            colliding = true;
 
             r.llx = lx0;     r.lly = ly0;
             r.ulx = lx0;     r.uly = ly0+1.0;
             r.urx = lx1;     r.ury = ly0+1.0;
             r.lrx = lx1;     r.lry = ly0;
             r.resetAxes();
+
+            tileBoundariesCollisionForce
+            (
+                c,
+                dataP,
+                li,
+                r,
+                lx0,
+                ly0,
+                lx1,
+                ly1,
+                nx,
+                ny
+            );
         }
 
         // EAST
@@ -2073,13 +2107,26 @@ namespace Hop::System::Physics
             nx = -1.0; ny = 0.0;
             lx0 = tileBounds.ex0; ly0 = tileBounds.ey0;
             lx1 = tileBounds.ex1; ly1 = tileBounds.ey1;
-            colliding = true;
 
             r.llx = lx0;     r.lly = ly0;
             r.ulx = lx0;     r.uly = ly0+1.0;
             r.urx = lx0+1.0; r.ury = ly0+1.0;
             r.lrx = lx0+1.0; r.lry = ly0;
             r.resetAxes();
+
+            tileBoundariesCollisionForce
+            (
+                c,
+                dataP,
+                li,
+                r,
+                lx0,
+                ly0,
+                lx1,
+                ly1,
+                nx,
+                ny
+            );
         }
 
         // SOUTH
@@ -2095,39 +2142,66 @@ namespace Hop::System::Physics
             nx = 0.0; ny = 1.0;
             lx0 = tileBounds.sx0; ly0 = tileBounds.sy0;
             lx1 = tileBounds.sx1; ly1 = tileBounds.sy1;
-            colliding = true;
 
             r.llx = lx0;     r.lly = ly0;
             r.ulx = lx1;     r.uly = ly0;
             r.urx = lx1;     r.ury = ly0-1.0;
             r.lrx = lx0;     r.lry = ly0-1.0;
             r.resetAxes();
+
+            tileBoundariesCollisionForce
+            (
+                c,
+                dataP,
+                li,
+                r,
+                lx0,
+                ly0,
+                lx1,
+                ly1,
+                nx,
+                ny
+            );
         }
+    }
 
-        if (colliding)
+    void SpringDashpot::tileBoundariesCollisionForce
+    (
+        std::shared_ptr<CollisionPrimitive> c,
+        cPhysics & dataP,
+        Rectangle * li,
+        Rectangle r,
+        double lx0, 
+        double ly0,
+        double lx1, 
+        double ly1,
+        double nx,
+        double ny
+    )
+    {
+        double fx = 0.0;
+        double fy = 0.0;
+        double r2 = c->r*c->r;
+
+        if (li == nullptr)
         {
-            double fx = 0.0;
-            double fy = 0.0;
-            if (li == nullptr)
-            {
-                d2 = pointLineSegmentDistanceSquared<double>
-                (
-                    c->x,c->y,
-                    lx0, ly0,
-                    lx1, ly1
-                );
+            double d2 = pointLineSegmentDistanceSquared<double>
+            (
+                c->x,c->y,
+                lx0, ly0,
+                lx1, ly1
+            );
 
-                if (d2 < r2)
-                {
-                    springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP,fx,fy);
-                    c->applyForce(fx, fy);
-                }
-            }
-            else
+            if (d2 < r2)
             {
-                cPhysics dataTmp(0.,0.,0.);
-                collisionForce(dataP, dataTmp, li, &r, true);
+                springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP,fx,fy);
+                c->applyForce(fx, fy);
             }
+        }
+        else
+        {
+            cPhysics dataTmp(0.,0.,0.);
+            collisionForce(dataP, dataTmp, li, &r, true);
         }
     }
 }

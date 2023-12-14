@@ -67,8 +67,6 @@ namespace Hop::System::Physics
         void applyForce(
             EntityComponentSystem * m,
             Id & i,
-            double x,
-            double y,
             double fx,
             double fy
         );
@@ -126,6 +124,17 @@ namespace Hop::System::Physics
 
             return 0;
         }
+
+        double kineticEnergy()
+        {
+            return energy;
+        }
+
+        int lua_kineticEnergy(lua_State * lua)
+        {
+            lua_pushnumber(lua, energy);
+            return 1;
+        }
         
         void setTimeStep(double delta){dt = delta; dtdt = dt*dt;}
         void setSubSamples(unsigned s){subSamples = s;}
@@ -140,17 +149,6 @@ namespace Hop::System::Physics
             EntityComponentSystem * m
         );
 
-        void processThreaded
-        (
-            ComponentArray<cCollideable> & collideables,
-            ComponentArray<cPhysics> & physics,
-            ComponentArray<cTransform> & transforms,
-            Id * jobs,
-            unsigned njobs
-        );
-
-        void updateThreaded(EntityComponentSystem * m,  ThreadPool * workers = nullptr);
-
         std::default_random_engine e;
         std::normal_distribution<double> normal;
 
@@ -159,6 +157,7 @@ namespace Hop::System::Physics
         double gravity, ngx, ngy;
         double movementLimitRadii = 0.33;
         unsigned subSamples;
+        double energy = 0.0;
 
         // see implementation for details
         double stableDragUnderdampedLangevinWithGravityUnitMass(
