@@ -116,6 +116,7 @@ namespace Hop::System::Physics
 
     void CollisionMesh::updateWorldMeshSoft(
         cTransform & transform,
+        cPhysics & physics,
         double dt
     )
     {
@@ -123,7 +124,7 @@ namespace Hop::System::Physics
         {
             modelToCenterOfMassFrame();
         }
-        
+
         double c = std::cos(transform.theta);
         double s = std::sin(transform.theta);
 
@@ -133,8 +134,15 @@ namespace Hop::System::Physics
         double co = std::cos(omega);
         double so = std::sin(omega);
 
+        double ct = physics.translationalDrag*dt / (2.0*mass);
+        double bt = 1.0/(1.0+ct);
+        double at = (1.0-ct)*bt;
+
 
         std::vector<uint8_t> inside(worldVertices.size());
+
+        //std::cout << (vertices[0]->x*co + vertices[0]->y*so)*transform.scale + transform.x << ", "
+        //          << (vertices[0]->y*co - vertices[0]->x*so)*transform.scale + transform.y << "\n";
 
         for (unsigned i = 0; i < vertices.size(); i++)
         {
@@ -190,6 +198,29 @@ namespace Hop::System::Physics
 
         transform.theta = omega;
         centerOfMassWorld(transform.x, transform.y);
+
+        //std::cout << worldVertices[0]->ox << ", " << worldVertices[0]->oy << "\n";
+
+        double dx, dy;
+        for (unsigned i = 0; i < vertices.size(); i++)
+        {
+            worldVertices[i]->stepGlobal
+            (
+                dt, at, bt, dx, dy
+            );
+        }
+
+        transform.x += dx;
+        transform.y += dy;
+
+        kineticEnergy += (dx*dx+dy*dy)/(dt*dt);
+        for (auto p : worldVertices)
+        {
+            kineticEnergy += p->vx*p->vx+p->vy*p->vy;
+        }
+
+        //std::cout << (vertices[0]->x*co + vertices[0]->y*so)*transform.scale + transform.x << ", "
+        //          << (vertices[0]->y*co - vertices[0]->x*so)*transform.scale + transform.y << "\n\n";
 
         if (needsInit)
         {

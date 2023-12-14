@@ -11,9 +11,11 @@
 #include <Maths/vertex.h>
 #include <Maths/transform.h>
 #include <Component/cTransform.h>
+#include <Component/cPhysics.h>
 
 using Hop::Maths::Vertex;
 using Hop::Object::Component::cTransform;
+using Hop::Object::Component::cPhysics;
 
 namespace Hop::System::Physics
 {
@@ -106,6 +108,7 @@ namespace Hop::System::Physics
           ox(x),oy(y),fx(0),fy(0),
           xp(x),yp(y),
           vx(0),vy(0),
+          roxp(0.0), royp(0.0),
           stiffness(k), mass(m), damping(d)
         {}
 
@@ -117,7 +120,7 @@ namespace Hop::System::Physics
 
         double ox, oy;
 
-        double fx, fy, xp, yp, vx, vy;
+        double fx, fy, xp, yp, vx, vy, roxp, royp;
 
         double stiffness = CollisionPrimitive::RIGID;
         double mass, damping;
@@ -131,6 +134,11 @@ namespace Hop::System::Physics
         {
             fx+=x;
             fy+=y;
+        }
+
+        double energy()
+        {
+            return mass*(vx*vx+vy*vy);
         }
 
         void setOrigin
@@ -155,11 +163,16 @@ namespace Hop::System::Physics
         )
         {
 
+            double dtdt = dt*dt;
+
             ox = nox;
             oy = noy;
 
             double rox = x-ox;
             double roy = y-oy;
+
+            // std::cout << ox << ", " << oy << ", " << x << ", " << y << ", " << rox << ", " << roy << "\n";
+            // std::cout << fx << ", " << fy << ", " << damping*vx << ", " << damping*vy << "\n";
 
             // spring with relaxed state at ox, oy;
             double ax = (fx-stiffness*rox-damping*vx)/mass;
@@ -171,13 +184,37 @@ namespace Hop::System::Physics
             double xtp = x;
             double ytp = y;
 
-            x = 2.0*x - xp + ax * dt*dt;
-            y = 2.0*y - yp + ay * dt*dt;
-
-            vx = (x-xtp)/(2.0*dt);
-            vy = (y-ytp)/(2.0*dt);
+            x = 2.0*x - xp + ax * dtdt;
+            y = 2.0*y - yp + ay * dtdt;
 
             xp = xtp;
+            yp = ytp;
+
+            vx = (rox-roxp)/(dt);
+            vy = (roy-royp)/(dt);
+
+            roxp = rox;
+            royp = roy;
+
+        }
+
+        void stepGlobal
+        (
+            double dt,
+            double at,
+            double bt,
+            double & dx,
+            double & dy
+        )
+        {
+            double dtdt = dt*dt;
+            double ytp = y;
+
+            double ay = -9.81;
+
+            y = 2.0*bt*y - at*yp + bt*ay*dtdt;
+            dy = y-ytp;
+            dx = 0.0;
             yp = ytp;
         }
 
@@ -233,6 +270,8 @@ namespace Hop::System::Physics
             vy = 0.0;
             fx = 0.0;
             fy = 0.0;
+            roxp=0.0;
+            royp=0.0;
         }
 
         void resetAxes()
@@ -316,7 +355,8 @@ namespace Hop::System::Physics
         : CollisionMesh(std::move(v), stiffness, damping, mass)
         {
             cTransform transform(x,y,theta,scale);
-            updateWorldMesh(transform, 0.0);
+            cPhysics phys(x,y,theta);
+            updateWorldMesh(transform, phys, 0.0);
         }
 
         CollisionMesh
@@ -326,7 +366,7 @@ namespace Hop::System::Physics
             double d = 1.0,
             double m = 1.0
         )
-        : stiffness(s), damping(d), mass(m)
+        : stiffness(s), damping(d), mass(m), gx(0.0), gy(0.0)
         {
             if (stiffness >= CollisionPrimitive::RIGID)
             {
@@ -453,16 +493,18 @@ namespace Hop::System::Physics
 
         void updateWorldMesh(
             cTransform & transform,
+            cPhysics & physics,
             double dt
         )
         {
+            kineticEnergy = 0.0;
             if (isRigid())
             {
                 return updateWorldMeshRigid(transform, dt);
             }
             else 
             {
-                return updateWorldMeshSoft(transform, dt);
+                return updateWorldMeshSoft(transform, physics, dt);
             }
         }
 
@@ -473,6 +515,7 @@ namespace Hop::System::Physics
 
         void updateWorldMeshSoft(
             cTransform & transform,
+            cPhysics & physics,
             double dt
         );
 
@@ -486,12 +529,26 @@ namespace Hop::System::Physics
 
         bool isRigid(){ return rigid; }
 
-        void applyForce(double fx, double fy)
+        void applyForce(double fx, double fy, bool global = false)
         {
-            for (auto w : worldVertices)
+            if (global)
             {
-                w->applyForce(fx, fy);
+                gx += fx;
+                gy += fy;
             }
+            else 
+            {
+                for (auto w : worldVertices)
+                {
+                    w->applyForce(fx, fy);
+                }
+            }
+
+        }
+
+        double energy()
+        {
+            return kineticEnergy;
         }
         
     private:
@@ -502,6 +559,8 @@ namespace Hop::System::Physics
         double stiffness, damping, mass;
 
         double radius;
+
+        double gx, gy, kineticEnergy;
 
         bool rigid = true;
 

@@ -8,6 +8,7 @@
 #include <System/sPhysics.h>
 #include <System/sCollision.h>
 #include <log.h>
+#include <chrono>
 
 
 namespace Hop
@@ -82,6 +83,8 @@ namespace Hop
 
     int configure(lua_State * lua);
 
+    int timeMillis(lua_State * lua);
+
     // register lib
 
     const luaL_Reg hopLib[] =
@@ -90,8 +93,10 @@ namespace Hop
         {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
         {"setPhysicsTimeStep",&dispatchsPhysics<&sPhysics::lua_setTimeStep>},
         {"setPhysicsSubSamples",&dispatchsPhysics<&sPhysics::lua_setSubSamples>},
+        {"kineticEnergy", &dispatchsPhysics<&sPhysics::lua_kineticEnergy>},
         {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
         {"configure", &configure},
+        {"timeMillis", &timeMillis},
         {NULL, NULL}
     };
 
