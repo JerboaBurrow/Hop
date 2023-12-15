@@ -158,21 +158,16 @@ namespace Hop::System::Physics
         void step
         (
             double dt,
+            double dtdt,
             double nox,
             double noy
         )
         {
-
-            double dtdt = dt*dt;
-
             ox = nox;
             oy = noy;
 
             double rox = x-ox;
             double roy = y-oy;
-
-            // std::cout << ox << ", " << oy << ", " << x << ", " << y << ", " << rox << ", " << roy << "\n";
-            // std::cout << fx << ", " << fy << ", " << damping*vx << ", " << damping*vy << "\n";
 
             // spring with relaxed state at ox, oy;
             double ax = (fx-stiffness*rox-damping*vx)/mass;
@@ -201,20 +196,28 @@ namespace Hop::System::Physics
         void stepGlobal
         (
             double dt,
+            double dtdt,
             double at,
             double bt,
+            double gx,
+            double gy,
             double & dx,
             double & dy
         )
         {
-            double dtdt = dt*dt;
+            // not impacted by damping forces on mesh
+
+            double xtp = x;
             double ytp = y;
 
-            double ay = -9.81;
+            double ax = gx/mass;
+            double ay = gy/mass;
 
+            x = 2.0*bt*x - at*xp + bt*ax*dtdt;
             y = 2.0*bt*y - at*yp + bt*ay*dtdt;
+            dx = x-xtp;
             dy = y-ytp;
-            dx = 0.0;
+            xp = xtp;
             yp = ytp;
         }
 
@@ -433,6 +436,8 @@ namespace Hop::System::Physics
                     )
                 );
 
+                someRectangles = true;
+
             }
             else
             {
@@ -546,10 +551,14 @@ namespace Hop::System::Physics
 
         }
 
+        double getMass() const { return mass; }
+
         double energy()
         {
             return kineticEnergy;
         }
+        
+        bool areSomeRectangles() const { return someRectangles; }
         
     private:
 
@@ -565,6 +574,8 @@ namespace Hop::System::Physics
         bool rigid = true;
 
         bool needsInit = false;
+
+        bool someRectangles = false;
     };
 
 }

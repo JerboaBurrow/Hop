@@ -2,7 +2,7 @@
 
 #include <chrono>
 using namespace std::chrono;
-
+        
 namespace Hop::System::Physics
 {
 
@@ -17,7 +17,6 @@ namespace Hop::System::Physics
         {
 
             collisions->update(m, world);
-
             gravityForce(m);
             update(m);
         }
@@ -162,7 +161,7 @@ namespace Hop::System::Physics
                 cCollideable & data = collideables.get(*it);
                 if (!data.mesh.isRigid())
                 {   
-                    data.mesh.applyForce(fx, fy, true);
+                    data.mesh.applyForce(fx*data.mesh.getMass(), fy*data.mesh.getMass(), true);
                     continue;
                 }
             }
