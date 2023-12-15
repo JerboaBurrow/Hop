@@ -1,5 +1,5 @@
-#ifndef CCOLLIDEABLE
-#define CCOLLIDEABLE
+#ifndef CCOLLIDEABLE_H
+#define CCOLLIDEABLE_H
 
 #include <Collision/collisionMesh.h>
 
@@ -54,4 +54,4 @@ namespace Hop::Object::Component
 
 }
 
-#endif /* CCOLLIDEABLE */
+#endif /* CCOLLIDEABLE_H */

@@ -548,9 +548,6 @@ namespace Hop::System::Physics
             }
         }
 
-        //high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
-
         double rx, ry, rc, dd;
 
         Rectangle * li, * lj;
@@ -574,9 +571,6 @@ namespace Hop::System::Physics
             return;
         }
 
-        //high_resolution_clock::time_point t2 = high_resolution_clock::now();
-
-        //float isContact = dd < rc*rc;
         if (dd < rc*rc)
         {
             li = dynamic_cast<Rectangle*>(ci.get());
