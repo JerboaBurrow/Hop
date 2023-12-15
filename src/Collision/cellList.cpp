@@ -233,7 +233,7 @@ namespace Hop::System::Physics
                 auto idj = id[j];
                 cCollideable & collidableJ = dataC.get(idj.first);
                 cPhysics & physicsJ = dataP.get(idj.first);
-
+                
                 resolver->handleObjectObjectCollision(
                     idi.first,idi.second,
                     idj.first,idj.second,
@@ -388,8 +388,6 @@ namespace Hop::System::Physics
                 }
             }
 
-            //high_resolution_clock::time_point t0 = high_resolution_clock::now();
-
             if (dataC.allocatedWorkerData() < nThreads)
             {
                 dataC.allocateWorkerData(nThreads);
@@ -426,12 +424,6 @@ namespace Hop::System::Physics
 
             workers->wait();
 
-            //high_resolution_clock::time_point t2 = high_resolution_clock::now();
-
-            //std::cout << "Thread collisions: scatter" << duration_cast<duration<double>>(t2-t0).count() << "\n";
-
-            //high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
             for (unsigned t = 0; t < nThreads; t++)
             {
                 workers->queueJob
@@ -452,12 +444,6 @@ namespace Hop::System::Physics
             }
             workers->wait();
 
-            //t2 = high_resolution_clock::now();
-
-            //std::cout << "Thread collisions: " << duration_cast<duration<double>>(t2-t1).count() << "\n";
-
-            //t1 = high_resolution_clock::now();
-
             for (unsigned t = 0; t < nThreads; t++)
             {
                 workers->queueJob
@@ -473,17 +459,10 @@ namespace Hop::System::Physics
             }
 
             workers->wait();
-
-            //t2 = high_resolution_clock::now();
-
-            //std::cout << "Thread collisions: reduce" << duration_cast<duration<double>>(t2-t1).count() << "\n";
-
-            //std::cout << "Thread collisions: total" << duration_cast<duration<double>>(t2-t0).count() << "\n";
             
         }
         else
         {
-            //high_resolution_clock::time_point t1 = high_resolution_clock::now();
             for (unsigned a = 0; a < rootNCells; a++)
             {
                 a1 = a+1;
@@ -501,8 +480,6 @@ namespace Hop::System::Physics
                     cellCollisions(a,b,a1,b-1,dataC,dataP,resolver);
                 }
             }
-            //high_resolution_clock::time_point t2 = high_resolution_clock::now();
-            //std::cout << "collisions: " << duration_cast<duration<double>>(t2-t1).count() << "\n";
         }
         
     }
@@ -516,8 +493,6 @@ namespace Hop::System::Physics
         ThreadPool * workers
     )
     {
-
-        //high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
         unsigned nThreads = 0;
         SpringDashpot * res = static_cast<SpringDashpot*>(resolver);
@@ -587,7 +562,5 @@ namespace Hop::System::Physics
             }
         }
 
-        //high_resolution_clock::time_point t2 = high_resolution_clock::now();
-        //std::cout << "world collisions: " << duration_cast<duration<double>>(t2-t1).count() << "\n";
     }
 }

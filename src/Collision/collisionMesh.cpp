@@ -1,5 +1,6 @@
 #include <Collision/collisionMesh.h>
 
+
 namespace Hop::System::Physics
 {
     void CollisionMesh::updateWorldMeshRigid(
@@ -23,32 +24,40 @@ namespace Hop::System::Physics
 
             worldVertices[i]->r = vertices[i]->r*transform.scale;
             worldVertices[i]->lastInside = inside[i]; 
+        }
 
-            Rectangle * lw = dynamic_cast<Rectangle*>(worldVertices[i].get());
-            MeshRectangle * lv = dynamic_cast<MeshRectangle*>(vertices[i].get());
-
-            if (lw != nullptr && lv != nullptr)
+        // break of into second loop to allow for vectorisation of the above loop
+        // cf updateWorldMeshSoft
+        if (someRectangles)
+        {
+            for (unsigned i = 0; i < vertices.size(); i++)
             {
-                lw->llx = lv->llx;
-                lw->lly = lv->lly;
+                Rectangle * lw = dynamic_cast<Rectangle*>(worldVertices[i].get());
+                MeshRectangle * lv = dynamic_cast<MeshRectangle*>(vertices[i].get());
 
-                lw->ulx = lv->ulx;
-                lw->uly = lv->uly;
+                if (lw != nullptr && lv != nullptr)
+                {
+                    lw->llx = lv->llx;
+                    lw->lly = lv->lly;
 
-                lw->urx = lv->urx;
-                lw->ury = lv->ury;
+                    lw->ulx = lv->ulx;
+                    lw->uly = lv->uly;
 
-                lw->lrx = lv->lrx;
-                lw->lry = lv->lry;
+                    lw->urx = lv->urx;
+                    lw->ury = lv->ury;
 
-                lw->x = lv->x;
-                lw->y = lv->y;
-                lw->r = lv->r;
-                
-                Hop::Maths::rotateClockWise(lw, c, s);
-                Hop::Maths::scale(lw, transform.scale*2.0);
-                Hop::Maths::translate(lw, transform.x, transform.y);
+                    lw->lrx = lv->lrx;
+                    lw->lry = lv->lry;
 
+                    lw->x = lv->x;
+                    lw->y = lv->y;
+                    lw->r = lv->r;
+                    
+                    Hop::Maths::rotateClockWise(lw, c, s);
+                    Hop::Maths::scale(lw, transform.scale*2.0);
+                    Hop::Maths::translate(lw, transform.x, transform.y);
+
+                }
             }
         }
 
@@ -120,6 +129,7 @@ namespace Hop::System::Physics
         double dt
     )
     {
+
         if (needsInit)
         {
             modelToCenterOfMassFrame();
@@ -138,89 +148,104 @@ namespace Hop::System::Physics
         double bt = 1.0/(1.0+ct);
         double at = (1.0-ct)*bt;
 
+        double dtdt = dt*dt;
 
         std::vector<uint8_t> inside(worldVertices.size());
 
-        //std::cout << (vertices[0]->x*co + vertices[0]->y*so)*transform.scale + transform.x << ", "
-        //          << (vertices[0]->y*co - vertices[0]->x*so)*transform.scale + transform.y << "\n";
-
-        for (unsigned i = 0; i < vertices.size(); i++)
+        if (needsInit)
         {
-            inside[i] = worldVertices[i]->lastInside;
-            if (needsInit)
+            for (unsigned i = 0; i < vertices.size(); i++)
             {
                 worldVertices[i]->setOrigin
                 (
                     (vertices[i]->x*c + vertices[i]->y*s)*transform.scale + transform.x,
                     (vertices[i]->y*c - vertices[i]->x*s)*transform.scale + transform.y
                 );
+                worldVertices[i]->r = vertices[i]->r*transform.scale;
+                worldVertices[i]->lastInside = inside[i]; 
             }
-            else
+        }
+
+        if (!needsInit)
+        {
+            // should be vectorisable, split with prior and next loop
+            //  to make branchless. Indeed we got down to O(1e-7) from O(1e-6)
+            //  on pure circles 
+            for (unsigned i = 0; i < vertices.size(); i++)
             {
+                inside[i] = worldVertices[i]->lastInside;
+
                 worldVertices[i]->step
                 (
                     dt,
+                    dtdt,
                     (vertices[i]->x*co + vertices[i]->y*so)*transform.scale + transform.x,
                     (vertices[i]->y*co - vertices[i]->x*so)*transform.scale + transform.y
                 );
+
+                worldVertices[i]->r = vertices[i]->r*transform.scale;
+                worldVertices[i]->lastInside = inside[i]; 
             }
+        }
 
-            worldVertices[i]->r = vertices[i]->r*transform.scale;
-            worldVertices[i]->lastInside = inside[i]; 
-
-            Rectangle * lw = dynamic_cast<Rectangle*>(worldVertices[i].get());
-            MeshRectangle * lv = dynamic_cast<MeshRectangle*>(vertices[i].get());
-
-            if (lw != nullptr && lv != nullptr)
+        if (someRectangles)
+        {
+            for (unsigned i = 0; i < vertices.size(); i++)
             {
-                lw->llx = lv->llx;
-                lw->lly = lv->lly;
+                Rectangle * lw = dynamic_cast<Rectangle*>(worldVertices[i].get());
+                MeshRectangle * lv = dynamic_cast<MeshRectangle*>(vertices[i].get());
 
-                lw->ulx = lv->ulx;
-                lw->uly = lv->uly;
+                if (lw != nullptr && lv != nullptr)
+                {
+                    lw->llx = lv->llx;
+                    lw->lly = lv->lly;
 
-                lw->urx = lv->urx;
-                lw->ury = lv->ury;
+                    lw->ulx = lv->ulx;
+                    lw->uly = lv->uly;
 
-                lw->lrx = lv->lrx;
-                lw->lry = lv->lry;
+                    lw->urx = lv->urx;
+                    lw->ury = lv->ury;
 
-                lw->x = lv->x;
-                lw->y = lv->y;
-                lw->r = lv->r;
-                
-                Hop::Maths::rotateClockWise(lw, c, s);
-                Hop::Maths::scale(lw, transform.scale*2.0);
-                Hop::Maths::translate(lw, transform.x, transform.y);
+                    lw->lrx = lv->lrx;
+                    lw->lry = lv->lry;
 
+                    lw->x = lv->x;
+                    lw->y = lv->y;
+                    lw->r = lv->r;
+                    
+                    Hop::Maths::rotateClockWise(lw, c, s);
+                    Hop::Maths::scale(lw, transform.scale*2.0);
+                    Hop::Maths::translate(lw, transform.x, transform.y);
+
+                }
             }
         }
 
         transform.theta = omega;
         centerOfMassWorld(transform.x, transform.y);
 
-        //std::cout << worldVertices[0]->ox << ", " << worldVertices[0]->oy << "\n";
-
-        double dx, dy;
+        double dx = 0.0; 
+        double dy = 0.0;
         for (unsigned i = 0; i < vertices.size(); i++)
         {
             worldVertices[i]->stepGlobal
             (
-                dt, at, bt, dx, dy
+                dt, dtdt, at, bt, gx, gy, dx, dy
             );
         }
+
+        gx = 0.0;
+        gy = 0.0;
 
         transform.x += dx;
         transform.y += dy;
 
         kineticEnergy += (dx*dx+dy*dy)/(dt*dt);
+
         for (auto p : worldVertices)
         {
             kineticEnergy += p->vx*p->vx+p->vy*p->vy;
         }
-
-        //std::cout << (vertices[0]->x*co + vertices[0]->y*so)*transform.scale + transform.x << ", "
-        //          << (vertices[0]->y*co - vertices[0]->x*so)*transform.scale + transform.y << "\n\n";
 
         if (needsInit)
         {
@@ -238,7 +263,6 @@ namespace Hop::System::Physics
 
         computeRadius();
         needsInit = false;
-
     }
 
     void CollisionMesh::computeRadius()
