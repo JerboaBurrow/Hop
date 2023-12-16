@@ -89,15 +89,20 @@ namespace Hop::Object
 
         meshParameters.read(lua, "meshParameters");
 
-        if (!name.read(lua, "name"))
-        {
-            lua_pushliteral(lua,"expecting string for name got something else");
-            return lua_error(lua);
-        }
+        name.read(lua, "name");
 
         // now create the object
 
-        Id pid = createObject();
+        Id pid;
+        
+        if (name.characters != "")
+        {
+            pid = createObject(name.characters);
+        }
+        else
+        {
+            pid = createObject();
+        }
 
         double x,y,theta,scale;
 

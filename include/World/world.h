@@ -55,6 +55,8 @@ namespace Hop::World
         float sx0, sy0, sx1, sy1;
         bool sw;
 
+        bool operator !=(const TileBoundsData & rhs) { return !(*this == rhs); }
+
         bool operator ==(const TileBoundsData & rhs)
         {
             return wx0 == rhs.wx0 &&
