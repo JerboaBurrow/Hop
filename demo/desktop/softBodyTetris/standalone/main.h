@@ -26,6 +26,7 @@ using namespace std::chrono;
 #include <System/sPhysics.h>
 #include <System/Rendering/sRender.h>
 #include <System/sCollision.h>
+#include <System/sSound.h>
 
 #include <World/world.h>
 #include <World/marchingWorld.h>
@@ -68,6 +69,7 @@ using Hop::System::Physics::CollisionDetector;
 using Hop::System::Physics::CollisionResolver;
 using Hop::System::Physics::sPhysics;
 using Hop::System::Physics::sCollision;
+using Hop::System::Sound::sSound;
 
 using Hop::System::Signature;
 

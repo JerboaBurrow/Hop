@@ -11,11 +11,13 @@
 #include <Component/cPhysics.h>
 #include <Component/cCollideable.h>
 #include <Component/cPolygon.h>
+#include <Component/cSound.h>
 
 #include <System/Rendering/sRender.h>
 #include <System/Rendering/sSpriteRender.h>
 #include <System/sPhysics.h>
 #include <System/sCollision.h>
+#include <System/sSound.h>
 
 #include <unordered_map>
 #include <map>
@@ -43,6 +45,11 @@ namespace Hop::System::Rendering
     class sSpriteRender;
 }
 
+namespace Hop::System::Sound
+{
+    class sSound;
+}
+
 namespace Hop::System::Physics
 {
     class sPhysics;
@@ -58,6 +65,7 @@ namespace Hop::Object
     using Hop::System::Physics::sPhysics;
     using Hop::System::Physics::sCollision;
     using Hop::System::Rendering::sRender;
+    using Hop::System::Sound::sSound;
     using Hop::System::Rendering::sSpriteRender;
     using Hop::Console;
 
