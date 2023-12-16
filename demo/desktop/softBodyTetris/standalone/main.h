@@ -33,6 +33,8 @@ using namespace std::chrono;
 
 #include <Console/console.h>
 
+#include <Debug/collisionMeshDebug.h>
+
 #include <Util/util.h>
 #include <log.h>
 
@@ -44,7 +46,8 @@ const float MAX_SPEED = 1.0/60.0;
 uint8_t frameId = 0;
 double deltas[60];
 
-bool debug = false;
+bool debug = true;
+bool paused = true;
 
 const double deltaPhysics = 1.0/900.0;
 

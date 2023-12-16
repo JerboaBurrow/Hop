@@ -105,6 +105,8 @@ namespace Hop::Object
         void remove(Id id);
         void remove(std::string handle);
 
+        bool handleExists(std::string handle) const { return handleToId.find(handle) != handleToId.cend(); }
+
         Id & idFromHandle(std::string handle)
         {
             return handleToId[handle];

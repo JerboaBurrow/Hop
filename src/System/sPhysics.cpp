@@ -2,7 +2,7 @@
 
 #include <chrono>
 using namespace std::chrono;
-
+        
 namespace Hop::System::Physics
 {
 
@@ -17,7 +17,6 @@ namespace Hop::System::Physics
         {
 
             collisions->update(m, world);
-
             gravityForce(m);
             update(m);
         }
@@ -31,6 +30,8 @@ namespace Hop::System::Physics
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
         double nx, ny, ntheta, at, bt, ct, sticktion, r, dx, dy, d, ar, br, cr;
+
+        energy = 0.0;
 
         double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
@@ -86,6 +87,8 @@ namespace Hop::System::Physics
                     dataP.vx = (nx-dataP.lastX)/(dt*2.0);
                     dataP.vy = (ny-dataP.lastY)/(dt*2.0);
 
+                    energy += dataP.vx * dataP.vx + dataP.vy * dataP.vy;
+
                     dataP.lastX = dataT.x;
                     dataP.lastY = dataT.y;
 
@@ -131,9 +134,11 @@ namespace Hop::System::Physics
                 cCollideable & data = collideables.get(*it);
                 data.updateMesh(
                     dataT,
+                    dataP,
                     dt
                 );
                 dataP.momentOfInertia = data.mesh.momentOfInertia(dataT.x, dataT.y)*PARTICLE_MASS;
+                energy += data.mesh.energy();
             }
         }
     }
@@ -156,7 +161,7 @@ namespace Hop::System::Physics
                 cCollideable & data = collideables.get(*it);
                 if (!data.mesh.isRigid())
                 {   
-                    data.mesh.applyForce(fx, fy);
+                    data.mesh.applyForce(fx*data.mesh.getMass(), fy*data.mesh.getMass(), true);
                     continue;
                 }
             }
@@ -172,24 +177,32 @@ namespace Hop::System::Physics
     void sPhysics::applyForce(
         EntityComponentSystem * m,
         Id & i,
-        double x,
-        double y,
         double fx,
         double fy
     )
     {
-        double rx, ry;
 
         cPhysics & dataP = m->getComponent<cPhysics>(i);
-        cTransform & dataT = m->getComponent<cTransform>(i);
+        ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
 
-        dataP.fx += fx;
-        dataP.fy += fy;
-
-        rx = x - dataT.x;
-        ry = y - dataT.y;
-
-        dataP.omega += (rx*fy-ry*fx)/PARTICLE_MASS;
+        if (collideables.hasComponent(i))
+        {
+            cCollideable & data = collideables.get(i);
+            if (!data.mesh.isRigid())
+            {   
+                data.mesh.applyForce(fx, fy);
+            }
+            else
+            {
+                dataP.fx += fx;
+                dataP.fy += fy;
+            }
+        }
+        else
+        {
+            dataP.fx += fx;
+            dataP.fy += fy;
+        }
 
     }
 
@@ -199,8 +212,22 @@ namespace Hop::System::Physics
         double fy
     )
     {
+
+        ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
+
         for (auto it = objects.begin(); it != objects.end(); it++)
         {
+
+            if (collideables.hasComponent(*it))
+            {
+                cCollideable & data = collideables.get(*it);
+                if (!data.mesh.isRigid())
+                {   
+                    data.mesh.applyForce(fx, fy);
+                    continue;
+                }
+            }
+
             cPhysics & dataP = m->getComponent<cPhysics>(*it);
 
             dataP.fx += fx;

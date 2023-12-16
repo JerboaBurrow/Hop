@@ -30,10 +30,11 @@ namespace Hop::Object::Component
 
         void updateMesh(
             cTransform & transform,
+            cPhysics & physics,
             double dt
         )
         {
-            mesh.updateWorldMesh(transform, dt);
+            mesh.updateWorldMesh(transform, physics, dt);
         }
 
         void add
@@ -43,7 +44,8 @@ namespace Hop::Object::Component
         ) 
         { 
             mesh.add(c); 
-            mesh.updateWorldMesh(transform, 0.0);
+            cPhysics phys(transform.x, transform.y, transform.theta);
+            mesh.updateWorldMesh(transform, phys, 0.0);
         }
 
         void remove(size_t i) { mesh.remove(i); }

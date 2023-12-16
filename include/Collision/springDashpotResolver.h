@@ -173,6 +173,20 @@ namespace Hop::System::Physics
             TileBoundsData & tileBounds
         );
 
+        void tileBoundariesCollisionForce
+        (
+            std::shared_ptr<CollisionPrimitive> c,
+            cPhysics & dataP,
+            Rectangle * li,
+            Rectangle r,
+            double lx0, 
+            double ly0,
+            double lx1, 
+            double ly1,
+            double nx,
+            double ny
+        );
+
     private:
 
         double collisionTime, coefficientOfRestitution;
