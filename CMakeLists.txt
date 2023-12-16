@@ -119,6 +119,10 @@ else()
 
 endif()
 
+file(GLOB MINIAUDIO_SRC "include/vendored/miniaudio/*.c")
+include_directories(include/vendored/miniaudio)
+add_library(Miniaudio STATIC ${MINIAUDIO_SRC})
+
 include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
 include_directories(src)
@@ -152,10 +156,10 @@ endif()
 
 if (ANDROID)
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
-    target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid Lua)
+    target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid Lua Miniaudio)
 else()
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
-    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw Lua)
+    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw Lua Miniaudio)
 endif()
 
 add_subdirectory(tools/)

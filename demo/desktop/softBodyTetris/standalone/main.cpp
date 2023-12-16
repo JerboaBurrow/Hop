@@ -84,6 +84,8 @@ int main(int argc, char ** argv)
 
     bool refreshObjectShaders = true;
 
+    Hop::System::Sound::sSound & sound = manager.getSystem<Hop::System::Sound::sSound>();
+
     while (display.isOpen())
     {
 

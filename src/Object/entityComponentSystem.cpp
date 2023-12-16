@@ -39,17 +39,20 @@ namespace Hop::Object
         registerComponent<cPhysics>();
         registerComponent<cCollideable>();
         registerComponent<cPolygon>();
+        registerComponent<cSound>();
 
         registerSystem<sRender>();
         registerSystem<sSpriteRender>();
         registerSystem<sPhysics>();
         registerSystem<sCollision>();
+        registerSystem<sSound>();
 
         uint32_t tId = getComponentId<cTransform>();
         uint32_t rId = getComponentId<cRenderable>();
         uint32_t pId = getComponentId<cPhysics>();
         uint32_t cId = getComponentId<cCollideable>();
         uint32_t polyId = getComponentId<cPolygon>();
+        uint32_t soundId = getComponentId<cSound>();
 
         Signature sRenderSig = Signature();
 
@@ -118,6 +121,16 @@ namespace Hop::Object
         );
 
         systemManager.setSignature<sCollision>(sCollisionSig);
+
+        Signature sSoundSig = Signature();
+
+        sSoundSig.set
+        (
+            soundId,
+            true
+        );
+
+        systemManager.setSignature<sSound>(sSoundSig);
         
     }
 }
