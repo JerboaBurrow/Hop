@@ -119,13 +119,16 @@ else()
 
 endif()
 
+add_subdirectory(include/vendored/ogg)
+set(${VORBIS_INCLUDE_DIRS} include/vendored/ogg/include)
+
 add_subdirectory(include/vendored/vorbis)
 set(${VORBIS_INCLUDE_DIRS} include/vendored/vorbis/include)
 
 file(GLOB MINIAUDIO_SRC "include/vendored/miniaudio/*.c")
 include_directories(include/vendored/miniaudio ${VORBIS_INCLUDE_DIRS})
 add_library(Miniaudio STATIC ${MINIAUDIO_SRC})
-target_link_libraries(Miniaudio vorbisfile)
+target_link_libraries(Miniaudio vorbisfile ogg)
 
 include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
