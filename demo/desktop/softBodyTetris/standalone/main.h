@@ -26,7 +26,7 @@ using namespace std::chrono;
 #include <System/sPhysics.h>
 #include <System/Rendering/sRender.h>
 #include <System/sCollision.h>
-#include <System/sSound.h>
+#include <System/Sound/sSound.h>
 
 #include <World/world.h>
 #include <World/marchingWorld.h>
