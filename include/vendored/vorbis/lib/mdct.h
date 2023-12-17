@@ -14,8 +14,8 @@
 
  ********************************************************************/
 
-#ifndef _OGG_mdct_H_
-#define _OGG_mdct_H_
+#ifndef MDCT_H
+#define MDCT_H
 
 #include "vorbis/codec.h"
 
@@ -67,4 +67,4 @@ extern void mdct_clear(mdct_lookup *l);
 extern void mdct_forward(mdct_lookup *init, DATA_TYPE *in, DATA_TYPE *out);
 extern void mdct_backward(mdct_lookup *init, DATA_TYPE *in, DATA_TYPE *out);
 
-#endif
+#endif /* MDCT_H */
