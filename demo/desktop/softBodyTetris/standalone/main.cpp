@@ -86,6 +86,8 @@ int main(int argc, char ** argv)
 
     Hop::System::Sound::sSound & sound = manager.getSystem<Hop::System::Sound::sSound>();
 
+    sound.setLoopSound("rain");
+
     while (display.isOpen())
     {
 
