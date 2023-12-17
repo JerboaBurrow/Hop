@@ -119,9 +119,13 @@ else()
 
 endif()
 
+add_subdirectory(include/vendored/vorbis)
+set(${VORBIS_INCLUDE_DIRS} include/vendored/vorbis/include)
+
 file(GLOB MINIAUDIO_SRC "include/vendored/miniaudio/*.c")
-include_directories(include/vendored/miniaudio)
+include_directories(include/vendored/miniaudio ${VORBIS_INCLUDE_DIRS})
 add_library(Miniaudio STATIC ${MINIAUDIO_SRC})
+target_link_libraries(Miniaudio vorbisfile)
 
 include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
@@ -141,6 +145,7 @@ file(GLOB SRC
     "src/Debug/*.cpp"
     "src/Console/*.cpp"
     "src/System/Rendering/*.cpp"
+    "src/System/Sound/*.cpp"
 )
 
 if (NOT ANDROID)
