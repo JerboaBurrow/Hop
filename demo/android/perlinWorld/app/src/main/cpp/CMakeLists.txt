@@ -23,6 +23,10 @@ include_directories(include/vendored/freetype/include)
 include_directories(include/vendored/stduuid/include)
 include_directories(include/vendored/stduuid/)
 include_directories(include/vendored/lua/src)
+include_directories(include/vendored)
+include_directories(include/vendored/vorbis/include)
+include_directories(include/vendored/ogg/include)
+
 
 link_directories(include)
 
