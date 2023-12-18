@@ -178,7 +178,7 @@ jobs:
         ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
         echo no | ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
 
-    - name: linux-android-hop
+    - name: build hop
       run: |
         ./build.sh -r --android android-ndk-r25c
         mkdir androidbuild 
@@ -192,7 +192,7 @@ jobs:
         name: androidbuild
         path: androidbuild.zip
 
-    - name: linux-android-demo
+    - name: build demo
       run: |
         cp -r include/ demo/android/perlinWorld/app/src/main/cpp/
         cp -r build/*.a demo/android/perlinWorld/app/src/main/cpp/include/

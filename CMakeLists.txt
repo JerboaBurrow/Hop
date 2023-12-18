@@ -119,6 +119,17 @@ else()
 
 endif()
 
+add_subdirectory(include/vendored/ogg)
+set(${VORBIS_INCLUDE_DIRS} include/vendored/ogg/include)
+
+add_subdirectory(include/vendored/vorbis)
+set(${VORBIS_INCLUDE_DIRS} include/vendored/vorbis/include)
+
+file(GLOB MINIAUDIO_SRC "include/vendored/miniaudio/*.c")
+include_directories(include/vendored/miniaudio ${VORBIS_INCLUDE_DIRS})
+add_library(Miniaudio STATIC ${MINIAUDIO_SRC})
+target_link_libraries(Miniaudio vorbisfile ogg ${CMAKE_DL_LIBS}) 
+
 include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
 include_directories(src)
@@ -137,6 +148,7 @@ file(GLOB SRC
     "src/Debug/*.cpp"
     "src/Console/*.cpp"
     "src/System/Rendering/*.cpp"
+    "src/System/Sound/*.cpp"
 )
 
 if (NOT ANDROID)
@@ -152,10 +164,10 @@ endif()
 
 if (ANDROID)
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
-    target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid Lua)
+    target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid Lua Miniaudio)
 else()
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
-    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw Lua)
+    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw Lua Miniaudio)
 endif()
 
 add_subdirectory(tools/)
