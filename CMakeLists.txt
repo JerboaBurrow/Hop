@@ -128,7 +128,7 @@ set(${VORBIS_INCLUDE_DIRS} include/vendored/vorbis/include)
 file(GLOB MINIAUDIO_SRC "include/vendored/miniaudio/*.c")
 include_directories(include/vendored/miniaudio ${VORBIS_INCLUDE_DIRS})
 add_library(Miniaudio STATIC ${MINIAUDIO_SRC})
-target_link_libraries(Miniaudio vorbisfile ogg)
+target_link_libraries(Miniaudio vorbisfile ogg ${CMAKE_DL_LIBS}) 
 
 include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 

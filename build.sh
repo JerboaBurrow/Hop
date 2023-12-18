@@ -53,6 +53,7 @@ function buildAndroid()
 
   mergeLibs "build-$1"
   mv build-$1/libHop.a build/libHop-$1.a
+  mv build-$1/include/vendored/ogg/include/ogg/config_types.h include/vendored/ogg/include/ogg/
   rm -rf build-$1
 
 }
@@ -133,12 +134,15 @@ then
   then
     rm -rf build
   fi
-  cmake -E make_directory build
+  mkdir build
 
   if [[ $WINDOWS -eq 0 ]];
   then 
+    pwd
     cd build
     cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 4
+    cd ..
+    pwd
     # now copy dlls
     PREFIX="x86_64-w64-mingw32"
 
@@ -164,11 +168,11 @@ then
       "libstdc++-6.dll"
       "libwinpthread-1.dll"
     )
-
     for j in "${dll[@]}"
     do
       findAndCopyDLL $j || echo "Could not find $j"
     done
+    pwd
 
     if [[ $RELEASE -eq 1 ]];
     then
@@ -180,7 +184,6 @@ then
         cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
         cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
     fi
-    cd ..
   elif [[ $OSX -eq 0 ]];
   then
     cd build
@@ -214,6 +217,5 @@ fi
 
 if [[ -z "$ANDROID_NDK" ]]
 then 
-  pwd
   mergeLibs "build"
 fi
