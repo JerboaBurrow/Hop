@@ -1,15 +1,19 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <memory>
 #include <Object/entityComponentSystem.h>
 #include <World/world.h>
 #include <Console/lua.h>
+#include <Console/LuaNumber.h>
+#include <Console/LuaString.h>
+#include <Console/LuaTable.h>
 #include <System/sPhysics.h>
 #include <System/sCollision.h>
 #include <log.h>
-#include <chrono>
 
+#include <memory>
+#include <vector>
+#include <chrono>
 
 namespace Hop
 {
@@ -25,13 +29,42 @@ namespace Hop
     using Hop::Logging::Log;
     using Hop::Logging::ERRORCODE;
 
+    struct Routine 
+    {
+        std::string filename;
+        uint16_t every;
+
+        bool read(lua_State * lua, const char * name);
+        bool read(lua_State * lua, int index);
+    };
+
+    struct LoopRoutines
+    {
+        std::vector<Routine> routines;
+
+        int lua_setRoutines(lua_State * lua);
+    };
+
     struct LuaExtraSpace
     {
         EntityComponentSystem * ecs;
         AbstractWorld * world;
         sPhysics * physics;
         sCollision * resolver;
+        LoopRoutines * loopRoutines;
     };
+
+    // LoopRoutines
+
+    typedef int (LoopRoutines::*LoopRoutinesMember)(lua_State * lua);
+
+    template <LoopRoutinesMember function>
+    int dispatchLoopRoutines(lua_State * lua)
+    {
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        LoopRoutines * ptr = store->loopRoutines;
+        return ((*ptr).*function)(lua);
+    }
 
     // ECS 
 
@@ -95,6 +128,7 @@ namespace Hop
         {"setPhysicsSubSamples",&dispatchsPhysics<&sPhysics::lua_setSubSamples>},
         {"kineticEnergy", &dispatchsPhysics<&sPhysics::lua_kineticEnergy>},
         {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
+        {"setLoopRoutines",&dispatchLoopRoutines<&LoopRoutines::lua_setRoutines>},
         {"configure", &configure},
         {"timeMillis", &timeMillis},
         {NULL, NULL}
@@ -108,101 +142,116 @@ namespace Hop
 
     class Console 
     {
-        public:
+    public:
 
-            Console(Log & l)
-            : lastCommandOrProgram(""), lastStatus(false), log(l)
+        Console(Log & l)
+        : lastCommandOrProgram(""), lastStatus(false), log(l)
+        {
+            lua = luaL_newstate();
+            luaL_openlibs(lua);
+            luaL_requiref(lua,"hop",load_hopLib,1);
+            runString("print(\"process running\")");
+        }
+
+        ~Console(){ lua_close(lua); }
+
+        bool runFile(std::string file)
+        {
+            if (luaIsOk())
             {
-                lua = luaL_newstate();
-                luaL_openlibs(lua);
-                luaL_requiref(lua,"hop",load_hopLib,1);
-                runString("print(\"process running\")");
+                lastCommandOrProgram = file;
+                lastStatus = luaL_loadfile(lua, file.c_str());
+                int epos = lua_gettop(lua);
+                lua_pushcfunction(lua, traceback);
+                lua_insert(lua, epos);
+                lastStatus = lastStatus || lua_pcall(lua, 0, LUA_MULTRET, epos);
+                lua_remove(lua, epos);
+                return handleErrors();
+            }
+            return false;
+        }
+
+        bool runString(std::string program)
+        {
+            if (luaIsOk())
+            {   lastCommandOrProgram = program;
+                lastStatus = luaL_dostring(lua,program.c_str());
+                return handleErrors();
+            }
+            return false;
+        }
+
+        bool luaIsOk(){ return lua_status(lua) == LUA_OK ? true : false; }
+
+        std::string luaStatus()
+        {
+            int s = lua_status(lua);
+
+            if (s == LUA_OK){return "LUA_OK";}
+
+            std::string status = lastCommandOrProgram + " | ";
+
+            switch(s)
+            {
+                case LUA_YIELD:
+                    status += "LUA_YIELD";
+                    break;
+                case LUA_ERRRUN:
+                    status += "LUA_ERRRUN";
+                    break;
+                case LUA_ERRSYNTAX:
+                    status += "LUA_ERRSYNTAX";
+                    break;
+                case LUA_ERRMEM:
+                    status += "LUA_ERRMEM";
+                    break;
+                case LUA_ERRERR:
+                    status += "LUA_ERRERR";
+                    break;
+                default:
+                    status += "LUA_STATUS_UNKOWN";
+                    break;
             }
 
-            ~Console(){ lua_close(lua); }
+            return status;
+        }
 
-            bool runFile(std::string file)
+        bool handleErrors()
+        {
+            if (lastStatus)
             {
-                if (luaIsOk())
-                {
-                    lastCommandOrProgram = file;
-                    lastStatus = luaL_loadfile(lua, file.c_str());
-                    int epos = lua_gettop(lua);
-                    lua_pushcfunction(lua, traceback);
-                    lua_insert(lua, epos);
-                    lastStatus = lastStatus || lua_pcall(lua, 0, LUA_MULTRET, epos);
-                    lua_remove(lua, epos);
-                    return handleErrors();
-                }
+                std::string msg = "Exited with error running "+lastCommandOrProgram+"\n";
+                msg += stackTrace;
+                ERROR(ERRORCODE::LUA_ERROR, msg) >> log;
+                return true;
+            }
+            else
+            {
                 return false;
             }
+        }
 
-            bool runString(std::string program)
-            {
-                if (luaIsOk())
-                {   lastCommandOrProgram = program;
-                    lastStatus = luaL_dostring(lua,program.c_str());
-                    return handleErrors();
-                }
-                return false;
-            }
+        void luaStore(LuaExtraSpace * ptr)
+        {
+            *static_cast<LuaExtraSpace**>(lua_getextraspace(lua)) = ptr;
+        }
 
-            bool luaIsOk(){ return lua_status(lua) == LUA_OK ? true : false; }
+        const std::vector<Routine> & getLoopRoutines() const 
+        { 
+            LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+            LoopRoutines * loop = store->loopRoutines;
+            return loop->routines;
+        }
+        
+        void setRoutines(std::vector<Routine> r)
+        {
+            LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+            LoopRoutines * loop = store->loopRoutines;
+            loop->routines = r;
+            return;
+        }
 
-            std::string luaStatus()
-            {
-                int s = lua_status(lua);
-
-                if (s == LUA_OK){return "LUA_OK";}
-
-                std::string status = lastCommandOrProgram + " | ";
-
-                switch(s)
-                {
-                    case LUA_YIELD:
-                        status += "LUA_YIELD";
-                        break;
-                    case LUA_ERRRUN:
-                        status += "LUA_ERRRUN";
-                        break;
-                    case LUA_ERRSYNTAX:
-                        status += "LUA_ERRSYNTAX";
-                        break;
-                    case LUA_ERRMEM:
-                        status += "LUA_ERRMEM";
-                        break;
-                    case LUA_ERRERR:
-                        status += "LUA_ERRERR";
-                        break;
-                    default:
-                        status += "LUA_STATUS_UNKOWN";
-                        break;
-                }
-
-                return status;
-            }
-
-            bool handleErrors()
-            {
-                if (lastStatus)
-                {
-                    std::string msg = "Exited with error running "+lastCommandOrProgram+"\n";
-                    msg += stackTrace;
-                    ERROR(ERRORCODE::LUA_ERROR, msg) >> log;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            void luaStore(LuaExtraSpace * ptr)
-            {
-	            *static_cast<LuaExtraSpace**>(lua_getextraspace(lua)) = ptr;
-            }
-
-        private:
+    private:
 
         lua_State * lua;
 
