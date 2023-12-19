@@ -11,4 +11,14 @@ hop.configure(config);
 -- some code for mesh generation
 require("meshes")
 
+routines = 
+{
+    {
+        ["file"] = "loop.lua",
+        ["every"] = 1
+    }
+}
+
+hop.setLoopRoutines(routines);
+
 math.randomseed(os.time())

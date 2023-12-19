@@ -22,6 +22,7 @@ namespace Hop
                 lua_pushnumber(lua, i);
                 lua_gettable(lua, index);
                 data[i-1].read(lua, lua_gettop(lua));
+                
                 lua_pop(lua, 1);
             }
         }
