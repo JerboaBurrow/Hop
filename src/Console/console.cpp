@@ -11,6 +11,8 @@ namespace Hop
         sPhysics * phys = store->physics;
         sCollision * col = store->resolver;
 
+        LuaNumber dt, subSample, cor;
+   
         int n = lua_gettop(lua);
 
         if (!lua_istable(lua, 1))
@@ -24,35 +26,42 @@ namespace Hop
             return lua_error(lua);
         }
 
-        int returnType = lua_getfield(lua, 1, "timeStep");
-
-        if (returnType != LUA_TNONE && returnType != LUA_TNIL)
+        if (dt.read(lua, "timeStep"))
         {
-            double n = lua_tonumber(lua, 2);
-            phys->setTimeStep(n);
+            phys->setTimeStep(dt.n);
         }
 
-        lua_pop(lua, 1);
-
-        returnType = lua_getfield(lua, 1, "subSample");
-
-        if (returnType != LUA_TNONE && returnType != LUA_TNIL)
+        if (subSample.read(lua, "subSample"))
         {
-            unsigned n = lua_tonumber(lua, 2);
-            phys->setSubSamples(n);
+            phys->setSubSamples(subSample.n);
         }
 
-        lua_pop(lua, 1);
-
-        returnType = lua_getfield(lua, 1, "cofr");
-
-        if (returnType != LUA_TNONE && returnType != LUA_TNIL)
+        if (cor.read(lua, "cofr"))
         {
-            double n = lua_tonumber(lua, 2);
-            col->setCoefRestitution(n);
+            col->setCoefRestitution(cor.n);
         }
 
-        lua_pop(lua, 1);
+        return 0;
+    }
+
+    int LoopRoutines::lua_setRoutines(lua_State * lua)
+    {
+        LuaTable<Routine> loopRoutines;
+
+        int n = lua_gettop(lua);
+
+        if (n != 1)
+        {
+            lua_pushliteral(lua, "expected 1 table argument in setLoopRoutines");
+            return lua_error(lua);
+        }
+
+        loopRoutines.read(lua, 1);
+
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        LoopRoutines * loop = store->loopRoutines;
+
+        routines = loopRoutines.data;
 
         return 0;
     }
@@ -62,6 +71,78 @@ namespace Hop
         int64_t millis = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         lua_pushnumber(lua, millis);
         return 1;
+    }
+
+    bool Routine::read(lua_State * lua, const char * name)
+    {
+        int returnType = lua_getfield(lua, 1, name);
+        if (returnType == LUA_TTABLE)
+        {
+            LuaString name;
+            LuaNumber e;
+
+            if (name.read(lua, "file"))
+            {
+                filename = name.characters;
+                std::cout << filename << ", ";
+            }
+            else
+            {
+                lua_pop(lua,1);
+                return false;
+            }
+
+            if (e.read(lua, "every"))
+            {
+                every = uint16_t(e.n);
+                std::cout << every << "\n";
+            }
+            else
+            {
+                lua_pop(lua,1);
+                return false;
+            }
+
+            return true;
+        }
+        else
+        {
+            lua_pop(lua,1);
+            return false;
+        }
+    }
+
+    bool Routine::read(lua_State * lua, int index)
+    {
+
+        int returnType = lua_getfield(lua, index, "file");
+
+        if (returnType == LUA_TSTRING)
+        {
+            filename = lua_tostring(lua, index+1);
+            lua_pop(lua,1);
+        }
+        else
+        {
+            lua_pop(lua, 1);
+            return false;
+        }
+
+        returnType = lua_getfield(lua, index, "every");
+
+        if (returnType == LUA_TNUMBER)
+        {
+            every = lua_tonumber(lua, index+1);
+            lua_pop(lua,1);
+        }
+        else
+        {
+            return false;
+            lua_pop(lua, 1);
+        }
+
+        return true;
+
     }
 
 }
