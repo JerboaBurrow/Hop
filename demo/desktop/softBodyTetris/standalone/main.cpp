@@ -64,12 +64,15 @@ int main(int argc, char ** argv)
     collisions.setDetector(std::move(det));
     collisions.setResolver(std::move(res));
 
+    Hop::LoopRoutines loop;
+
     Hop::LuaExtraSpace luaStore;
 
     luaStore.ecs = &manager;
     luaStore.world = world.get();
     luaStore.physics = &physics;
     luaStore.resolver = &collisions;
+    luaStore.loopRoutines = &loop;
 
     console.luaStore(&luaStore);
     console.runFile("config.lua");
@@ -93,7 +96,14 @@ int main(int argc, char ** argv)
 
         if (!paused)
         {
-            console.runFile("loop.lua");
+            for (const auto & routine : loop.routines)
+            {
+                if (frameId % routine.every == 0)
+                {
+                    console.runFile(routine.filename);
+                }
+            }
+
             rendering.refreshShaders();
         }
 
