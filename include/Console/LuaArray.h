@@ -52,6 +52,8 @@ namespace Hop
         }
 
         double & operator [] (size_t i){ return elements[i]; }
+        
+        operator std::array<double, DIM>() { return elements; }
 
         std::array<double, DIM> elements;
     };
