@@ -48,6 +48,8 @@ namespace Hop
 
         LUA_TYPE & operator [] (size_t i){ return data[i]; }
 
+        operator std::vector<LUA_TYPE>() { return data; }
+
         std::vector<LUA_TYPE> data;
     };
 } 
