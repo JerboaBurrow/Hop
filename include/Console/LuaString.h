@@ -37,6 +37,7 @@ namespace Hop
         }
 
         bool operator ==(const std::string & rhs){ return characters == rhs; }
+        operator std::string() { return characters; }
 
         std::string characters;
     };

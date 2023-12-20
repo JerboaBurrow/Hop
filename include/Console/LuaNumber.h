@@ -35,7 +35,7 @@ namespace Hop
         }
 
         bool operator ==(const double & rhs){ return n == rhs; }
-
+        operator double() { return n; }
         double n;
     };
 }
