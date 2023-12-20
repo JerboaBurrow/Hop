@@ -58,9 +58,6 @@ namespace Hop
 
         loopRoutines.read(lua, 1);
 
-        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
-        LoopRoutines * loop = store->loopRoutines;
-
         routines = loopRoutines.data;
 
         return 0;
