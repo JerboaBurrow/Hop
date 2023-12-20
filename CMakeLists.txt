@@ -149,6 +149,7 @@ file(GLOB SRC
     "src/Console/*.cpp"
     "src/System/Rendering/*.cpp"
     "src/System/Sound/*.cpp"
+    "src/System/Physics/*.cpp"
 )
 
 if (NOT ANDROID)

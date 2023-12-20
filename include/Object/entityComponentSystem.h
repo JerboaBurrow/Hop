@@ -1,5 +1,5 @@
-#ifndef EntityComponentSystem_H
-#define EntityComponentSystem_H
+#ifndef ENTITYCOMPONENTSYSTEM_H
+#define ENTITYCOMPONENTSYSTEM_H
 
 #include <World/world.h>
 #include <Object/object.h>
@@ -15,8 +15,8 @@
 
 #include <System/Rendering/sRender.h>
 #include <System/Rendering/sSpriteRender.h>
-#include <System/sPhysics.h>
-#include <System/sCollision.h>
+#include <System/Physics/sPhysics.h>
+#include <System/Physics/sCollision.h>
 #include <System/Sound/sSound.h>
 
 #include <unordered_map>
@@ -246,6 +246,10 @@ namespace Hop::Object
         // Lua bindings
 
         int lua_loadObject(lua_State * lua);
+        
+        int lua_getTransform(lua_State * lua);
+        int lua_setTransform(lua_State * lua);
+
 
     private:
 
@@ -271,4 +275,4 @@ namespace Hop::Object
 }
 
 
-#endif /* EntityComponentSystem_H */
+#endif /* ENTITYCOMPONENTSYSTEM_H */

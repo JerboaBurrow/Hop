@@ -36,7 +36,7 @@ namespace Hop
         }
 
         bool operator ==(const bool & rhs){ return bit == rhs; }
-
+        operator bool() { return bit; }
         bool bit;
     };
 }

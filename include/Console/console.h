@@ -7,9 +7,10 @@
 #include <Console/LuaNumber.h>
 #include <Console/LuaString.h>
 #include <Console/LuaTable.h>
-#include <System/sPhysics.h>
-#include <System/sCollision.h>
+#include <System/Physics/sPhysics.h>
+#include <System/Physics/sCollision.h>
 #include <log.h>
+#include <Object/id.h>
 
 #include <memory>
 #include <vector>
@@ -118,19 +119,29 @@ namespace Hop
 
     int timeMillis(lua_State * lua);
 
+    int lua_applyForce(lua_State * lua);
+
     // register lib
 
     const luaL_Reg hopLib[] =
     {
         {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
+        {"getTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_getTransform>},
+        {"setTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_setTransform>},
+        ///////////////////////////////////////////////////////////////////////////////////////////
         {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
+        ///////////////////////////////////////////////////////////////////////////////////////////
         {"setPhysicsTimeStep",&dispatchsPhysics<&sPhysics::lua_setTimeStep>},
         {"setPhysicsSubSamples",&dispatchsPhysics<&sPhysics::lua_setSubSamples>},
         {"kineticEnergy", &dispatchsPhysics<&sPhysics::lua_kineticEnergy>},
+        {"setGravity", &dispatchsPhysics<&sPhysics::lua_setGravity>},
+        ///////////////////////////////////////////////////////////////////
         {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
+        ////////////////////////////////////////////////////////////////////
         {"setLoopRoutines",&dispatchLoopRoutines<&LoopRoutines::lua_setRoutines>},
         {"configure", &configure},
         {"timeMillis", &timeMillis},
+        {"applyForce", &lua_applyForce},
         {NULL, NULL}
     };
 

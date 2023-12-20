@@ -130,13 +130,21 @@ namespace Hop::System::Physics
     )
     {
 
+        double c = std::cos(transform.theta);
+        double s = std::sin(transform.theta);
+
         if (needsInit)
         {
             modelToCenterOfMassFrame();
+            for (unsigned i = 0; i < vertices.size(); i++)
+            {
+                worldVertices[i]->setOrigin
+                (
+                    (vertices[i]->x*c + vertices[i]->y*s)*transform.scale + transform.x,
+                    (vertices[i]->y*c - vertices[i]->x*s)*transform.scale + transform.y
+                );
+            }
         }
-
-        double c = std::cos(transform.theta);
-        double s = std::sin(transform.theta);
 
         double omega = bestAngle(transform.x, transform.y, transform.scale);
         transform.theta = omega;

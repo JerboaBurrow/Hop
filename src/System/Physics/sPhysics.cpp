@@ -1,4 +1,4 @@
-#include <System/sPhysics.h>
+#include <System/Physics/sPhysics.h>
 
 #include <chrono>
 using namespace std::chrono;
@@ -178,7 +178,8 @@ namespace Hop::System::Physics
         EntityComponentSystem * m,
         Id & i,
         double fx,
-        double fy
+        double fy,
+        bool global
     )
     {
 
@@ -190,7 +191,7 @@ namespace Hop::System::Physics
             cCollideable & data = collideables.get(i);
             if (!data.mesh.isRigid())
             {   
-                data.mesh.applyForce(fx, fy);
+                data.mesh.applyForce(fx, fy, global);
             }
             else
             {
@@ -209,7 +210,8 @@ namespace Hop::System::Physics
     void sPhysics::applyForce(
         EntityComponentSystem * m,
         double fx,
-        double fy
+        double fy,
+        bool global
     )
     {
 
@@ -223,7 +225,7 @@ namespace Hop::System::Physics
                 cCollideable & data = collideables.get(*it);
                 if (!data.mesh.isRigid())
                 {   
-                    data.mesh.applyForce(fx, fy);
+                    data.mesh.applyForce(fx, fy, global);
                     continue;
                 }
             }
@@ -289,3 +291,5 @@ namespace Hop::System::Physics
     }
 
 }
+
+#include <System/Physics/LuaBindings/lua_physics.cpp>

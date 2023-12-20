@@ -6,8 +6,9 @@
 #include <Maths/special.h>
 #include <Thread/threadPool.h>
 #include <Component/componentArray.h>
-#include <System/sCollision.h>
+#include <System/Physics/sCollision.h>
 #include <World/world.h>
+#include <Console/lua.h>
 
 namespace Hop::Object
 {
@@ -68,13 +69,15 @@ namespace Hop::System::Physics
             EntityComponentSystem * m,
             Id & i,
             double fx,
-            double fy
+            double fy,
+            bool global = false
         );
 
         void applyForce(
             EntityComponentSystem * m,
             double fx,
-            double fy
+            double fy,
+            bool global = false
         );
 
         // automatically compute stable simulation parameters
@@ -140,6 +143,10 @@ namespace Hop::System::Physics
         void setSubSamples(unsigned s){subSamples = s;}
         void setGravity(double g, double nx, double ny){gravity = g; ngx = nx; ngy = ny;}
 
+        // Lua 
+
+        int lua_setGravity(lua_State * lua);
+        
     private:
 
         void update(EntityComponentSystem * m, ThreadPool * workers = nullptr);
