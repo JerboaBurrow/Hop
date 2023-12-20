@@ -386,6 +386,13 @@ namespace Hop::System::Physics
             }
             computeRadius();
         }
+
+        void transform(cTransform t)
+        {
+            needsInit = true;
+            cPhysics phys(t.x,t.y,t.theta);
+            updateWorldMesh(t, phys, 0.0);
+        }
         
         void add(std::shared_ptr<CollisionPrimitive> c)
         {

@@ -146,8 +146,6 @@ namespace Hop::System::Physics
             }
         }
 
-
-
         double omega = bestAngle(transform.x, transform.y, transform.scale);
         transform.theta = omega;
 

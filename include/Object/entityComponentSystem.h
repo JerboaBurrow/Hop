@@ -1,5 +1,5 @@
-#ifndef EntityComponentSystem_H
-#define EntityComponentSystem_H
+#ifndef ENTITYCOMPONENTSYSTEM_H
+#define ENTITYCOMPONENTSYSTEM_H
 
 #include <World/world.h>
 #include <Object/object.h>
@@ -246,6 +246,10 @@ namespace Hop::Object
         // Lua bindings
 
         int lua_loadObject(lua_State * lua);
+        
+        int lua_getTransform(lua_State * lua);
+        int lua_setTransform(lua_State * lua);
+
 
     private:
 
@@ -271,4 +275,4 @@ namespace Hop::Object
 }
 
 
-#endif /* EntityComponentSystem_H */
+#endif /* ENTITYCOMPONENTSYSTEM_H */
