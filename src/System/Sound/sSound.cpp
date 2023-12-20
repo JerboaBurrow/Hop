@@ -28,7 +28,7 @@ namespace Hop::System::Sound
             # ["-2", "MA_INVALID_ARGS"]
             # ...
 
-            code = "std::string maErrorToString(ma_result code)\n{\n    switch (code)\n    {\n"
+            code = "std::string to_string(ma_result code)\n{\n    switch (code)\n    {\n"
             for l in e
                 global code*="        case $(l[1]):\n            return \"$(l[2])\";\n"
             end
@@ -38,7 +38,7 @@ namespace Hop::System::Sound
         
 
     */
-    std::string maErrorToString(ma_result code)
+    std::string to_string(ma_result code)
     {
         switch (code)
         {

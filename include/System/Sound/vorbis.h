@@ -68,6 +68,8 @@ namespace Hop::System::Sound
         ma_free(pVorbis, pAllocationCallbacks);
     }
 
+    #pragma GCC diagnostic push                             
+    #pragma GCC diagnostic ignored "-Wunused-function"
     static ma_result ma_decoding_backend_get_channel_map__libvorbis(void* pUserData, ma_data_source* pBackend, ma_channel* pChannelMap, size_t channelMapCap)
     {
         ma_libvorbis* pVorbis = (ma_libvorbis*)pBackend;
@@ -76,6 +78,7 @@ namespace Hop::System::Sound
 
         return ma_libvorbis_get_data_format(pVorbis, NULL, NULL, NULL, pChannelMap, channelMapCap);
     }
+    #pragma GCC diagnostic pop
 
     static ma_decoding_backend_vtable g_ma_decoding_backend_vtable_libvorbis =
     {
