@@ -29,9 +29,9 @@ using namespace std::chrono;
 
 #include <Object/entityComponentSystem.h>
 
-#include <System/sPhysics.h>
+#include <System/Physics/sPhysics.h>
 #include <System/Rendering/sRender.h>
-#include <System/sCollision.h>
+#include <System/Physics/sCollision.h>
 
 #include <World/world.h>
 #include <World/marchingWorld.h>

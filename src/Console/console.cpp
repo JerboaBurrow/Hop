@@ -145,4 +145,35 @@ namespace Hop
 
     }
 
+    int lua_applyForce(lua_State * lua)
+    {
+        LuaNumber fx, fy;
+        LuaString sid;
+
+        int n = lua_gettop(lua);
+
+        if (n != 3)
+        {
+            lua_pushliteral(lua,"expected id and force vector, fx, fy as argument");
+            return lua_error(lua);
+        }
+
+        sid.read(lua, 1);
+        Hop::Object::Id id(sid.characters);
+
+        fx.read(lua, 2);
+        fy.read(lua, 3);
+
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+
+        if (!store->ecs->hasComponent<cPhysics>(id))
+        {
+            lua_pushliteral(lua, "object has no physics component");
+            return lua_error(lua);
+        }
+
+        store->physics->applyForce(store->ecs, fx, fy, true);
+
+        return 0;
+    }
 }

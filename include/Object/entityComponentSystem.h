@@ -15,8 +15,8 @@
 
 #include <System/Rendering/sRender.h>
 #include <System/Rendering/sSpriteRender.h>
-#include <System/sPhysics.h>
-#include <System/sCollision.h>
+#include <System/Physics/sPhysics.h>
+#include <System/Physics/sCollision.h>
 #include <System/Sound/sSound.h>
 
 #include <unordered_map>
