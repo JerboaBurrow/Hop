@@ -1,5 +1,5 @@
-#ifndef MAIN
-#define MAIN
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <iostream>
 #include <sstream>
@@ -23,9 +23,9 @@ using namespace std::chrono;
 
 #include <Object/entityComponentSystem.h>
 
-#include <System/sPhysics.h>
+#include <System/Physics/sPhysics.h>
 #include <System/Rendering/sRender.h>
-#include <System/sCollision.h>
+#include <System/Physics/sCollision.h>
 
 #include <World/world.h>
 #include <World/marchingWorld.h>
@@ -88,4 +88,4 @@ using Hop::Logging::WARN;
 
 using Hop::Util::fixedLengthNumber;
 
-#endif /* MAIN */
+#endif /* MAIN_H */
