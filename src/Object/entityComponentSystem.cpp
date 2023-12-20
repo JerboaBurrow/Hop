@@ -138,3 +138,4 @@ namespace Hop::Object
 // Lua bindings
 
 #include <Object/LuaBindings/lua_loadObject.cpp>
+#include <Object/LuaBindings/lua_transformIO.cpp>

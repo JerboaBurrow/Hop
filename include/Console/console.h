@@ -123,6 +123,8 @@ namespace Hop
     const luaL_Reg hopLib[] =
     {
         {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
+        {"getTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_getTransform>},
+        {"setTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_setTransform>},
         {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
         {"setPhysicsTimeStep",&dispatchsPhysics<&sPhysics::lua_setTimeStep>},
         {"setPhysicsSubSamples",&dispatchsPhysics<&sPhysics::lua_setSubSamples>},
