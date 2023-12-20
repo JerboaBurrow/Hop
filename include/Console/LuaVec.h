@@ -37,6 +37,8 @@ namespace Hop
 
         size_t size() const { return elements.size(); }
 
+        operator std::vector<double>() { return elements; }
+
         std::vector<double> elements;
     };
 }

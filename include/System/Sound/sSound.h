@@ -21,7 +21,7 @@ namespace Hop::System::Sound
 
     void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
    
-    std::string maErrorToString(ma_result code);
+    std::string to_string(ma_result code);
 
     enum class DECODER {MA, VORBIS, NONE};
 
@@ -34,6 +34,10 @@ namespace Hop::System::Sound
         : loopingFile("")
         {
             ma_result result = ma_engine_init(NULL, &engine);
+            if (result != MA_SUCCESS)
+            {
+                throw std::runtime_error("Could not initialise sound system, "+to_string(result));
+            }
         }
 
         ~sSound()
@@ -81,7 +85,7 @@ namespace Hop::System::Sound
                 {
                     Hop::Logging::Log log;
                     std::stringstream ss;
-                    ss << "Could not decode audio file: " << filename << ", got error: " << maErrorToString(result);
+                    ss << "Could not decode audio file: " << filename << ", got error: " << to_string(result);
                     Hop::Logging::ERROR(ss.str()) >> log;
                 }
 

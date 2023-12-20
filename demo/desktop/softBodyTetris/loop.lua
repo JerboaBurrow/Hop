@@ -1,4 +1,4 @@
-s = hop.maxCollisionPrimitiveSize()
+s = (1.0-hop.maxCollisionPrimitiveSize()*4.0)/(3*9)
 
 if lastTime == nil then
     lastTime = hop.timeMillis()

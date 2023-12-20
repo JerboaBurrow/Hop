@@ -234,7 +234,8 @@ namespace Hop::Object
             }
         }
 
+        lua_pushstring(lua, to_string(pid).c_str());
 
-        return 0;
+        return 1;
     }
 }
