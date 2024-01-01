@@ -104,8 +104,13 @@ namespace Hop::World
         glBindBuffer(GL_ARRAY_BUFFER,0);
         glBindVertexArray(0);
 
-        glError("World constructor");
-        glBufferStatus("World constructor");
+        mapShader = std::make_unique<jGL::GL::glShader>
+        (
+            Hop::System::Rendering::marchingQuadVertexShader,
+            Hop::System::Rendering::marchingQuadFragmentShader
+        );
+
+        mapShader->use();
     }
 
     /*
@@ -149,23 +154,21 @@ namespace Hop::World
         invProjection = glm::inverse(vp);
     }
 
-    void AbstractWorld::draw(Shader & s)
+    void AbstractWorld::draw()
     {
         glBindVertexArray(VAO);
-        s.use();
+        mapShader->use();
         updateProjection();
-        s.setMatrix4x4(vp,"proj");
-        s.set1f(1.0f,"u_alpha");
-        s.set1f(1.0f,"u_scale");
-        s.set1i(0,"u_transparentBackground");
-        s.set3f(1.0f,1.0f,1.0f,"u_background");
-        s.set1f(0.5*gridWidth,"gridWidth");
+        
+        mapShader->setUniform<glm::mat4>("proj", vp);
+        mapShader->setUniform<float>("u_scale", 1.0f);
+        mapShader->setUniform<glm::vec4>("u_background", glm::vec4(1.0,1.0,1.0,1.0));
+        mapShader->setUniform<glm::vec4>("u_foreground", glm::vec4(221.0f/255.0f,141.0f/255.0f,134.0f/255.0f,1.0));
+        mapShader->setUniform<float>("gridWidth", 0.5*gridWidth);
 
         glDrawArraysInstanced(GL_TRIANGLES,0,6,RENDER_REGION_SIZE*RENDER_REGION_SIZE);
 
         glBindVertexArray(0);
-
-        glError("World::draw()");
     }
 
     void AbstractWorld::worldToTile(float x, float y, int & ix, int & iy)

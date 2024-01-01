@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "app.jerboa.glskeleton"
-        minSdk 23
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "0.0.0"
@@ -33,7 +33,7 @@ android {
         }
         externalNativeBuild {
             cmake {
-                cppFlags ''
+                cppFlags "-std=c++17"
             }
         }
     }

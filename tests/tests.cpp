@@ -15,7 +15,7 @@ const double tol = 1e-6;
 
 namespace Hop::System::Physics
 {
-    std::ostream & operator<<(std::ostream & o, Rectangle const & r)
+    std::ostream & operator<<(std::ostream & o, Hop::System::Physics::Rectangle const & r)
     {
         o << r.ulx << ", " << r.uly << "    " << r.urx << ", " << r.ury << "\n"
             << r.llx << ", " << r.lly << "    " << r.lrx << ", " << r.lry << "\n"
@@ -179,7 +179,7 @@ SCENARIO("Distance","[maths]"){
 
     GIVEN("A rectangle primitive [-0.5,-1.0],[-0.5,1.0],[0.5,1.0],[0.5,-1.0]")
     {
-        Rectangle r1
+        Hop::System::Physics::Rectangle r1
         (
             -0.5,-1.0,
             -0.5, 1.0,
@@ -190,7 +190,7 @@ SCENARIO("Distance","[maths]"){
         {
             THEN("There is no intersection")
             {
-                Rectangle r2
+                Hop::System::Physics::Rectangle r2
                 (
                     -0.5,1.5,
                     1.5, 1.5,
@@ -206,7 +206,7 @@ SCENARIO("Distance","[maths]"){
         {
             THEN("There is an intersection")
             {
-                Rectangle r2
+                Hop::System::Physics::Rectangle r2
                 (
                     -0.5,1.5,
                     1.5, 1.5,
@@ -225,7 +225,7 @@ SCENARIO("Distance","[maths]"){
         {
             THEN("There is an intersection")
             {
-                Rectangle r2
+                Hop::System::Physics::Rectangle r2
                 (
                     -0.5,1.5,
                     1.5, 1.5,
@@ -243,7 +243,7 @@ SCENARIO("Distance","[maths]"){
     }
     GIVEN("A rectangle primitive [-0.5,-1.0],[-0.5,1.0],[0.5,1.0],[0.5,-1.0]")
     {
-        Rectangle r1
+        Hop::System::Physics::Rectangle r1
         (
             -0.5,-1.0,
             -0.5, 1.0,
@@ -313,7 +313,7 @@ SCENARIO("Distance","[maths]"){
     }
     GIVEN("A rectangle primitive [-1,0],[0,1],[1,0],[0,-1]")
     {
-        Rectangle r1
+        Hop::System::Physics::Rectangle r1
         (
             -1.,0.,
             0.,1.,
@@ -452,7 +452,7 @@ SCENARIO("Topology","[maths]")
 {
     GIVEN("The rectangle 0.890625, 0.34375, 0.890625, 0.351562, 0.90625, 0.351562, 0.90625, 0.34375")
     {
-        Rectangle r
+        Hop::System::Physics::Rectangle r
         (
             0.890625, 0.34375, 0.890625, 0.351562,
             0.90625, 0.351562, 0.90625, 0.34375
@@ -468,7 +468,7 @@ SCENARIO("Topology","[maths]")
     }
     GIVEN("The rectangle (-1.,-1.),(-1,1),(1,1),(1,-1)")
     {
-        Rectangle r
+        Hop::System::Physics::Rectangle r
         (
             -1.,-1.,
             -1.,1.,
@@ -511,7 +511,7 @@ SCENARIO("Polygon","[maths]")
 {
     GIVEN("A polygon with vertices [0,0], [1, 0], and [0, 1]")
     {
-        Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(1.0, 0.0), Vertex(0.0, 1.0)});
+        Hop::Maths::Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(1.0, 0.0), Vertex(0.0, 1.0)});
         
         THEN("The Polygon is left handed")
         {
@@ -525,7 +525,7 @@ SCENARIO("Polygon","[maths]")
     }
     GIVEN("A polygon with vertices [0,0], [0, 1], and [1, 0]")
     {
-        Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(0.0, 1.0), Vertex(1.0, 0.0)});
+        Hop::Maths::Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(0.0, 1.0), Vertex(1.0, 0.0)});
         
         THEN("The Polygon is right handed")
         {
@@ -543,7 +543,7 @@ SCENARIO("Triangulation", "[maths]")
 {
     GIVEN("A (right) polygon with vertices [0,0], [0, 1], and [1, 0]")
     {
-        Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(0.0, 1.0), Vertex(1.0, 0.0)});
+        Hop::Maths::Polygon p(std::vector<Vertex> {Vertex(0.0 ,0.0), Vertex(0.0, 1.0), Vertex(1.0, 0.0)});
 
         WHEN("A triangulation is created from it")
         {
@@ -566,7 +566,7 @@ SCENARIO("Triangulation", "[maths]")
 
     GIVEN("A polygon with vertices [0,0], [0, 1], and [1, 0], [0.5, 0.5]")
     {
-        Polygon p
+        Hop::Maths::Polygon p
         (
             std::vector<Vertex> 
             {
@@ -602,7 +602,7 @@ SCENARIO("Triangulation", "[maths]")
 
     GIVEN("A polygon with vertices [1.1916655596791519, -0.49360403663203056], [0.9575527878348344, 0.9575527878348342], and [1.1568622657126908, 0.47918804025586376], [1.4828907275871481, 0.0]")
     {
-        Polygon p
+        Hop::Maths::Polygon p
         (
             std::vector<Vertex> 
             {

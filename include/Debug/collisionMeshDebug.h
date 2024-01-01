@@ -1,10 +1,11 @@
-#ifndef SDEBUG_H
-#define SDEBUG_H
+#ifndef COLLISIONMESHDEBUG_H
+#define COLLISIONMESHDEBUG_H
 
 #include <Collision/collisionMesh.h>
 #include <Object/entityComponentSystem.h>
 #include <Component/cRenderable.h>
-#include <gl.h>
+
+#include <jGL/jGL.h>
 
 namespace Hop::Object
 {
@@ -25,81 +26,29 @@ namespace Hop::Debugging
 
     public:
 
-        CollisionMeshDebug()
+        CollisionMeshDebug(std::shared_ptr<jGL::jGLInstance> jgl)
+        : refresh(true),
+          circleShader(collisionPrimitiveVertexShader, collisionPrimitiveFragmentShader),
+          rectangleShader(rectangleVertexShader, rectangleFragmentShader)
         {
-            glGenBuffers(1, &quadVBO);
-            glGenBuffers(1, &cOffset);
-            glGenBuffers(1, &cColour);
-            glGenBuffers(1, &rThickness);
-            glGenBuffers(1, &rOffset);
-            glGenBuffers(1, &rParameters);
-            glGenVertexArrays(1, &cVao);
-            glGenVertexArrays(1, &rVao);
-            circles = std::vector<float>(20000*4,0.0f);
-            circlesColour = std::vector<float>(20000*4,0.0f);
-            rectanglesOffset = std::vector<float>(20000*4,0.0f);
-            rectanglesParameters = std::vector<float>(20000*4,0.0f);
-            rectanglesThickness = std::vector<float>(20000,0.0f);
-
-            nCircles = 0;
-            nRectangles = 0;
-            cachedCircles = 20000;
-            cachedRects = 20000;
-            uploadedCircles = 0;
-            uploadedRects = 0;
-
-            circleShader = glCreateProgram();
-            Hop::GL::compileShader(circleShader,collisionPrimitiveVertexShader,collisionPrimitiveFragmentShader);
-            
-            rectangleShader = glCreateProgram();
-            Hop::GL::compileShader(rectangleShader,rectangleVertexShader,rectangleFragmentShader);
-
-            setupGL();
+            shapes = jgl->createShapeRenderer(256);
         }
 
         ~CollisionMeshDebug()
         {
-            freeGL();
         }
 
-        void debugCollisionMesh(EntityComponentSystem * m, glm::mat4 & proj);
+        void drawMeshes(EntityComponentSystem * m, glm::mat4 proj);
+
+        void refreshMeshes() { refresh = true; }
 
     private:
 
-        void setupGL(bool reset = false);
+        bool refresh;
 
-        std::vector<float> circles, circlesColour, rectanglesOffset, rectanglesParameters, rectanglesThickness;
+        std::shared_ptr<jGL::ShapeRenderer> shapes;
 
-        uint32_t nCircles, nRectangles, cachedCircles, cachedRects, uploadedCircles, uploadedRects;
-
-        GLuint quadVBO, cOffset, cColour, rThickness, rOffset, rParameters;
-        GLuint cVao, rVao, rectangleShader, circleShader;
-
-        void freeGL()
-        {
-            glDeleteBuffers(1, &quadVBO);
-            glDeleteBuffers(1, &cOffset);
-            glDeleteBuffers(1, &cColour);
-            glDeleteBuffers(1, &rThickness);
-            glDeleteBuffers(1, &rOffset);
-            glDeleteBuffers(1, &rParameters);
-            glDeleteVertexArrays(1, &cVao);
-            glDeleteVertexArrays(1, &rVao);
-
-            glDeleteProgram(circleShader);
-            glDeleteProgram(rectangleShader);
-        }
-
-        float quad[6*4] = 
-        {
-            // positions  / texture coords
-            0.5f,  0.5f, 1.0f, 1.0f,   // top right
-            0.5f,  -0.5f, 1.0f, 0.0f,   // bottom right
-            -0.5f,  -0.5f, 0.0f, 0.0f,   // bottom left
-            -0.5f,  0.5f, 0.0f, 1.0f,    // top left 
-            -0.5f,  -0.5f, 0.0f, 0.0f,   // bottom left
-            0.5f,  0.5f, 1.0f, 1.0f  // top right
-        };
+        jGL::GL::glShader circleShader, rectangleShader;
 
         const char * collisionPrimitiveVertexShader = "#version " GLSL_VERSION "\n"
         "precision lowp float;\n precision lowp int;\n"
@@ -183,4 +132,4 @@ namespace Hop::Debugging
     };
 }
 
-#endif /* SDEBUG_H */
+#endif /* COLLISIONMESHDEBUG_H */
