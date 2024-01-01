@@ -36,11 +36,11 @@ namespace Hop::System::Rendering
         return lhs.vertex == rhs.vertex && lhs.fragment == rhs.fragment;
     }
 
-    bool Shader::lint(Hop::Logging::Log & log)
+    bool Shader::lint(jLog::Log & log)
     {
         if (strcmp(vertex,"") == 0 || strcmp(fragment,"") == 0)
         {
-            Hop::Logging::WARN("Attempted to lint an empty shader") >> log;
+            jLog::WARN("Attempted to lint an empty shader") >> log;
             return true;
         }
 
@@ -69,7 +69,7 @@ namespace Hop::System::Rendering
 
         if (msg != "")
         {
-            Hop::Logging::WARN(msg) >> log;
+            jLog::WARN(msg) >> log;
             return true;
         }
         else
@@ -140,7 +140,7 @@ namespace Hop::System::Rendering
         );
     }
 
-    void Shaders::defaultShaders(Hop::Logging::Log & log)
+    void Shaders::defaultShaders(jLog::Log & log)
     {
         makeShader
         (
@@ -171,7 +171,7 @@ namespace Hop::System::Rendering
         const char * v, 
         const char * f,
         std::string n,
-        Hop::Logging::Log & log
+        jLog::Log & log
     )
     {
         if (shaders.find(n)!=shaders.end())
@@ -187,11 +187,11 @@ namespace Hop::System::Rendering
         
         if((*shaders[n]).lint(log))
         {
-            Hop::Logging::WARN("linting issues found for " + n) >> log;
+            jLog::WARN("linting issues found for " + n) >> log;
         }
         else
         {
-            Hop::Logging::INFO("successfully linted " + n) >> log;
+            jLog::INFO("successfully linted " + n) >> log;
         }
 
 

@@ -9,7 +9,7 @@
 #include <Console/LuaTable.h>
 #include <System/Physics/sPhysics.h>
 #include <System/Physics/sCollision.h>
-#include <log.h>
+#include <jLog/jLog.h>
 #include <Object/id.h>
 
 #include <memory>
@@ -24,11 +24,11 @@ namespace Hop
     using Hop::System::Physics::sPhysics;
     using Hop::System::Physics::sCollision;
 
-    using Hop::Logging::INFO;
-    using Hop::Logging::WARN;
-    using Hop::Logging::ERROR;
-    using Hop::Logging::Log;
-    using Hop::Logging::ERRORCODE;
+    using jLog::INFO;
+    using jLog::WARN;
+    using jLog::ERROR;
+    using jLog::Log;
+    using jLog::ERRORCODE;
 
     struct Routine 
     {
