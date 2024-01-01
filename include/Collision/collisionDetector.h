@@ -3,7 +3,7 @@
 
 #include <set>
 
-#include <Thread/threadPool.h>
+#include <jThread/jThread.h>
 
 #include <Component/componentArray.h>
 #include <Component/cPhysics.h>
@@ -26,6 +26,8 @@ namespace Hop::System::Physics
     using Hop::Object::Component::ComponentArray;
     using Hop::Object::Component::cCollideable;
     using Hop::Object::Component::cPhysics;
+
+    using jThread::ThreadPool;
 
     class CollisionDetector 
     {
