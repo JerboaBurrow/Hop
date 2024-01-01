@@ -32,6 +32,7 @@ using namespace std::chrono;
 
 #include <Util/util.h>
 #include <jLog/jLog.h>
+#include <jThread/jThread.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -74,6 +75,8 @@ using Hop::World::MarchingWorld;
 
 using jLog::INFO;
 using jLog::WARN;
+
+using jThread::ThreadPool;
 
 using Hop::Util::fixedLengthNumber;
 
