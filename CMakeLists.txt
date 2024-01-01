@@ -171,6 +171,8 @@ else()
     target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw Lua Miniaudio)
 endif()
 
+add_library(FreeType ALIAS freetype)
+
 add_subdirectory(tools/)
 
 IF (BUILD_DEMOS)
