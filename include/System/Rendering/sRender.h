@@ -2,15 +2,25 @@
 #define SRENDER_H
 
 #include <System/system.h>
-#include <System/Rendering/sSpriteRender.h>
-#include <Shader/shaders.h>
 #include <Object/entityComponentSystem.h>
 #include <World/world.h>
+#include <Debug/collisionMeshDebug.h>
+
 #include <jLog/jLog.h>
+
+#include <jGL/shader.h>
+#include <jGL/jGL.h>
+
+#include <memory>
 
 namespace Hop::Object
 {
-    class EntityComponentSystem ;
+    class EntityComponentSystem;
+}
+
+namespace Hop::Debugging
+{
+    class CollisionMeshDebug;
 }
 
 namespace Hop::System::Rendering
@@ -18,35 +28,44 @@ namespace Hop::System::Rendering
     using Hop::Object::EntityComponentSystem;
     using jLog::Log;
     using Hop::World::AbstractWorld;
+    using Hop::Debugging::CollisionMeshDebug;
 
     class sRender : public System
     {
     public:
 
         sRender()
-        : staleShaders(false), accumulatedTime(0.0)
-        {
-            shaderPool.defaultShaders(log);
-        }
+        : accumulatedTime(0.0), 
+          projection(0.0f), 
+          drawCollisionMeshPoints(false)
+        {}
 
-        void setProjection(glm::mat4 proj) { shaderPool.setProjection(proj); }
+        sRender(std::shared_ptr<jGL::jGLInstance> jgl)
+        : accumulatedTime(0.0), 
+          projection(0.0f), 
+          drawCollisionMeshPoints(false), 
+          collisionMeshDebug(std::move(std::make_unique<CollisionMeshDebug>(jgl)))
+        {}
+
+        void setProjection(glm::mat4 proj) { projection = proj; }
 
         double draw
         (
+            std::shared_ptr<jGL::jGLInstance> jgl,
             EntityComponentSystem * ecs = nullptr, 
             AbstractWorld * world = nullptr
         );
 
-        void refreshShaders(){staleShaders = true;}
-
     private:
 
-        bool staleShaders;
-
         double accumulatedTime;
-        std::chrono::time_point<std::chrono::high_resolution_clock> clock;
+        glm::mat4 projection;
 
-        Shaders shaderPool;
+        bool drawCollisionMeshPoints;
+        
+        std::unique_ptr<CollisionMeshDebug> collisionMeshDebug;
+
+        std::chrono::time_point<std::chrono::high_resolution_clock> clock;
 
         Log log;
 

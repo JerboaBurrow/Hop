@@ -16,11 +16,6 @@ using namespace std::chrono;
 
 #include <logo.h>
 
-#include <Display/display.h>
-#include <orthoCam.h>
-
-#include <Text/textRenderer.h>
-
 #include <Object/entityComponentSystem.h>
 
 #include <System/Physics/sPhysics.h>
@@ -33,10 +28,11 @@ using namespace std::chrono;
 
 #include <Console/console.h>
 
-#include <Debug/collisionMeshDebug.h>
-
-#include <Util/util.h>
+#include <jGL/include/Util/util.h>
 #include <jLog/jLog.h>
+
+#include <jGL/jGL.h>
+#include <jGL/OpenGL/openGLInstance.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -66,11 +62,7 @@ using Hop::Object::EntityComponentSystem;
 using Hop::Object::Id;
 using Hop::Object::Component::CollisionPrimitive;
 
-using Hop::System::Rendering::OrthoCam;
-using Hop::System::Rendering::Type;
-using Hop::System::Rendering::TextRenderer;
 using Hop::System::Rendering::sRender;
-using Hop::System::Rendering::Shaders;
 
 using Hop::System::Physics::CollisionDetector;
 using Hop::System::Physics::CollisionResolver;
@@ -86,6 +78,8 @@ using Hop::World::TileWorld;
 using jLog::INFO;
 using jLog::WARN;
 
-using Hop::Util::fixedLengthNumber;
+using jGL::Util::fixedLengthNumber;
+
+std::shared_ptr<jGL::jGLInstance> jGLInstance;
 
 #endif /* MAIN_H */

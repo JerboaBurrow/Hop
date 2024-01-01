@@ -76,7 +76,7 @@ set(CMAKE_BUILD_RPATH ".")
 
 add_subdirectory(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
 include_directories(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
-SET(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+
 SET(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=TRUE)
 SET(CMAKE_DISABLE_FIND_PACKAGE_BZip2=TRUE)
 # force freetype to use the static zlib build
@@ -84,11 +84,6 @@ SET(FT_WITH_HARFBUZZ OFF)
 SET(FT_WITH_BZIP2 OFF)
 SET(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=TRUE)
 SET(CMAKE_DISABLE_FIND_PACKAGE_BZip2=TRUE)
-add_subdirectory(include/vendored/freetype)
-include_directories(include/vendored/freetype/include)
-SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
-add_subdirectory(include/vendored/glm)
-add_subdirectory(include/vendored/stduuid)
 
 if (!WINDOWS)
     add_compile_definitions(LUA_USE_POSIX)
@@ -98,26 +93,10 @@ file(GLOB LUA_SRC "include/vendored/lua/src/*.c")
 include_directories(include/vendored/lua/src)
 add_library(Lua STATIC ${LUA_SRC})
 
-if (ANDROID)
-    find_library(GLES-lib GLESv3 REQUIRED)
-else()
-
-    add_subdirectory(include/vendored/glfw)
-    include_directories(include/vendored/glfw/include)
-
-    find_package(OpenGL REQUIRED)
-    # let sources know glew is static
-    add_compile_definitions(GLEW_STATIC)
-    set(GLEW_SOURCE include/vendored/glew/src/glew.c)
-    set(GLEW_INCLUDE include/vendored/glew/include/)
-
-    add_library(glew STATIC ${GLEW_SOURCE} ${GLEW_INCLUDE})
-
-    target_link_libraries(glew
-        ${OPENGL_LIBRARY}
-    )
-
-endif()
+set(TMP ${TEST_SUITE})
+set(TEST_SUITE Off)
+add_subdirectory(include/jGL)
+set(TEST_SUITE ${TMP})
 
 add_subdirectory(include/vendored/ogg)
 set(${VORBIS_INCLUDE_DIRS} include/vendored/ogg/include)
@@ -130,7 +109,7 @@ include_directories(include/vendored/miniaudio ${VORBIS_INCLUDE_DIRS})
 add_library(Miniaudio STATIC ${MINIAUDIO_SRC})
 target_link_libraries(Miniaudio vorbisfile ogg ${CMAKE_DL_LIBS}) 
 
-include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
+include_directories(include include/vendored include/jGL/include ${ZLIB_DEPS_DIR})
 
 include_directories(src)
 include_directories(include/jLog)
@@ -164,13 +143,9 @@ if(BENCHMARK)
     target_compile_definitions(Hop PUBLIC BENCHMARK)
 endif()
 
-if (ANDROID)
-    target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
-    target_link_libraries(Hop ${GLES-lib} zlibstatic FreeType glm stduuid Lua Miniaudio)
-else()
-    target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
-    target_link_libraries(Hop glew zlibstatic FreeType glm stduuid ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw Lua Miniaudio)
-endif()
+
+target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
+target_link_libraries(Hop PUBLIC jGL zlibstatic stduuid Lua Miniaudio)
 
 add_library(FreeType ALIAS freetype)
 

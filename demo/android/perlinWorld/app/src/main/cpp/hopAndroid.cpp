@@ -157,6 +157,7 @@ extern "C"
 
             collisions->setDetector(std::move(det));
             collisions->setResolver(std::move(res));
+
         }
 
     #include <world.cpp>

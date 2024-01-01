@@ -11,7 +11,7 @@ else ()
     add_link_options(-no-pie)
 endif()
 
-add_executable(${OUTPUT_NAME} "perlinWorld.cpp")
+add_executable(${OUTPUT_NAME} "main.cpp")
 
 target_link_libraries(${OUTPUT_NAME} Hop)
 
