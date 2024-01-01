@@ -17,21 +17,21 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        submodules: 'true'
+        submodules: 'recursive'
     
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev
+      run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
 
     - name: linux-linux
       run: |
-        ./dependencies.sh && ./build.sh -t -d -r
+        git submodule update --recursive
+        ./build.sh -t -d -r
         mkdir linuxbuild 
         cp build/libHop.a linuxbuild/
         cp -r include linuxbuild/
         cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
         mkdir demos
         cp -r build/PerlinWorld demos/
-        cp -r build/PerlinWorld-sfml demos/
         cd demos && zip -r ../demos.zip * && cd ..
 
     - name: Tests
@@ -58,23 +58,29 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        submodules: 'true'
+        submodules: 'recursive'
     
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y xorg-dev build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix libxinerama-dev libxcursor-dev
+      run: sudo apt-get update && sudo apt-get install -y xorg-dev build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
 
     - name: linux-X-windows
       run: |
-        ./dependencies.sh -w && ./build.sh -w -d -r
+        git submodule update --recursive
+        ./build.sh -w -d -r
         mkdir windowsbuild
         cp build/libHop.a windowsbuild/
         cp -r include windowsbuild/
         cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
         mkdir demos
         cp -r build/PerlinWorld demos/
-        cp -r build/PerlinWorld-sfml demos/
-        cp -r build/*.dll demos/PerlinWorld-sfml/
+        cp build/*.dll demos/PerlinWorld/
         cd demos && zip -r ../demos.zip * && cd ..
+
+    - name: Tests (wine64)
+      working-directory: ${{github.workspace}}/build
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: MESA_GL_VERSION_OVERRIDE=3.3 ctest --exclude-regex Vulkan
     
     - name: buildArtifact
       uses: actions/upload-artifact@v3
@@ -104,22 +110,7 @@ jobs:
       - name: launch and screenshot
         run: |
           unzip demos.zip
-          cd PerlinWorld-sfml
-          chmod +x PerlinWorld-sfml
-          export DISPLAY=:99
-          sudo Xvfb :99 -screen 0 800x600x24 &
-          sleep 5
-          MESA_GL_VERSION_OVERRIDE=3.3 ./PerlinWorld-sfml &
-          export PID=$!
-          sleep 10
-          xwd -root -silent | convert xwd:- png:screenshot.png
-          sleep 5 && kill $PID
-          MESA_GL_VERSION_OVERRIDE=3.3 ./PerlinWorld-sfml map &
-          export PID=$!
-          sleep 10
-          xwd -root -silent | convert xwd:- png:screenshot-map.png
-          sleep 5 && kill $PID
-          cd ../PerlinWorld
+          cd PerlinWorld
           chmod +x PerlinWorld
           export DISPLAY=:99
           sudo Xvfb :99 -screen 0 800x600x24 &
@@ -139,26 +130,14 @@ jobs:
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: screenshot-standalone
+          name: screenshot
           path: PerlinWorld/screenshot.png
 
       - name: upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: screenshot-map-standalone
+          name: screenshot-map
           path: PerlinWorld/screenshot-map.png
-
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: screenshot-sfml
-          path: PerlinWorld-sfml/screenshot.png
-
-      - name: upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: screenshot-map-sfml
-          path: PerlinWorld-sfml/screenshot-map.png
 
   linuxXandroid:
     runs-on: ubuntu-20.04
@@ -166,11 +145,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        submodules: 'true'
+        submodules: 'recursive'
     
     - name: Install dependencies
       run: |
-        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev
+        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
         wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
         unzip android-ndk-r25c-linux.zip
         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip   
@@ -186,6 +165,7 @@ jobs:
 
     - name: build hop
       run: |
+        git submodule update --recursive
         ./build.sh -r --android android-ndk-r25c
         mkdir androidbuild 
         cp build/libHop* androidbuild/

@@ -38,11 +38,10 @@ namespace Hop::Object
         registerComponent<cRenderable>();
         registerComponent<cPhysics>();
         registerComponent<cCollideable>();
-        registerComponent<cPolygon>();
+        //registerComponent<cPolygon>();
         registerComponent<cSound>();
 
         registerSystem<sRender>();
-        registerSystem<sSpriteRender>();
         registerSystem<sPhysics>();
         registerSystem<sCollision>();
         registerSystem<sSound>();
@@ -51,7 +50,7 @@ namespace Hop::Object
         uint32_t rId = getComponentId<cRenderable>();
         uint32_t pId = getComponentId<cPhysics>();
         uint32_t cId = getComponentId<cCollideable>();
-        uint32_t polyId = getComponentId<cPolygon>();
+        //uint32_t polyId = getComponentId<cPolygon>();
         uint32_t soundId = getComponentId<cSound>();
 
         Signature sRenderSig = Signature();
@@ -69,28 +68,6 @@ namespace Hop::Object
         );
 
         systemManager.setSignature<sRender>(sRenderSig);
-
-        Signature sSpriteRenderSig = Signature();
-
-        sSpriteRenderSig.set
-        (
-            rId,
-            true
-        );
-
-        sSpriteRenderSig.set
-        (
-            tId,
-            true
-        );
-
-        sSpriteRenderSig.set
-        (
-            polyId,
-            false
-        );
-
-        systemManager.setSignature<sSpriteRender>(sSpriteRenderSig);
 
         Signature sPhysicsSig = Signature();
 

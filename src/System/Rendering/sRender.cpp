@@ -4,21 +4,25 @@ namespace Hop::System::Rendering
 {
         double sRender::draw
         (
+            std::shared_ptr<jGL::jGLInstance> jgl,
             EntityComponentSystem * ecs, 
             AbstractWorld * world
         )
         {
 
-            if (ecs != nullptr)
-            {
-                sSpriteRender & sprite = ecs->getSystem<sSpriteRender>();
-                update(ecs);
-                sprite.draw(&shaderPool);
-            }
-
             if (world != nullptr)
             {
-                world->draw(*(shaderPool.get("worldShader").get()));
+                world->draw();
+            }
+
+            if (drawCollisionMeshPoints)
+            {
+                if (collisionMeshDebug == nullptr)
+                {
+                    collisionMeshDebug = std::move(std::make_unique<CollisionMeshDebug>(jgl));
+                }
+                collisionMeshDebug->refreshMeshes();
+                collisionMeshDebug->drawMeshes(ecs, projection);
             }
 
             auto t = std::chrono::high_resolution_clock::now();
@@ -30,10 +34,5 @@ namespace Hop::System::Rendering
 
         void sRender::update(EntityComponentSystem * ecs)
         {
-            sSpriteRender & sprite = ecs->getSystem<sSpriteRender>();
-
-            sprite.update(ecs, &shaderPool, staleShaders);
-
-            staleShaders = false;
         }
 }

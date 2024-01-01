@@ -14,7 +14,6 @@
 #include <Component/cSound.h>
 
 #include <System/Rendering/sRender.h>
-#include <System/Rendering/sSpriteRender.h>
 #include <System/Physics/sPhysics.h>
 #include <System/Physics/sCollision.h>
 #include <System/Sound/sSound.h>
@@ -42,7 +41,6 @@ namespace Hop
 namespace Hop::System::Rendering
 {
     class sRender;
-    class sSpriteRender;
 }
 
 namespace Hop::System::Sound
@@ -66,7 +64,6 @@ namespace Hop::Object
     using Hop::System::Physics::sCollision;
     using Hop::System::Rendering::sRender;
     using Hop::System::Sound::sSound;
-    using Hop::System::Rendering::sSpriteRender;
     using Hop::Console;
 
 

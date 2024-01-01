@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE MinSizeRel)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++17")
 # Declares and names the project.
 project("HopAndroid")
 
@@ -45,6 +45,7 @@ target_compile_definitions(HopAndroid PUBLIC GLSL_VERSION="300 es")
 target_compile_definitions(HopAndroid PUBLIC BENCHMARK)
 target_compile_definitions(HopAndroid PUBLIC ANDROID)
 set(libHop ${CMAKE_SOURCE_DIR}/include/libHop-${CMAKE_ANDROID_ARCH_ABI}.a)
+#set(libjGL ${CMAKE_SOURCE_DIR}/include/libjGL-${CMAKE_ANDROID_ARCH_ABI}.a)
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.

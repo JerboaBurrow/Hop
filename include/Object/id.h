@@ -1,5 +1,5 @@
-#ifndef ID_H
-#define ID_H
+#ifndef HOP_ID_H
+#define HOP_ID_H
 
 #include "uuid.h"
 #include <ostream>

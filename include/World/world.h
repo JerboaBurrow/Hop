@@ -1,24 +1,27 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include <gl.h>
+#include <jGL/OpenGL/gl.h>
 #include <random>
 #include <string>
 #include <fstream>
 #include <memory>
 
-#include <Shader/shaders.h>
+#include <jGL/OpenGL/Shader/glShader.h>
+
+#include <Shader/marchingQuad.shader>
 #include <World/tile.h>
 
 #include <exception>
 
-#include <orthoCam.h>
+#include <jGL/orthoCam.h>
 
 #include <World/boundary.h>
 #include <World/mapSource.h>
 #include <World/fixedSource.h>
 
 #include <Util/util.h>
+
 #include <Console/lua.h>
 
 namespace Hop::System::Physics
@@ -103,12 +106,12 @@ namespace Hop::World
         TileData west, northWest, north, northEast, east, southEast, south, southWest;
     };
       
-    using namespace Hop::GL;
     using Hop::Util::tupled;
 
     using Hop::System::Physics::CollisionDetector;
-    using Hop::System::Rendering::Shader;
-    using Hop::System::Rendering::OrthoCam;
+    
+    using jGL::Shader;
+    using jGL::OrthoCam;
 
     class MapReadException: public std::exception 
     {
@@ -161,7 +164,7 @@ namespace Hop::World
             Boundary * b
         );
 
-        virtual void draw(Shader & s);
+        virtual void draw();
 
         virtual void save(std::string fileNameWithoutExtension, bool compressed = true){map->save(fileNameWithoutExtension, compressed); forceUpdate = true;}
         virtual void load(std::string fileNameWithoutExtension, bool compressed = true){map->load(fileNameWithoutExtension, compressed); forceUpdate = true;}
@@ -255,6 +258,8 @@ namespace Hop::World
         Boundary * boundary;
 
         MapSource * map;
+
+        std::unique_ptr<Shader> mapShader;
 
         float quad[6*4] = {
         // positions  / texture coords
