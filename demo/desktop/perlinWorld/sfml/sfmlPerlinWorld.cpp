@@ -38,6 +38,7 @@ using namespace std::chrono;
 
 #include <Util/util.h>
 #include <jLog/jLog.h>
+#include <jThread/jThread.h>
 
 #include <Debug/collisionMeshDebug.h>
 
@@ -85,6 +86,8 @@ using Hop::World::MarchingWorld;
 
 using jLog::INFO;
 using jLog::WARN;
+
+using jThread::ThreadPool;
 
 using Hop::Util::fixedLengthNumber;
 
