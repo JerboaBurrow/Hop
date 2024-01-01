@@ -174,7 +174,9 @@ endif()
 
 add_library(FreeType ALIAS freetype)
 
-add_subdirectory(tools/)
+if (NOT ANDROID)
+    add_subdirectory(tools/)
+endif ()
 
 IF (BUILD_DEMOS)
 
