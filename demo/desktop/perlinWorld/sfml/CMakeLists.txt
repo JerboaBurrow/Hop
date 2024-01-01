@@ -23,8 +23,6 @@ set(CMAKE_MODULE_PATH ../../include/SFML-2.5.1/cmake)
 
 # graphics for sf::RenderWindow (window is in sfml-window)
 
-add_library(FreeType ALIAS freetype)
-
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 
 add_executable(${OUTPUT_NAME}

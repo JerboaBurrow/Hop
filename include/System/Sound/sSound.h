@@ -43,8 +43,8 @@ namespace Hop::System::Sound
         ~sSound()
         {
             ma_engine_uninit(&engine);
-            ma_device_uninit(&device);
-            ma_decoder_uninit(&decoder);
+            if (deviceInUse) { ma_device_uninit(&device); }
+            if (decoderInUse != DECODER::NONE) { ma_decoder_uninit(&decoder); }
         }
 
         ma_result decode(std::string file)
@@ -115,6 +115,7 @@ namespace Hop::System::Sound
                 }
 
                 ma_device_init(NULL, &config, &device);
+                deviceInUse = true;
 
                 ma_device_start(&device);
                 looping = true;
@@ -145,6 +146,7 @@ namespace Hop::System::Sound
         bool looping = false;
 
         DECODER decoderInUse = DECODER::NONE;
+        bool deviceInUse = false;
 
         ma_decoding_backend_vtable* pCustomBackendVTables[1] =
         {
