@@ -11,7 +11,7 @@ int main(int argc, char ** argv)
 
     EntityComponentSystem manager;
 
-    Hop::Logging::Log log;
+    jLog::Log log;
 
     Hop::Console console(log);
 

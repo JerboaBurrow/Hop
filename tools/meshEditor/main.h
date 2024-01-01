@@ -36,7 +36,7 @@ using namespace std::chrono;
 #include <Debug/collisionMeshDebug.h>
 
 #include <Util/util.h>
-#include <log.h>
+#include <jLog/jLog.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -83,8 +83,8 @@ using Hop::World::MapSource;
 using Hop::World::Boundary;
 using Hop::World::AbstractWorld;
 using Hop::World::TileWorld;
-using Hop::Logging::INFO;
-using Hop::Logging::WARN;
+using jLog::INFO;
+using jLog::WARN;
 
 using Hop::Util::fixedLengthNumber;
 

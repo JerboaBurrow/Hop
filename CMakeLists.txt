@@ -133,6 +133,7 @@ target_link_libraries(Miniaudio vorbisfile ogg ${CMAKE_DL_LIBS})
 include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
 include_directories(src)
+include_directories(include/jLog)
 
 file(GLOB SRC 
     "src/*.cpp"
@@ -173,7 +174,9 @@ endif()
 
 add_library(FreeType ALIAS freetype)
 
-add_subdirectory(tools/)
+if (NOT ANDROID)
+    add_subdirectory(tools/)
+endif ()
 
 IF (BUILD_DEMOS)
 

@@ -1,0 +1,3 @@
+[submodule "include/jLog"]
+	path = include/jLog
+	url = https://github.com/JerboaBurrow/jLog.git

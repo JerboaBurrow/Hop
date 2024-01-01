@@ -6,7 +6,7 @@
 #include <miniaudio/miniaudio.h>
 #include <System/Sound/vorbis.h>
 
-#include <log.h>
+#include <jLog/jLog.h>
 #include <sstream>
 
 #include <Object/entityComponentSystem.h>
@@ -83,10 +83,10 @@ namespace Hop::System::Sound
 
                 if (result != MA_SUCCESS)
                 {
-                    Hop::Logging::Log log;
+                    jLog::Log log;
                     std::stringstream ss;
                     ss << "Could not decode audio file: " << filename << ", got error: " << to_string(result);
-                    Hop::Logging::ERROR(ss.str()) >> log;
+                    jLog::ERROR(ss.str()) >> log;
                 }
 
                 if (decoderInUse == DECODER::MA)
