@@ -4,7 +4,7 @@
 #include <string>
 #include <Object/id.h>
 
-#include <Thread/threadPool.h>
+#include <jThread/jThread.h>
 
 #include <World/world.h>
 
