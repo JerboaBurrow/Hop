@@ -1,3 +1,6 @@
 [submodule "include/jLog"]
 	path = include/jLog
 	url = https://github.com/JerboaBurrow/jLog.git
+[submodule "include/jThread"]
+	path = include/jThread
+	url = https://github.com/JerboaBurrow/jThread.git
