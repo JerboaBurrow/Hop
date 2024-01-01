@@ -9,7 +9,7 @@
 #include <fstream>
 #include <exception>
 #include <memory>
-#include <log.h>
+#include <jLog/jLog.h>
 
 namespace Hop::System::Rendering
 {
@@ -72,7 +72,7 @@ namespace Hop::System::Rendering
             return this->vertex == s.vertex && this->fragment == s.fragment;
         }
 
-        bool lint(Hop::Logging::Log & log);
+        bool lint(jLog::Log & log);
 
     private:
 
@@ -91,13 +91,13 @@ namespace Hop::System::Rendering
 
         Shaders(){}
         
-        void defaultShaders(Hop::Logging::Log & log);
+        void defaultShaders(jLog::Log & log);
 
         void makeShader(
             const char * v, 
             const char * f,
             std::string n,
-            Hop::Logging::Log & log
+            jLog::Log & log
         );
         
         void remove(std::string n);

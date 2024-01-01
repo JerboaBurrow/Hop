@@ -29,7 +29,7 @@
 
 #include <Util/util.h>
 
-#include <log.h>
+#include <jLog/jLog.h>
 
 using Hop::Object::Component::cTransform;
 using Hop::Object::Component::cPhysics;
@@ -59,8 +59,8 @@ using Hop::World::AbstractWorld;
 using Hop::World::TileWorld;
 using Hop::World::MarchingWorld;
 
-using Hop::Logging::INFO;
-using Hop::Logging::WARN;
+using jLog::INFO;
+using jLog::WARN;
 
 static Boundary * boundary = nullptr;
 static PerlinSource * perlin = nullptr;
@@ -69,7 +69,7 @@ static MarchingWorld * world = nullptr;
 
 static EntityComponentSystem * manager = nullptr;
 
-static Hop::Logging::Log * hopLog = nullptr;
+static jLog::Log * hopLog = nullptr;
 
 static sPhysics * physics = nullptr;
 static sCollision * collisions = nullptr;
@@ -133,7 +133,7 @@ extern "C"
             textRenderer = new Hop::System::Rendering::TextRenderer(glm::ortho(0.0,double(resX),0.0,double(resY)));
             font = new Hop::System::Rendering::Type(48);
 
-            hopLog = new Hop::Logging::Log;
+            hopLog = new jLog::Log;
 
             manager = new EntityComponentSystem;
 
