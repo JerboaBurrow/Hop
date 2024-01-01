@@ -133,6 +133,7 @@ target_link_libraries(Miniaudio vorbisfile ogg ${CMAKE_DL_LIBS})
 include_directories(include include/vendored ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE} ${ZLIB_DEPS_DIR})
 
 include_directories(src)
+include_directories(include/jLog)
 
 file(GLOB SRC 
     "src/*.cpp"

@@ -31,7 +31,7 @@ using namespace std::chrono;
 #include <Console/console.h>
 
 #include <Util/util.h>
-#include <log.h>
+#include <jLog/jLog.h>
 
 const int resX = 1000;
 const int resY = 1000;
@@ -72,8 +72,8 @@ using Hop::World::AbstractWorld;
 using Hop::World::TileWorld;
 using Hop::World::MarchingWorld;
 
-using Hop::Logging::INFO;
-using Hop::Logging::WARN;
+using jLog::INFO;
+using jLog::WARN;
 
 using Hop::Util::fixedLengthNumber;
 
@@ -88,7 +88,7 @@ int main(int argc, char ** argv)
 
     EntityComponentSystem manager;
 
-    Hop::Logging::Log log;
+    jLog::Log log;
 
     Hop::Console console(log);
 

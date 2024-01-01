@@ -1,12 +1,12 @@
-#ifndef SRENDER
-#define SRENDER
+#ifndef SRENDER_H
+#define SRENDER_H
 
 #include <System/system.h>
 #include <System/Rendering/sSpriteRender.h>
 #include <Shader/shaders.h>
 #include <Object/entityComponentSystem.h>
 #include <World/world.h>
-#include <log.h>
+#include <jLog/jLog.h>
 
 namespace Hop::Object
 {
@@ -16,7 +16,7 @@ namespace Hop::Object
 namespace Hop::System::Rendering
 {
     using Hop::Object::EntityComponentSystem;
-    using Hop::Logging::Log;
+    using jLog::Log;
     using Hop::World::AbstractWorld;
 
     class sRender : public System
@@ -55,4 +55,4 @@ namespace Hop::System::Rendering
     };
 }
 
-#endif /* SRENDER */
+#endif /* SRENDER_H */
