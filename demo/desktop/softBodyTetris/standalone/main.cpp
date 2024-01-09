@@ -43,6 +43,7 @@ int main(int argc, char ** argv)
     );
 
     sRender & rendering = manager.getSystem<sRender>();
+    rendering.setDrawMeshes(true);
 
     // setup physics system
     sPhysics & physics = manager.getSystem<sPhysics>();
@@ -87,7 +88,7 @@ int main(int argc, char ** argv)
     while (display.isOpen())
     {
 
-        if (display.getEvent(GLFW_KEY_SPACE).type == jGL::Display::EventType::PRESS) { paused = !paused; }
+        if (display.getEvent(GLFW_KEY_SPACE).type == jGL::EventType::PRESS) { paused = !paused; }
 
         if (!paused)
         {

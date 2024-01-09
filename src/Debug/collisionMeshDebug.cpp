@@ -1,5 +1,5 @@
 #include <Debug/collisionMeshDebug.h>
-
+#include <iostream>
 namespace Hop::Debugging
 {
 
@@ -12,6 +12,8 @@ namespace Hop::Debugging
         auto cend = objects.cend();
 
         double theta, scale;
+
+        shapes->setProjection(proj);
 
         if (refresh)
         {
@@ -57,8 +59,11 @@ namespace Hop::Debugging
                         }
                     }
                 }
+                citer++;
             }
         }
+
+        citer = objects.cbegin();
 
         while (citer != cend)
         {
@@ -88,7 +93,6 @@ namespace Hop::Debugging
                 // }
 
                 std::string sid = to_string(citer->first)+"-"+std::to_string(i);
-
                 shapes->getShape(sid)->update
                 (
                     jGL::Transform(cp->x, cp->y, theta, scale*2.0*cpmodel->r),
@@ -101,8 +105,7 @@ namespace Hop::Debugging
           citer++;
         }
 
-        
-
+        shapes->draw(circleShader);
 
     }
 

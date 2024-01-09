@@ -3,7 +3,7 @@
 int main(int argc, char ** argv)
 {
 
-    jGL::Display display(resX,resY,"Soft Body Tetris");
+    jGL::Display display(resX,resY,"Perlin World");
 
     glewInit();
 
@@ -67,6 +67,7 @@ int main(int argc, char ** argv)
     }
 
     sRender & rendering = manager.getSystem<sRender>();
+    rendering.setDrawMeshes(true);
 
     // setup physics system
     sPhysics & physics = manager.getSystem<sPhysics>();
@@ -102,8 +103,34 @@ int main(int argc, char ** argv)
 
     physics.stabaliseObjectParameters(&manager);
 
+    std::vector<int> moveKeys = {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D};
+    std::vector<bool> moving = {false, false, false, false};
+
     while (display.isOpen())
-    {
+    {        
+        for (unsigned i = 0; i < moveKeys.size(); i++)
+        {
+            int key = moveKeys[i];
+            std::vector<jGL::EventType> e  = display.getEventTypes(key);
+            if 
+            (
+                std::find(e.begin(), e.end(), jGL::EventType::PRESS) != e.cend() ||
+                std::find(e.begin(), e.end(), jGL::EventType::HOLD) != e.cend()
+            )
+            {
+                moving[i] = true;
+            }
+
+            if (std::find(e.begin(), e.end(), jGL::EventType::RELEASE) != e.cend())
+            {
+                moving[i] = false;
+            }
+        }
+        
+        if (moving[0]) { posY += MAX_SPEED / camera.getZoomLevel(); }
+        if (moving[1]) { posY -= MAX_SPEED / camera.getZoomLevel(); }
+        if (moving[2]) { posX -= MAX_SPEED / camera.getZoomLevel(); }
+        if (moving[3]) { posX += MAX_SPEED / camera.getZoomLevel(); }
 
         jGLInstance->beginFrame();
 
@@ -112,9 +139,6 @@ int main(int argc, char ** argv)
             t0 = high_resolution_clock::now();
 
             world->updateRegion(posX,posY);
-
-            glClearColor(1.0f,1.0f,1.0f,1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             tp0 = high_resolution_clock::now();
 
@@ -185,6 +209,8 @@ int main(int argc, char ** argv)
                     std::cout << log.get() << "\n";
                 }
             }
+
+        jGLInstance->endFrame();
 
         display.loop();
 
