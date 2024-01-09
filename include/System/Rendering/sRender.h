@@ -56,6 +56,8 @@ namespace Hop::System::Rendering
             AbstractWorld * world = nullptr
         );
 
+        void setDrawMeshes(bool b) { drawCollisionMeshPoints = b; }
+
     private:
 
         double accumulatedTime;
