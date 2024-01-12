@@ -1,27 +1,31 @@
 extern "C"
 {
+
+    void Java_app_jerboa_glskeleton_Hop_beginFrame(JNIEnv * env, jobject /* this */)
+    {
+        jgl->beginFrame();
+    }
+
+    void Java_app_jerboa_glskeleton_Hop_endFrame(JNIEnv * env, jobject /* this */)
+    {
+        jgl->endFrame();
+    }
+
     void Java_app_jerboa_glskeleton_Hop_render(
             JNIEnv *env,
             jobject /* this */,
             jboolean refresh
     )
     {
-        if (manager == nullptr){
+        if (manager == nullptr || jgl == nullptr || world == nullptr){
             return;
         }
 
         sRender & rendering = manager->getSystem<sRender>();
 
         rendering.setProjection(camera->getVP());
+        rendering.draw(jgl, manager.get(), world.get());
 
-//        world->draw(*shaderPool->get("worldShader").get());
-//
-//        rendering.update(manager, shaderPool, refresh);
-        if (refresh){ rendering.refreshShaders(); }
-        rendering.draw(manager, world);
-
-//        rendering.draw(shaderPool);
-        //hop->log<Hop::Logging::INFO>("refresh = "+std::to_string(refresh));
     }
 
     void Java_app_jerboa_glskeleton_Hop_renderText
@@ -39,20 +43,16 @@ extern "C"
                     jboolean centred
             )
     {
-        if (textRenderer == nullptr){
+        if (jgl == nullptr){
             return;
         }
 
-        textRenderer->renderText
+        jgl->text
                 (
-                        *font,
                         jstring2string(env,text).c_str(),
-                        x,
-                        y,
+                        glm::vec2(x, y),
                         scale,
-                        glm::vec3(r,g,b),
-                        a,
-                        centred
+                        glm::vec4(r,g,b,a)
                 );
     }
 }

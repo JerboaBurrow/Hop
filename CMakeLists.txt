@@ -135,16 +135,17 @@ file(GLOB SRC
 if (NOT ANDROID)
     file(GLOB STANDALONE_SRC "src/Display/*.cpp")
     add_library(Hop STATIC ${SRC} ${STANDALONE_SRC})
+    target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
+    
 else()
     add_library(Hop STATIC ${SRC})
+    target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
 endif()
 
 if(BENCHMARK)
     target_compile_definitions(Hop PUBLIC BENCHMARK)
 endif()
 
-
-target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
 target_link_libraries(Hop PUBLIC jGL zlibstatic stduuid Lua Miniaudio)
 
 add_library(FreeType ALIAS freetype)

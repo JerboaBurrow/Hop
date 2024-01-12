@@ -16,9 +16,12 @@ add_library(
         SHARED
         hopAndroid.cpp)
 
+target_compile_definitions(HopAndroid PUBLIC GLSL_VERSION="300 es")
+
 include_directories(include)
 include_directories(.)
 include_directories(include/vendored/glm)
+include_directories(include/jGL/include)
 include_directories(include/vendored/freetype/include)
 include_directories(include/vendored/stduuid/include)
 include_directories(include/vendored/stduuid/)
@@ -41,17 +44,18 @@ find_library(android-lib
         android
         )
 
-target_compile_definitions(HopAndroid PUBLIC GLSL_VERSION="300 es")
 target_compile_definitions(HopAndroid PUBLIC BENCHMARK)
 target_compile_definitions(HopAndroid PUBLIC ANDROID)
 set(libHop ${CMAKE_SOURCE_DIR}/include/libHop-${CMAKE_ANDROID_ARCH_ABI}.a)
-#set(libjGL ${CMAKE_SOURCE_DIR}/include/libjGL-${CMAKE_ANDROID_ARCH_ABI}.a)
+set(libjGL ${CMAKE_SOURCE_DIR}/include/libjGL-${CMAKE_ANDROID_ARCH_ABI}.a)
+
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
                        HopAndroid
+                       ${libjGL}
                        ${libHop}
                        # Links the target library to the log library
                        # included in the NDK.
