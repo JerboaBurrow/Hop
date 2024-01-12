@@ -10,7 +10,9 @@ extern "C"
     {
         if (manager != nullptr)
         {
-            physics->step(manager, collisions, world);
+            sPhysics & physics = manager->getSystem<sPhysics>();
+            sCollision & collisions = manager->getSystem<sCollision>();
+            physics.step(manager.get(), &collisions, world.get());
         }
     }
 }

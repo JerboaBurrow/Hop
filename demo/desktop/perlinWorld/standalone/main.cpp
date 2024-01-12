@@ -3,7 +3,7 @@
 int main(int argc, char ** argv)
 {
 
-    jGL::Display display(resX,resY,"Perlin World");
+    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Perlin World");
 
     glewInit();
 

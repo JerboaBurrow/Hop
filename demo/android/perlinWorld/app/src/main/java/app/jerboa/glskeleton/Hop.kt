@@ -18,6 +18,9 @@ class Hop
 
     // Rendering
 
+    external fun beginFrame()
+
+    external fun endFrame()
     external fun render(refreshObjectShaders: Boolean)
 
     external fun renderText(
