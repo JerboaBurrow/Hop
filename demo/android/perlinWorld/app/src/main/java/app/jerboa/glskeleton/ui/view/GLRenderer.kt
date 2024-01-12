@@ -104,12 +104,20 @@ class GLRenderer (
     }
     override fun onSurfaceCreated(p0: GL10?, p1: EGLConfig?) {
 
+        val vers = IntArray(2)
+        glGetIntegerv(GL_MAJOR_VERSION, vers, 0)
+        glGetIntegerv(GL_MINOR_VERSION, vers, 1)
+        Log.d("glVersion","${vers[0]}, ${vers[1]}")
+
+        val maxSamples = ByteBuffer.allocateDirect(1 * Float.SIZE_BYTES).order(ByteOrder.nativeOrder()).asIntBuffer()
+        glGetIntegerv(GL_MAX_SAMPLES, maxSamples)
+        Log.d("GL_MAX_SAMPLES","${maxSamples[0]}")
+
         gl3.glClearColor(1f,1f,1f,1f)
 
         // instance textures
         initGPUData()
 
-        // now we add a few uniforms that don't need to be updated
         Log.d("resolution","$resolution")
         hop = Hop()
         hop.hop(resolution.first,resolution.second)
@@ -129,30 +137,30 @@ class GLRenderer (
     override fun onDrawFrame(p0: GL10?) {
         lastTapped++
         scoreLastTapped++
-        gl3.glViewport(0,0,resolution.first,resolution.second)
-        gl3.glEnable(gl3.GL_BLEND);
-        gl3.glBlendFunc(gl3.GL_SRC_ALPHA, gl3.GL_ONE_MINUS_SRC_ALPHA);
-        gl3.glClear(gl3.GL_COLOR_BUFFER_BIT or gl3.GL_DEPTH_BUFFER_BIT)
 
-        val t0 = System.nanoTime()
+        hop.beginFrame()
 
-        hop.stepPhysics()
+            val t0 = System.nanoTime()
 
-        val t1 = System.nanoTime()
+            hop.stepPhysics()
 
-        hop.render(false)
+            val t1 = System.nanoTime()
 
-        val t2 = System.nanoTime()
+            hop.render(false)
 
-        hop.renderText(
-            "Phys|Ren = ${muP}|${muR}",
-            32f,
-            32.0f,
-            0.33f,
-            0.0f,
-            0.0f,
-            0.0f
-        )
+            val t2 = System.nanoTime()
+
+            hop.renderText(
+                "Phys|Ren = ${muP}|${muR}",
+                32f,
+                32.0f,
+                0.33f,
+                0.0f,
+                0.0f,
+                0.0f
+            )
+
+        hop.endFrame()
 
         // measure time
         val t = System.nanoTime()
@@ -173,7 +181,7 @@ class GLRenderer (
         }
 
         if (frameNumber == 30){
-            hop.printLog()
+           hop.printLog()
         }
 
         if (scoreLastTapped > scoreClock){

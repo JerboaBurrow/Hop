@@ -10,10 +10,14 @@
 
 #include <math.h>
 #include <algorithm>
+#include <memory>
 
-#include <orthoCam.h>
+#include <jGL/orthoCam.h>
+#include <jGL/include/Util/util.h>
+#include <jGL/jGL.h>
+#include <jGL/OpenGL/openGLInstance.h>
 
-#include <Text/textRenderer.h>
+#include <jLog/jLog.h>
 
 #include <Object/entityComponentSystem.h>
 
@@ -38,11 +42,8 @@ using Hop::Object::Component::cCollideable;
 using Hop::Object::EntityComponentSystem;
 using Hop::Object::Id;
 
-using Hop::System::Rendering::OrthoCam;
-using Hop::System::Rendering::Type;
-using Hop::System::Rendering::TextRenderer;
+using jGL::OrthoCam;
 using Hop::System::Rendering::sRender;
-using Hop::System::Rendering::Shaders;
 
 using Hop::System::Physics::CollisionDetector;
 using Hop::System::Physics::CollisionResolver;
@@ -62,24 +63,21 @@ using Hop::World::MarchingWorld;
 using jLog::INFO;
 using jLog::WARN;
 
-static Boundary * boundary = nullptr;
-static PerlinSource * perlin = nullptr;
-static MapSource * source = nullptr;
-static MarchingWorld * world = nullptr;
+static std::unique_ptr<Boundary> boundary = nullptr;
+static std::unique_ptr<PerlinSource> perlin = nullptr;
+static std::unique_ptr<AbstractWorld> world = nullptr;
 
-static EntityComponentSystem * manager = nullptr;
+static std::unique_ptr<EntityComponentSystem> manager = nullptr;
 
-static jLog::Log * hopLog = nullptr;
+static std::unique_ptr<jLog::Log> hopLog = nullptr;
 
-static sPhysics * physics = nullptr;
-static sCollision * collisions = nullptr;
-static CollisionDetector * detector = nullptr;
-static CollisionResolver * resolver = nullptr;
+static std::unique_ptr<CollisionDetector> detector = nullptr;
+static std::unique_ptr<CollisionResolver> resolver = nullptr;
 
-static sRender * renderer = nullptr;
-static OrthoCam * camera = nullptr;
-static TextRenderer * textRenderer = nullptr;
-static Type * font;
+static std::unique_ptr<sRender> renderer = nullptr;
+static std::unique_ptr<OrthoCam> camera = nullptr;
+
+static std::shared_ptr<jGL::jGLInstance> jgl = nullptr;
 
 std::string jstring2string(JNIEnv *env, jstring jStr) {
     if (!jStr)
@@ -112,41 +110,44 @@ extern "C"
             float posX = 0.0;
             float posY = 0.0;
 
-            perlin = new Hop::World::PerlinSource(2,0.07,5.0,5.0,256);
+            perlin = std::make_unique<Hop::World::PerlinSource>(2,0.07,5.0,5.0,256);
             perlin->setThreshold(0.2);
             perlin->setSize(64*3+1);
 
-            source = static_cast<Hop::World::MapSource*>(perlin);
-            boundary = new Hop::World::InfiniteBoundary;
+            camera = std::make_unique<jGL::OrthoCam>(resX, resY);
 
-            camera = new Hop::System::Rendering::OrthoCam(resX,resY,glm::vec2(0.0,0.0));
+            boundary = std::make_unique<Hop::World::InfiniteBoundary>();
 
-            world = new Hop::World::MarchingWorld(
+            jgl = std::make_shared<jGL::GL::OpenGLInstance>(glm::ivec2(resX, resY), 0);
+
+            jgl->setTextProjection(glm::ortho(0.0,double(resX),0.0,double(resY)));
+            jgl->setMSAA(0);
+            jgl->setClear(glm::vec4(1.0f,1.0f,1.0f,1.0f));
+
+            world = std::make_unique<Hop::World::MarchingWorld>(
                     2,
-                    camera,
+                    camera.get(),
                     64,
                     1,
-                    source,
-                    boundary
+                    perlin.get(),
+                    boundary.get()
             );
 
-            textRenderer = new Hop::System::Rendering::TextRenderer(glm::ortho(0.0,double(resX),0.0,double(resY)));
-            font = new Hop::System::Rendering::Type(48);
+            hopLog = std::make_unique<jLog::Log>();
 
-            hopLog = new jLog::Log;
-
-            manager = new EntityComponentSystem;
+            manager = std::make_unique<EntityComponentSystem>();
 
             sRender & rendering = manager->getSystem<sRender>();
+            rendering.setDrawMeshes(true);
 
             // setup physics system
-            physics = &manager->getSystem<sPhysics>();
-            physics->setTimeStep(1.0/900.0);
-            physics->setGravity(9.81, 0.0, -1.0);
+            sPhysics & physics = manager->getSystem<sPhysics>();
+            physics.setTimeStep(1.0/900.0);
+            physics.setGravity(9.81, 0.0, -1.0);
 
-            collisions = &manager->getSystem<sCollision>();
+            sCollision & collisions = manager->getSystem<sCollision>();
 
-            auto det = std::make_unique<Hop::System::Physics::CellList>(world);
+            auto det = std::make_unique<Hop::System::Physics::CellList>(world.get());
 
             auto res = std::make_unique<Hop::System::Physics::SpringDashpot>
                     (
@@ -155,8 +156,8 @@ extern "C"
                             0.0
                     );
 
-            collisions->setDetector(std::move(det));
-            collisions->setResolver(std::move(res));
+            collisions.setDetector(std::move(det));
+            collisions.setResolver(std::move(res));
 
         }
 
