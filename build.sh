@@ -51,13 +51,13 @@ function buildAndroid()
   cmake -E make_directory build-$1
   # 24 required for vulkan https://github.com/nihui/ncnn-android-yolov5/issues/10#issuecomment-800374356
   cmake -E chdir build-$1 cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=24 -D ANDROID_ABI=$1 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 4 -C build-$1
-
+  STATUS=$?
   mv build-$1/libjGL.a build/libjGL-$1.a 
   mergeLibs "build-$1"
   mv build-$1/libHop.a build/libHop-$1.a
   mv build-$1/include/vendored/ogg/include/ogg/config_types.h include/vendored/ogg/include/ogg/
   rm -rf build-$1
-
+  exit $STATUS
 }
 
 WINDOWS=1
@@ -148,6 +148,8 @@ then
   fi
   mkdir build
 
+  STATUS=0
+
   if [[ $WINDOWS -eq 0 ]];
   then 
     export VULKAN_SDK=$VK_SDK/Windows
@@ -156,6 +158,7 @@ then
 
     cd build
     cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 4
+    STATUS=$?
     cd ..
 
     # now copy dlls
@@ -191,6 +194,7 @@ then
   then
     cd build
     cmake .. -D OSX=ON -D STANDALONE=$STANDALONE -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 4
+    STATUS=$?
     cd ..
   elif [[ ! -z "$ANDROID_NDK" ]]
   then
@@ -211,10 +215,13 @@ then
   else
     cd build
     cmake -D BUILD_DEMOS=$DEMO -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 4
+    STATUS=$?
     cd ..
   fi
 else 
-  cd build && make -j 4 && cd ..
+  cd build && make -j 4 
+  STATUS=$?
+  cd ..
 fi
 
 if [[ -z "$ANDROID_NDK" ]]
@@ -223,3 +230,5 @@ then
   mergeLibs "build"
   mv build/libjGL.a.bk build/libjGL.a
 fi
+
+exit $STATUS
