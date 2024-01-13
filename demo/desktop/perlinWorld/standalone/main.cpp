@@ -1,9 +1,9 @@
-#include <main.h>
+#include "main.h"
 
 int main(int argc, char ** argv)
 {
 
-    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Soft Body Tetris");
+    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Perlin World");
 
     glewInit();
 
@@ -30,17 +30,41 @@ int main(int argc, char ** argv)
 
     Hop::World::FiniteBoundary mapBounds(0,0,16,16);
     Hop::World::FixedSource mapSource;
-    mapSource.load("bordered",false);
+    mapSource.load("tile",false);
 
-    world = std::make_unique<TileWorld>
-    (
-        2,
-        &camera,
-        16,
-        1,
-        &mapSource,
-        &mapBounds  
-    );
+    Hop::World::InfiniteBoundary pBounds;
+    Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
+    perlin.setThreshold(0.2);
+    perlin.setSize(64*3+1);
+
+    if (argc > 1 && argv[1] == std::string("map"))
+    {
+
+        world = std::make_unique<TileWorld>
+        (
+            2,
+            &camera,
+            16,
+            1,
+            &mapSource,
+            &mapBounds  
+        );
+    }
+    else
+    {
+        world = static_cast<std::unique_ptr<AbstractWorld>>
+        (
+            std::make_unique<MarchingWorld>
+            (
+                2,
+                &camera,
+                64,
+                0,
+                &perlin,
+                &pBounds  
+            )
+        );
+    }
 
     sRender & rendering = manager.getSystem<sRender>();
     rendering.setDrawMeshes(true);
@@ -57,25 +81,21 @@ int main(int argc, char ** argv)
     auto res = std::make_unique<Hop::System::Physics::SpringDashpot>
     (
         deltaPhysics*10.0,
-        0.5,
+        0.66,
         0.0
     );
 
     collisions.setDetector(std::move(det));
     collisions.setResolver(std::move(res));
 
-    Hop::LoopRoutines loop;
-
     Hop::LuaExtraSpace luaStore;
 
     luaStore.ecs = &manager;
     luaStore.world = world.get();
-    luaStore.physics = &physics;
-    luaStore.resolver = &collisions;
-    luaStore.loopRoutines = &loop;
 
     console.luaStore(&luaStore);
-    console.runFile("config.lua");
+
+    console.runFile("mix.lua");
     std::string status = console.luaStatus();
     if (status != "LUA_OK") { WARN(status) >> log; }
 
@@ -83,23 +103,34 @@ int main(int argc, char ** argv)
 
     physics.stabaliseObjectParameters(&manager);
 
-    Hop::System::Sound::sSound & sound = manager.getSystem<Hop::System::Sound::sSound>();
+    std::vector<int> moveKeys = {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D};
+    std::vector<bool> moving = {false, false, false, false};
 
     while (display.isOpen())
-    {
-
-        if (display.getEvent(GLFW_KEY_SPACE).type == jGL::EventType::PRESS) { paused = !paused; }
-
-        if (!paused)
+    {        
+        for (unsigned i = 0; i < moveKeys.size(); i++)
         {
-            for (const auto & routine : loop.routines)
+            int key = moveKeys[i];
+            std::vector<jGL::EventType> e  = display.getEventTypes(key);
+            if 
+            (
+                std::find(e.begin(), e.end(), jGL::EventType::PRESS) != e.cend() ||
+                std::find(e.begin(), e.end(), jGL::EventType::HOLD) != e.cend()
+            )
             {
-                if (frameId % routine.every == 0)
-                {
-                    console.runFile(routine.filename);
-                }
+                moving[i] = true;
+            }
+
+            if (std::find(e.begin(), e.end(), jGL::EventType::RELEASE) != e.cend())
+            {
+                moving[i] = false;
             }
         }
+        
+        if (moving[0]) { posY += MAX_SPEED / camera.getZoomLevel(); }
+        if (moving[1]) { posY -= MAX_SPEED / camera.getZoomLevel(); }
+        if (moving[2]) { posX -= MAX_SPEED / camera.getZoomLevel(); }
+        if (moving[3]) { posX += MAX_SPEED / camera.getZoomLevel(); }
 
         jGLInstance->beginFrame();
 
@@ -109,17 +140,11 @@ int main(int argc, char ** argv)
 
             world->updateRegion(posX,posY);
 
-            glClearColor(1.0f,1.0f,1.0f,1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
             tp0 = high_resolution_clock::now();
 
             collisions.centreOn(world.get()->getMapCenter());
             
-            if (!paused)
-            {
-                physics.step(&manager, &collisions, world.get());
-            }
+            physics.step(&manager, &collisions, world.get());
 
             tp1 = high_resolution_clock::now();
 
@@ -166,9 +191,7 @@ int main(int argc, char ** argv)
                     "\n" << 
                     "update time: " << fixedLengthNumber(pdt+rdt,6) <<
                     "\n" <<
-                    "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6) <<
-                    "\n" <<
-                    "Kinetic Energy: " << fixedLengthNumber(physics.kineticEnergy(),6);
+                    "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
 
                 jGLInstance->text
                 (
@@ -177,7 +200,6 @@ int main(int argc, char ** argv)
                     0.5f,
                     glm::vec4(0.0f,0.0f,0.0f, 1.0f)
                 );
-
             }
 
             if (frameId == 30)
@@ -198,8 +220,5 @@ int main(int argc, char ** argv)
         frameId = (frameId+1) % 60;
         
     }
-
-    jGLInstance->finish();
-
     return 0;
 }

@@ -4,3 +4,6 @@
 [submodule "include/jThread"]
 	path = include/jThread
 	url = https://github.com/JerboaBurrow/jThread.git
+[submodule "include/jGL"]
+	path = include/jGL
+	url = https://github.com/JerboaBurrow/jGL.git

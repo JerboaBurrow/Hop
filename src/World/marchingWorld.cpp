@@ -54,9 +54,6 @@ namespace Hop::World
         );
 
         glBindBuffer(GL_ARRAY_BUFFER,0);
-
-        glError("World constructor");
-        glBufferStatus("World constructor");
     }
 
     bool MarchingWorld::updateRegion(float x, float y)

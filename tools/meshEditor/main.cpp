@@ -3,23 +3,22 @@
 int main(int argc, char ** argv)
 {
 
-    Hop::Display display(resX,resY,"Hop Mesh Editor");
+    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Soft Body Tetris");
 
     glewInit();
 
-    OrthoCam camera(resX, resY, glm::vec2(0.0,0.0));
+    jGLInstance = std::move(std::make_shared<jGL::GL::OpenGLInstance>(display.getRes()));
+
+    jGLInstance->setTextProjection(glm::ortho(0.0,double(resX),0.0,double(resY)));
+    jGLInstance->setMSAA(1);
+
+    jGL::OrthoCam camera(resX, resY, glm::vec2(0.0,0.0));
 
     EntityComponentSystem manager;
 
     jLog::Log log;
 
     Hop::Console console(log);
-
-    TextRenderer textRenderer(glm::ortho(0.0,double(resX),0.0,double(resY)));
-    Type font(48);
-
-    Shaders shaderPool;
-    shaderPool.defaultShaders(log);
 
     std::unique_ptr<AbstractWorld> world;
 
@@ -79,11 +78,7 @@ int main(int argc, char ** argv)
 
     physics.stabaliseObjectParameters(&manager);
 
-    bool refreshObjectShaders = true;
-
     pointSize = world->worldMaxCollisionPrimitiveSize();
-
-    Hop::Debugging::CollisionMeshDebug collisionMeshDebug;
 
     Id oid = manager.createObject();
 
@@ -108,8 +103,6 @@ int main(int argc, char ** argv)
         )
     );
 
-    rendering.refreshShaders();
-
     bool moveMouseToSite = false;
 
     activeSite.first = 0.5;
@@ -121,11 +114,11 @@ int main(int argc, char ** argv)
     while (display.isOpen())
     {
 
-        if (display.getEvent(GLFW_KEY_F2).type == Hop::Display::EventType::PRESS) { debug = !debug; }
-        if (display.getEvent(GLFW_KEY_G).type == Hop::Display::EventType::PRESS) { grid = !grid; }
-        if (display.getEvent(GLFW_KEY_SPACE).type == Hop::Display::EventType::PRESS) { paused = !paused; }
+        if (display.getEvent(GLFW_KEY_F2).type == jGL::EventType::PRESS) { debug = !debug; }
+        if (display.getEvent(GLFW_KEY_G).type == jGL::EventType::PRESS) { grid = !grid; }
+        if (display.getEvent(GLFW_KEY_SPACE).type == jGL::EventType::PRESS) { paused = !paused; }
 
-        if (display.getEvent(GLFW_KEY_C).type == Hop::Display::EventType::PRESS) 
+        if (display.getEvent(GLFW_KEY_C).type == jGL::EventType::PRESS) 
         {
             unsigned n = object.mesh.size();
             for (unsigned i = 0; i < n; i++)
@@ -134,7 +127,7 @@ int main(int argc, char ** argv)
             }
         }
 
-        if (display.getEvent(GLFW_KEY_E).type == Hop::Display::EventType::PRESS) 
+        if (display.getEvent(GLFW_KEY_E).type == jGL::EventType::PRESS) 
         {
             double x = 0.0;
             double y = 0.0;
@@ -173,25 +166,25 @@ int main(int argc, char ** argv)
 
         moveMouseToSite = false;
         
-        if (display.getEvent(GLFW_KEY_W).type == Hop::Display::EventType::PRESS)
+        if (display.getEvent(GLFW_KEY_W).type == jGL::EventType::PRESS)
         {
             activeSite.second += pointSize*primitiveSize*2;
             moveMouseToSite = true;
         }
 
-        if (display.getEvent(GLFW_KEY_S).type == Hop::Display::EventType::PRESS)
+        if (display.getEvent(GLFW_KEY_S).type == jGL::EventType::PRESS)
         {
             activeSite.second -= pointSize*primitiveSize*2;
             moveMouseToSite = true;
         }
 
-        if (display.getEvent(GLFW_KEY_A).type == Hop::Display::EventType::PRESS)
+        if (display.getEvent(GLFW_KEY_A).type == jGL::EventType::PRESS)
         {
             activeSite.first -= pointSize*primitiveSize*2;
             moveMouseToSite = true;
         }
 
-        if (display.getEvent(GLFW_KEY_D).type == Hop::Display::EventType::PRESS)
+        if (display.getEvent(GLFW_KEY_D).type == jGL::EventType::PRESS)
         {
             activeSite.first += pointSize*primitiveSize*2;
             moveMouseToSite = true;
@@ -203,7 +196,7 @@ int main(int argc, char ** argv)
             display.setMousePosition(pos.x, pos.y);
         }
 
-        if (display.getEvent(GLFW_KEY_ENTER).type == Hop::Display::EventType::PRESS)
+        if (display.getEvent(GLFW_KEY_ENTER).type == jGL::EventType::PRESS)
         {
 
             int clicked = object.mesh.clicked(activeSite.first, activeSite.second);
@@ -238,93 +231,93 @@ int main(int argc, char ** argv)
             }
         }
 
-        if (grid)
-        {
-            world->setGridWidth(0.04);
-        }
-        else
-        {
-            world->setGridWidth(0.0);
-        }
+        jGLInstance->beginFrame();
+            jGLInstance->clear();
 
-        t0 = high_resolution_clock::now();
-
-        world->updateRegion(posX,posY);
-
-        glClearColor(1.0f,1.0f,1.0f,1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        tp0 = high_resolution_clock::now();
-
-        collisions.centreOn(world.get()->getMapCenter());
-        
-        if (!paused) { physics.step(&manager, &collisions, world.get()); }
-
-        tp1 = high_resolution_clock::now();
-
-        tr0 = high_resolution_clock::now();
-
-        rendering.setProjection(camera.getVP());
-        rendering.draw(&manager, world.get()); 
-
-        collisionMeshDebug.debugCollisionMesh(&manager, camera.getVP());
-
-        tr1 = high_resolution_clock::now();
-
-        if (debug)
-        {
-            double delta = 0.0;
-            for (int n = 0; n < 60; n++)
+            if (grid)
             {
-                delta += deltas[n];
+                world->setGridWidth(0.04);
             }
-            delta /= 60.0;
-            std::stringstream debugText;
+            else
+            {
+                world->setGridWidth(0.0);
+            }
 
-            double pdt = duration_cast<duration<double>>(tp1 - tp0).count();
-            double rdt = duration_cast<duration<double>>(tr1 - tr0).count();
+            t0 = high_resolution_clock::now();
 
-            double mouseX, mouseY;
-            display.mousePosition(mouseX,mouseY);
+            world->updateRegion(posX,posY);
 
-            float cameraX = camera.getPosition().x;
-            float cameraY = camera.getPosition().y;
+            tp0 = high_resolution_clock::now();
 
-            glm::vec4 worldPos = camera.screenToWorld(mouseX,mouseY);
+            collisions.centreOn(world.get()->getMapCenter());
+            
+            if (!paused) { physics.step(&manager, &collisions, world.get()); }
 
-            Hop::World::TileData tile = world->getTileData(worldPos[0],worldPos[1]);
+            tp1 = high_resolution_clock::now();
 
-            debugText << "Delta: " << fixedLengthNumber(delta,6) <<
-                " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
-                "\n" <<
-                "Mouse (" << fixedLengthNumber(mouseX,4) << "," << fixedLengthNumber(mouseY,4) << ")" <<
-                "\n" <<
-                "Mouse [world] (" << fixedLengthNumber(worldPos[0],4) << "," << fixedLengthNumber(worldPos[1],4) << ")" <<
-                "\n" <<
-                "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
-                "\n" <<
-                "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
-                "\n" << 
-                "update time: " << fixedLengthNumber(pdt+rdt,6) <<
-                "\n" <<
-                "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+            tr0 = high_resolution_clock::now();
 
-            textRenderer.renderText(
-                font,
-                debugText.str(),
-                64.0f,resY-64.0f,
-                0.5f,
-                glm::vec3(0.0f,0.0f,0.0f)
-            );
-        }
+            rendering.setProjection(camera.getVP());
+            rendering.draw(jGLInstance, &manager, world.get()); 
 
-        if (frameId == 30)
-        {
-        if (log.size() > 0)
-        {
-            std::cout << log.get() << "\n";
-        }
-        }
+            tr1 = high_resolution_clock::now();
+
+            if (debug)
+            {
+                double delta = 0.0;
+                for (int n = 0; n < 60; n++)
+                {
+                    delta += deltas[n];
+                }
+                delta /= 60.0;
+                std::stringstream debugText;
+
+                double pdt = duration_cast<duration<double>>(tp1 - tp0).count();
+                double rdt = duration_cast<duration<double>>(tr1 - tr0).count();
+
+                double mouseX, mouseY;
+                display.mousePosition(mouseX,mouseY);
+
+                float cameraX = camera.getPosition().x;
+                float cameraY = camera.getPosition().y;
+
+                glm::vec4 worldPos = camera.screenToWorld(mouseX,mouseY);
+
+                Hop::World::TileData tile = world->getTileData(worldPos[0],worldPos[1]);
+
+                debugText << "Delta: " << fixedLengthNumber(delta,6) <<
+                    " (FPS: " << fixedLengthNumber(1.0/delta,4) << ")" <<
+                    "\n" <<
+                    "Mouse (" << fixedLengthNumber(mouseX,4) << "," << fixedLengthNumber(mouseY,4) << ")" <<
+                    "\n" <<
+                    "Mouse [world] (" << fixedLengthNumber(worldPos[0],4) << "," << fixedLengthNumber(worldPos[1],4) << ")" <<
+                    "\n" <<
+                    "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
+                    "\n" <<
+                    "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
+                    "\n" << 
+                    "update time: " << fixedLengthNumber(pdt+rdt,6) <<
+                    "\n" <<
+                    "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6);
+
+                jGLInstance->text
+                (
+                    debugText.str(),
+                    glm::vec2(64.0f,resY-64.0f),
+                    0.5f,
+                    glm::vec4(0.0f,0.0f,0.0f, 1.0f)
+                );
+            }
+
+            if (frameId == 30)
+            {
+                if (log.size() > 0)
+                {
+                    std::cout << log.get() << "\n";
+                }
+            }
+
+        jGLInstance->endFrame();
 
         display.loop();
 

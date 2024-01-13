@@ -49,13 +49,14 @@ function buildAndroid()
 {
 
   cmake -E make_directory build-$1
-  cmake -E chdir build-$1 cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=21 -D ANDROID_ABI=$1 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 4 -C build-$1
-
+  # 24 required for vulkan https://github.com/nihui/ncnn-android-yolov5/issues/10#issuecomment-800374356
+  cmake -E chdir build-$1 cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=24 -D ANDROID_ABI=$1 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 4 -C build-$1
+  STATUS=$?
+  mv build-$1/libjGL.a build/libjGL-$1.a 
   mergeLibs "build-$1"
   mv build-$1/libHop.a build/libHop-$1.a
   mv build-$1/include/vendored/ogg/include/ogg/config_types.h include/vendored/ogg/include/ogg/
   rm -rf build-$1
-
 }
 
 WINDOWS=1
@@ -66,6 +67,7 @@ SYNTAX=0
 SANITISE=0
 DEMO=0
 ANDROID_NDK=""
+VK_SDK="include/vendored/VulkanSDK"
 BENCHMARK=0
 STANDALONE=0
 CLEAN=1
@@ -109,6 +111,11 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    --vk)
+      VK_SDK=$2
+      shift
+      shift
+      ;;
     -b|--benchmark)
       BENCHMARK=1
       shift
@@ -128,6 +135,10 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+export VULKAN_SDK=$VK_SDK
+export VULKAN_LIBRARY="$VK_SDK/Linux/Lib"
+export VULKAN_INCLUDE_DIR="$VK_SDK/Include"
+
 if [[ $CLEAN -eq 1 ]]; 
 then
   if [ -d build ];
@@ -136,13 +147,19 @@ then
   fi
   mkdir build
 
+  STATUS=0
+
   if [[ $WINDOWS -eq 0 ]];
   then 
-    pwd
+    export VULKAN_SDK=$VK_SDK/Windows
+    export VULKAN_LIBRARY="$VK_SDK/Windows/Lib"
+    export VULKAN_INCLUDE_DIR="$VK_SDK/Windows/Include" 
+
     cd build
     cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 4
+    STATUS=$?
     cd ..
-    pwd
+
     # now copy dlls
     PREFIX="x86_64-w64-mingw32"
 
@@ -172,22 +189,11 @@ then
     do
       findAndCopyDLL $j || echo "Could not find $j"
     done
-    pwd
-
-    if [[ $RELEASE -eq 1 ]];
-    then
-        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-system-2.dll build/
-        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-2.dll build/
-        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-2.dll build/
-    else
-        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-system-d-2.dll build/
-        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-window-d-2.dll build/
-        cp demo/desktop/include/SFML-2.5.1-mingw64/bin/sfml-graphics-d-2.dll build/
-    fi
   elif [[ $OSX -eq 0 ]];
   then
     cd build
     cmake .. -D OSX=ON -D STANDALONE=$STANDALONE -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./osx.cmake && make -j 4
+    STATUS=$?
     cd ..
   elif [[ ! -z "$ANDROID_NDK" ]]
   then
@@ -208,14 +214,20 @@ then
   else
     cd build
     cmake -D BUILD_DEMOS=$DEMO -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 4
+    STATUS=$?
     cd ..
   fi
 else 
-  cd build && make -j 4 && cd ..
+  cd build && make -j 4 
+  STATUS=$?
+  cd ..
 fi
-
 
 if [[ -z "$ANDROID_NDK" ]]
 then 
+  mv build/libjGL.a build/libjGL.a.bk
   mergeLibs "build"
+  mv build/libjGL.a.bk build/libjGL.a
 fi
+
+exit $STATUS
