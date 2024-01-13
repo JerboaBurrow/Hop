@@ -3,11 +3,11 @@
 int main(int argc, char ** argv)
 {
 
-    jGL::Display display(resX,resY,"Soft Body Tetris");
+    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Soft Body Tetris");
 
     glewInit();
 
-    jGLInstance = std::move(std::make_shared<jGL::GL::OpenGLInstance>(display));
+    jGLInstance = std::move(std::make_shared<jGL::GL::OpenGLInstance>(display.getRes()));
 
     jGLInstance->setTextProjection(glm::ortho(0.0,double(resX),0.0,double(resY)));
     jGLInstance->setMSAA(1);

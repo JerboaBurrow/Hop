@@ -7,7 +7,7 @@ int main(int argc, char ** argv)
 
     glewInit();
 
-    jGLInstance = std::move(std::make_shared<jGL::GL::OpenGLInstance>(display));
+    jGLInstance = std::move(std::make_shared<jGL::GL::OpenGLInstance>(display.getRes()));
 
     jGLInstance->setTextProjection(glm::ortho(0.0,double(resX),0.0,double(resY)));
     jGLInstance->setMSAA(1);
