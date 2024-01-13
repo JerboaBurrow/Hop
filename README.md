@@ -12,6 +12,11 @@ A lightweight 2D game engine, in C++ with embedded Lua
 - Perlin (marching squares) and Tile map, editable tile based worlds
 - Lua console, interoperating with the ECS, physics, and rendering systems
 
+### Setup 
+
+- clone, and init the submodules (you can use ```submodules.sh```)
+- the ```build.sh``` can be used to build
+
 ### OSS Dependencies and Licenses
 
 - Freetype is licensed under the The FreeType Project LICENSE
