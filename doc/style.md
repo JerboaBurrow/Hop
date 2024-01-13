@@ -33,7 +33,7 @@ while (keepWorking)
 
 - Align ```public:``` and ```private``` with braces.
 - Use a space below each
-- public then private when possible
+- public then private
 -
 ```c++
     class ACoolClass
