@@ -174,7 +174,7 @@ IF (TEST_SUITE)
 
         target_compile_definitions(testSuite PUBLIC GLSL_VERSION="330")
 
-        target_link_libraries(testSuite stduuid glm)
+        target_link_libraries(testSuite zlibstatic stduuid glm)
         
         include(CTest)
         set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)
