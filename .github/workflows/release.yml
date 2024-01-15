@@ -28,7 +28,6 @@ jobs:
         mkdir linuxbuild 
         cp build/libHop.a linuxbuild/
         cp build/libjGL.a linuxbuild/
-        cp -r include linuxbuild/
         cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
         mkdir demos
         cp -r build/PerlinWorld demos/
@@ -104,7 +103,6 @@ jobs:
         ./build.sh -w -d -r -t
         mkdir windowsbuild
         cp build/libHop.a windowsbuild/
-        cp -r include windowsbuild/
         cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
         mkdir demos
         cp -r build/PerlinWorld demos/
@@ -154,11 +152,9 @@ jobs:
         ./build.sh -o -d -r -t
         mkdir macosbuild
         cp build/libHop.a macosbuild/
-        cp -r include macosbuild/
         cd macosbuild && zip -r ../macosbuild.zip * && cd ..
         mkdir demos
         cp -r build/PerlinWorld demos/
-        cp build/*.dll demos/PerlinWorld/
         cd demos && zip -r ../demos.zip * && cd ..
 
     - name: Tests (wine64)
