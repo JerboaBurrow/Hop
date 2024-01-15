@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(Jerboa)
+project(Hop)
 
 list(APPEND CMAKE_CXX_SOURCE_FILE_EXTENSIONS shader)
 
@@ -74,17 +74,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 # without setting this, seemed to work in terminal though!
 set(CMAKE_BUILD_RPATH ".")
 
-add_subdirectory(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
-include_directories(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
-
-SET(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=TRUE)
-SET(CMAKE_DISABLE_FIND_PACKAGE_BZip2=TRUE)
-# force freetype to use the static zlib build
-SET(FT_WITH_HARFBUZZ OFF)
-SET(FT_WITH_BZIP2 OFF)
-SET(CMAKE_DISABLE_FIND_PACKAGE_HarfBuzz=TRUE)
-SET(CMAKE_DISABLE_FIND_PACKAGE_BZip2=TRUE)
-
 if (NOT WINDOWS)
     add_compile_definitions(LUA_USE_POSIX)
 endif()
@@ -109,10 +98,13 @@ include_directories(include/vendored/miniaudio ${VORBIS_INCLUDE_DIRS})
 add_library(Miniaudio STATIC ${MINIAUDIO_SRC})
 target_link_libraries(Miniaudio vorbisfile ogg ${CMAKE_DL_LIBS}) 
 
-include_directories(include include/vendored include/jGL/include ${ZLIB_DEPS_DIR})
+include_directories(include include/vendored include/jGL/include)
 
 include_directories(src)
 include_directories(include/jLog)
+
+add_subdirectory(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
+include_directories(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
 
 file(GLOB SRC 
     "src/*.cpp"
@@ -146,9 +138,9 @@ if(BENCHMARK)
     target_compile_definitions(Hop PUBLIC BENCHMARK)
 endif()
 
-target_link_libraries(Hop PUBLIC jGL zlibstatic stduuid Lua Miniaudio)
+target_link_libraries(Hop PUBLIC jGL ${GLEW_LIBRARIES} zlibstatic stduuid Lua Miniaudio)
 
-add_library(FreeType ALIAS freetype)
+# add_library(FreeType ALIAS freetype)
 
 if (NOT ANDROID)
     add_subdirectory(tools/)
@@ -182,7 +174,7 @@ IF (TEST_SUITE)
 
         target_compile_definitions(testSuite PUBLIC GLSL_VERSION="330")
 
-        target_link_libraries(testSuite stduuid zlibstatic freetype glm)
+        target_link_libraries(testSuite zlibstatic stduuid glm)
         
         include(CTest)
         set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)

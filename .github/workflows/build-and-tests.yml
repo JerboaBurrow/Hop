@@ -1,0 +1,99 @@
+name: Hop unit tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linuxUnitTest:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+
+    - name: linux-linux
+      run: |
+        git submodule update --recursive
+        ./build.sh -t -d -r
+
+    - name: Tests
+      working-directory: ${{github.workspace}}/build
+      run: ctest --output-on-failure
+
+  linuxWineUnitTest:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+        
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y xorg-dev build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools wine64
+    - name: linux-windows
+      run: |
+        ./build.sh -t -r -d -w
+
+    - name: Tests
+      working-directory: ${{github.workspace}}/build
+      run: ctest --output-on-failure
+
+  macOS:
+    runs-on: macos-11
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+          wget https://vulkan.lunarg.com/sdk/download/1.2.189.0/mac/vulkansdk-macos-1.2.189.0.dmg
+          hdiutil attach vulkansdk-macos-1.2.189.0.dmg
+          mkdir ~/vulkan
+          cd /Volumes/vulkansdk-macos-1.2.189.0/
+          sudo ./InstallVulkan.app/Contents/macOS/InstallVulkan --root ~/vulkan --accept-licenses --default-answer --confirm-command install
+          ls ~/vulkan
+          cd ~/vulkan/
+          python install_vulkan.py
+
+    - name: macos-macos
+      run: ./build.sh -o -t -d -r
+
+    - name: Tests
+      working-directory: ${{github.workspace}}/build
+      run: ctest --output-on-failure
+
+  linuxXandroid:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+        wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+        unzip android-ndk-r25c-linux.zip
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip   
+        unzip commandlinetools-linux-9477386_latest.zip
+        export ANDROID_SDK_ROOT=~/
+        mv cmdline-tools latest
+        mkdir cmdline-tools
+        mv latest cmdline-tools
+        yes | ./cmdline-tools/latest/bin/sdkmanager --licenses
+        ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
+        ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
+        echo no | ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
+
+    - name: build hop
+      run: |
+        git submodule update --recursive
+        ./build.sh -r --android android-ndk-r25c

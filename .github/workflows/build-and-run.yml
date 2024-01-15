@@ -1,0 +1,82 @@
+name: Hop run tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  linuxRunTest:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        example: [PerlinWorld, SoftBodyTetris, MeshEditor]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+        
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev xvfb x11-apps vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+
+    - name: linux-linux
+      run: |
+        ./build.sh -r -d
+
+    - name: run ${{ matrix.example }}
+      run: |
+        cd build/${{ matrix.example }}
+        chmod +x ${{ matrix.example }}
+        export DISPLAY=:99
+        sudo Xvfb :99 -screen 0 800x600x24 &
+        sleep 5
+        MESA_GL_VERSION_OVERRIDE=3.3 ./${{ matrix.example }} &
+        export PID=$!
+        sleep 10
+        xwd -root -silent | convert xwd:- png:screenshot.png
+        sleep 5 && kill $PID
+
+    - name: upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.example }}.png
+        path: build/${{ matrix.example }}/screenshot.png
+
+  wineRunTest:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-22.04
+    
+    strategy:
+      matrix:
+        example: [PerlinWorld, SoftBodyTetris, MeshEditor]
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+        
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y xorg-dev build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix libxinerama-dev libxcursor-dev xvfb x11-apps vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools wine64
+    - name: linux-windows
+      run: |
+        ./build.sh -r -w -d
+
+    - name: run ${{ matrix.example }}
+      run: |
+        cd build/${{ matrix.example }}
+        chmod +x ${{ matrix.example }}.exe
+        export DISPLAY=:99
+        sudo Xvfb :99 -screen 0 800x600x24 &
+        sleep 5
+        MESA_GL_VERSION_OVERRIDE=3.3 wine64 ${{ matrix.example }}.exe &
+        export PID=$!
+        sleep 10
+        xwd -root -silent | convert xwd:- png:screenshot.png
+        sleep 5 && kill $PID
+
+    - name: upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.example }}-wine.png
+        path: build/${{ matrix.example }}/screenshot.png

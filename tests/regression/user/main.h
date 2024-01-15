@@ -21,15 +21,12 @@ using namespace std::chrono;
 #include <System/Physics/sPhysics.h>
 #include <System/Rendering/sRender.h>
 #include <System/Physics/sCollision.h>
-#include <System/Sound/sSound.h>
 
 #include <World/world.h>
 #include <World/marchingWorld.h>
 #include <World/tileWorld.h>
 
 #include <Console/console.h>
-
-#include <Debug/collisionMeshDebug.h>
 
 #include <jLog/jLog.h>
 
@@ -45,7 +42,14 @@ uint8_t frameId = 0;
 double deltas[60];
 
 bool debug = true;
+bool grid = false;
 bool paused = true;
+
+double pointSize = 1.0;
+double primitiveSize = 0.5;
+
+std::pair<double, double> activeSite(0.0, 0.0);
+double radialTheta = 0.0;
 
 const double deltaPhysics = 1.0/900.0;
 
@@ -55,6 +59,7 @@ using Hop::Object::Component::cRenderable;
 using Hop::Object::Component::cCollideable;
 using Hop::Object::EntityComponentSystem;
 using Hop::Object::Id;
+using Hop::Object::Component::CollisionPrimitive;
 
 using Hop::System::Rendering::sRender;
 
@@ -62,13 +67,13 @@ using Hop::System::Physics::CollisionDetector;
 using Hop::System::Physics::CollisionResolver;
 using Hop::System::Physics::sPhysics;
 using Hop::System::Physics::sCollision;
-using Hop::System::Sound::sSound;
 
 using Hop::System::Signature;
 
 using Hop::World::MapSource;
 using Hop::World::Boundary;
 using Hop::World::AbstractWorld;
+using Hop::World::MarchingWorld;
 using Hop::World::TileWorld;
 using jLog::INFO;
 using jLog::WARN;
@@ -91,6 +96,7 @@ std::string fixedLengthNumber(double x, unsigned length)
     }
     return dtrunc;
 }
+
 
 std::shared_ptr<jGL::jGLInstance> jGLInstance;
 
