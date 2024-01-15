@@ -17,6 +17,7 @@ function findAndCopyDLL()
 
 function mergeLibs()
 {
+  pushd .
   cd $1
 
   for lib in *.a
@@ -28,21 +29,21 @@ function mergeLibs()
         mkdir "$lib-o"
         ar -x $lib
         mv *.obj "$lib-o"
-        ar -r libHopMerged.a "$lib-o/"*
+        ar -r libMerged.a "$lib-o/"*
         rm -rf "$lib-o"
       else
         mkdir "$lib-o"
         ar -x $lib
         mv *.o "$lib-o"
-        ar -r libHopMerged.a "$lib-o/"*
+        ar -r libMerged.a "$lib-o/"*
         rm -rf "$lib-o"
       fi
       mv $lib.tmp $lib
   done
 
-  mv libHopMerged.a libHop.a
+  mv libMerged.a $2
 
-  cd ..
+  popd
 }
 
 function buildAndroid()
@@ -52,7 +53,7 @@ function buildAndroid()
   # 24 required for vulkan https://github.com/nihui/ncnn-android-yolov5/issues/10#issuecomment-800374356
   cmake -E chdir build-$1 cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=24 -D ANDROID_ABI=$1 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 4 -C build-$1
   STATUS=$?
-  mv build-$1/libjGL.a build/libjGL-$1.a 
+  mv build-$1/include/jGL/libjGL.a build/libjGL-$1.a 
   mergeLibs "build-$1"
   mv build-$1/libHop.a build/libHop-$1.a
   mv build-$1/include/vendored/ogg/include/ogg/config_types.h include/vendored/ogg/include/ogg/
@@ -225,9 +226,9 @@ fi
 
 if [[ -z "$ANDROID_NDK" ]]
 then 
-  mv build/libjGL.a build/libjGL.a.bk
-  mergeLibs "build"
-  mv build/libjGL.a.bk build/libjGL.a
+  mergeLibs "build" libHop.a
+  mergeLibs "build/include/jGL" libjGL.a
+  cp build/include/jGL/libjGL.a build
 fi
 
 exit $STATUS

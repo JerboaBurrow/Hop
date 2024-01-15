@@ -28,7 +28,6 @@ using namespace std::chrono;
 
 #include <Console/console.h>
 
-#include <jGL/include/Util/util.h>
 #include <jLog/jLog.h>
 
 #include <jGL/jGL.h>
@@ -78,8 +77,24 @@ using Hop::World::TileWorld;
 using jLog::INFO;
 using jLog::WARN;
 
-using jGL::Util::fixedLengthNumber;
+std::string fixedLengthNumber(double x, unsigned length)
+{
+    std::string d = std::to_string(x);
+    std::string dtrunc(length,' ');
+    for (unsigned c = 0; c < dtrunc.length(); c++/*ayy lmao*/)
+    {
 
+        if (c >= d.length())
+        {
+            dtrunc[c] = '0';
+        }
+        else
+        {
+            dtrunc[c] = d[c];
+        }
+    }
+    return dtrunc;
+}
 std::shared_ptr<jGL::jGLInstance> jGLInstance;
 
 #endif /* MAIN_H */

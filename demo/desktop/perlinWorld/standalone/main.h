@@ -28,7 +28,6 @@ using namespace std::chrono;
 
 #include <Console/console.h>
 
-#include <jGL/include/Util/util.h>
 #include <jLog/jLog.h>
 
 #include <jGL/jGL.h>
@@ -42,7 +41,7 @@ const float MAX_SPEED = 1.0/60.0;
 uint8_t frameId = 0;
 double deltas[60];
 
-bool debug = false;
+bool debug = true;
 bool grid = false;
 bool paused = true;
 
@@ -81,6 +80,23 @@ using jLog::WARN;
 
 using jGL::Util::fixedLengthNumber;
 
-std::shared_ptr<jGL::jGLInstance> jGLInstance;
+std::string fixedLengthNumber(double x, unsigned length)
+{
+    std::string d = std::to_string(x);
+    std::string dtrunc(length,' ');
+    for (unsigned c = 0; c < dtrunc.length(); c++/*ayy lmao*/)
+    {
+
+        if (c >= d.length())
+        {
+            dtrunc[c] = '0';
+        }
+        else
+        {
+            dtrunc[c] = d[c];
+        }
+    }
+    return dtrunc;
+}
 
 #endif /* MAIN_H */

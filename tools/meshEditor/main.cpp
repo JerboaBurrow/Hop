@@ -42,6 +42,7 @@ int main(int argc, char ** argv)
     );
 
     sRender & rendering = manager.getSystem<sRender>();
+    rendering.setDrawMeshes(true);
 
     // setup physics system
     sPhysics & physics = manager.getSystem<sPhysics>();
