@@ -1,11 +1,7 @@
 name: Hop unit tests
 
 on:
-  push:
-    branches-ignore: 'main'
-    paths-ignore:
-      - 'doc/**'
-      - '.github/**'
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -72,3 +68,32 @@ jobs:
     - name: Tests
       working-directory: ${{github.workspace}}/build
       run: ctest --output-on-failure
+
+  linuxXandroid:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+        wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+        unzip android-ndk-r25c-linux.zip
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip   
+        unzip commandlinetools-linux-9477386_latest.zip
+        export ANDROID_SDK_ROOT=~/
+        mv cmdline-tools latest
+        mkdir cmdline-tools
+        mv latest cmdline-tools
+        yes | ./cmdline-tools/latest/bin/sdkmanager --licenses
+        ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
+        ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
+        echo no | ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
+
+    - name: build hop
+      run: |
+        git submodule update --recursive
+        ./build.sh -r --android android-ndk-r25c
