@@ -180,7 +180,7 @@ jobs:
         path: demos.zip
       
   linuxRun:
-    needs: linuxXlinux
+    needs: linuxNative
     runs-on: ubuntu-20.04
     
     steps:
@@ -333,7 +333,7 @@ jobs:
           cmake .. && make
   
   release:
-    needs: [linuxXlinux, linuxXwindows, linuxXandroid, macosNative]
+    needs: [linuxNative, linuxXwindows, linuxXandroid, macosNative]
     if: github.ref_type == 'tag'
     runs-on: ubuntu-20.04
     
@@ -343,15 +343,15 @@ jobs:
         with:
           name: linuxbuild
           
-      - name: get windows build
-        uses: actions/download-artifact@v3
-        with:
-          name: windowsbuild
+      # - name: get windows build
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: windowsbuild
 
-      - name: get macos build
-        uses: actions/download-artifact@v3
-        with:
-          name: macosbuild
+      # - name: get macos build
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: macosbuild
                 
       - name: get android build
         uses: actions/download-artifact@v3
