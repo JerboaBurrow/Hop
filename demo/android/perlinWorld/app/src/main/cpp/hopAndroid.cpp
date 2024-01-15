@@ -13,7 +13,6 @@
 #include <memory>
 
 #include <jGL/orthoCam.h>
-#include <jGL/include/Util/util.h>
 #include <jGL/jGL.h>
 #include <jGL/OpenGL/openGLInstance.h>
 

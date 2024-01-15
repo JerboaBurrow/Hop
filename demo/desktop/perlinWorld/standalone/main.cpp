@@ -3,7 +3,12 @@
 int main(int argc, char ** argv)
 {
 
-    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Perlin World");
+    jGL::DesktopDisplay::Config conf;
+
+    conf.VULKAN = false;
+    conf.COCOA_RETINA = false;
+
+    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Perlin World", conf);
 
     glewInit();
 

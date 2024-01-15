@@ -53,8 +53,9 @@ function buildAndroid()
   # 24 required for vulkan https://github.com/nihui/ncnn-android-yolov5/issues/10#issuecomment-800374356
   cmake -E chdir build-$1 cmake .. -D ANDROID=ON -D ANDROID_PLATFORM=24 -D ANDROID_ABI=$1 -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=$TOOL_CHAIN && make -j 4 -C build-$1
   STATUS=$?
-  mv build-$1/include/jGL/libjGL.a build/libjGL-$1.a 
-  mergeLibs "build-$1"
+  mergeLibs "build-$1/include/jGL" libjGL.a
+  mv build-$1/include/jGL/libjGL.a build/libjGL-$1.a
+  mergeLibs "build-$1" libHop.a 
   mv build-$1/libHop.a build/libHop-$1.a
   mv build-$1/include/vendored/ogg/include/ogg/config_types.h include/vendored/ogg/include/ogg/
   rm -rf build-$1

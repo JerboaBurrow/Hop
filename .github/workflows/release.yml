@@ -10,28 +10,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  linuxNative:
-    runs-on: ubuntu-20.04
+
+  headers:
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: 'recursive'
-    
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
-
-    - name: linux-linux
-      run: |
-        git submodule update --recursive
-        ./build.sh -t -d -r
-        mkdir linuxbuild 
-        cp build/libHop.a linuxbuild/
-        cp build/libjGL.a linuxbuild/
-        cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
-        mkdir demos
-        cp -r build/PerlinWorld demos/
-        cd demos && zip -r ../demos.zip * && cd ..
 
     - name: pack headers
       run: |
@@ -63,10 +49,42 @@ jobs:
           include/vendored/lua/src/luaconf.h \
           include/vendored/lua/src/lualib.h \
           include/vendored/miniaudio \
-          include/*.h;\
+          include/*.h \
+          include/vendored/vorbis/include/vorbis \
+          include/vendored/ogg/include/ogg;
           do cp -r $inc headers; done
         
         ls headers
+
+    - name: build header artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: headers
+        path: headers
+
+
+  linuxNative:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+
+    - name: linux-linux
+      run: |
+        git submodule update --recursive
+        ./build.sh -t -d -r
+        mkdir linuxbuild 
+        cp build/libHop.a linuxbuild/
+        cp build/libjGL.a linuxbuild/
+        cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
+        mkdir demos
+        cp -r build/PerlinWorld demos/
+        cd demos && zip -r ../demos.zip * && cd ..
 
     - name: Tests
       working-directory: ${{github.workspace}}/build
@@ -250,7 +268,6 @@ jobs:
         ./build.sh -r --android android-ndk-r25c
         mkdir androidbuild 
         cp build/libHop* androidbuild/
-        cp -r include androidbuild/
         cd androidbuild  && zip -r ../androidbuild.zip * && cd ..
 
     - name: buildArtifact
@@ -295,7 +312,7 @@ jobs:
     #     path: screenshot-android.png
 
   test-release:
-    needs: [linuxNative]
+    needs: [linuxNative, headers]
     runs-on: ubuntu-22.04
 
     steps:
@@ -329,7 +346,7 @@ jobs:
           cmake .. && make
   
   release:
-    needs: [linuxNative, linuxXwindows, linuxXandroid, macosNative]
+    needs: [linuxNative, linuxXwindows, linuxXandroid, macosNative, headers]
     if: github.ref_type == 'tag'
     runs-on: ubuntu-20.04
     
@@ -338,6 +355,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: linuxbuild
+          path: linux-x86_64
           
       # - name: get windows build
       #   uses: actions/download-artifact@v3
@@ -353,3 +371,22 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: androidbuild
+          path: android
+
+      - name: get headers
+        uses: actions/download-artifact@v3
+        with:
+          name: headers
+          path: headers/
+
+      - name: release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          prerelease: true
+          name: "release-${{ github.ref_name }}"
+          tag_name: ${{ github.ref }}
+          files: |
+            linux-x86_64
+            android
+            headers

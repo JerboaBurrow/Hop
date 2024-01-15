@@ -3,7 +3,12 @@
 int main(int argc, char ** argv)
 {
 
-    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Soft Body Tetris");
+    jGL::DesktopDisplay::Config conf;
+
+    conf.VULKAN = false;
+    conf.COCOA_RETINA = false;
+
+    jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Soft Body Tetris", conf);
 
     glewInit();
 
