@@ -15,7 +15,7 @@ int main(int argc, char ** argv)
     jGLInstance = std::move(std::make_shared<jGL::GL::OpenGLInstance>(display.getRes()));
 
     jGLInstance->setTextProjection(glm::ortho(0.0,double(resX),0.0,double(resY)));
-    jGLInstance->setMSAA(1);
+    jGLInstance->setMSAA(0);
 
     jGL::OrthoCam camera(resX, resY, glm::vec2(0.0,0.0));
 
