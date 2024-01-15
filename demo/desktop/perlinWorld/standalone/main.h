@@ -78,8 +78,6 @@ using Hop::World::TileWorld;
 using jLog::INFO;
 using jLog::WARN;
 
-using jGL::Util::fixedLengthNumber;
-
 std::string fixedLengthNumber(double x, unsigned length)
 {
     std::string d = std::to_string(x);
