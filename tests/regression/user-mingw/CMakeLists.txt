@@ -11,21 +11,12 @@ set(SRC
     "main.cpp"
 )
 
-if (WINDOWS)
-    if (RELEASE)
-        # launch as windows, not console app - so cmd does not open as well
-        add_link_options(-mwindows)
-    endif ()
-else()
-    # so nautilus etc recognise target as executable rather than .so
-    add_link_options(-no-pie)
-endif()
+add_link_options(-mwindows)
 
 include_directories(include)
 include_directories(.)
 
 find_package(ZLIB REQUIRED)
-find_package(PNG REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(X11 REQUIRED)
@@ -39,8 +30,13 @@ target_link_libraries(
 	${OPENGL_LIBRARIES} 
     ${Vulkan_LIBRARIES}
     	${ZLIB_LIBRARIES}
-    	${PNG_LIBRARIES}
     ${CMAKE_SOURCE_DIR}/libHop.a
+)
+
+target_include_directories(
+	${OUTPUT_NAME}
+	PUBLIC
+	${Vulkan_INCLUDE_DIR} 
 )
 
 target_compile_definitions(${OUTPUT_NAME} PUBLIC GLSL_VERSION="330")

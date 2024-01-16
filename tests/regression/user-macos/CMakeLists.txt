@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
+project(macos-lib-test)
 
 set(OUTPUT_NAME user)
 
@@ -10,16 +11,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -O3 -Wall")
 set(SRC
     "main.cpp"
 )
-
-if (WINDOWS)
-    if (RELEASE)
-        # launch as windows, not console app - so cmd does not open as well
-        add_link_options(-mwindows)
-    endif ()
-else()
-    # so nautilus etc recognise target as executable rather than .so
-    add_link_options(-no-pie)
-endif()
 
 include_directories(include)
 include_directories(.)
@@ -42,5 +33,13 @@ target_link_libraries(
     	${PNG_LIBRARIES}
     ${CMAKE_SOURCE_DIR}/libHop.a
 )
+target_include_directories(
+	${OUTPUT_NAME}
+	PUBLIC
+	${Vulkan_INCLUDE_DIR} 
+)
+
+# https://stackoverflow.com/questions/18391487/compiling-with-glfw3-linker-errors-undefined-reference
+target_link_libraries(${OUTPUT_NAME} "-framework Cocoa -framework IOKit -framework CoreVideo")
 
 target_compile_definitions(${OUTPUT_NAME} PUBLIC GLSL_VERSION="330")

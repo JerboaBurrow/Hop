@@ -18,6 +18,12 @@ include/vendored/ogg/include/ogg/config_types.h
 perf.*
 **.gradle
 **.idea
-test/regression/user/build
-test/regression/user/include/*
-test/regression/user/*.a
+tests/regression/user/build
+tests/regression/user/include/
+tests/regression/user/*.a
+tests/regression/user-mingw/build
+tests/regression/user-mingw/include/*
+tests/regression/user-mingw/*.a
+tests/regression/user-macos/build
+tests/regression/user-macos/include/*
+tests/regression/user-macos/*.a

@@ -69,7 +69,7 @@ SYNTAX=0
 SANITISE=0
 DEMO=0
 ANDROID_NDK=""
-VK_SDK="include/vendored/VulkanSDK"
+VK_SDK="$(pwd)/include/jGL/include/vendored/VulkanSDK"
 BENCHMARK=0
 STANDALONE=0
 CLEAN=1
@@ -156,7 +156,9 @@ then
     export VULKAN_SDK=$VK_SDK/Windows
     export VULKAN_LIBRARY="$VK_SDK/Windows/Lib"
     export VULKAN_INCLUDE_DIR="$VK_SDK/Windows/Include" 
-
+    ln -s "$VK_SDK/Windows/Lib" "$VK_SDK/Windows/lib"
+    ln -s "$VK_SDK/Include" "$VK_SDK/Windows/Include"
+    ln -s "$VK_SDK/Windows/Include" "$VK_SDK/Windows/include"
     cd build
     cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 4
     STATUS=$?
