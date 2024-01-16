@@ -2,3 +2,4 @@ include/vendored/** linguist-vendored
 demo/include/** linguist-vendored
 include/vendored/* linguist-vendored
 demo/include/* linguist-vendored
+include/logo.h linguist-vendored
