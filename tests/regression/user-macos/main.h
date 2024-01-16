@@ -1,28 +1,82 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <jGL/jGL.h>
-#include <jGL/OpenGL/openGLInstance.h>
-#include <jGL/OpenGL/Shader/glShader.h>
-#include <jGL/shape.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <iomanip>
 
-#include <logo.h>
-#include <jGL/Display/desktopDisplay.h>
-#include <jGL/orthoCam.h>
+#include <time.h>
+#include <random>
+#include <math.h>
+#include <vector>
 
-#include <jLog/jLog.h>
-
-#include <rand.h>
 #include <chrono>
 using namespace std::chrono;
 
-const int resX = 800;
-const int resY = 1000;
+#include <logo.h>
 
+#include <Object/entityComponentSystem.h>
+
+#include <System/Physics/sPhysics.h>
+#include <System/Rendering/sRender.h>
+#include <System/Physics/sCollision.h>
+
+#include <World/world.h>
+#include <World/marchingWorld.h>
+#include <World/tileWorld.h>
+
+#include <Console/console.h>
+
+#include <jLog/jLog.h>
+
+#include <jGL/jGL.h>
+#include <jGL/OpenGL/openGLInstance.h>
+
+const int resX = 1000;
+const int resY = 1000;
+const float MAX_SPEED = 1.0/60.0;
+
+// for smoothing delta numbers
 uint8_t frameId = 0;
 double deltas[60];
 
-std::unique_ptr<jGL::jGLInstance> jGLInstance;
+bool debug = true;
+bool grid = false;
+bool paused = true;
+
+double pointSize = 1.0;
+double primitiveSize = 0.5;
+
+std::pair<double, double> activeSite(0.0, 0.0);
+double radialTheta = 0.0;
+
+const double deltaPhysics = 1.0/900.0;
+
+using Hop::Object::Component::cTransform;
+using Hop::Object::Component::cPhysics;
+using Hop::Object::Component::cRenderable;
+using Hop::Object::Component::cCollideable;
+using Hop::Object::EntityComponentSystem;
+using Hop::Object::Id;
+using Hop::Object::Component::CollisionPrimitive;
+
+using Hop::System::Rendering::sRender;
+
+using Hop::System::Physics::CollisionDetector;
+using Hop::System::Physics::CollisionResolver;
+using Hop::System::Physics::sPhysics;
+using Hop::System::Physics::sCollision;
+
+using Hop::System::Signature;
+
+using Hop::World::MapSource;
+using Hop::World::Boundary;
+using Hop::World::AbstractWorld;
+using Hop::World::MarchingWorld;
+using Hop::World::TileWorld;
+using jLog::INFO;
+using jLog::WARN;
 
 std::string fixedLengthNumber(double x, unsigned length)
 {
@@ -43,35 +97,6 @@ std::string fixedLengthNumber(double x, unsigned length)
     return dtrunc;
 }
 
-const char * vertexShader = 
-    "#version 330\n"
-    "precision lowp float;\n"
-    "in vec4 a_position;\n"
-    "in vec4 a_offset;\n"
-    "in vec4 a_colour;\n"
-    "uniform mat4 proj;\n"
-    "out vec2 texCoord;\n"
-    "out vec4 colour;\n"
-    "void main(void){"
-        "vec2 pos = a_position.xy*a_offset.w;\n"
-        "float ct = cos(a_offset.z); float st = sin(a_offset.z);\n"
-        "mat2 rot = mat2(ct, -st, st, ct);\n"
-        "pos = rot*pos + a_offset.xy;\n"
-        "gl_Position = proj*vec4(pos,0.0,1.0);\n"
-        "texCoord = a_position.zw;\n"
-        "colour = a_colour;\n"
-    "}";
-
-const char * fragmentShader = 
-    "#version 330\n"
-    "precision lowp float;\n"
-    "in vec2 texCoord;\n"
-    "in vec4 colour;\n"
-    "out vec4 fragment;\n"
-    "void main(void){\n" 
-        "vec2 c = texCoord-vec2(0.5,0.5);\n"
-        "if (dot(c,c) > 0.5*0.5) {discard;}\n"
-        "fragment = colour;\n"
-    "}";
+std::shared_ptr<jGL::jGLInstance> jGLInstance;
 
 #endif /* MAIN_H */
