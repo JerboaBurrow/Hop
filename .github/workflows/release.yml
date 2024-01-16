@@ -136,6 +136,7 @@ jobs:
         ./build.sh -w -d -r -t
         mkdir windowsbuild
         cp build/libHop.a windowsbuild/
+        cp build/libjGL.a windowsbuild/
         cp build/*.dll windowsbuild/
         cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
         mkdir demos
@@ -186,6 +187,7 @@ jobs:
         ./build.sh -o -d -r -t
         mkdir macosbuild
         cp build/libHop.a macosbuild/
+        cp build/libjGL.a macosbuild/
         cd macosbuild && zip -r ../macosbuild.zip * && cd ..
         mkdir demos
         cp -r build/PerlinWorld demos/
@@ -355,6 +357,7 @@ jobs:
         run: |
           unzip linuxbuild.zip
           ls
+          mkdir tests/regression/user/include/
           cp *.a tests/regression/user/
           cp -r headers/* tests/regression/user/include/
           cd tests/regression/user
