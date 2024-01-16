@@ -79,8 +79,8 @@ static std::unique_ptr<OrthoCam> camera = nullptr;
 static std::shared_ptr<jGL::jGLInstance> jgl = nullptr;
 
 std::string jstring2string(JNIEnv *env, jstring jStr) {
-    if (!jStr)
-        return "";
+    
+    if (!jStr) {return "";}
 
     const jclass stringClass = env->GetObjectClass(jStr);
     const jmethodID getBytes = env->GetMethodID(stringClass, "getBytes", "(Ljava/lang/String;)[B");
