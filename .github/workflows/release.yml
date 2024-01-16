@@ -418,7 +418,7 @@ jobs:
       - name: get macos build
         uses: actions/download-artifact@v3
         with:
-          name: macos
+          name: macosbuild
 
       - name: Install dependencies
         run: |
