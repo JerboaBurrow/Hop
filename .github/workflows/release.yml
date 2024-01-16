@@ -353,6 +353,7 @@ jobs:
 
       - name: linux lib test
         run: |
+          unzip linuxbuild.zip
           ls
           cp *.a tests/regression/user/
           cp -r headers/* tests/regression/user/include/
@@ -387,6 +388,7 @@ jobs:
 
       - name: mingw lib test
         run: |
+          unzip windowsbuild.zip
           ls
           mkdir tests/regression/user-mingw/include/
           cp *.a tests/regression/user-mingw/
@@ -428,6 +430,7 @@ jobs:
 
       - name: macos lib test
         run: |
+          unzip macosbuild.zip
           ls
           mkdir tests/regression/user-macos/include/
           cp *.a tests/regression/user-macos/

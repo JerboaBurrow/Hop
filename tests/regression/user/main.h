@@ -97,7 +97,6 @@ std::string fixedLengthNumber(double x, unsigned length)
     return dtrunc;
 }
 
-
 std::shared_ptr<jGL::jGLInstance> jGLInstance;
 
 #endif /* MAIN_H */
