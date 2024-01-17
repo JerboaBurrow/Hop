@@ -86,8 +86,6 @@ int main(int argc, char ** argv)
 
     high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
 
-    physics.stabaliseObjectParameters(&manager);
-
     Hop::System::Sound::sSound & sound = manager.getSystem<Hop::System::Sound::sSound>();
 
     while (display.isOpen())

@@ -30,8 +30,8 @@ namespace Hop::System::Physics
         kr = EFFECTIVE_MASS*alpha;
         kd = 2.0*EFFECTIVE_MASS*beta;
 
-        krR = kr*2.0;
-        kdR = kd*2.0;
+        krR = kr;
+        kdR = kd;
 
     }
 

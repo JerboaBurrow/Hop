@@ -8,6 +8,7 @@
 #include <Shader/meshDebug.shader>
 
 #include <jGL/jGL.h>
+#include <jLog/jLog.h>
 
 namespace Hop::Object
 {
@@ -29,20 +30,21 @@ namespace Hop::Debugging
     public:
 
         CollisionMeshDebug(std::shared_ptr<jGL::jGLInstance> jgl)
-        : refresh(true)
-        {
-            shapes = jgl->createShapeRenderer(256);
-            circleShader = std::make_shared<jGL::GL::glShader>
-            (
-                Hop::System::Rendering::collisionPrimitiveVertexShader, 
-                Hop::System::Rendering::collisionPrimitiveFragmentShader
-            );
-            rectangleShader = std::make_shared<jGL::GL::glShader>
+        : refresh(true),
+          shapes(jgl->createShapeRenderer(256)),
+          circleShader(std::make_shared<jGL::GL::glShader>
+           (
+              Hop::System::Rendering::collisionPrimitiveVertexShader, 
+              Hop::System::Rendering::collisionPrimitiveFragmentShader
+           )
+          ),
+          rectangleShader(std::make_shared<jGL::GL::glShader>
             (
                 Hop::System::Rendering::rectangleVertexShader, 
                 Hop::System::Rendering::rectangleFragmentShader
-            );
-        }
+            )
+          )
+        {}
 
         ~CollisionMeshDebug()
         {

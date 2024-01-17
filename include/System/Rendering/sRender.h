@@ -37,13 +37,16 @@ namespace Hop::System::Rendering
         sRender()
         : accumulatedTime(0.0), 
           projection(0.0f), 
-          drawCollisionMeshPoints(false)
+          drawCollisionMeshPoints(false),
+          clock(std::chrono::high_resolution_clock::now()),
+          collisionMeshDebug(nullptr)
         {}
 
         sRender(std::shared_ptr<jGL::jGLInstance> jgl)
         : accumulatedTime(0.0), 
           projection(0.0f), 
           drawCollisionMeshPoints(false), 
+          clock(std::chrono::high_resolution_clock::now()),
           collisionMeshDebug(std::move(std::make_unique<CollisionMeshDebug>(jgl)))
         {}
 
@@ -64,12 +67,10 @@ namespace Hop::System::Rendering
         glm::mat4 projection;
 
         bool drawCollisionMeshPoints;
-        
-        std::unique_ptr<CollisionMeshDebug> collisionMeshDebug;
 
         std::chrono::time_point<std::chrono::high_resolution_clock> clock;
 
-        Log log;
+        std::unique_ptr<CollisionMeshDebug> collisionMeshDebug;
 
         void update(EntityComponentSystem * ecs);
 

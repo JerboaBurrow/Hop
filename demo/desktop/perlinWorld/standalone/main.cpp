@@ -97,16 +97,17 @@ int main(int argc, char ** argv)
 
     luaStore.ecs = &manager;
     luaStore.world = world.get();
+    luaStore.physics = &physics;
+    luaStore.resolver = &collisions;
 
     console.luaStore(&luaStore);
 
     console.runFile("mix.lua");
+    console.runFile("config.lua");
     std::string status = console.luaStatus();
     if (status != "LUA_OK") { WARN(status) >> log; }
 
     high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
-
-    physics.stabaliseObjectParameters(&manager);
 
     std::vector<int> moveKeys = {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D};
     std::vector<bool> moving = {false, false, false, false};
