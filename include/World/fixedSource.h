@@ -12,8 +12,7 @@ namespace Hop::World
 
         FixedSource(){}
 
-        uint64_t getAtCoordinate(int i, int j);
-
+        uint64_t getAtCoordinate(int i, int j) { return data[ivec2(i,j)]; }
     private:
 
     };

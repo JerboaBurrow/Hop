@@ -20,20 +20,11 @@ class SparseData
 
 public:
     
-    SparseData(VALUE nullElement)
-    : NULL_ELEMENT(nullElement)
-    {}
+    SparseData() {}
 
-    virtual VALUE operator[](INDEX index)
+    VALUE operator[](INDEX index)
     {
-
-        if (elements.find(index) != elements.end())
-        {
-            return elements[index];
-        }
-    
-        return NULL_ELEMENT;
-        
+        return elements[index];
     }
 
     bool notNull(INDEX index)
@@ -70,8 +61,6 @@ public:
     const std::map<INDEX,VALUE> & getElements() const { return elements; }
 
 private:
-
-    VALUE NULL_ELEMENT;
 
     std::map<INDEX,VALUE> elements;
 

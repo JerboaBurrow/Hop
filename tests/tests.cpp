@@ -39,7 +39,7 @@ std::uniform_int_distribution<uint64_t> U(0,-1);
 SCENARIO("MapFile i/o", "[io]"){
     GIVEN("MapData"){
         
-        MapData m(0);
+        MapData m;
         MapFile f;
 
         int n = 4;
@@ -53,7 +53,7 @@ SCENARIO("MapFile i/o", "[io]"){
             f.save("test",m);
             AND_THEN("loading the compressed data"){
 
-                MapData m2(0);
+                MapData m2;
                 f.load("test",m2);
 
                 REQUIRE(m==m2);
@@ -65,7 +65,7 @@ SCENARIO("MapFile i/o", "[io]"){
             f.saveUncompressed("test",m);
             AND_THEN("loading the uncompressed data"){
 
-                MapData m2(0);
+                MapData m2;
                 f.loadUncompressed("test",m2);
 
                 REQUIRE(m==m2);
