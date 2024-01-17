@@ -57,7 +57,7 @@ function buildAndroid()
   mv build-$1/include/jGL/libjGL.a build/libjGL-$1.a
   mergeLibs "build-$1" libHop.a 
   mv build-$1/libHop.a build/libHop-$1.a
-  mv build-$1/include/vendored/ogg/include/ogg/config_types.h include/vendored/ogg/include/ogg/
+  mv build-$1/include/vendored/ogg/include/ogg/config_types.h build/ogg/
   rm -rf build-$1
 }
 

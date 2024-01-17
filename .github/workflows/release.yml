@@ -305,6 +305,7 @@ jobs:
       run: |
         cp -r headers/ demo/android/perlinWorld/app/src/main/cpp/include/
         cp -r build/*.a demo/android/perlinWorld/app/src/main/cpp/include/
+        cp build/ogg/config_types.h demo/android/perlinWorld/app/src/main/cpp/include/ogg/
         cd demo/android/perlinWorld
         ./gradlew assembleDebug
         cd ~/

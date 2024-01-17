@@ -14,7 +14,6 @@ callgrind*
 zlib_build/*
 demo/android/perlinWorld/app/.cxx/*
 demo/android/perlinWorld/app/src/main/cpp/include
-include/vendored/ogg/include/ogg/config_types.h
 perf.*
 **.gradle
 **.idea
