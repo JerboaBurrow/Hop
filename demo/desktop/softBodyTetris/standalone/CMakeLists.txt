@@ -13,6 +13,13 @@ else ()
     add_link_options(-no-pie)
 endif()
 
+if (PROFILE)
+    # apt-get install google-perftools libgoogle-perftools-dev google-pprof
+    # CPUPROFILE=prof.out ./SoftBodyTetris
+    # google-pprof --pdf SoftBodyTetris prof.out > sbt.pdf
+    add_link_options("-Wl,--no-as-needed,-lprofiler,--as-needed")
+endif()
+
 add_executable(${OUTPUT_NAME} "main.cpp")
 
 target_link_libraries(${OUTPUT_NAME} Hop)

@@ -15,7 +15,7 @@
 namespace Hop::World 
 {
 
-    const uint64_t MAP_DATA_NULL = 0;
+    const uint64_t MAP_DATA_NULL = uint64_t();
 
     using ivec2 = std::pair<int32_t,int32_t>;
     using MapData = SparseData<ivec2,uint64_t>;

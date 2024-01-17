@@ -72,6 +72,7 @@ VK_SDK="$(pwd)/include/jGL/include/vendored/VulkanSDK"
 BENCHMARK=0
 STANDALONE=0
 CLEAN=1
+PROFILE=0
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -125,6 +126,10 @@ while [[ $# -gt 0 ]]; do
       CLEAN=0
       shift
       ;;
+    -p|--profile)
+      PROFILE=1
+      shift
+      ;;
     -*|--*)
       echo "Unknown option $1"
       exit 1
@@ -159,7 +164,7 @@ then
     ln -s "$VK_SDK/Include" "$VK_SDK/Windows/Include"
     ln -s "$VK_SDK/Windows/Include" "$VK_SDK/Windows/include"
     cd build
-    cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE  -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 4
+    cmake .. -D WINDOWS=ON -D STANDALONE=$STANDALONE -D BUILD_DEMOS=$DEMO -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SYNTAX_ONLY=$SYNTAX -D SANITISE=$SANITISE -D CMAKE_TOOLCHAIN_FILE=./windows.cmake && make -j 4
     STATUS=$?
     cd ..
 
@@ -216,7 +221,7 @@ then
 
   else
     cd build
-    cmake -D BUILD_DEMOS=$DEMO -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 4
+    cmake -D BUILD_DEMOS=$DEMO -D PROFILE=$PROFILE -D STANDALONE=$STANDALONE -D RELEASE=$RELEASE -D BENCHMARK=$BENCHMARK -D TEST_SUITE=$TEST -D SANITISE=$SANITISE -D SYNTAX_ONLY=$SYNTAX .. && make -j 4
     STATUS=$?
     cd ..
   fi

@@ -12,7 +12,7 @@ namespace Hop::World
     public:
 
         MapSource()
-        : data(MAP_DATA_NULL)
+        : data()
         {}
 
         virtual ~MapSource() = default;
