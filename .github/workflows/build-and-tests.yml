@@ -54,7 +54,7 @@ jobs:
     - name: Install dependencies
       run: |
           wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.dmg
-          hdiutil attach vulkan-sdk.dmg
+          hdiutil attach vulkan-sdk.dmg -mountpoint /Volumes/vulkan-sdk
           mkdir ~/vulkan
           cd /Volumes/vulkan-sdk/
           sudo ./InstallVulkan.app/Contents/macOS/InstallVulkan --root ~/vulkan --accept-licenses --default-answer --confirm-command install
