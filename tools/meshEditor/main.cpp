@@ -120,11 +120,11 @@ int main(int argc, char ** argv)
     while (display.isOpen())
     {
 
-        if (display.getEvent(GLFW_KEY_F2).type == jGL::EventType::PRESS) { debug = !debug; }
-        if (display.getEvent(GLFW_KEY_G).type == jGL::EventType::PRESS) { grid = !grid; }
-        if (display.getEvent(GLFW_KEY_SPACE).type == jGL::EventType::PRESS) { paused = !paused; }
+        if (display.keyHasEvent(GLFW_KEY_F2, jGL::EventType::PRESS)) { debug = !debug; }
+        if (display.keyHasEvent(GLFW_KEY_G, jGL::EventType::PRESS)) { grid = !grid; }
+        if (display.keyHasEvent(GLFW_KEY_SPACE, jGL::EventType::PRESS)) { paused = !paused; }
 
-        if (display.getEvent(GLFW_KEY_C).type == jGL::EventType::PRESS) 
+        if (display.keyHasEvent(GLFW_KEY_C, jGL::EventType::PRESS)) 
         {
             unsigned n = object.mesh.size();
             for (unsigned i = 0; i < n; i++)
@@ -133,7 +133,7 @@ int main(int argc, char ** argv)
             }
         }
 
-        if (display.getEvent(GLFW_KEY_E).type == jGL::EventType::PRESS) 
+        if (display.keyHasEvent(GLFW_KEY_E, jGL::EventType::PRESS)) 
         {
             double x = 0.0;
             double y = 0.0;
@@ -172,25 +172,25 @@ int main(int argc, char ** argv)
 
         moveMouseToSite = false;
         
-        if (display.getEvent(GLFW_KEY_W).type == jGL::EventType::PRESS)
+        if (display.keyHasEvent(GLFW_KEY_W, jGL::EventType::PRESS))
         {
             activeSite.second += pointSize*primitiveSize*2;
             moveMouseToSite = true;
         }
 
-        if (display.getEvent(GLFW_KEY_S).type == jGL::EventType::PRESS)
+        if (display.keyHasEvent(GLFW_KEY_S, jGL::EventType::PRESS))
         {
             activeSite.second -= pointSize*primitiveSize*2;
             moveMouseToSite = true;
         }
 
-        if (display.getEvent(GLFW_KEY_A).type == jGL::EventType::PRESS)
+        if (display.keyHasEvent(GLFW_KEY_A, jGL::EventType::PRESS))
         {
             activeSite.first -= pointSize*primitiveSize*2;
             moveMouseToSite = true;
         }
 
-        if (display.getEvent(GLFW_KEY_D).type == jGL::EventType::PRESS)
+        if (display.keyHasEvent(GLFW_KEY_D, jGL::EventType::PRESS))
         {
             activeSite.first += pointSize*primitiveSize*2;
             moveMouseToSite = true;
@@ -202,7 +202,7 @@ int main(int argc, char ** argv)
             display.setMousePosition(pos.x, pos.y);
         }
 
-        if (display.getEvent(GLFW_KEY_ENTER).type == jGL::EventType::PRESS)
+        if (display.keyHasEvent(GLFW_KEY_ENTER, jGL::EventType::PRESS))
         {
 
             int clicked = object.mesh.clicked(activeSite.first, activeSite.second);

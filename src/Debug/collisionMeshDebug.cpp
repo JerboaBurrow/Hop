@@ -18,6 +18,7 @@ namespace Hop::Debugging
         if (refresh)
         {
             refresh = false;
+            shapes->clear();
             while (citer != cend)
             {
                 if (m->hasComponent<cCollideable>(citer->first))
