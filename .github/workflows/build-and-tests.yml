@@ -53,7 +53,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-          wget https://vulkan.lunarg.com/sdk/download/1.2.189.0/mac/vulkansdk-macos-1.2.189.0.dmg
+          wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.dmg
           hdiutil attach vulkansdk-macos-1.2.189.0.dmg
           mkdir ~/vulkan
           cd /Volumes/vulkansdk-macos-1.2.189.0/
