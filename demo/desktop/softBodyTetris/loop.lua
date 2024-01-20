@@ -18,9 +18,9 @@ if lastTime == nil then
         ["colour"] = {r/255,g/255,b/255,1.0},
         ["moveable"] = true,
         ["collisionMesh"] = mesh,
-        ["meshParameters"] = {50000.0, 16.0, 1.0},
+        ["meshParameters"] = {30000.0, 16.0, 1.0},
         ["translationalDrag"] = 0.0,
-        ["rotationalDrag"] = 0.0,
+        ["rotationalDrag"] = 10.0,
         ["mass"] = 1.0,
         ["inertia"] = 0.01,
         ["name"] = ""

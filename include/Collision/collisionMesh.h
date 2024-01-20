@@ -155,6 +155,46 @@ namespace Hop::System::Physics
             yp = oy;
         }
 
+        void rotationalDamping
+        (
+            double omega,
+            double damp,
+            double cx,
+            double cy
+        )
+        {
+            /*
+            
+                Force fx, fy from a given torque T = [0,0,tau].
+
+                Assume perpendicular then,
+
+                    [rx, ry, 0] X [fx, fy, 0] X [rx, ry, 0] = 
+                         r             F             r
+                  - r X r X F =
+
+                  - [(r.F)r-(r.r)F] = |r|^2 F
+
+                So the force is F = T X r / |r|^2
+
+                This is [-tau ry, tau rx, 0]
+
+                Angular acceleration omega = tau * I = tau * mass * (radius^2 + |r|^2)
+
+            */
+
+            double rcx = x-cx;
+            double rcy = y-cy;
+            double rc2 = rcx*rcx + rcy*rcy;
+            double tau = omega * effectiveMass * (0.5*r*r + rc2);
+
+            applyForce
+            (
+                -damp * tau * rcy,
+                 damp * tau * rcx
+            );
+        }
+
         void step
         (
             double dt,

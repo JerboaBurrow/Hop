@@ -146,12 +146,14 @@ namespace Hop::System::Physics
             }
         }
 
-        double omega = bestAngle(transform.x, transform.y, transform.scale);
-        transform.theta = omega;
+        double phi = bestAngle(transform.x, transform.y, transform.scale);
 
+        // rotational speed
+        physics.omega = (phi-transform.theta)/dt;
+        transform.theta = phi;
 
-        double co = std::cos(omega);
-        double so = std::sin(omega);
+        double co = std::cos(phi);
+        double so = std::sin(phi);
 
         double dtdt = dt*dt;
 
@@ -179,6 +181,8 @@ namespace Hop::System::Physics
             for (unsigned i = 0; i < vertices.size(); i++)
             {
                 inside[i] = worldVertices[i]->lastInside;
+
+                worldVertices[i]->rotationalDamping(-physics.omega, physics.rotationalDrag, transform.x, transform.y);
 
                 worldVertices[i]->step
                 (
@@ -227,7 +231,6 @@ namespace Hop::System::Physics
             }
         }
 
-        transform.theta = omega;
         centerOfMassWorld(transform.x, transform.y);
 
         double dx = 0.0; 
