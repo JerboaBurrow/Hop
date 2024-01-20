@@ -149,12 +149,9 @@ namespace Hop::System::Physics
         double omega = bestAngle(transform.x, transform.y, transform.scale);
         transform.theta = omega;
 
+
         double co = std::cos(omega);
         double so = std::sin(omega);
-
-        double ct = physics.translationalDrag*dt / (2.0*mass);
-        double bt = 1.0/(1.0+ct);
-        double at = (1.0-ct)*bt;
 
         double dtdt = dt*dt;
 
@@ -187,6 +184,7 @@ namespace Hop::System::Physics
                 (
                     dt,
                     dtdt,
+                    physics.translationalDrag,
                     (vertices[i]->x*co + vertices[i]->y*so)*transform.scale + transform.x,
                     (vertices[i]->y*co - vertices[i]->x*so)*transform.scale + transform.y
                 );
@@ -238,7 +236,7 @@ namespace Hop::System::Physics
         {
             worldVertices[i]->stepGlobal
             (
-                dt, dtdt, at, bt, gx, gy, dx, dy
+                dt, dtdt, physics, gx, gy, dx, dy
             );
         }
 
@@ -301,15 +299,16 @@ namespace Hop::System::Physics
         this->radius = 0.5 * std::sqrt(x*x+y*y);
     }
 
-    double CollisionMesh::momentOfInertia(double x, double y)
+    double CollisionMesh::momentOfInertia(double x, double y, double mass)
     {
 
         double m = 0.0;
         double dx = 0.0;
         double dy = 0.0;
+        double me = mass/double(size());
         // apply composite area method
         // assume non-overlapping
-        // assume unit mass for each piece
+        // assume unit effectiveMass for each piece
         for (unsigned i = 0; i < size(); i++)
         {
             std::shared_ptr<CollisionPrimitive> c = worldVertices[i];
@@ -320,7 +319,7 @@ namespace Hop::System::Physics
                 // an overestimate, ignore holes
                 dx = c->x - x;
                 dy = c->y - y; 
-                m += 0.5*c->r*c->r + dx*dx+dy*dy;
+                m += me*0.5*c->r*c->r + me*(dx*dx+dy*dy);
             }
             else
             {  
@@ -329,11 +328,11 @@ namespace Hop::System::Physics
                 // an overestimate, ignore holes
                 dx = c->x - x;
                 dy = c->y - y; 
-                m += 0.08333333333333333 * (h*h+w*w) + dx*dx+dy*dy;
+                m += me*0.08333333333333333 * (h*h+w*w) + me*(dx*dx+dy*dy);
             }
         }
 
-        return m * (1.0/float(size()));
+        return m;
     }
 
     std::ostream & operator<<(std::ostream & o, Rectangle const & r)

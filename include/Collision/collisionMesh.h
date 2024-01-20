@@ -1,5 +1,5 @@
-#ifndef COLLISIONMESH
-#define COLLISIONMESH
+#ifndef COLLISIONMESH_H
+#define COLLISIONMESH_H
 
 #include <vector>
 #include <cmath>
@@ -109,7 +109,7 @@ namespace Hop::System::Physics
           xp(x),yp(y),
           vx(0),vy(0),
           roxp(0.0), royp(0.0),
-          stiffness(k), mass(m), damping(d)
+          stiffness(k), effectiveMass(m), damping(d)
         {}
 
         virtual ~CollisionPrimitive() = default;
@@ -123,7 +123,7 @@ namespace Hop::System::Physics
         double fx, fy, xp, yp, vx, vy, roxp, royp;
 
         double stiffness = CollisionPrimitive::RIGID;
-        double mass, damping;
+        double effectiveMass, damping;
 
         void setRecentlyInside(int i){ lastInside =  i; }
         bool recentlyInside() const { return lastInside > 0; }
@@ -138,7 +138,7 @@ namespace Hop::System::Physics
 
         double energy()
         {
-            return mass*(vx*vx+vy*vy);
+            return effectiveMass*(vx*vx+vy*vy);
         }
 
         void setOrigin
@@ -159,10 +159,16 @@ namespace Hop::System::Physics
         (
             double dt,
             double dtdt,
+            double translationalDrag,
             double nox,
             double noy
         )
         {
+
+            double ct = translationalDrag*dt / (2.0*effectiveMass);
+            double bt = 1.0/(1.0+ct);
+            double at = (1.0-ct)*bt;
+
             ox = nox;
             oy = noy;
 
@@ -170,8 +176,8 @@ namespace Hop::System::Physics
             double roy = y-oy;
 
             // spring with relaxed state at ox, oy;
-            double ax = (fx-stiffness*rox-damping*vx)/mass;
-            double ay = (fy-stiffness*roy-damping*vy)/mass;
+            double ax = (fx-stiffness*rox-damping*vx)/effectiveMass;
+            double ay = (fy-stiffness*roy-damping*vy)/effectiveMass;
 
             fx = 0.0;
             fy = 0.0;
@@ -179,8 +185,8 @@ namespace Hop::System::Physics
             double xtp = x;
             double ytp = y;
 
-            x = 2.0*x - xp + ax * dtdt;
-            y = 2.0*y - yp + ay * dtdt;
+            x = 2.0*bt*x - at*xp + bt*ax*dtdt;
+            y = 2.0*bt*y - at*yp + bt*ay*dtdt;
 
             xp = xtp;
             yp = ytp;
@@ -197,21 +203,24 @@ namespace Hop::System::Physics
         (
             double dt,
             double dtdt,
-            double at,
-            double bt,
+            const cPhysics & physics,
             double gx,
             double gy,
             double & dx,
             double & dy
         )
         {
+
+            double ct = physics.translationalDrag*dt / (2.0*physics.mass);
+            double bt = 1.0/(1.0+ct);
+            double at = (1.0-ct)*bt;
             // not impacted by damping forces on mesh
 
             double xtp = x;
             double ytp = y;
 
-            double ax = gx/mass;
-            double ay = gy/mass;
+            double ax = gx/physics.mass;
+            double ay = gy/physics.mass;
 
             x = 2.0*bt*x - at*xp + bt*ax*dtdt;
             y = 2.0*bt*y - at*yp + bt*ay*dtdt;
@@ -264,7 +273,7 @@ namespace Hop::System::Physics
 
             damping = 0.0;
             stiffness = k;
-            mass = 1.0;
+            effectiveMass = 1.0;
             xp = x;
             yp = y;
             ox = x;
@@ -350,12 +359,9 @@ namespace Hop::System::Physics
             double x,
             double y, 
             double theta, 
-            double scale,
-            double stiffness = CollisionPrimitive::RIGID,
-            double damping = 1.0,
-            double mass = 1.0
+            double scale
         )
-        : CollisionMesh(std::move(v), stiffness, damping, mass)
+        : CollisionMesh(std::move(v))
         {
             cTransform transform(x,y,theta,scale);
             cPhysics phys(x,y,theta);
@@ -364,21 +370,10 @@ namespace Hop::System::Physics
 
         CollisionMesh
         (
-            std::vector<std::shared_ptr<CollisionPrimitive>> v,
-            double s = CollisionPrimitive::RIGID,
-            double d = 1.0,
-            double m = 1.0
+            std::vector<std::shared_ptr<CollisionPrimitive>> v
         )
-        : stiffness(s), damping(d), mass(m), gx(0.0), gy(0.0)
+        : totalEffectiveMass(1.0), gx(0.0), gy(0.0)
         {
-            if (stiffness >= CollisionPrimitive::RIGID)
-            {
-                rigid = true;
-            }
-            else 
-            {
-                rigid = false;
-            }
             worldVertices.clear();
             for (unsigned i = 0; i < v.size(); i++)
             {
@@ -410,7 +405,6 @@ namespace Hop::System::Physics
                 }
             }
 
-
             Rectangle * l = dynamic_cast<Rectangle*>(c.get());
 
             std::shared_ptr<CollisionPrimitive> p;
@@ -439,7 +433,7 @@ namespace Hop::System::Physics
                         l->ulx, l->uly,
                         l->urx, l->ury,
                         l->lrx, l->lry,
-                        stiffness
+                        l->stiffness
                     )
                 );
 
@@ -457,11 +451,14 @@ namespace Hop::System::Physics
                 );
                 p = std::make_shared<CollisionPrimitive>
                 (
-                    CollisionPrimitive(c->x,c->y,c->r, stiffness, damping, mass)
+                    CollisionPrimitive(c->x,c->y,c->r, c->stiffness, c->damping, c->effectiveMass)
                 );
             }
 
             worldVertices.push_back(std::move(p));
+
+            calculateIsRigid();
+            calculateTotalEffectiveMass();
 
             needsInit = true;
         }
@@ -471,6 +468,9 @@ namespace Hop::System::Physics
             vertices.erase(vertices.begin()+i);
             worldVertices.erase(worldVertices.begin()+i);
             needsInit = true;
+
+            calculateIsRigid();
+            calculateTotalEffectiveMass();
         }
 
         int clicked(float x, float y)
@@ -510,7 +510,7 @@ namespace Hop::System::Physics
         )
         {
             kineticEnergy = 0.0;
-            if (isRigid())
+            if (isRigid)
             {
                 return updateWorldMeshRigid(transform, dt);
             }
@@ -535,11 +535,24 @@ namespace Hop::System::Physics
         void centerOfMassWorld(double & cx, double & cy);
         void modelToCenterOfMassFrame();
 
-        double momentOfInertia(double x, double y);
+        double momentOfInertia(double x, double y, double mass);
         void computeRadius();
         double getRadius(){return radius;}
 
-        bool isRigid(){ return rigid; }
+        bool getIsRigid(){ return isRigid; }
+
+        void calculateIsRigid() 
+        {
+            for (auto v : worldVertices)
+            {
+                if (v->stiffness < CollisionPrimitive::RIGID)
+                {
+                    isRigid = false;
+                    return;
+                }
+            }
+            isRigid = true;
+        }
 
         void applyForce(double fx, double fy, bool global = false)
         {
@@ -558,7 +571,21 @@ namespace Hop::System::Physics
 
         }
 
-        double getMass() const { return mass; }
+        double getEffectiveMass() const { return totalEffectiveMass; }
+
+        void calculateTotalEffectiveMass() 
+        {
+            totalEffectiveMass = 0.0;
+            for (auto v : worldVertices)
+            {
+                totalEffectiveMass += v->effectiveMass;
+            }
+
+            if (totalEffectiveMass <= 0.0)
+            {
+                totalEffectiveMass = 1.0;
+            }
+        }
 
         double energy()
         {
@@ -572,19 +599,17 @@ namespace Hop::System::Physics
         std::vector<std::shared_ptr<MeshPoint>> vertices;
         std::vector<std::shared_ptr<CollisionPrimitive>> worldVertices;
 
-        double stiffness, damping, mass;
+        double totalEffectiveMass;
 
         double radius;
 
         double gx, gy, kineticEnergy;
 
-        bool rigid = true;
-
+        bool isRigid = true;
         bool needsInit = false;
-
         bool someRectangles = false;
     };
 
 }
 
-#endif /* COLLISIONMESH */
+#endif /* COLLISIONMESH_H */

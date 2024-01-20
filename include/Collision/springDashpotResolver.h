@@ -70,26 +70,27 @@ namespace Hop::System::Physics
             AbstractWorld * world
         );
 
-        void springDashpotForce
+        void springDashpotForceCircles
         (
             cPhysics & pI, cPhysics & pJ,
-            double dd, double rx, double ry, double rc,
+            double dd, double rx, double ry, double rc, double me,
             double pxi, double pyi, double pxj, double pyj,
             double & fx, double & fy
         );
 
-        void springDashpotWallForce
+        void springDashpotWallForceCircle
         (
             double nx,
             double ny,
             double d2,
-            double c,
+            double r,
+            double m,
             double px, double py,
             cPhysics & dataP,
             double & fx, double & fy
         );
 
-        void springDashpotForce
+        void springDashpotForceRect
         (
             cPhysics & pI,
             cPhysics & pJ,

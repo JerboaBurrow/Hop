@@ -18,7 +18,11 @@ if lastTime == nil then
         ["colour"] = {r/255,g/255,b/255,1.0},
         ["moveable"] = true,
         ["collisionMesh"] = mesh,
-        ["meshParameters"] = {15000.0, 1.0, 0.2},
+        ["meshParameters"] = {50000.0, 16.0, 1.0},
+        ["translationalDrag"] = 0.0,
+        ["rotationalDrag"] = 0.0,
+        ["mass"] = 1.0,
+        ["inertia"] = 0.01,
         ["name"] = ""
 
     }
@@ -48,9 +52,13 @@ if time-lastTime > 1000*5 then
             ["colour"] = {r/255,g/255,b/255,1.0},
             ["moveable"] = true,
             ["collisionMesh"] = mesh,
-            ["meshParameters"] = {15000.0, 1.0, 0.2},
+            ["meshParameters"] = {15000000.0, 1.0, 1.0},
+            ["translationalDrag"] = 0.00,
+            ["rotationalDrag"] = 0.01,
+            ["mass"] = 1.0,
+            ["inertia"] = 0.01,
             ["name"] = ""
-
+    
         }
 
         hop.loadObject(o)

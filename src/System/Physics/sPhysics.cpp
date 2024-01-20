@@ -25,15 +25,28 @@ namespace Hop::System::Physics
     void sPhysics::update(EntityComponentSystem * m, ThreadPool * workers)
     {
 
+        /*
+        
+            The algorithm we employ - https://www.tandfonline.com/doi/abs/10.1080/00268976.2012.760055
+                
+                It is verlet integration (velocity free) that correctly handles drag and noise (Langevin dynamics)
+                
+                Noise is currently unapplied, translation/rotational drag is which can both be 0 without issue,
+                where the algorithm becomes verlet as we know it.
+                
+                This models an object moving within a fluid.
+
+                Soft bodies perform their own integration due to the nature of their movable mesh points.
+        
+        */
+
         ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();
 
-        double nx, ny, ntheta, at, bt, ct, sticktion, r, dx, dy, d, ar, br, cr;
+        double nx, ny, ntheta, at, bt, ct, r, dx, dy, d, ar, br, cr;
 
         energy = 0.0;
-
-        double DT_OVER_TWICE_MASS = dt / (2.0*PARTICLE_MASS);
 
         bool rigid = false;
 
@@ -46,7 +59,7 @@ namespace Hop::System::Physics
             if (collideables.hasComponent(*it))
             {
                 cCollideable & data = collideables.get(*it);
-                rigid = data.mesh.isRigid();
+                rigid = data.mesh.getIsRigid();
             }
 
             if (!dataP.isMoveable)
@@ -59,49 +72,37 @@ namespace Hop::System::Physics
             else if (rigid)
             {
                 
-                ct = dataP.translationalDrag*DT_OVER_TWICE_MASS;
+                ct = dataP.translationalDrag*dt/(2.0*dataP.mass);
                 bt = 1.0/(1.0+ct);
                 at = (1.0-ct)*bt;
 
-                sticktion = std::sqrt(dataP.fx*dataP.fx+dataP.fy*dataP.fy);
+                nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/dataP.mass;
+                ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/dataP.mass;
 
-                if (sticktion > 0.0){
+                if (r > 0)
+                {
+                    dx = nx - dataT.x;
+                    dy = ny - dataT.y;
 
-                    nx = 2.0*bt*dataT.x - at*dataP.lastX + bt*dataP.fx*dtdt/PARTICLE_MASS;
-                    ny = 2.0*bt*dataT.y - at*dataP.lastY + bt*dataP.fy*dtdt/PARTICLE_MASS;
+                    d = std::sqrt(dx*dx+dy*dy);
 
-                    if (r > 0)
+                    if (d > r*movementLimitRadii)
                     {
-                        dx = nx - dataT.x;
-                        dy = ny - dataT.y;
-
-                        d = std::sqrt(dx*dx+dy*dy);
-
-                        if (d > r*movementLimitRadii)
-                        {
-                            nx = dataT.x + r*movementLimitRadii * dx / d;
-                            ny = dataT.y + r*movementLimitRadii * dy / d;
-                        }
+                        nx = dataT.x + r*movementLimitRadii * dx / d;
+                        ny = dataT.y + r*movementLimitRadii * dy / d;
                     }
-
-                    dataP.vx = (nx-dataP.lastX)/(dt*2.0);
-                    dataP.vy = (ny-dataP.lastY)/(dt*2.0);
-
-                    energy += dataP.vx * dataP.vx + dataP.vy * dataP.vy;
-
-                    dataP.lastX = dataT.x;
-                    dataP.lastY = dataT.y;
-
-                    dataP.fx = 0.0;
-                    dataP.fy = 0.0;
-
                 }
-                else{
-                    nx = dataT.x;
-                    ny = dataT.y;
-                    dataP.lastX = dataT.x;
-                    dataP.lastY = dataT.y;
-                }
+
+                dataP.vx = (nx-dataP.lastX)/(dt*2.0);
+                dataP.vy = (ny-dataP.lastY)/(dt*2.0);
+
+                energy += dataP.vx * dataP.vx + dataP.vy * dataP.vy;
+
+                dataP.lastX = dataT.x;
+                dataP.lastY = dataT.y;
+
+                dataP.fx = 0.0;
+                dataP.fy = 0.0;
 
                 dataP.omega += dataP.tau;
 
@@ -137,7 +138,7 @@ namespace Hop::System::Physics
                     dataP,
                     dt
                 );
-                dataP.momentOfInertia = data.mesh.momentOfInertia(dataT.x, dataT.y)*PARTICLE_MASS;
+                dataP.momentOfInertia = data.mesh.momentOfInertia(dataT.x, dataT.y, dataP.mass);
                 energy += data.mesh.energy();
             }
         }
@@ -159,9 +160,9 @@ namespace Hop::System::Physics
             if (collideables.hasComponent(*it))
             {
                 cCollideable & data = collideables.get(*it);
-                if (!data.mesh.isRigid())
+                if (!data.mesh.getIsRigid())
                 {   
-                    data.mesh.applyForce(fx*data.mesh.getMass(), fy*data.mesh.getMass(), true);
+                    data.mesh.applyForce(fx, fy, true);
                     continue;
                 }
             }
@@ -189,7 +190,7 @@ namespace Hop::System::Physics
         if (collideables.hasComponent(i))
         {
             cCollideable & data = collideables.get(i);
-            if (!data.mesh.isRigid())
+            if (!data.mesh.getIsRigid())
             {   
                 data.mesh.applyForce(fx, fy, global);
             }
@@ -223,7 +224,7 @@ namespace Hop::System::Physics
             if (collideables.hasComponent(*it))
             {
                 cCollideable & data = collideables.get(*it);
-                if (!data.mesh.isRigid())
+                if (!data.mesh.getIsRigid())
                 {   
                     data.mesh.applyForce(fx, fy, global);
                     continue;

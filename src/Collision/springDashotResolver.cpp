@@ -35,15 +35,18 @@ namespace Hop::System::Physics
 
     }
 
-    void SpringDashpot::springDashpotForce
+    void SpringDashpot::springDashpotForceCircles
     (
         cPhysics & pI, cPhysics & pJ,
-        double dd, double rx, double ry, double rc,
+        double dd, double rx, double ry, double rc, double me,
         double pxi, double pyi, double pxj, double pyj,
         double & fx, double & fy
     )
     {
         double mag, dinv, nx, ny, vrx, vry, ddot, d, dot, tau, nxt, nyt;
+
+        double kr = me*alpha;
+        double kd = 2.0*me*beta;
 
         mag = 0.0;
         d = std::sqrt(dd);
@@ -130,12 +133,13 @@ namespace Hop::System::Physics
         pJ.tau += tau;
     }
 
-     void SpringDashpot::springDashpotWallForce
+     void SpringDashpot::springDashpotWallForceCircle
     (
         double nx,
         double ny,
         double d2,
         double r,
+        double m,
         double px, double py,
         cPhysics & dataP,
         double & fx, double & fy
@@ -143,7 +147,7 @@ namespace Hop::System::Physics
     {
         double meff, kr, kd, d, vrx, vry, ddot, mag, rx, ry, nxt, nyt, dot, tau;
 
-        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
+        meff = 1.0 / (1.0/m+1.0/(m*WALL_MASS_MULTIPLIER));
         kr = meff*alpha;
         kd = 2.0*meff*beta;
 
@@ -200,7 +204,7 @@ namespace Hop::System::Physics
     }
 
 
-    void SpringDashpot::springDashpotForce
+    void SpringDashpot::springDashpotForceRect
     (
         cPhysics & pI,
         cPhysics & pJ,
@@ -337,7 +341,7 @@ namespace Hop::System::Physics
 
             if (fs == 0)
             {
-                springDashpotForce(pI, pJ, s, -nx, -ny, li->x,li->y, fx, fy);
+                springDashpotForceRect(pI, pJ, s, -nx, -ny, li->x,li->y, fx, fy);
             }
             else
             {
@@ -347,19 +351,19 @@ namespace Hop::System::Physics
 
                 if (sdll)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->llx,li->lly, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, li->llx,li->lly, fx, fy);
                 }
                 if (sdul)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->ulx,li->uly, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, li->ulx,li->uly, fx, fy);
                 }
                 if (sdur)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->urx,li->ury, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, li->urx,li->ury, fx, fy);
                 }
                 if (sdlr)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->lrx,li->lry, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, li->lrx,li->lry, fx, fy);
                 }
             }
             li->applyForce(fx, fy);
@@ -380,7 +384,7 @@ namespace Hop::System::Physics
 
             if (fs == 0)
             {
-                springDashpotForce(pI, pJ, s, -nx, -ny, li->x,li->y, fx, fy);
+                springDashpotForceRect(pI, pJ, s, -nx, -ny, li->x,li->y, fx, fy);
             }
             else
             {
@@ -390,19 +394,19 @@ namespace Hop::System::Physics
 
                 if (sdll)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->llx,li->lly, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, li->llx,li->lly, fx, fy);
                 }
                 if (sdul)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->ulx,li->uly, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, li->ulx,li->uly, fx, fy);
                 }
                 if (sdur)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->urx,li->ury, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, li->urx,li->ury, fx, fy);
                 }
                 if (sdlr)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->lrx,li->lry, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, li->lrx,li->lry, fx, fy);
                 }
 
                 li->applyForce(fx, fy);
@@ -424,7 +428,7 @@ namespace Hop::System::Physics
 
             if (fs == 0)
             {
-                springDashpotForce(pJ, pI, s, nx, ny, lj->x,lj->y, fx, fy);
+                springDashpotForceRect(pJ, pI, s, nx, ny, lj->x,lj->y, fx, fy);
             }
             else
             {
@@ -434,19 +438,19 @@ namespace Hop::System::Physics
 
                 if (sdll)
                 {
-                    springDashpotForce(pJ, pI, s, nx, ny, lj->llx,lj->lly, fx, fy);
+                    springDashpotForceRect(pJ, pI, s, nx, ny, lj->llx,lj->lly, fx, fy);
                 }
                 if (sdul)
                 {
-                    springDashpotForce(pJ, pI, s, nx, ny, lj->ulx,lj->uly, fx, fy);
+                    springDashpotForceRect(pJ, pI, s, nx, ny, lj->ulx,lj->uly, fx, fy);
                 }
                 if (sdur)
                 {
-                    springDashpotForce(pJ, pI, s, nx, ny, lj->urx,lj->ury, fx, fy);
+                    springDashpotForceRect(pJ, pI, s, nx, ny, lj->urx,lj->ury, fx, fy);
                 }
                 if (sdlr)
                 {
-                    springDashpotForce(pJ, pI, s, nx, ny, lj->lrx,lj->lry, fx, fy);
+                    springDashpotForceRect(pJ, pI, s, nx, ny, lj->lrx,lj->lry, fx, fy);
                 }
             }
 
@@ -491,10 +495,10 @@ namespace Hop::System::Physics
 
         if (d < c->r)
         {
-            springDashpotForce(pI, pJ, c->r-d, -nx, -ny, cx, cy, fx, fy);
+            springDashpotForceRect(pI, pJ, c->r-d, -nx, -ny, cx, cy, fx, fy);
             c->applyForce(fx, fy);
             l->applyForce(-fx, -fy);
-            springDashpotForce(pJ, pI, c->r-d, nx, ny, cx, cy, fx, fy);
+            springDashpotForceRect(pJ, pI, c->r-d, nx, ny, cx, cy, fx, fy);
             c->applyForce(-fx, -fy);
             l->applyForce(fx, fy);
         }
@@ -514,11 +518,12 @@ namespace Hop::System::Physics
         double nx, ny;
         double fx = 0.0;
         double fy = 0.0;
+        double me = 1.0 / (1.0/c->effectiveMass + 1.0/l->effectiveMass);
 
         nx = l->x-c->x;
         ny = l->y-c->y;
 
-        springDashpotForce(pI,pJ,dd,nx,ny,rc,c->x,c->y,l->x,l->y,fx,fy);
+        springDashpotForceCircles(pI,pJ,dd,nx,ny,rc,me,c->x,c->y,l->x,l->y,fx,fy);
 
         c->applyForce(fx, fy);
         l->applyForce(-fx, -fy);
@@ -542,7 +547,7 @@ namespace Hop::System::Physics
         
         if (objectI == objectJ)
         { 
-            if (cI.mesh.isRigid() || particleI == particleJ) 
+            if (cI.mesh.getIsRigid() || particleI == particleJ) 
             { 
                 return; 
             }
@@ -558,6 +563,7 @@ namespace Hop::System::Physics
         rx -= ci->x;
         ry -= ci->y;
         rc += ci->r;
+
 
         std::shared_ptr<CollisionPrimitive> cj = cJ.mesh[particleJ];
         rx += cj->x;
@@ -597,13 +603,13 @@ namespace Hop::System::Physics
             }
         }
 
-        if (!cI.mesh.isRigid())
+        if (!cI.mesh.getIsRigid())
         {
             pI.fx = fix;
             pI.fy = fiy;
             pI.tau = taui;
         }
-        if (!cJ.mesh.isRigid())
+        if (!cJ.mesh.getIsRigid())
         {
             pJ.fx = fjx;
             pJ.fy = fjy;
@@ -682,7 +688,7 @@ namespace Hop::System::Physics
                 tw
             );
 
-            if (!dataC.mesh.isRigid())
+            if (!dataC.mesh.getIsRigid())
             {
                 dataP.fx = fx;
                 dataP.fy = fy;
@@ -702,7 +708,7 @@ namespace Hop::System::Physics
                 mw
             );
 
-            if (!dataC.mesh.isRigid())
+            if (!dataC.mesh.getIsRigid())
             {
                 dataP.fx = fx;
                 dataP.fy = fy;
@@ -1964,13 +1970,13 @@ namespace Hop::System::Physics
         {
             if (f1)
             {
-                springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP,fx,fy);
+                springDashpotWallForceCircle(nx,ny,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
 
             if (f2)
             {
-                springDashpotWallForce(-nx,-ny,d2p,c->r,c->x,c->y,dataP,fx,fy);
+                springDashpotWallForceCircle(-nx,-ny,d2p,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
         }
@@ -2188,7 +2194,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
-                springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP,fx,fy);
+                springDashpotWallForceCircle(nx,ny,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
         }
