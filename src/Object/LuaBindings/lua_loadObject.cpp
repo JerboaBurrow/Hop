@@ -36,7 +36,7 @@ namespace Hop::Object
 {
     using Hop::System::Physics::CollisionMesh;
     using Hop::System::Physics::CollisionPrimitive;
-    using Hop::System::Physics::Rectangle;
+    using Hop::System::Physics::RectanglePrimitive;
 
     int EntityComponentSystem::lua_loadObject(lua_State * lua)
     {
@@ -220,7 +220,7 @@ namespace Hop::Object
                     {
                         mesh.push_back
                         (
-                            std::make_shared<Rectangle>
+                            std::make_shared<RectanglePrimitive>
                             (
                                 collisionMesh[i][0],
                                 collisionMesh[i][1],

@@ -23,12 +23,6 @@ namespace Hop::Maths
         y = yt*cosine - xt*sine; 
     }
 
-    void rotateClockWise(Rectangle * r, double cosine, double sine);
-
-    void scale(Rectangle * r, double s);
-
-    void translate(Rectangle * r, double x, double y);
-
 }
 
 #endif /* TRANSFORM_H */

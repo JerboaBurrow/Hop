@@ -300,8 +300,8 @@ namespace Hop::System::Physics
     void SpringDashpot::collisionForce
     (
         cPhysics & pI, cPhysics & pJ,
-        Rectangle * li,
-        Rectangle * lj,
+        RectanglePrimitive * li,
+        RectanglePrimitive * lj,
         bool wall
     )
     {
@@ -311,7 +311,7 @@ namespace Hop::System::Physics
         double fx = 0.0;
         double fy = 0.0;
 
-        collided = rectangleRectangleCollided<double>(li,lj,nx,ny,s);
+        collided = rectangleRectangleCollided<double>(li->getRect(),lj->getRect(),nx,ny,s);
 
         if (!collided){ return; }
 
@@ -332,10 +332,10 @@ namespace Hop::System::Physics
         if (wall)
         {
 
-            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj);
-            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj);
-            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj);
-            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj);
+            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj->getRect());
+            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj->getRect());
+            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj->getRect());
+            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj->getRect());
 
             unsigned fs = sdll+sdul+sdur+sdlr;
 
@@ -375,10 +375,10 @@ namespace Hop::System::Physics
             nxt = nx;
             nyt = ny;
 
-            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj);
-            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj);
-            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj);
-            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj);
+            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj->getRect());
+            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj->getRect());
+            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj->getRect());
+            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj->getRect());
 
             unsigned fs = sdll+sdul+sdur+sdlr;
 
@@ -419,10 +419,10 @@ namespace Hop::System::Physics
             nx = nxt;
             ny = nyt;
 
-            sdll = pointInRectangle<double>(lj->llx,lj->lly,li);
-            sdul = pointInRectangle<double>(lj->ulx,lj->uly,li);
-            sdur = pointInRectangle<double>(lj->urx,lj->ury,li);
-            sdlr = pointInRectangle<double>(lj->lrx,lj->lry,li);
+            sdll = pointInRectangle<double>(lj->llx,lj->lly,li->getRect());
+            sdul = pointInRectangle<double>(lj->ulx,lj->uly,li->getRect());
+            sdur = pointInRectangle<double>(lj->urx,lj->ury,li->getRect());
+            sdlr = pointInRectangle<double>(lj->lrx,lj->lry,li->getRect());
 
             fs = sdll+sdul+sdur+sdlr;
 
@@ -463,7 +463,7 @@ namespace Hop::System::Physics
     (
         cPhysics & pI, cPhysics & pJ,
         CollisionPrimitive * c,
-        Rectangle * l,
+        RectanglePrimitive * l,
         double rx, double ry, double rc, double dd
     )
     {
@@ -472,7 +472,7 @@ namespace Hop::System::Physics
         double fx = 0.0;
         double fy = 0.0;
 
-        shortestDistanceSquared(c->x, c->y, l, cx, cy, odod);
+        shortestDistanceSquared(c->x, c->y, l->getRect(), cx, cy, odod);
 
         d = std::sqrt(odod);
         nx = (cx-c->x)/d;
@@ -555,7 +555,7 @@ namespace Hop::System::Physics
 
         double rx, ry, rc, dd;
 
-        Rectangle * li, * lj;
+        RectanglePrimitive * li, * lj;
 
         rx = 0.0; ry = 0.0; rc = 0.0;
 
@@ -579,8 +579,8 @@ namespace Hop::System::Physics
 
         if (dd < rc*rc)
         {
-            li = dynamic_cast<Rectangle*>(ci.get());
-            lj = dynamic_cast<Rectangle*>(cj.get());
+            li = dynamic_cast<RectanglePrimitive*>(ci.get());
+            lj = dynamic_cast<RectanglePrimitive*>(cj.get());
 
             bool iIsRectangle = li != nullptr;
             bool jIsRectangle = lj != nullptr;
@@ -1191,17 +1191,17 @@ namespace Hop::System::Physics
         double insideThresh = thresh*thresh;
         int handedness, handedness2;
 
-        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
+        RectanglePrimitive * li = dynamic_cast<RectanglePrimitive*>(c.get());
 
         bool isRectangle = li != nullptr;
 
         #pragma GCC diagnostic push                             
         #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-        Rectangle r1a, r1b, r1c;
+        RectanglePrimitive r1a, r1b, r1c;
 
-        Rectangle bottomLeft, bottomLeftSquare, bottomRight, bottomRightSquare;
-        Rectangle central, topLeft, topLeftSquare, topRight, topRightSquare;
-        Rectangle leftHalf, rightHalf, topHalf, bottomHalf;
+        RectanglePrimitive bottomLeft, bottomLeftSquare, bottomRight, bottomRightSquare;
+        RectanglePrimitive central, topLeft, topLeftSquare, topRight, topRightSquare;
+        RectanglePrimitive leftHalf, rightHalf, topHalf, bottomHalf;
         #pragma GCC diagnostic pop
 
         bool bc = false;
@@ -1209,79 +1209,79 @@ namespace Hop::System::Physics
         if (isRectangle)
         {
 
-            // Rectangle bottomLeft;
+            // RectanglePrimitive bottomLeft;
             bottomLeft.llx = x0-s/2.0; bottomLeft.lly = y0;
             bottomLeft.ulx = x0;       bottomLeft.uly = y0+s/2.0;
             bottomLeft.urx = x0+s/2.0; bottomLeft.ury = y0;
             bottomLeft.lrx = x0;       bottomLeft.lry = y0-s/2.0;
 
-            // Rectangle bottomLeftSquare;
+            // RectanglePrimitive bottomLeftSquare;
             bottomLeftSquare.llx = x0;       bottomLeftSquare.lly = y0;
             bottomLeftSquare.ulx = x0;       bottomLeftSquare.uly = y0+s/2.0;
             bottomLeftSquare.urx = x0+s/2.0; bottomLeftSquare.ury = y0+s/2.0;
             bottomLeftSquare.lrx = x0+s/2.0; bottomLeftSquare.lry = y0;
 
-            // Rectangle central;
+            // RectanglePrimitive central;
             central.llx = x0;       central.lly = y0+s/2.0;
             central.ulx = x0+s/2.0; central.uly = y0+s;
             central.urx = x0+s;     central.ury = y0+s/2.0;
             central.lrx = x0+s/2.0; central.lry = y0;
 
-            // Rectangle bottomRight;
+            // RectanglePrimitive bottomRight;
             bottomRight.llx = x0+s/2.0;     bottomRight.lly = y0;
             bottomRight.ulx = x0+s;         bottomRight.uly = y0+s/2.0;
             bottomRight.urx = x0+s*3.0/2.0; bottomRight.ury = y0;
             bottomRight.lrx = x0+s;         bottomRight.lry = y0-s/2.0;
 
-            // Rectangle bottomRightSquare;
+            // RectanglePrimitive bottomRightSquare;
             bottomRightSquare.llx = x0+s/2.0;     bottomRightSquare.lly = y0;
             bottomRightSquare.ulx = x0+s/2.0;     bottomRightSquare.uly = y0+s/2.0;
             bottomRightSquare.urx = x0+s;         bottomRightSquare.ury = y0+s/2.0;
             bottomRightSquare.lrx = x0+s;         bottomRightSquare.lry = y0;
 
-            // Rectangle topLeft;
+            // RectanglePrimitive topLeft;
             topLeft.llx = x0;           topLeft.lly = y0+s/2.0;
             topLeft.ulx = x0-s/2.0;     topLeft.uly = y0+s;
             topLeft.urx = x0;           topLeft.ury = y0+s*3.0/2.0;
             topLeft.lrx = x0+s/2.0;     topLeft.lry = y0+s;
 
-            // Rectangle topLeftSquare;
+            // RectanglePrimitive topLeftSquare;
             topLeftSquare.llx = x0;           topLeftSquare.lly = y0+s/2.0;
             topLeftSquare.ulx = x0;           topLeftSquare.uly = y0+s;
             topLeftSquare.urx = x0+s/2.0;     topLeftSquare.ury = y0+s;
             topLeftSquare.lrx = x0+s/2.0;     topLeftSquare.lry = y0+s/2.0;
 
-            // Rectangle topRight;
+            // RectanglePrimitive topRight;
             topRight.llx = x0+s/2.0;     topRight.lly = y0+s;
             topRight.ulx = x0+s;         topRight.uly = y0+s*3.0/2.0;
             topRight.urx = x0+s*3.0/2.0; topRight.ury = y0;
             topRight.lrx = x0+s;         topRight.lry = y0+s/2.0;
 
-            // Rectangle topRightSquare;
+            // RectanglePrimitive topRightSquare;
             topRightSquare.llx = x0+s/2.0;     topRightSquare.lly = y0+s;
             topRightSquare.ulx = x0+s;         topRightSquare.uly = y0+s;
             topRightSquare.urx = x0+s;         topRightSquare.ury = y0+s/2.0;
             topRightSquare.lrx = x0+s/2.0;     topRightSquare.lry = y0+s/2.0;
 
-            // Rectangle rightHalf;
+            // RectanglePrimitive rightHalf;
             rightHalf.llx = x0+s/2.0;     rightHalf.lly = y0;
             rightHalf.ulx = x0+s/2.0;     rightHalf.uly = y0+s;
             rightHalf.urx = x0+s;         rightHalf.ury = y0+s;
             rightHalf.lrx = x0+s;         rightHalf.lry = y0;
 
-            // Rectangle leftHalf;
+            // RectanglePrimitive leftHalf;
             leftHalf.llx = x0;           leftHalf.lly = y0;
             leftHalf.ulx = x0;           leftHalf.uly = y0+s;
             leftHalf.urx = x0+s/2.0;     leftHalf.ury = y0+s;
             leftHalf.lrx = x0+s/2.0;     leftHalf.lry = y0;
 
-            // Rectangle bottomHalf;
+            // RectanglePrimitive bottomHalf;
             bottomHalf.llx = x0;           bottomHalf.lly = y0;
             bottomHalf.ulx = x0;           bottomHalf.uly = y0+s/2.0;
             bottomHalf.urx = x0+s;         bottomHalf.ury = y0+s/2.0;
             bottomHalf.lrx = x0+s;         bottomHalf.lry = y0;
 
-            // Rectangle topHalf;
+            // RectanglePrimitive topHalf;
             topHalf.llx = x0;           topHalf.lly = y0+s/2.0;
             topHalf.ulx = x0;           topHalf.uly = y0+s;
             topHalf.urx = x0+s;         topHalf.ury = y0+s;
@@ -2020,9 +2020,9 @@ namespace Hop::System::Physics
 
         double lx0, ly0, lx1, ly1;
 
-        Rectangle r;
+        RectanglePrimitive r;
 
-        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
+        RectanglePrimitive * li = dynamic_cast<RectanglePrimitive*>(c.get());
 
         // WEST
 
@@ -2169,8 +2169,8 @@ namespace Hop::System::Physics
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
-        Rectangle * li,
-        Rectangle r,
+        RectanglePrimitive * li,
+        RectanglePrimitive r,
         double lx0, 
         double ly0,
         double lx1, 

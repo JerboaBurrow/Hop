@@ -102,8 +102,8 @@ namespace Hop::System::Physics
         void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
-            Rectangle * li,
-            Rectangle * lj,
+            RectanglePrimitive * li,
+            RectanglePrimitive * lj,
             bool wall = false
         );
 
@@ -111,7 +111,7 @@ namespace Hop::System::Physics
         (
             cPhysics & pI, cPhysics & pJ,
             CollisionPrimitive * c,
-            Rectangle * l,
+            RectanglePrimitive * l,
             double rx, double ry, double rc, double dd
         );
 
@@ -178,8 +178,8 @@ namespace Hop::System::Physics
         (
             std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
-            Rectangle * li,
-            Rectangle r,
+            RectanglePrimitive * li,
+            RectanglePrimitive r,
             double lx0, 
             double ly0,
             double lx1, 

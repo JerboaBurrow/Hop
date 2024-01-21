@@ -15,7 +15,7 @@ const double tol = 1e-6;
 
 namespace Hop::System::Physics
 {
-    std::ostream & operator<<(std::ostream & o, Hop::System::Physics::Rectangle const & r)
+    std::ostream & operator<<(std::ostream & o, Hop::System::Physics::RectanglePrimitive const & r)
     {
         o << r.ulx << ", " << r.uly << "    " << r.urx << ", " << r.ury << "\n"
             << r.llx << ", " << r.lly << "    " << r.lrx << ", " << r.lry << "\n"
@@ -177,20 +177,20 @@ SCENARIO("Distance","[maths]"){
         }
     }
 
-    GIVEN("A rectangle primitive [-0.5,-1.0],[-0.5,1.0],[0.5,1.0],[0.5,-1.0]")
+    GIVEN("A RectanglePrimitive primitive [-0.5,-1.0],[-0.5,1.0],[0.5,1.0],[0.5,-1.0]")
     {
-        Hop::System::Physics::Rectangle r1
+        Hop::System::Physics::RectanglePrimitive r1
         (
             -0.5,-1.0,
             -0.5, 1.0,
              0.5, 1.0,
              0.5,-1.0
         );
-        AND_GIVEN("A rectangle [-0.5,1.5],[1.5,1.5],[1.5,1.0],[-0.5,1.0]")
+        AND_GIVEN("A RectanglePrimitive [-0.5,1.5],[1.5,1.5],[1.5,1.0],[-0.5,1.0]")
         {
             THEN("There is no intersection")
             {
-                Hop::System::Physics::Rectangle r2
+                Hop::System::Physics::RectanglePrimitive r2
                 (
                     -0.5,1.5,
                     1.5, 1.5,
@@ -198,15 +198,15 @@ SCENARIO("Distance","[maths]"){
                     -0.5,1.0
                 );
                 double nx, ny, s;
-                bool c = rectangleRectangleCollided<double>(&r1,&r2,nx,ny,s);
+                bool c = rectangleRectangleCollided<double>(r1.getRect(),r2.getRect(),nx,ny,s);
                 REQUIRE(!c);
             } 
         }
-        AND_GIVEN("A rectangle [-0.5,1.5],[1.5,1.5],[1.5,0.9],[-0.5,0.9]")
+        AND_GIVEN("A RectanglePrimitive [-0.5,1.5],[1.5,1.5],[1.5,0.9],[-0.5,0.9]")
         {
             THEN("There is an intersection")
             {
-                Hop::System::Physics::Rectangle r2
+                Hop::System::Physics::RectanglePrimitive r2
                 (
                     -0.5,1.5,
                     1.5, 1.5,
@@ -214,18 +214,18 @@ SCENARIO("Distance","[maths]"){
                     -0.5,0.9
                 );
                 double nx, ny, s;
-                bool c = rectangleRectangleCollided<double>(&r1,&r2,nx,ny,s);
+                bool c = rectangleRectangleCollided<double>(r1.getRect(),r2.getRect(),nx,ny,s);
                 REQUIRE(c);
                 REQUIRE(std::abs(nx - 0.0) < tol);
                 REQUIRE(std::abs(ny - 1.0) < tol);
                 REQUIRE(std::abs(s - 0.1) < tol);
             }
         }
-        AND_GIVEN("A rectangle [-0.5,-1.5],[1.5,-1.5],[1.5,-0.9],[-0.5,-0.9]")
+        AND_GIVEN("A RectanglePrimitive [-0.5,-1.5],[1.5,-1.5],[1.5,-0.9],[-0.5,-0.9]")
         {
             THEN("There is an intersection")
             {
-                Hop::System::Physics::Rectangle r2
+                Hop::System::Physics::RectanglePrimitive r2
                 (
                     -0.5,1.5,
                     1.5, 1.5,
@@ -233,7 +233,7 @@ SCENARIO("Distance","[maths]"){
                     -0.5,0.9
                 );
                 double nx, ny, s;
-                bool c = rectangleRectangleCollided<double>(&r1,&r2,nx,ny,s);
+                bool c = rectangleRectangleCollided<double>(r1.getRect(),r2.getRect(),nx,ny,s);
                 REQUIRE(c);
                 REQUIRE(std::abs(nx - 0.0) < tol);
                 REQUIRE(std::abs(ny - 1.0) < tol);
@@ -241,9 +241,9 @@ SCENARIO("Distance","[maths]"){
             }
         }
     }
-    GIVEN("A rectangle primitive [-0.5,-1.0],[-0.5,1.0],[0.5,1.0],[0.5,-1.0]")
+    GIVEN("A RectanglePrimitive primitive [-0.5,-1.0],[-0.5,1.0],[0.5,1.0],[0.5,-1.0]")
     {
-        Hop::System::Physics::Rectangle r1
+        Hop::System::Physics::RectanglePrimitive r1
         (
             -0.5,-1.0,
             -0.5, 1.0,
@@ -256,7 +256,7 @@ SCENARIO("Distance","[maths]"){
             double py = -1.0;
             THEN("The SDF is 0")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s) < tol);
             }
         }
@@ -266,7 +266,7 @@ SCENARIO("Distance","[maths]"){
             double py = 1.0;
             THEN("The SDF is 0")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s) < tol);
             }
         }
@@ -276,7 +276,7 @@ SCENARIO("Distance","[maths]"){
             double py = 0.5;
             THEN("The SDF is 0")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s) < tol);
             }
         }
@@ -286,7 +286,7 @@ SCENARIO("Distance","[maths]"){
             double py = -1.1;
             THEN("The SDF is 0.1")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s-0.1)<tol);
             }
         }
@@ -296,7 +296,7 @@ SCENARIO("Distance","[maths]"){
             double py = -0.9;
             THEN("The SDF is -0.05")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s- -0.05)<tol);
             }
         }
@@ -306,14 +306,14 @@ SCENARIO("Distance","[maths]"){
             double py = 0;
             THEN("The SDF is -0.5")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s- -0.5)<tol);
             }
         }
     }
-    GIVEN("A rectangle primitive [-1,0],[0,1],[1,0],[0,-1]")
+    GIVEN("A RectanglePrimitive primitive [-1,0],[0,1],[1,0],[0,-1]")
     {
-        Hop::System::Physics::Rectangle r1
+        Hop::System::Physics::RectanglePrimitive r1
         (
             -1.,0.,
             0.,1.,
@@ -326,7 +326,7 @@ SCENARIO("Distance","[maths]"){
             double py = 0.0;
             THEN("The SDF is 0")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s) < tol);
             }
         }
@@ -336,7 +336,7 @@ SCENARIO("Distance","[maths]"){
             double py = 0.0;
             THEN("The SDF is -1")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s - -0.707107) < tol);
             }
         }
@@ -346,7 +346,7 @@ SCENARIO("Distance","[maths]"){
             double py = 0.51;
             THEN("The SDF is -1")
             {
-                double s = sdf(&r1,px,py);
+                double s = sdf(r1.getRect(),px,py);
                 REQUIRE(std::abs(s - 0.0141421356237309) < tol);
             }
         }
@@ -450,9 +450,9 @@ SCENARIO("Special functions", "[maths]")
 
 SCENARIO("Topology","[maths]")
 {
-    GIVEN("The rectangle 0.890625, 0.34375, 0.890625, 0.351562, 0.90625, 0.351562, 0.90625, 0.34375")
+    GIVEN("The RectanglePrimitive 0.890625, 0.34375, 0.890625, 0.351562, 0.90625, 0.351562, 0.90625, 0.34375")
     {
-        Hop::System::Physics::Rectangle r
+        Hop::System::Physics::RectanglePrimitive r
         (
             0.890625, 0.34375, 0.890625, 0.351562,
             0.90625, 0.351562, 0.90625, 0.34375
@@ -460,15 +460,15 @@ SCENARIO("Topology","[maths]")
 
         AND_GIVEN("The point (0.898818, 0.350784)")
         {
-            THEN("The point is inside the rectangle")
+            THEN("The point is inside the RectanglePrimitive")
             {
-                REQUIRE(pointInRectangle(0.898818, 0.350784, &r));
+                REQUIRE(pointInRectangle(0.898818, 0.350784, r.getRect()));
             }
         }
     }
-    GIVEN("The rectangle (-1.,-1.),(-1,1),(1,1),(1,-1)")
+    GIVEN("The RectanglePrimitive (-1.,-1.),(-1,1),(1,1),(1,-1)")
     {
-        Hop::System::Physics::Rectangle r
+        Hop::System::Physics::RectanglePrimitive r
         (
             -1.,-1.,
             -1.,1.,
@@ -478,30 +478,30 @@ SCENARIO("Topology","[maths]")
 
         AND_GIVEN("The point (0,0)")
         {
-            THEN("The point is inside the rectangle")
+            THEN("The point is inside the RectanglePrimitive")
             {
-                REQUIRE(pointInRectangle(0.0,0.0,&r));
+                REQUIRE(pointInRectangle(0.0,0.0,r.getRect()));
             }
         }
         AND_GIVEN("The point (1,0)")
         {
-            THEN("The point is inside the rectangle")
+            THEN("The point is inside the RectanglePrimitive")
             {
-                REQUIRE(pointInRectangle(1.0,0.0,&r));
+                REQUIRE(pointInRectangle(1.0,0.0,r.getRect()));
             }
         }
         AND_GIVEN("The point (1,1)")
         {
-            THEN("The point is inside the rectangle")
+            THEN("The point is inside the RectanglePrimitive")
             {
-                REQUIRE(pointInRectangle(1.,1.,&r));
+                REQUIRE(pointInRectangle(1.,1.,r.getRect()));
             }
         }
         AND_GIVEN("The point (1.1,1)")
         {
-            THEN("The point is outside the rectangle")
+            THEN("The point is outside the RectanglePrimitive")
             {
-                REQUIRE(!pointInRectangle(1.1,1.,&r));
+                REQUIRE(!pointInRectangle(1.1,1.,r.getRect()));
             }
         }
     }

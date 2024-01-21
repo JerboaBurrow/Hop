@@ -2,14 +2,12 @@
 #define TOPOLOGY_H
 
 #include <Maths/triangle.h>
+#include <Maths/rectangle.h>
 #include <Maths/vertex.h>
 
-#include <Collision/collisionMesh.h>
 #include <Maths/polygon.h>
 
 #include <algorithm>
-
-using Hop::System::Physics::Rectangle;
 
 namespace Hop::Maths
 {
@@ -46,7 +44,7 @@ namespace Hop::Maths
     bool pointInRectangle
     (
         T px, T py,
-        Rectangle * r
+        Rectangle r
     )
     {
 
@@ -55,9 +53,9 @@ namespace Hop::Maths
                 Vertex(px, py),
                 Triangle
                 (
-                    Vertex(r->llx, r->lly),
-                    Vertex(r->ulx, r->uly),
-                    Vertex(r->urx, r->ury)
+                    Vertex(r.ll.x, r.ll.y),
+                    Vertex(r.ul.x, r.ul.y),
+                    Vertex(r.ur.x, r.ur.y)
                 )
             )
         )
@@ -70,9 +68,9 @@ namespace Hop::Maths
                 Vertex(px, py),
                 Triangle
                 (
-                    Vertex(r->llx, r->lly),
-                    Vertex(r->urx, r->ury),
-                    Vertex(r->lrx, r->lry)
+                    Vertex(r.ll.x, r.ll.y),
+                    Vertex(r.ur.x, r.ur.y),
+                    Vertex(r.lr.x, r.lr.y)
                 )
             )
         )

@@ -1,9 +1,7 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
-#include <Collision/collisionMesh.h>
-
-using Hop::System::Physics::Rectangle;
+#include <Maths/rectangle.h>
 
 namespace Hop::Maths
 {
@@ -49,23 +47,23 @@ namespace Hop::Maths
     template <class T>
     T axisOverlap
     (
-        Rectangle * r1,
-        Rectangle * r2,
+        Rectangle r1,
+        Rectangle r2,
         T axisX,
         T axisY
     )
     {
-        T ll11 = r1->llx*axisX + r1->lly*axisY;
-        T ll12 = r2->llx*axisX + r2->lly*axisY;
+        T ll11 = r1.ll.x*axisX + r1.ll.y*axisY;
+        T ll12 = r2.ll.x*axisX + r2.ll.y*axisY;
 
-        T ul11 = r1->ulx*axisX + r1->uly*axisY;
-        T ul12 = r2->ulx*axisX + r2->uly*axisY;
+        T ul11 = r1.ul.x*axisX + r1.ul.y*axisY;
+        T ul12 = r2.ul.x*axisX + r2.ul.y*axisY;
 
-        T ur11 = r1->urx*axisX + r1->ury*axisY;
-        T ur12 = r2->urx*axisX + r2->ury*axisY;
+        T ur11 = r1.ur.x*axisX + r1.ur.y*axisY;
+        T ur12 = r2.ur.x*axisX + r2.ur.y*axisY;
 
-        T lr11 = r1->lrx*axisX + r1->lry*axisY;
-        T lr12 = r2->lrx*axisX + r2->lry*axisY;
+        T lr11 = r1.lr.x*axisX + r1.lr.y*axisY;
+        T lr12 = r2.lr.x*axisX + r2.lr.y*axisY;
 
         T m1 = std::min( std::min(ll11, ul11), std::min(ur11, lr11) );
         T M1 = std::max( std::max(ll11, ul11), std::max(ur11, lr11) );
@@ -86,8 +84,8 @@ namespace Hop::Maths
     template <class T>
     bool rectangleRectangleCollided
     (
-        Rectangle * r1,
-        Rectangle * r2,
+        Rectangle r1,
+        Rectangle r2,
         T & nx,
         T & ny,
         T & s
@@ -103,38 +101,38 @@ namespace Hop::Maths
         T s21 = 0.0;
         T s22 = 0.0;
         
-        s11 = axisOverlap<T>(r1,r2,r1->axis1x,r1->axis1y);
+        s11 = axisOverlap<T>(r1,r2,r1.axis1.x,r1.axis1.y);
 
         if (s11 <= 0.0){ return false; }
 
         // assume s11 is smallest overlap
-        nx = r1->axis1x; ny = r1->axis1y; s = s11;
+        nx = r1.axis1.x; ny = r1.axis1.y; s = s11;
     
-        s12 = axisOverlap<T>(r1,r2,r1->axis2x,r1->axis2y);
+        s12 = axisOverlap<T>(r1,r2,r1.axis2.x,r1.axis2.y);
  
         if (s12 <= 0.0){ return false; }
 
         if (s12 < s)
         {
-            nx = r1->axis2x; ny = r1->axis2y; s = s12;
+            nx = r1.axis2.x; ny = r1.axis2.y; s = s12;
         }
 
-        s21 = axisOverlap<T>(r1,r2,r2->axis1x,r2->axis1y);
+        s21 = axisOverlap<T>(r1,r2,r2.axis1.x,r2.axis1.y);
 
         if (s21 <= 0.0){ return false; }
 
         if (s21 < s)
         {
-            nx = r2->axis1x; ny = r2->axis1y; s = s21;
+            nx = r2.axis1.x; ny = r2.axis1.y; s = s21;
         }
 
-        s22 = axisOverlap<T>(r1,r2,r2->axis2x,r2->axis2y);
+        s22 = axisOverlap<T>(r1,r2,r2.axis2.x,r2.axis2.y);
 
         if (s22 <= 0.0){ return false; }
 
         if (s22 < s)
         {
-            nx = r2->axis2x; ny = r2->axis2y; s = s22;
+            nx = r2.axis2.x; ny = r2.axis2.y; s = s22;
         }
 
         return true;
@@ -142,17 +140,17 @@ namespace Hop::Maths
     }
 
     template <class T>
-    T sdf(Rectangle * r, T px, T py)
+    T sdf(Rectangle r, T px, T py)
     {
         // thickness
-        T thx = r->llx-r->lrx;
-        T thy = r->lly-r->lry;
+        T thx = r.ll.x-r.lr.x;
+        T thy = r.ll.y-r.lr.y;
         T th = std::sqrt(thx*thx+thy*thy);
         // line through middle
-        T ax = (r->llx + r->lrx)/2.0;
-        T ay = (r->lly + r->lry)/2.0;
-        T bx = (r->ulx + r->urx)/2.0;
-        T by = (r->uly + r->ury)/2.0;
+        T ax = (r.ll.x + r.lr.x)/2.0;
+        T ay = (r.ll.y + r.lr.y)/2.0;
+        T bx = (r.ul.x + r.ur.x)/2.0;
+        T by = (r.ul.y + r.ur.y)/2.0;
 
         T lx = bx-ax;
         T ly = by-ay;
@@ -182,19 +180,19 @@ namespace Hop::Maths
     }
 
     template <class T>
-    void shortestDistanceSquared(T px, T py, Rectangle * r, T & nx, T & ny, T & d)
+    void shortestDistanceSquared(T px, T py, Rectangle r, T & nx, T & ny, T & d)
     {
         T d2, nxt, nyt;
 
         d = pointLineSegmentDistanceSquared<T>(
             px, py,
-            r->llx, r->lly,
-            r->ulx, r->uly,
+            r.ll.x, r.ll.y,
+            r.ul.x, r.ul.y,
             nx, ny
         );
 
-        // rx = r->llx-px;
-        // ry = r->lly-py;
+        // rx = r.ll.x-px;
+        // ry = r.ll.y-py;
 
         // d2 = rx*rx+ry*ry;
 
@@ -208,8 +206,8 @@ namespace Hop::Maths
 
         d2 = pointLineSegmentDistanceSquared<T>(
             px, py,
-            r->ulx, r->uly,
-            r->urx, r->ury,
+            r.ul.x, r.ul.y,
+            r.ur.x, r.ur.y,
             nxt, nyt
         );
 
@@ -218,8 +216,8 @@ namespace Hop::Maths
             d = d2; nx = nxt; ny = nyt;
         }
 
-        // rx = r->ulx-px;
-        // ry = r->uly-py;
+        // rx = r.ulx-px;
+        // ry = r.uly-py;
 
         // d2 = rx*rx+ry*ry;
 
@@ -233,8 +231,8 @@ namespace Hop::Maths
 
         d2 = pointLineSegmentDistanceSquared<T>(
             px, py,
-            r->urx, r->ury,
-            r->lrx, r->lry,
+            r.ur.x, r.ur.y,
+            r.lr.x, r.lr.y,
             nxt, nyt
         );
 
@@ -243,8 +241,8 @@ namespace Hop::Maths
             d = d2; nx = nxt; ny = nyt;
         }
 
-        // rx = r->urx-px;
-        // ry = r->ury-py;
+        // rx = r.urx-px;
+        // ry = r.ury-py;
 
         // d2 = rx*rx+ry*ry;
 
@@ -258,8 +256,8 @@ namespace Hop::Maths
 
         d2 = pointLineSegmentDistanceSquared<T>(
             px, py,
-            r->lrx, r->lry,
-            r->llx, r->lly,
+            r.lr.x, r.lr.y,
+            r.ll.x, r.ll.y,
             nxt, nyt
         );
 
@@ -268,8 +266,8 @@ namespace Hop::Maths
             d = d2; nx = nxt; ny = nyt;
         }
 
-        // rx = r->lrx-px;
-        // ry = r->lry-py;
+        // rx = r.lr.x-px;
+        // ry = r.lr.y-py;
 
         // d2 = rx*rx+ry*ry;
 
@@ -280,6 +278,20 @@ namespace Hop::Maths
         //     nx = rx / s;
         //     ny = ry / s;
         // }
+    }
+
+    template <class F>
+    F angleDistanceAtan2(F from, F to)
+    {
+        /*
+
+            Signed angular distance from angle "from" to angle "to" given from 
+              the atan2 convetion, [-pi, pi]. 
+        
+        */
+        F d = to - from;
+        d += (d>M_PI) ? -2.0*M_PI : (d<-M_PI) ? 2.0*M_PI : 0.0;
+        return d;
     }
 
 }

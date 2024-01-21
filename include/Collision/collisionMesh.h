@@ -2,6 +2,7 @@
 #define COLLISIONMESH_H
 
 #include <vector>
+#include <array>
 #include <cmath>
 #include <limits>
 #include <cstdint>
@@ -10,6 +11,7 @@
 
 #include <Maths/vertex.h>
 #include <Maths/transform.h>
+#include <Maths/distance.h>
 #include <Component/cTransform.h>
 #include <Component/cPhysics.h>
 
@@ -187,7 +189,7 @@ namespace Hop::System::Physics
             double rcy = y-cy;
             double rc2 = rcx*rcx + rcy*rcy;
             double tau = omega * effectiveMass * (0.5*r*r + rc2);
-
+            
             applyForce
             (
                 -damp * tau * rcy,
@@ -272,10 +274,10 @@ namespace Hop::System::Physics
 
     };
 
-    struct Rectangle : public CollisionPrimitive 
+    struct RectanglePrimitive : public CollisionPrimitive 
     {
-        Rectangle()
-        : Rectangle(0.0, 0.0,
+        RectanglePrimitive()
+        : RectanglePrimitive(0.0, 0.0,
                     0.0, 0.0,
                     0.0, 0.0,
                     0.0, 0.0)
@@ -283,7 +285,7 @@ namespace Hop::System::Physics
             stiffness = CollisionPrimitive::RIGID;
         }
 
-        Rectangle
+        RectanglePrimitive
         (        
             double llx, double lly,
             double ulx, double uly,
@@ -324,6 +326,19 @@ namespace Hop::System::Physics
             fy = 0.0;
             roxp=0.0;
             royp=0.0;
+        }
+
+        Hop::Maths::Rectangle getRect()
+        {
+            return Hop::Maths::Rectangle
+            (
+                Vertex(llx, lly),
+                Vertex(ulx, uly),
+                Vertex(urx, ury),
+                Vertex(lrx, lry),
+                Vertex(axis1x, axis1y),
+                Vertex(axis2x, axis2y)
+            );
         }
 
         void resetAxes()
@@ -373,6 +388,56 @@ namespace Hop::System::Physics
 
         }
 
+        void rotateClockWise(double cosine, double sine)
+        {
+            Hop::Maths::rotateClockWise<double>(llx, lly, cosine, sine);
+            Hop::Maths::rotateClockWise<double>(ulx, uly, cosine, sine);
+            Hop::Maths::rotateClockWise<double>(urx, ury, cosine, sine);
+            Hop::Maths::rotateClockWise<double>(lrx, lry, cosine, sine);
+
+            Hop::Maths::rotateClockWise<double>(x,y,cosine,sine);
+
+            resetAxes();
+        }
+
+        void scale(double s)
+        {
+            llx *= s;
+            lly *= s;
+
+            ulx *= s;
+            uly *= s;
+
+            urx *= s;
+            ury *= s;
+
+            lrx *= s;
+            lry *= s;
+
+            x *= s;
+            y *= s;
+
+            r *= s;
+        }
+
+        void translate(double x, double y)
+        {
+            llx += x;
+            lly += y;
+
+            ulx += x;
+            uly += y;
+
+            urx += x;
+            ury += y;
+
+            lrx += x;
+            lry += y;
+
+            x += x;
+            y += y;
+        }
+
         double llx, lly;
         double ulx, uly;
         double urx, ury;
@@ -381,7 +446,7 @@ namespace Hop::System::Physics
         double axis2x, axis2y;
     };
 
-    std::ostream & operator<<(std::ostream & o, Rectangle const & r);
+    std::ostream & operator<<(std::ostream & o, RectanglePrimitive const & r);
 
     struct CollisionMesh 
     {
@@ -445,7 +510,7 @@ namespace Hop::System::Physics
                 }
             }
 
-            Rectangle * l = dynamic_cast<Rectangle*>(c.get());
+            RectanglePrimitive * l = dynamic_cast<RectanglePrimitive*>(c.get());
 
             std::shared_ptr<CollisionPrimitive> p;
 
@@ -465,9 +530,9 @@ namespace Hop::System::Physics
                     )
                 );
 
-                p = std::make_shared<Rectangle>
+                p = std::make_shared<RectanglePrimitive>
                 (
-                    Rectangle
+                    RectanglePrimitive
                     (
                         l->llx, l->lly,
                         l->ulx, l->uly,

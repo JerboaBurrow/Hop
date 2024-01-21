@@ -20,7 +20,7 @@ if lastTime == nil then
         ["collisionMesh"] = mesh,
         ["meshParameters"] = {30000.0, 16.0, 1.0},
         ["translationalDrag"] = 0.0,
-        ["rotationalDrag"] = 10.0,
+        ["rotationalDrag"] = 100.0,
         ["mass"] = 1.0,
         ["inertia"] = 0.01,
         ["name"] = ""
