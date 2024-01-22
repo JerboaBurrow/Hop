@@ -170,6 +170,7 @@ IF (TEST_SUITE)
         add_executable(testSuite 
             ${TEST_SRC}
             "src/World/mapFile.cpp"
+            "src/Util/z.cpp"
         )
 
         target_compile_definitions(testSuite PUBLIC GLSL_VERSION="330")

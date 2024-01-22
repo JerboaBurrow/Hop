@@ -11,6 +11,7 @@
 #include <System/Physics/sCollision.h>
 #include <jLog/jLog.h>
 #include <Object/id.h>
+#include <Console/scriptz.h>
 
 #include <memory>
 #include <vector>
@@ -263,6 +264,36 @@ namespace Hop
             return;
         }
 
+        void loadPackedScripts(std::string file)
+        {
+            scripts.load(file);
+        }
+
+        int require(lua_State * lua)
+        {
+            int n = lua_gettop(lua);
+
+            if (n != 1)
+            {
+                lua_pushliteral(lua, "expected a string script name as argument");
+                return lua_error(lua);
+            }
+
+            LuaString script;
+
+            script.read(lua, 1);
+
+            std::string body = scripts.get(script.characters);
+
+            if (body == "")
+            {
+                lua_pushliteral(lua, "script not found");
+                return lua_error(lua);
+            }
+
+            luaL_loadbuffer(lua, body.c_str(), body.size(), script.characters.c_str());
+        }
+
     private:
 
         lua_State * lua;
@@ -272,6 +303,8 @@ namespace Hop
         bool lastStatus;
 
         Log & log;
+
+        Scriptz scripts;
 
         static int traceback(lua_State * lua) {
             if (lua_isstring(lua, -1))
