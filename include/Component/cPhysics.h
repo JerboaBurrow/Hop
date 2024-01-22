@@ -7,8 +7,6 @@ namespace Hop::Object::Component
       Component for dynamics, i.e applying forces
       and moving.
   */
-  const double PARTICLE_MASS = 1.0;
-  const double EFFECTIVE_MASS = 1.0 / (2.0/PARTICLE_MASS); // mass defined as 1
   
   const double DEFAULT_MASS = 1.0;
   const double DEFAULT_INTERTIA = 0.1;
@@ -36,6 +34,7 @@ namespace Hop::Object::Component
 
       double translationalDrag;
       double rotationalDrag;
+      double friction;
 
       bool isMoveable;
 
@@ -46,19 +45,21 @@ namespace Hop::Object::Component
         fx(0.0),fy(0.0), omega(0.0), tau(0.0),
         translationalDrag(DEFAULT_TRANSLATIONAL_DRAG), 
         rotationalDrag(DEFAULT_ROTATIONAL_DRAG),
+        friction(0.0),
         isMoveable(true)
       {}
 
       cPhysics
       (
         double x, double y, double t, 
-        double td, double rd, double J, double m
+        double td, double rd, double J, double m, double f
       )
       : x(x), y(y), lastX(x), lastY(y), lastTheta(t),
         vx(0.0),vy(0.0),phi(0.0),momentOfInertia(J),
         mass(m),
         fx(0.0),fy(0.0), omega(0.0), tau(0.0),
         translationalDrag(td), rotationalDrag(rd),
+        friction(f),
         isMoveable(true)
       {}
 

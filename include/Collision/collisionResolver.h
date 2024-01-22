@@ -77,6 +77,7 @@ namespace Hop::System::Physics
         ) = 0;
 
         virtual void setCoefRestitution(double cor) = 0;
+        virtual void setSurfaceFriction(double f) = 0;
 
     };
 

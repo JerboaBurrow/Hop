@@ -43,7 +43,7 @@ namespace Hop::Object
         LuaArray<4> colour, transform, util;
         LuaArray<3> meshParameters;
 
-        LuaNumber transDrag, rotDrag, bodyMass, bodyInertia;
+        LuaNumber transDrag, rotDrag, bodyMass, bodyInertia, bodyFriction;
 
         LuaString shader, name;
 
@@ -65,6 +65,7 @@ namespace Hop::Object
         rotDrag.n = DEFAULT_ROTATIONAL_DRAG;
         bodyMass.n = DEFAULT_MASS;
         bodyInertia.n = DEFAULT_INTERTIA;
+        bodyFriction.n = 0.0;
 
         // elements on stack
         int n = lua_gettop(lua);
@@ -99,6 +100,7 @@ namespace Hop::Object
         rotDrag.read(lua, "rotationalDrag");
         bodyMass.read(lua, "mass");
         bodyInertia.read(lua, "inertia");
+        bodyFriction.read(lua, "bodyFriction");
 
         // now create the object
 
@@ -185,7 +187,7 @@ namespace Hop::Object
             addComponent<cPhysics>
             (
                 pid,
-                cPhysics(x,y,theta, transDrag.n, rotDrag.n, bodyInertia.n, bodyMass.n)
+                cPhysics(x,y,theta, transDrag.n, rotDrag.n, bodyInertia.n, bodyMass.n, bodyFriction.n)
             );
 
             if (!isMoveable.bit)

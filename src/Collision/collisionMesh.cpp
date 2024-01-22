@@ -157,6 +157,9 @@ namespace Hop::System::Physics
 
         double dtdt = dt*dt;
 
+        physics.vx = -transform.x;
+        physics.vy = -transform.y;
+
         std::vector<uint8_t> inside(worldVertices.size());
 
         if (needsInit)
@@ -248,6 +251,12 @@ namespace Hop::System::Physics
 
         transform.x += dx;
         transform.y += dy;
+
+        physics.vx += transform.x;
+        physics.vy += transform.y;
+
+        physics.vx /= dt;
+        physics.vy /= dt;
 
         kineticEnergy += (dx*dx+dy*dy)/(dt*dt);
 

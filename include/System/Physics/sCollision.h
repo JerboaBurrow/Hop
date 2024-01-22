@@ -56,6 +56,7 @@ namespace Hop::System::Physics
         void centreOn(double x, double y);
 
         void setCoefRestitution(double cor){ resolver->setCoefRestitution(cor); }
+        void setSurfaceFriction(double f) { resolver->setSurfaceFriction(f); }
 
         int lua_setCOR(lua_State * lua)
         {  
@@ -75,6 +76,28 @@ namespace Hop::System::Physics
 
             double cor = lua_tonumber(lua, 1);
             setCoefRestitution(cor);
+
+            return 0;
+        }
+
+        int lua_setFriction(lua_State * lua)
+        {  
+            int n = lua_gettop(lua);
+            
+            if (n != 1)
+            {
+                lua_pushliteral(lua, "requires 1 argument, friction");
+                return lua_error(lua);
+            }
+
+            if (!lua_isnumber(lua, 1))
+            {
+                lua_pushliteral(lua, "requires a numeric argument for cor");
+                return lua_error(lua);
+            }
+
+            double f = lua_tonumber(lua, 1);
+            setSurfaceFriction(f);
 
             return 0;
         }
