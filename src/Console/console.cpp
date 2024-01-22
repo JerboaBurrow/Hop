@@ -11,7 +11,7 @@ namespace Hop
         sPhysics * phys = store->physics;
         sCollision * col = store->resolver;
 
-        LuaNumber dt, subSample, cor;
+        LuaNumber dt, subSample, cor, sf;
    
         int n = lua_gettop(lua);
 
@@ -39,6 +39,11 @@ namespace Hop
         if (cor.read(lua, "cofr"))
         {
             col->setCoefRestitution(cor.n);
+        }
+
+        if (sf.read(lua, "surfaceFriction"))
+        {
+            col->setSurfaceFriction(sf.n);
         }
 
         return 0;

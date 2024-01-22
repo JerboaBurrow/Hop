@@ -28,6 +28,7 @@
 #include <Console/LuaString.h>
 #include <Console/LuaBool.h>
 #include <Console/LuaTable.h>
+#include <Console/LuaNumber.h>
 
 #include <Object/entityComponentSystem.h>
 
@@ -35,16 +36,14 @@ namespace Hop::Object
 {
     using Hop::System::Physics::CollisionMesh;
     using Hop::System::Physics::CollisionPrimitive;
-    using Hop::System::Physics::Rectangle;
-    using Hop::Object::Component::cRenderable;
-    using Hop::Object::Component::cPhysics;
-    using Hop::Object::Component::cCollideable;
-    using Hop::LuaArray;
+    using Hop::System::Physics::RectanglePrimitive;
 
     int EntityComponentSystem::lua_loadObject(lua_State * lua)
     {
         LuaArray<4> colour, transform, util;
         LuaArray<3> meshParameters;
+
+        LuaNumber transDrag, rotDrag, bodyMass, bodyInertia, bodyFriction;
 
         LuaString shader, name;
 
@@ -61,6 +60,12 @@ namespace Hop::Object
 
         meshParameters.elements = {CollisionPrimitive::RIGID, 1.0, 1.0};
         isMoveable.bit = true;
+
+        transDrag.n = DEFAULT_TRANSLATIONAL_DRAG;
+        rotDrag.n = DEFAULT_ROTATIONAL_DRAG;
+        bodyMass.n = DEFAULT_MASS;
+        bodyInertia.n = DEFAULT_INTERTIA;
+        bodyFriction.n = 0.0;
 
         // elements on stack
         int n = lua_gettop(lua);
@@ -90,6 +95,12 @@ namespace Hop::Object
         meshParameters.read(lua, "meshParameters");
 
         name.read(lua, "name");
+
+        transDrag.read(lua, "translationalDrag");
+        rotDrag.read(lua, "rotationalDrag");
+        bodyMass.read(lua, "mass");
+        bodyInertia.read(lua, "inertia");
+        bodyFriction.read(lua, "bodyFriction");
 
         // now create the object
 
@@ -176,7 +187,7 @@ namespace Hop::Object
             addComponent<cPhysics>
             (
                 pid,
-                cPhysics(x,y,theta)
+                cPhysics(x,y,theta, transDrag.n, rotDrag.n, bodyInertia.n, bodyMass.n, bodyFriction.n)
             );
 
             if (!isMoveable.bit)
@@ -199,7 +210,10 @@ namespace Hop::Object
                             (
                                 collisionMesh[i][0],
                                 collisionMesh[i][1],
-                                collisionMesh[i][2]
+                                collisionMesh[i][2],
+                                meshParameters[0],
+                                meshParameters[1],
+                                meshParameters[2]
                             )
                         );
                         goodInput = true;
@@ -208,7 +222,7 @@ namespace Hop::Object
                     {
                         mesh.push_back
                         (
-                            std::make_shared<Rectangle>
+                            std::make_shared<RectanglePrimitive>
                             (
                                 collisionMesh[i][0],
                                 collisionMesh[i][1],
@@ -217,7 +231,8 @@ namespace Hop::Object
                                 collisionMesh[i][4],
                                 collisionMesh[i][5],
                                 collisionMesh[i][6],
-                                collisionMesh[i][7]
+                                collisionMesh[i][7],
+                                meshParameters[0]
                             )
                         );
                         goodInput = true;
@@ -228,7 +243,7 @@ namespace Hop::Object
                     addComponent<cCollideable>
                     (
                         pid,
-                        cCollideable(mesh,x,y,theta,scale,meshParameters[0], meshParameters[1], meshParameters[2])
+                        cCollideable(mesh,x,y,theta,scale)
                     );
                 }
             }

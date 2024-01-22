@@ -1,5 +1,5 @@
-#ifndef SPRINGDASHPOTRESOLVER
-#define SPRINGDASHPOTRESOLVER
+#ifndef SPRINGDASHPOTRESOLVER_H
+#define SPRINGDASHPOTRESOLVER_H
 
 #include <Collision/collisionResolver.h>
 #include <cmath>
@@ -41,7 +41,7 @@ namespace Hop::System::Physics
             updateParameters(tc,cor);
             collisionTime = tc;
             coefficientOfRestitution = cor;
-            friction = f;
+            surfaceFriction = f;
         }
 
         SpringDashpot()
@@ -70,30 +70,32 @@ namespace Hop::System::Physics
             AbstractWorld * world
         );
 
-        void springDashpotForce
+        void springDashpotForceCircles
         (
             cPhysics & pI, cPhysics & pJ,
-            double dd, double rx, double ry, double rc,
+            double dd, double rx, double ry, double rc, double me,
             double pxi, double pyi, double pxj, double pyj,
             double & fx, double & fy
         );
 
-        void springDashpotWallForce
+        void springDashpotWallForceCircle
         (
             double nx,
             double ny,
             double d2,
-            double c,
+            double r,
+            double m,
             double px, double py,
             cPhysics & dataP,
             double & fx, double & fy
         );
 
-        void springDashpotForce
+        void springDashpotForceRect
         (
             cPhysics & pI,
             cPhysics & pJ,
             double odod, double nx, double ny,
+            double me,
             double px, double py,
             double & fx, double & fy
         );
@@ -101,8 +103,8 @@ namespace Hop::System::Physics
         void collisionForce
         (
             cPhysics & pI, cPhysics & pJ,
-            Rectangle * li,
-            Rectangle * lj,
+            RectanglePrimitive * li,
+            RectanglePrimitive * lj,
             bool wall = false
         );
 
@@ -110,7 +112,7 @@ namespace Hop::System::Physics
         (
             cPhysics & pI, cPhysics & pJ,
             CollisionPrimitive * c,
-            Rectangle * l,
+            RectanglePrimitive * l,
             double rx, double ry, double rc, double dd
         );
 
@@ -142,6 +144,7 @@ namespace Hop::System::Physics
         );
 
         void setCoefRestitution(double cor){ return updateParameters(collisionTime, cor); }
+        void setSurfaceFriction(double f){ surfaceFriction = f; }
 
         void tileCollision
         (
@@ -177,8 +180,8 @@ namespace Hop::System::Physics
         (
             std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
-            Rectangle * li,
-            Rectangle r,
+            RectanglePrimitive * li,
+            RectanglePrimitive r,
             double lx0, 
             double ly0,
             double lx1, 
@@ -192,9 +195,8 @@ namespace Hop::System::Physics
         double collisionTime, coefficientOfRestitution;
 
         // pre-calculated collision parameters
-        double alpha, beta, friction;
-        double kr, kd, krR, kdR, alphaR, betaR;
+        double alpha, beta, surfaceFriction;
     };
 
 }
-#endif /* SPRINGDASHPOTRESOLVER */
+#endif /* SPRINGDASHPOTRESOLVER_H */

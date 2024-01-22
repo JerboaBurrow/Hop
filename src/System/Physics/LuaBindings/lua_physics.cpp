@@ -6,7 +6,6 @@ namespace Hop::System::Physics
 {
     int sPhysics::lua_setGravity(lua_State * lua)
     {
-
         LuaNumber gx, gy;
 
         int n = lua_gettop(lua);
@@ -25,7 +24,6 @@ namespace Hop::System::Physics
         setGravity(norm, double(gx)/norm, double(gy)/norm);
 
         return 0;
-
     }
 
 }

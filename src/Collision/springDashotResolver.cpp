@@ -26,24 +26,22 @@ namespace Hop::System::Physics
         coefficientOfRestitution = cor;
         alpha = (std::log(cor)*std::log(cor) + M_PI*M_PI) / (tc * tc);
         beta = -std::log(cor) / tc;
-
-        kr = EFFECTIVE_MASS*alpha;
-        kd = 2.0*EFFECTIVE_MASS*beta;
-
-        krR = kr;
-        kdR = kd;
-
     }
 
-    void SpringDashpot::springDashpotForce
+    void SpringDashpot::springDashpotForceCircles
     (
         cPhysics & pI, cPhysics & pJ,
-        double dd, double rx, double ry, double rc,
+        double dd, double rx, double ry, double rc, double me,
         double pxi, double pyi, double pxj, double pyj,
         double & fx, double & fy
     )
     {
         double mag, dinv, nx, ny, vrx, vry, ddot, d, dot, tau, nxt, nyt;
+
+        double kr = me*alpha;
+        double kd = 2.0*me*beta;
+
+        double friction = (pI.friction + pJ.friction)*0.5;
 
         mag = 0.0;
         d = std::sqrt(dd);
@@ -130,12 +128,13 @@ namespace Hop::System::Physics
         pJ.tau += tau;
     }
 
-     void SpringDashpot::springDashpotWallForce
+     void SpringDashpot::springDashpotWallForceCircle
     (
         double nx,
         double ny,
         double d2,
         double r,
+        double m,
         double px, double py,
         cPhysics & dataP,
         double & fx, double & fy
@@ -143,7 +142,7 @@ namespace Hop::System::Physics
     {
         double meff, kr, kd, d, vrx, vry, ddot, mag, rx, ry, nxt, nyt, dot, tau;
 
-        meff = 1.0 / (1.0/PARTICLE_MASS+1.0/(WALL_MASS_MULTIPLIER));
+        meff = 1.0 / (1.0/m+1.0/(m*WALL_MASS_MULTIPLIER));
         kr = meff*alpha;
         kd = 2.0*meff*beta;
 
@@ -172,13 +171,13 @@ namespace Hop::System::Physics
         fx = mag*nx;
         fy = mag*ny;
 
-        dataP.fx += fx+0.5*std::abs(mag)*nxt;
-        dataP.fy += fy+0.5*std::abs(mag)*nyt;
+        dataP.fx += fx+surfaceFriction*std::abs(mag)*nxt;
+        dataP.fy += fy+surfaceFriction*std::abs(mag)*nyt;
 
         rx = px - dataP.x;
         ry = py - dataP.y;
 
-        tau = (rx*fy-ry*fx)/(PARTICLE_MASS);
+        tau = (rx*fy-ry*fx)/m;
 
         // this magic non-linearity dampens 
         //  angular oscillations...
@@ -200,11 +199,12 @@ namespace Hop::System::Physics
     }
 
 
-    void SpringDashpot::springDashpotForce
+    void SpringDashpot::springDashpotForceRect
     (
         cPhysics & pI,
         cPhysics & pJ,
         double od, double nx, double ny,
+        double me,
         double px, double py,
         double & fx, double & fy
     )
@@ -216,7 +216,10 @@ namespace Hop::System::Physics
         fx = nx;
         fy = ny;
 
-        mag = krR*od;
+        double kr = me*alpha;
+        double kd = 2.0*me*beta;
+
+        mag = kr*od;
         magC = mag;
 
         vrx = pI.vx;
@@ -224,7 +227,7 @@ namespace Hop::System::Physics
 
         ddot = nx*vrx+ny*vry;
 
-        mag -= kdR*ddot;
+        mag -= kd*ddot;
 
         if (mag < 0.0) { return; }
 
@@ -296,8 +299,8 @@ namespace Hop::System::Physics
     void SpringDashpot::collisionForce
     (
         cPhysics & pI, cPhysics & pJ,
-        Rectangle * li,
-        Rectangle * lj,
+        RectanglePrimitive * li,
+        RectanglePrimitive * lj,
         bool wall
     )
     {
@@ -307,7 +310,7 @@ namespace Hop::System::Physics
         double fx = 0.0;
         double fy = 0.0;
 
-        collided = rectangleRectangleCollided<double>(li,lj,nx,ny,s);
+        collided = rectangleRectangleCollided<double>(li->getRect(),lj->getRect(),nx,ny,s);
 
         if (!collided){ return; }
 
@@ -328,16 +331,18 @@ namespace Hop::System::Physics
         if (wall)
         {
 
-            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj);
-            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj);
-            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj);
-            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj);
+            double me = 1.0 / (1.0/li->effectiveMass + 1.0/(li->effectiveMass*WALL_MASS_MULTIPLIER));
+
+            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj->getRect());
+            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj->getRect());
+            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj->getRect());
+            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj->getRect());
 
             unsigned fs = sdll+sdul+sdur+sdlr;
 
             if (fs == 0)
             {
-                springDashpotForce(pI, pJ, s, -nx, -ny, li->x,li->y, fx, fy);
+                springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->x,li->y, fx, fy);
             }
             else
             {
@@ -347,19 +352,19 @@ namespace Hop::System::Physics
 
                 if (sdll)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->llx,li->lly, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->llx,li->lly, fx, fy);
                 }
                 if (sdul)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->ulx,li->uly, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->ulx,li->uly, fx, fy);
                 }
                 if (sdur)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->urx,li->ury, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->urx,li->ury, fx, fy);
                 }
                 if (sdlr)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->lrx,li->lry, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->lrx,li->lry, fx, fy);
                 }
             }
             li->applyForce(fx, fy);
@@ -371,16 +376,18 @@ namespace Hop::System::Physics
             nxt = nx;
             nyt = ny;
 
-            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj);
-            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj);
-            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj);
-            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj);
+            double me = 1.0 / (1.0/li->effectiveMass + 1.0/lj->effectiveMass);
+
+            bool sdll = pointInRectangle<double>(li->llx,li->lly,lj->getRect());
+            bool sdul = pointInRectangle<double>(li->ulx,li->uly,lj->getRect());
+            bool sdur = pointInRectangle<double>(li->urx,li->ury,lj->getRect());
+            bool sdlr = pointInRectangle<double>(li->lrx,li->lry,lj->getRect());
 
             unsigned fs = sdll+sdul+sdur+sdlr;
 
             if (fs == 0)
             {
-                springDashpotForce(pI, pJ, s, -nx, -ny, li->x,li->y, fx, fy);
+                springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->x,li->y, fx, fy);
             }
             else
             {
@@ -390,19 +397,19 @@ namespace Hop::System::Physics
 
                 if (sdll)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->llx,li->lly, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->llx,li->lly, fx, fy);
                 }
                 if (sdul)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->ulx,li->uly, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->ulx,li->uly, fx, fy);
                 }
                 if (sdur)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->urx,li->ury, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->urx,li->ury, fx, fy);
                 }
                 if (sdlr)
                 {
-                    springDashpotForce(pI, pJ, s, -nx, -ny, li->lrx,li->lry, fx, fy);
+                    springDashpotForceRect(pI, pJ, s, -nx, -ny, me, li->lrx,li->lry, fx, fy);
                 }
 
                 li->applyForce(fx, fy);
@@ -415,16 +422,16 @@ namespace Hop::System::Physics
             nx = nxt;
             ny = nyt;
 
-            sdll = pointInRectangle<double>(lj->llx,lj->lly,li);
-            sdul = pointInRectangle<double>(lj->ulx,lj->uly,li);
-            sdur = pointInRectangle<double>(lj->urx,lj->ury,li);
-            sdlr = pointInRectangle<double>(lj->lrx,lj->lry,li);
+            sdll = pointInRectangle<double>(lj->llx,lj->lly,li->getRect());
+            sdul = pointInRectangle<double>(lj->ulx,lj->uly,li->getRect());
+            sdur = pointInRectangle<double>(lj->urx,lj->ury,li->getRect());
+            sdlr = pointInRectangle<double>(lj->lrx,lj->lry,li->getRect());
 
             fs = sdll+sdul+sdur+sdlr;
 
             if (fs == 0)
             {
-                springDashpotForce(pJ, pI, s, nx, ny, lj->x,lj->y, fx, fy);
+                springDashpotForceRect(pJ, pI, s, nx, ny, me, lj->x,lj->y, fx, fy);
             }
             else
             {
@@ -434,19 +441,19 @@ namespace Hop::System::Physics
 
                 if (sdll)
                 {
-                    springDashpotForce(pJ, pI, s, nx, ny, lj->llx,lj->lly, fx, fy);
+                    springDashpotForceRect(pJ, pI, s, nx, ny, me, lj->llx,lj->lly, fx, fy);
                 }
                 if (sdul)
                 {
-                    springDashpotForce(pJ, pI, s, nx, ny, lj->ulx,lj->uly, fx, fy);
+                    springDashpotForceRect(pJ, pI, s, nx, ny, me, lj->ulx,lj->uly, fx, fy);
                 }
                 if (sdur)
                 {
-                    springDashpotForce(pJ, pI, s, nx, ny, lj->urx,lj->ury, fx, fy);
+                    springDashpotForceRect(pJ, pI, s, nx, ny, me, lj->urx,lj->ury, fx, fy);
                 }
                 if (sdlr)
                 {
-                    springDashpotForce(pJ, pI, s, nx, ny, lj->lrx,lj->lry, fx, fy);
+                    springDashpotForceRect(pJ, pI, s, nx, ny, me, lj->lrx,lj->lry, fx, fy);
                 }
             }
 
@@ -459,7 +466,7 @@ namespace Hop::System::Physics
     (
         cPhysics & pI, cPhysics & pJ,
         CollisionPrimitive * c,
-        Rectangle * l,
+        RectanglePrimitive * l,
         double rx, double ry, double rc, double dd
     )
     {
@@ -468,7 +475,7 @@ namespace Hop::System::Physics
         double fx = 0.0;
         double fy = 0.0;
 
-        shortestDistanceSquared(c->x, c->y, l, cx, cy, odod);
+        shortestDistanceSquared(c->x, c->y, l->getRect(), cx, cy, odod);
 
         d = std::sqrt(odod);
         nx = (cx-c->x)/d;
@@ -491,10 +498,11 @@ namespace Hop::System::Physics
 
         if (d < c->r)
         {
-            springDashpotForce(pI, pJ, c->r-d, -nx, -ny, cx, cy, fx, fy);
+            double me = 1.0 / (1.0/c->effectiveMass + 1.0/l->effectiveMass);
+            springDashpotForceRect(pI, pJ, c->r-d, -nx, -ny, me, cx, cy, fx, fy);
             c->applyForce(fx, fy);
             l->applyForce(-fx, -fy);
-            springDashpotForce(pJ, pI, c->r-d, nx, ny, cx, cy, fx, fy);
+            springDashpotForceRect(pJ, pI, c->r-d, nx, ny, me, cx, cy, fx, fy);
             c->applyForce(-fx, -fy);
             l->applyForce(fx, fy);
         }
@@ -514,11 +522,12 @@ namespace Hop::System::Physics
         double nx, ny;
         double fx = 0.0;
         double fy = 0.0;
+        double me = 1.0 / (1.0/c->effectiveMass + 1.0/l->effectiveMass);
 
         nx = l->x-c->x;
         ny = l->y-c->y;
 
-        springDashpotForce(pI,pJ,dd,nx,ny,rc,c->x,c->y,l->x,l->y,fx,fy);
+        springDashpotForceCircles(pI,pJ,dd,nx,ny,rc,me,c->x,c->y,l->x,l->y,fx,fy);
 
         c->applyForce(fx, fy);
         l->applyForce(-fx, -fy);
@@ -542,7 +551,7 @@ namespace Hop::System::Physics
         
         if (objectI == objectJ)
         { 
-            if (cI.mesh.isRigid() || particleI == particleJ) 
+            if (cI.mesh.getIsRigid() || particleI == particleJ) 
             { 
                 return; 
             }
@@ -550,7 +559,7 @@ namespace Hop::System::Physics
 
         double rx, ry, rc, dd;
 
-        Rectangle * li, * lj;
+        RectanglePrimitive * li, * lj;
 
         rx = 0.0; ry = 0.0; rc = 0.0;
 
@@ -558,6 +567,7 @@ namespace Hop::System::Physics
         rx -= ci->x;
         ry -= ci->y;
         rc += ci->r;
+
 
         std::shared_ptr<CollisionPrimitive> cj = cJ.mesh[particleJ];
         rx += cj->x;
@@ -573,8 +583,8 @@ namespace Hop::System::Physics
 
         if (dd < rc*rc)
         {
-            li = dynamic_cast<Rectangle*>(ci.get());
-            lj = dynamic_cast<Rectangle*>(cj.get());
+            li = dynamic_cast<RectanglePrimitive*>(ci.get());
+            lj = dynamic_cast<RectanglePrimitive*>(cj.get());
 
             bool iIsRectangle = li != nullptr;
             bool jIsRectangle = lj != nullptr;
@@ -597,13 +607,13 @@ namespace Hop::System::Physics
             }
         }
 
-        if (!cI.mesh.isRigid())
+        if (!cI.mesh.getIsRigid())
         {
             pI.fx = fix;
             pI.fy = fiy;
             pI.tau = taui;
         }
-        if (!cJ.mesh.isRigid())
+        if (!cJ.mesh.getIsRigid())
         {
             pJ.fx = fjx;
             pJ.fy = fjy;
@@ -682,7 +692,7 @@ namespace Hop::System::Physics
                 tw
             );
 
-            if (!dataC.mesh.isRigid())
+            if (!dataC.mesh.getIsRigid())
             {
                 dataP.fx = fx;
                 dataP.fy = fy;
@@ -702,7 +712,7 @@ namespace Hop::System::Physics
                 mw
             );
 
-            if (!dataC.mesh.isRigid())
+            if (!dataC.mesh.getIsRigid())
             {
                 dataP.fx = fx;
                 dataP.fy = fy;
@@ -1185,17 +1195,17 @@ namespace Hop::System::Physics
         double insideThresh = thresh*thresh;
         int handedness, handedness2;
 
-        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
+        RectanglePrimitive * li = dynamic_cast<RectanglePrimitive*>(c.get());
 
         bool isRectangle = li != nullptr;
 
         #pragma GCC diagnostic push                             
         #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-        Rectangle r1a, r1b, r1c;
+        RectanglePrimitive r1a, r1b, r1c;
 
-        Rectangle bottomLeft, bottomLeftSquare, bottomRight, bottomRightSquare;
-        Rectangle central, topLeft, topLeftSquare, topRight, topRightSquare;
-        Rectangle leftHalf, rightHalf, topHalf, bottomHalf;
+        RectanglePrimitive bottomLeft, bottomLeftSquare, bottomRight, bottomRightSquare;
+        RectanglePrimitive central, topLeft, topLeftSquare, topRight, topRightSquare;
+        RectanglePrimitive leftHalf, rightHalf, topHalf, bottomHalf;
         #pragma GCC diagnostic pop
 
         bool bc = false;
@@ -1203,79 +1213,79 @@ namespace Hop::System::Physics
         if (isRectangle)
         {
 
-            // Rectangle bottomLeft;
+            // RectanglePrimitive bottomLeft;
             bottomLeft.llx = x0-s/2.0; bottomLeft.lly = y0;
             bottomLeft.ulx = x0;       bottomLeft.uly = y0+s/2.0;
             bottomLeft.urx = x0+s/2.0; bottomLeft.ury = y0;
             bottomLeft.lrx = x0;       bottomLeft.lry = y0-s/2.0;
 
-            // Rectangle bottomLeftSquare;
+            // RectanglePrimitive bottomLeftSquare;
             bottomLeftSquare.llx = x0;       bottomLeftSquare.lly = y0;
             bottomLeftSquare.ulx = x0;       bottomLeftSquare.uly = y0+s/2.0;
             bottomLeftSquare.urx = x0+s/2.0; bottomLeftSquare.ury = y0+s/2.0;
             bottomLeftSquare.lrx = x0+s/2.0; bottomLeftSquare.lry = y0;
 
-            // Rectangle central;
+            // RectanglePrimitive central;
             central.llx = x0;       central.lly = y0+s/2.0;
             central.ulx = x0+s/2.0; central.uly = y0+s;
             central.urx = x0+s;     central.ury = y0+s/2.0;
             central.lrx = x0+s/2.0; central.lry = y0;
 
-            // Rectangle bottomRight;
+            // RectanglePrimitive bottomRight;
             bottomRight.llx = x0+s/2.0;     bottomRight.lly = y0;
             bottomRight.ulx = x0+s;         bottomRight.uly = y0+s/2.0;
             bottomRight.urx = x0+s*3.0/2.0; bottomRight.ury = y0;
             bottomRight.lrx = x0+s;         bottomRight.lry = y0-s/2.0;
 
-            // Rectangle bottomRightSquare;
+            // RectanglePrimitive bottomRightSquare;
             bottomRightSquare.llx = x0+s/2.0;     bottomRightSquare.lly = y0;
             bottomRightSquare.ulx = x0+s/2.0;     bottomRightSquare.uly = y0+s/2.0;
             bottomRightSquare.urx = x0+s;         bottomRightSquare.ury = y0+s/2.0;
             bottomRightSquare.lrx = x0+s;         bottomRightSquare.lry = y0;
 
-            // Rectangle topLeft;
+            // RectanglePrimitive topLeft;
             topLeft.llx = x0;           topLeft.lly = y0+s/2.0;
             topLeft.ulx = x0-s/2.0;     topLeft.uly = y0+s;
             topLeft.urx = x0;           topLeft.ury = y0+s*3.0/2.0;
             topLeft.lrx = x0+s/2.0;     topLeft.lry = y0+s;
 
-            // Rectangle topLeftSquare;
+            // RectanglePrimitive topLeftSquare;
             topLeftSquare.llx = x0;           topLeftSquare.lly = y0+s/2.0;
             topLeftSquare.ulx = x0;           topLeftSquare.uly = y0+s;
             topLeftSquare.urx = x0+s/2.0;     topLeftSquare.ury = y0+s;
             topLeftSquare.lrx = x0+s/2.0;     topLeftSquare.lry = y0+s/2.0;
 
-            // Rectangle topRight;
+            // RectanglePrimitive topRight;
             topRight.llx = x0+s/2.0;     topRight.lly = y0+s;
             topRight.ulx = x0+s;         topRight.uly = y0+s*3.0/2.0;
             topRight.urx = x0+s*3.0/2.0; topRight.ury = y0;
             topRight.lrx = x0+s;         topRight.lry = y0+s/2.0;
 
-            // Rectangle topRightSquare;
+            // RectanglePrimitive topRightSquare;
             topRightSquare.llx = x0+s/2.0;     topRightSquare.lly = y0+s;
             topRightSquare.ulx = x0+s;         topRightSquare.uly = y0+s;
             topRightSquare.urx = x0+s;         topRightSquare.ury = y0+s/2.0;
             topRightSquare.lrx = x0+s/2.0;     topRightSquare.lry = y0+s/2.0;
 
-            // Rectangle rightHalf;
+            // RectanglePrimitive rightHalf;
             rightHalf.llx = x0+s/2.0;     rightHalf.lly = y0;
             rightHalf.ulx = x0+s/2.0;     rightHalf.uly = y0+s;
             rightHalf.urx = x0+s;         rightHalf.ury = y0+s;
             rightHalf.lrx = x0+s;         rightHalf.lry = y0;
 
-            // Rectangle leftHalf;
+            // RectanglePrimitive leftHalf;
             leftHalf.llx = x0;           leftHalf.lly = y0;
             leftHalf.ulx = x0;           leftHalf.uly = y0+s;
             leftHalf.urx = x0+s/2.0;     leftHalf.ury = y0+s;
             leftHalf.lrx = x0+s/2.0;     leftHalf.lry = y0;
 
-            // Rectangle bottomHalf;
+            // RectanglePrimitive bottomHalf;
             bottomHalf.llx = x0;           bottomHalf.lly = y0;
             bottomHalf.ulx = x0;           bottomHalf.uly = y0+s/2.0;
             bottomHalf.urx = x0+s;         bottomHalf.ury = y0+s/2.0;
             bottomHalf.lrx = x0+s;         bottomHalf.lry = y0;
 
-            // Rectangle topHalf;
+            // RectanglePrimitive topHalf;
             topHalf.llx = x0;           topHalf.lly = y0+s/2.0;
             topHalf.ulx = x0;           topHalf.uly = y0+s;
             topHalf.urx = x0+s;         topHalf.ury = y0+s;
@@ -1964,13 +1974,13 @@ namespace Hop::System::Physics
         {
             if (f1)
             {
-                springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP,fx,fy);
+                springDashpotWallForceCircle(nx,ny,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
 
             if (f2)
             {
-                springDashpotWallForce(-nx,-ny,d2p,c->r,c->x,c->y,dataP,fx,fy);
+                springDashpotWallForceCircle(-nx,-ny,d2p,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
         }
@@ -2014,9 +2024,9 @@ namespace Hop::System::Physics
 
         double lx0, ly0, lx1, ly1;
 
-        Rectangle r;
+        RectanglePrimitive r;
 
-        Rectangle * li = dynamic_cast<Rectangle*>(c.get());
+        RectanglePrimitive * li = dynamic_cast<RectanglePrimitive*>(c.get());
 
         // WEST
 
@@ -2163,8 +2173,8 @@ namespace Hop::System::Physics
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
-        Rectangle * li,
-        Rectangle r,
+        RectanglePrimitive * li,
+        RectanglePrimitive r,
         double lx0, 
         double ly0,
         double lx1, 
@@ -2188,7 +2198,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
-                springDashpotWallForce(nx,ny,d2,c->r,c->x,c->y,dataP,fx,fy);
+                springDashpotWallForceCircle(nx,ny,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
         }

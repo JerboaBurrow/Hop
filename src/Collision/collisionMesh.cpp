@@ -32,7 +32,7 @@ namespace Hop::System::Physics
         {
             for (unsigned i = 0; i < vertices.size(); i++)
             {
-                Rectangle * lw = dynamic_cast<Rectangle*>(worldVertices[i].get());
+                RectanglePrimitive * lw = dynamic_cast<RectanglePrimitive*>(worldVertices[i].get());
                 MeshRectangle * lv = dynamic_cast<MeshRectangle*>(vertices[i].get());
 
                 if (lw != nullptr && lv != nullptr)
@@ -53,9 +53,9 @@ namespace Hop::System::Physics
                     lw->y = lv->y;
                     lw->r = lv->r;
                     
-                    Hop::Maths::rotateClockWise(lw, c, s);
-                    Hop::Maths::scale(lw, transform.scale*2.0);
-                    Hop::Maths::translate(lw, transform.x, transform.y);
+                    lw->rotateClockWise(c, s);
+                    lw->scale(transform.scale*2.0);
+                    lw->translate(transform.x, transform.y);
 
                 }
             }
@@ -146,17 +146,19 @@ namespace Hop::System::Physics
             }
         }
 
-        double omega = bestAngle(transform.x, transform.y, transform.scale);
-        transform.theta = omega;
+        double phi = bestAngle(transform.x, transform.y, transform.scale);
 
-        double co = std::cos(omega);
-        double so = std::sin(omega);
+        physics.omega = Hop::Maths::angleDistanceAtan2<double>(transform.theta, phi);
 
-        double ct = physics.translationalDrag*dt / (2.0*mass);
-        double bt = 1.0/(1.0+ct);
-        double at = (1.0-ct)*bt;
+        transform.theta = phi;
+
+        double co = std::cos(phi);
+        double so = std::sin(phi);
 
         double dtdt = dt*dt;
+
+        physics.vx = -transform.x;
+        physics.vy = -transform.y;
 
         std::vector<uint8_t> inside(worldVertices.size());
 
@@ -183,10 +185,13 @@ namespace Hop::System::Physics
             {
                 inside[i] = worldVertices[i]->lastInside;
 
+                worldVertices[i]->rotationalDamping(-physics.omega, physics.rotationalDrag, transform.x, transform.y);
+
                 worldVertices[i]->step
                 (
                     dt,
                     dtdt,
+                    physics.translationalDrag,
                     (vertices[i]->x*co + vertices[i]->y*so)*transform.scale + transform.x,
                     (vertices[i]->y*co - vertices[i]->x*so)*transform.scale + transform.y
                 );
@@ -200,7 +205,7 @@ namespace Hop::System::Physics
         {
             for (unsigned i = 0; i < vertices.size(); i++)
             {
-                Rectangle * lw = dynamic_cast<Rectangle*>(worldVertices[i].get());
+                RectanglePrimitive * lw = dynamic_cast<RectanglePrimitive*>(worldVertices[i].get());
                 MeshRectangle * lv = dynamic_cast<MeshRectangle*>(vertices[i].get());
 
                 if (lw != nullptr && lv != nullptr)
@@ -221,15 +226,14 @@ namespace Hop::System::Physics
                     lw->y = lv->y;
                     lw->r = lv->r;
                     
-                    Hop::Maths::rotateClockWise(lw, c, s);
-                    Hop::Maths::scale(lw, transform.scale*2.0);
-                    Hop::Maths::translate(lw, transform.x, transform.y);
+                    lw->rotateClockWise(c, s);
+                    lw->scale(transform.scale*2.0);
+                    lw->translate(transform.x, transform.y);
 
                 }
             }
         }
 
-        transform.theta = omega;
         centerOfMassWorld(transform.x, transform.y);
 
         double dx = 0.0; 
@@ -238,7 +242,7 @@ namespace Hop::System::Physics
         {
             worldVertices[i]->stepGlobal
             (
-                dt, dtdt, at, bt, gx, gy, dx, dy
+                dt, dtdt, physics, gx, gy, dx, dy
             );
         }
 
@@ -247,6 +251,12 @@ namespace Hop::System::Physics
 
         transform.x += dx;
         transform.y += dy;
+
+        physics.vx += transform.x;
+        physics.vy += transform.y;
+
+        physics.vx /= dt;
+        physics.vy /= dt;
 
         kineticEnergy += (dx*dx+dy*dy)/(dt*dt);
 
@@ -301,26 +311,27 @@ namespace Hop::System::Physics
         this->radius = 0.5 * std::sqrt(x*x+y*y);
     }
 
-    double CollisionMesh::momentOfInertia(double x, double y)
+    double CollisionMesh::momentOfInertia(double x, double y, double mass)
     {
 
         double m = 0.0;
         double dx = 0.0;
         double dy = 0.0;
+        double me = mass/double(size());
         // apply composite area method
         // assume non-overlapping
-        // assume unit mass for each piece
+        // assume homogeneous mass for each piece
         for (unsigned i = 0; i < size(); i++)
         {
             std::shared_ptr<CollisionPrimitive> c = worldVertices[i];
-            Rectangle * r = dynamic_cast<Rectangle*>(c.get());
+            RectanglePrimitive * r = dynamic_cast<RectanglePrimitive*>(c.get());
 
             if (r == nullptr)
             {
                 // an overestimate, ignore holes
                 dx = c->x - x;
                 dy = c->y - y; 
-                m += 0.5*c->r*c->r + dx*dx+dy*dy;
+                m += me*0.5*c->r*c->r + me*(dx*dx+dy*dy);
             }
             else
             {  
@@ -329,14 +340,14 @@ namespace Hop::System::Physics
                 // an overestimate, ignore holes
                 dx = c->x - x;
                 dy = c->y - y; 
-                m += 0.08333333333333333 * (h*h+w*w) + dx*dx+dy*dy;
+                m += me*0.08333333333333333 * (h*h+w*w) + me*(dx*dx+dy*dy);
             }
         }
 
-        return m * (1.0/float(size()));
+        return m;
     }
 
-    std::ostream & operator<<(std::ostream & o, Rectangle const & r)
+    std::ostream & operator<<(std::ostream & o, RectanglePrimitive const & r)
     {
         o << r.ulx << ", " << r.uly << "    " << r.urx << ", " << r.ury << "\n"
           << r.llx << ", " << r.lly << "    " << r.lrx << ", " << r.lry << "\n"

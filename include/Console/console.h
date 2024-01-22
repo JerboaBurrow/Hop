@@ -137,6 +137,7 @@ namespace Hop
         {"setGravity", &dispatchsPhysics<&sPhysics::lua_setGravity>},
         ///////////////////////////////////////////////////////////////////
         {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
+        {"setSurfaceFriction",&dispatchsCollision<&sCollision::lua_setFriction>},
         ////////////////////////////////////////////////////////////////////
         {"setLoopRoutines",&dispatchLoopRoutines<&LoopRoutines::lua_setRoutines>},
         {"configure", &configure},
