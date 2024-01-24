@@ -21,7 +21,11 @@ set_target_properties(${OUTPUT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAK
 file(COPY "pack.scriptz" DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")
 
 if (TEST_SUITE)
-    add_test(NAME packedScripts COMMAND "/${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/${OUTPUT_NAME}")
+    if(WINDOWS)
+        add_test(NAME packedScripts COMMAND "/${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/${OUTPUT_NAME}.exe")
+    else()
+        add_test(NAME packedScripts COMMAND "/${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/${OUTPUT_NAME}")
+    endif()
     set_tests_properties(packedScripts PROPERTIES
         PASS_REGULAR_EXPRESSION "(this is a, requiring b)(.|\n)+(this is b)"
         WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/"

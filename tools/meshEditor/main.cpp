@@ -30,9 +30,6 @@ int main(int argc, char ** argv)
     float posX = 0.0;
     float posY = 0.0;
 
-    Hop::World::Boundary * bounds;
-    Hop::World::MapSource * source;
-
     Hop::World::FiniteBoundary mapBounds(0,0,16,16);
     Hop::World::FixedSource mapSource;
 
@@ -168,7 +165,6 @@ int main(int argc, char ** argv)
 
         double mouseX, mouseY;
         display.mousePosition(mouseX,mouseY);
-        glm::vec4 worldPos = camera.screenToWorld(mouseX,mouseY);
 
         moveMouseToSite = false;
         

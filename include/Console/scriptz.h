@@ -17,16 +17,25 @@ using json = nlohmann::json;
 
 namespace Hop
 {
+    static const char * SCRIPTZ_FILE_EXTENSION = ".scriptz";
+    static const char * SCRIPTZ_HEADER = "Hop scriptz file, a zlib compressed JSON dump of lua scripts, next line is the uncompressed size";
+
     class Scriptz
     {
 
     public:
 
-        const char * FILE_EXTENSION = ".scriptz";
-        const char * HEADER = "Hop scriptz file, a zlib compressed JSON dump of lua scripts, next line is the uncompressed size";
-
-        Scriptz()
+        Scriptz(std::string s = std::string(SCRIPTZ_HEADER))
         {
+            std::string h = "";
+            for (char c : s)
+            {
+                if (c != '\n')
+                {
+                    h += c;
+                }
+            }
+            header = h;
         }
 
         void load(std::string file)
@@ -58,12 +67,12 @@ namespace Hop
                 std::string dump = data.dump();
                 std::vector<uint8_t> bytes(dump.begin(), dump.end());
 
-                if (!Hop::Util::endsWith(file, FILE_EXTENSION))
+                if (!Hop::Util::endsWith(file, SCRIPTZ_FILE_EXTENSION))
                 {
-                    file = file + FILE_EXTENSION;
+                    file = file + SCRIPTZ_FILE_EXTENSION;
                 }
 
-                Hop::Util::Z::save(file, bytes, HEADER);
+                Hop::Util::Z::save(file, bytes, header);
             }
         }
 
@@ -128,6 +137,7 @@ namespace Hop
 
     private:
 
+        std::string header;
         std::unordered_map<std::string, std::string> scripts;
 
         class ScriptzIOError: public std::exception 

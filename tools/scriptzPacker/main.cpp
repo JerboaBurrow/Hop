@@ -52,19 +52,19 @@ int main(int argc, char ** argv)
             f++;
         }
 
-        std::string end = scriptz.FILE_EXTENSION;
+        std::string end = Hop::SCRIPTZ_FILE_EXTENSION;
         std::string file = argv[1];
 
         if (file.size() > end.size())
         {
             if (!std::equal(end.rbegin(), end.rend(), file.rbegin()))
             {
-                file = file + scriptz.FILE_EXTENSION;
+                file = file + Hop::SCRIPTZ_FILE_EXTENSION;
             }
         }
         else
         {
-            file = file + scriptz.FILE_EXTENSION;
+            file = file + Hop::SCRIPTZ_FILE_EXTENSION;
         }
         
         std::cout << "saving scripts to " << file;

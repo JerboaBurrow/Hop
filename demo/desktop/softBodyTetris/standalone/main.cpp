@@ -30,9 +30,6 @@ int main(int argc, char ** argv)
     float posX = 0.0;
     float posY = 0.0;
 
-    Hop::World::Boundary * bounds;
-    Hop::World::MapSource * source;
-
     Hop::World::FiniteBoundary mapBounds(0,0,16,16);
     Hop::World::FixedSource mapSource;
     mapSource.load("bordered",false);
@@ -82,8 +79,6 @@ int main(int argc, char ** argv)
     if (status != "LUA_OK") { WARN(status) >> log; }
 
     high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
-
-    Hop::System::Sound::sSound & sound = manager.getSystem<Hop::System::Sound::sSound>();
 
     while (display.isOpen())
     {
