@@ -30,9 +30,6 @@ int main(int argc, char ** argv)
     float posX = 0.0;
     float posY = 0.0;
 
-    Hop::World::Boundary * bounds;
-    Hop::World::MapSource * source;
-
     Hop::World::FiniteBoundary mapBounds(0,0,16,16);
     Hop::World::FixedSource mapSource;
     mapSource.load("bordered",false);
@@ -69,15 +66,12 @@ int main(int argc, char ** argv)
     collisions.setDetector(std::move(det));
     collisions.setResolver(std::move(res));
 
-    Hop::LoopRoutines loop;
-
     Hop::LuaExtraSpace luaStore;
 
     luaStore.ecs = &manager;
     luaStore.world = world.get();
     luaStore.physics = &physics;
     luaStore.resolver = &collisions;
-    luaStore.loopRoutines = &loop;
 
     console.luaStore(&luaStore);
     console.runFile("config.lua");
@@ -86,8 +80,6 @@ int main(int argc, char ** argv)
 
     high_resolution_clock::time_point t0, t1, tp0, tp1, tr0, tr1;
 
-    Hop::System::Sound::sSound & sound = manager.getSystem<Hop::System::Sound::sSound>();
-
     while (display.isOpen())
     {
 
@@ -95,13 +87,7 @@ int main(int argc, char ** argv)
 
         if (!paused)
         {
-            for (const auto & routine : loop.routines)
-            {
-                if (frameId % routine.every == 0)
-                {
-                    console.runFile(routine.filename);
-                }
-            }
+            console.runFile("loop.lua");
         }
 
         jGLInstance->beginFrame();

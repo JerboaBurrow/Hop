@@ -38,6 +38,7 @@ jobs:
     - name: linux-windows
       run: |
         ./build.sh -t -r -d -w
+        cp build/*.dll build/TestScriptPack/ 
 
     - name: Tests
       working-directory: ${{github.workspace}}/build

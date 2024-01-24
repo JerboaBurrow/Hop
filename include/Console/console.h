@@ -11,6 +11,7 @@
 #include <System/Physics/sCollision.h>
 #include <jLog/jLog.h>
 #include <Object/id.h>
+#include <Console/scriptz.h>
 
 #include <memory>
 #include <vector>
@@ -30,42 +31,15 @@ namespace Hop
     using jLog::Log;
     using jLog::ERRORCODE;
 
-    struct Routine 
-    {
-        std::string filename;
-        uint16_t every;
-
-        bool read(lua_State * lua, const char * name);
-        bool read(lua_State * lua, int index);
-    };
-
-    struct LoopRoutines
-    {
-        std::vector<Routine> routines;
-
-        int lua_setRoutines(lua_State * lua);
-    };
-
     struct LuaExtraSpace
     {
         EntityComponentSystem * ecs;
         AbstractWorld * world;
         sPhysics * physics;
         sCollision * resolver;
-        LoopRoutines * loopRoutines;
+        Console * console;
+        Scriptz * scripts;
     };
-
-    // LoopRoutines
-
-    typedef int (LoopRoutines::*LoopRoutinesMember)(lua_State * lua);
-
-    template <LoopRoutinesMember function>
-    int dispatchLoopRoutines(lua_State * lua)
-    {
-        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
-        LoopRoutines * ptr = store->loopRoutines;
-        return ((*ptr).*function)(lua);
-    }
 
     // ECS 
 
@@ -115,42 +89,24 @@ namespace Hop
         return ((*ptr).*function)(lua);
     }
 
+    // Scriptz
+    
+    typedef int (Scriptz::*ScriptzMember)(lua_State * lua);
+
+    template <ScriptzMember function>
+    int dispatchScriptz(lua_State * lua)
+    {
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+        Scriptz * ptr = store->scripts;
+        return ((*ptr).*function)(lua);
+    }
+
+
     int configure(lua_State * lua);
 
     int timeMillis(lua_State * lua);
 
     int lua_applyForce(lua_State * lua);
-
-    // register lib
-
-    const luaL_Reg hopLib[] =
-    {
-        {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
-        {"getTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_getTransform>},
-        {"setTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_setTransform>},
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
-        ///////////////////////////////////////////////////////////////////////////////////////////
-        {"setPhysicsTimeStep",&dispatchsPhysics<&sPhysics::lua_setTimeStep>},
-        {"setPhysicsSubSamples",&dispatchsPhysics<&sPhysics::lua_setSubSamples>},
-        {"kineticEnergy", &dispatchsPhysics<&sPhysics::lua_kineticEnergy>},
-        {"setGravity", &dispatchsPhysics<&sPhysics::lua_setGravity>},
-        ///////////////////////////////////////////////////////////////////
-        {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
-        {"setSurfaceFriction",&dispatchsCollision<&sCollision::lua_setFriction>},
-        ////////////////////////////////////////////////////////////////////
-        {"setLoopRoutines",&dispatchLoopRoutines<&LoopRoutines::lua_setRoutines>},
-        {"configure", &configure},
-        {"timeMillis", &timeMillis},
-        {"applyForce", &lua_applyForce},
-        {NULL, NULL}
-    };
-
-    static int load_hopLib(lua_State * lua)
-    {
-        luaL_newlib(lua,hopLib);
-        return 1;
-    }
 
     class Console 
     {
@@ -248,19 +204,29 @@ namespace Hop
             *static_cast<LuaExtraSpace**>(lua_getextraspace(lua)) = ptr;
         }
 
-        const std::vector<Routine> & getLoopRoutines() const 
-        { 
-            LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
-            LoopRoutines * loop = store->loopRoutines;
-            return loop->routines;
-        }
-        
-        void setRoutines(std::vector<Routine> r)
+        void runScript(std::string name)
         {
+
             LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
-            LoopRoutines * loop = store->loopRoutines;
-            loop->routines = r;
-            return;
+            Scriptz * scripts = store->scripts;
+
+            std::string body = scripts->get(name);
+
+            if (body == "")
+            {
+                lua_pushliteral(lua, "script not found");
+                lua_error(lua);
+            }
+
+            lastCommandOrProgram = name;
+            lastStatus = 
+            (
+                luaL_loadstring(lua, body.c_str()) ||
+                lua_pcall(lua, 0, LUA_MULTRET, 0)
+            );
+            
+            handleErrors();
+            
         }
 
     private:
@@ -283,6 +249,38 @@ namespace Hop
             stackTrace += std::string("\n") + lua_tostring(lua, -1);
             lua_pop(lua, 1);
             return 0;
+        }
+
+        // register lib
+
+        static int load_hopLib(lua_State * lua)
+        {
+            luaL_Reg hopLib[15] =
+            {
+                {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
+                {"getTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_getTransform>},
+                {"setTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_setTransform>},
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
+                ///////////////////////////////////////////////////////////////////////////////////////////
+                {"setPhysicsTimeStep",&dispatchsPhysics<&sPhysics::lua_setTimeStep>},
+                {"setPhysicsSubSamples",&dispatchsPhysics<&sPhysics::lua_setSubSamples>},
+                {"kineticEnergy", &dispatchsPhysics<&sPhysics::lua_kineticEnergy>},
+                {"setGravity", &dispatchsPhysics<&sPhysics::lua_setGravity>},
+                ///////////////////////////////////////////////////////////////////
+                {"setCoefRestitution",&dispatchsCollision<&sCollision::lua_setCOR>},
+                {"setSurfaceFriction",&dispatchsCollision<&sCollision::lua_setFriction>},
+                ////////////////////////////////////////////////////////////////////
+                {"configure", &configure},
+                {"timeMillis", &timeMillis},
+                {"applyForce", &lua_applyForce},
+                ////////////////////////////////////////////////////////////////////
+                {"require", &dispatchScriptz<&Scriptz::require>},
+                {NULL, NULL}
+            };
+
+            luaL_newlib(lua,hopLib);
+            return 1;
         }
     };
 }

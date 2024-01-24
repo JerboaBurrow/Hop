@@ -21,6 +21,19 @@ namespace Hop::Util
 
     typedef std::pair<double,double> tupled;
 
+    inline bool endsWith(std::string str, std::string end)
+    {
+        if (str.size() > end.size())
+        {
+            if (std::equal(end.rbegin(), end.rend(), str.rbegin()))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
 
 #endif /* HOP_UTIL_H */

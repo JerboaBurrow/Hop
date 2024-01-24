@@ -49,102 +49,11 @@ namespace Hop
         return 0;
     }
 
-    int LoopRoutines::lua_setRoutines(lua_State * lua)
-    {
-        LuaTable<Routine> loopRoutines;
-
-        int n = lua_gettop(lua);
-
-        if (n != 1)
-        {
-            lua_pushliteral(lua, "expected 1 table argument in setLoopRoutines");
-            return lua_error(lua);
-        }
-
-        loopRoutines.read(lua, 1);
-
-        routines = loopRoutines.data;
-
-        return 0;
-    }
-
     int timeMillis(lua_State * lua)
     {
         int64_t millis = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         lua_pushnumber(lua, millis);
         return 1;
-    }
-
-    bool Routine::read(lua_State * lua, const char * name)
-    {
-        int returnType = lua_getfield(lua, 1, name);
-        if (returnType == LUA_TTABLE)
-        {
-            LuaString name;
-            LuaNumber e;
-
-            if (name.read(lua, "file"))
-            {
-                filename = name.characters;
-                std::cout << filename << ", ";
-            }
-            else
-            {
-                lua_pop(lua,1);
-                return false;
-            }
-
-            if (e.read(lua, "every"))
-            {
-                every = uint16_t(e.n);
-                std::cout << every << "\n";
-            }
-            else
-            {
-                lua_pop(lua,1);
-                return false;
-            }
-
-            return true;
-        }
-        else
-        {
-            lua_pop(lua,1);
-            return false;
-        }
-    }
-
-    bool Routine::read(lua_State * lua, int index)
-    {
-
-        int returnType = lua_getfield(lua, index, "file");
-
-        if (returnType == LUA_TSTRING)
-        {
-            filename = lua_tostring(lua, index+1);
-            lua_pop(lua,1);
-        }
-        else
-        {
-            lua_pop(lua, 1);
-            return false;
-        }
-
-        returnType = lua_getfield(lua, index, "every");
-
-        if (returnType == LUA_TNUMBER)
-        {
-            every = lua_tonumber(lua, index+1);
-            lua_pop(lua,1);
-        }
-        else
-        {
-            return false;
-            lua_pop(lua, 1);
-        }
-
-        return true;
-
     }
 
     int lua_applyForce(lua_State * lua)

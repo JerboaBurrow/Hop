@@ -7,7 +7,7 @@
 #include <vector>
 #include <bitset>
 
-#include <zlib.h>
+#include <Util/z.h>
 
 #include <Util/sparseData.h>
 #include <utility>
