@@ -34,7 +34,7 @@ namespace Hop::Util::Z
     (
         std::string file, 
         std::vector<uint8_t> data,
-        std::string header = "compresses file, next line is uncompressed size"
+        std::string header = "compressed file, next line is uncompressed size"
     );
 }
 

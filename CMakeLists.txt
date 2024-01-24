@@ -140,8 +140,6 @@ endif()
 
 target_link_libraries(Hop PUBLIC jGL ${GLEW_LIBRARIES} zlibstatic stduuid Lua Miniaudio)
 
-# add_library(FreeType ALIAS freetype)
-
 if (NOT ANDROID)
     add_subdirectory(tools/)
 endif ()
@@ -181,6 +179,8 @@ IF (TEST_SUITE)
         set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)
         include(Catch)
         catch_discover_tests(testSuite)
+
+        add_subdirectory("${PROJECT_SOURCE_DIR}/tests/regression")
     endif()
   
 ENDIF(TEST_SUITE)

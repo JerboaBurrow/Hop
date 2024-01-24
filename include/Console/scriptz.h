@@ -2,6 +2,10 @@
 #define SCRIPTZ_H
 
 #include <Util/z.h>
+#include <Util/util.h>
+
+#include <Console/lua.h>
+#include <Console/LuaString.h>
 
 #include <unordered_map>
 #include <string>
@@ -22,7 +26,8 @@ namespace Hop
         const char * HEADER = "Hop scriptz file, a zlib compressed JSON dump of lua scripts, next line is the uncompressed size";
 
         Scriptz()
-        {}
+        {
+        }
 
         void load(std::string file)
         {
@@ -53,16 +58,7 @@ namespace Hop
                 std::string dump = data.dump();
                 std::vector<uint8_t> bytes(dump.begin(), dump.end());
 
-                std::string end = FILE_EXTENSION;
-
-                if (file.size() > end.size())
-                {
-                    if (!std::equal(end.rbegin(), end.rend(), file.rbegin()))
-                    {
-                        file = file + FILE_EXTENSION;
-                    }
-                }
-                else
+                if (!Hop::Util::endsWith(file, FILE_EXTENSION))
                 {
                     file = file + FILE_EXTENSION;
                 }
@@ -71,19 +67,64 @@ namespace Hop
             }
         }
 
-        void add(std::string script, std::string name) 
+        void add(std::string name, std::string script) 
         {
-            scripts[name] = script; 
+            scripts[name] = script;
         }
 
         void remove(std::string name){ scripts.erase(name); }
 
-        std::string get(std::string name) { return scripts[name]; }
+        std::string get(std::string name) 
+        { 
+            if (scripts.find(name) != scripts.cend())
+            {
+                return scripts[name];
+            }
+            else
+            {
+                if (Hop::Util::endsWith(name, ".lua"))
+                {
+                    std::string n = name.substr(0, name.find(".lua"));
+                    return scripts[n];
+                }
+                else
+                {
+                    return scripts[name+".lua"];
+                }
+            }
+        }
 
         std::unordered_map<std::string, std::string>::const_iterator cbegin() const { return scripts.cbegin(); }
         std::unordered_map<std::string, std::string>::const_iterator cend() const { return scripts.cend(); }
 
         const size_t size() const { return scripts.size(); }
+
+        int require(lua_State * lua)
+        {
+            int n = lua_gettop(lua);
+
+            if (n != 1)
+            {
+                lua_pushliteral(lua, "expected a string script name as argument");
+                return lua_error(lua);
+            }
+
+            LuaString script;
+
+            script.read(lua, 1);
+
+            std::string body = get(script.characters);
+
+            if (body == "")
+            {
+                lua_pushliteral(lua, "script not found");
+                return lua_error(lua);
+            }
+
+            luaL_dostring(lua, body.c_str());
+
+            return 0;
+        }
 
     private:
 
