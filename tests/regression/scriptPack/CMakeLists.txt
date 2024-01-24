@@ -22,7 +22,7 @@ file(COPY "pack.scriptz" DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")
 
 if (TEST_SUITE)
     if(WINDOWS)
-        add_test(NAME packedScripts COMMAND "/${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/${OUTPUT_NAME}.exe")
+        add_test(NAME packedScripts COMMAND "wine64 /${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/${OUTPUT_NAME}.exe")
     else()
         add_test(NAME packedScripts COMMAND "/${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/${OUTPUT_NAME}")
     endif()
