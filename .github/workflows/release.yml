@@ -49,7 +49,7 @@ jobs:
           include/vendored/lua/src/luaconf.h \
           include/vendored/lua/src/lualib.h \
           include/vendored/miniaudio \
-          include/vendored/json.hpp
+          include/vendored/json.hpp \
           include/*.h \
           include/vendored/vorbis/include/vorbis \
           include/vendored/ogg/include/ogg;
