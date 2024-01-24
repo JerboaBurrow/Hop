@@ -12,7 +12,7 @@
 #include <vector>
 #include <fstream>
 
-#include <vendored/json.hpp>
+#include <json.hpp>
 using json = nlohmann::json;
 
 namespace Hop

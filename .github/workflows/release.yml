@@ -144,6 +144,7 @@ jobs:
         cp -r build/PerlinWorld demos/
         cp build/*.dll demos/PerlinWorld/
         cd demos && zip -r ../demos.zip * && cd ..
+        cp build/*.dll build/TestScriptPack/ 
 
     - name: Tests (wine64)
       working-directory: ${{github.workspace}}/build
