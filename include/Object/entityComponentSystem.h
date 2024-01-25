@@ -247,6 +247,8 @@ namespace Hop::Object
         int lua_getTransform(lua_State * lua);
         int lua_setTransform(lua_State * lua);
 
+        int lua_removeFromMeshByTag(lua_State * lua);
+
 
     private:
 

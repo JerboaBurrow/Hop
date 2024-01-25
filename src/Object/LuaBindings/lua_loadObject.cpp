@@ -202,8 +202,9 @@ namespace Hop::Object
                 std::vector<std::shared_ptr<CollisionPrimitive>> mesh;
                 for (unsigned i = 0; i < collisionMesh.size(); i++)
                 {
-                    if (collisionMesh[i].size() == 3)
+                    if (collisionMesh[i].size() == 3 || collisionMesh[i].size() == 4)
                     {
+                        uint64_t tag = collisionMesh[i].size() == 4 ? collisionMesh[i][3] : 0;
                         mesh.push_back
                         (
                             std::make_shared<CollisionPrimitive>
@@ -211,6 +212,7 @@ namespace Hop::Object
                                 collisionMesh[i][0],
                                 collisionMesh[i][1],
                                 collisionMesh[i][2],
+                                tag,
                                 meshParameters[0],
                                 meshParameters[1],
                                 meshParameters[2]
@@ -218,8 +220,9 @@ namespace Hop::Object
                         );
                         goodInput = true;
                     }
-                    else if (collisionMesh[i].size() == 8)
+                    else if (collisionMesh[i].size() == 8 || collisionMesh[i].size() == 9)
                     {
+                        uint64_t tag = collisionMesh[i].size() == 9 ? collisionMesh[i][8] : 0;
                         mesh.push_back
                         (
                             std::make_shared<RectanglePrimitive>
@@ -232,6 +235,7 @@ namespace Hop::Object
                                 collisionMesh[i][5],
                                 collisionMesh[i][6],
                                 collisionMesh[i][7],
+                                tag,
                                 meshParameters[0]
                             )
                         );

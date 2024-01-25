@@ -24,6 +24,7 @@ namespace Hop
     using Hop::World::AbstractWorld;
     using Hop::System::Physics::sPhysics;
     using Hop::System::Physics::sCollision;
+    using Hop::Object::Component::cPhysics;
 
     using jLog::INFO;
     using jLog::WARN;
@@ -255,11 +256,12 @@ namespace Hop
 
         static int load_hopLib(lua_State * lua)
         {
-            luaL_Reg hopLib[15] =
+            luaL_Reg hopLib[16] =
             {
                 {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
                 {"getTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_getTransform>},
                 {"setTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_setTransform>},
+                {"removeFromMeshByTag", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_removeFromMeshByTag>},
                 ///////////////////////////////////////////////////////////////////////////////////////////
                 {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
                 ///////////////////////////////////////////////////////////////////////////////////////////
