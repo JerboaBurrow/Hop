@@ -256,12 +256,14 @@ namespace Hop
 
         static int load_hopLib(lua_State * lua)
         {
-            luaL_Reg hopLib[16] =
+            luaL_Reg hopLib[18] =
             {
                 {"loadObject", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_loadObject>},
                 {"getTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_getTransform>},
                 {"setTransform", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_setTransform>},
                 {"removeFromMeshByTag", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_removeFromMeshByTag>},
+                {"meshBoundingBox", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_meshBoundingBox>},
+                {"meshBoundingBoxByTag", &dispatchEntityComponentSystem<&EntityComponentSystem::lua_meshBoundingBoxByTag>},
                 ///////////////////////////////////////////////////////////////////////////////////////////
                 {"maxCollisionPrimitiveSize",&dispatchWorld<&AbstractWorld::lua_worldMaxCollisionPrimitiveSize>},
                 ///////////////////////////////////////////////////////////////////////////////////////////

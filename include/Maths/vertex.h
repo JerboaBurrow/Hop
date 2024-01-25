@@ -8,6 +8,9 @@ namespace Hop::Maths
 
     struct Vertex 
     {
+
+        Vertex() = default;
+        
         Vertex(double x, double y)
         : x(x), y(y)
         {}

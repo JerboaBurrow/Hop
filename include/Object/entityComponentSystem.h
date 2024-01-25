@@ -248,6 +248,8 @@ namespace Hop::Object
         int lua_setTransform(lua_State * lua);
 
         int lua_removeFromMeshByTag(lua_State * lua);
+        int lua_meshBoundingBox(lua_State * lua);
+        int lua_meshBoundingBoxByTag(lua_State * lua);
 
 
     private:

@@ -7,11 +7,13 @@
 #include <cstdint>
 #include <memory>
 #include <set>
+#include <algorithm>
 
 #include <Component/cTransform.h>
 #include <Component/cPhysics.h>
 #include <Collision/collisionPrimitive.h>
 #include <Maths/distance.h>
+#include <Maths/rectangle.h>
 
 namespace Hop::System::Physics
 {
@@ -396,6 +398,44 @@ namespace Hop::System::Physics
                     i++;
                 }
             }
+        }
+
+        Hop::Maths::BoundingBox getBoundingBox() const
+        {
+            return getBoundingBox(worldVertices);
+        }
+
+        Hop::Maths::BoundingBox getBoundingBox
+        (
+            const std::vector<std::shared_ptr<CollisionPrimitive>> & c
+        ) const
+        {
+            std::vector<Vertex> v(c.size());
+            std::transform
+            (
+                c.begin(), 
+                c.end(), 
+                v.begin(),
+                [](std::shared_ptr<CollisionPrimitive> c)
+                {
+                    return Vertex(c->x, c->y);
+                }
+            );
+
+            double r = 0.0;
+
+            for (const std::shared_ptr<CollisionPrimitive> & c : worldVertices)
+            {
+                r = std::max(r, c->r);
+            }
+            
+            return Hop::Maths::boundingBox(v, r);
+        }
+
+        Hop::Maths::BoundingBox getBoundingBox(uint64_t tag)
+        {
+            std::vector<std::shared_ptr<CollisionPrimitive>> c = getByTag(tag);
+            return getBoundingBox(c);
         }
         
     private:
