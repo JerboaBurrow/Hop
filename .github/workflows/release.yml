@@ -494,6 +494,15 @@ jobs:
           name: headers
           path: headers/
 
+      - name: pack
+        run: |
+          ls
+          zip -r linux.zip linux
+          zip -r macos.zip macos
+          zip -r windows.zip windows
+          zip -r android.zip android
+          zip -r headers.zip headers
+
       - name: release
         uses: softprops/action-gh-release@v1
         with:
@@ -502,8 +511,8 @@ jobs:
           name: "release-${{ github.ref_name }}"
           tag_name: ${{ github.ref }}
           files: |
-            linux
-            windows
-            macos
-            android
-            headers
+            linux.zip
+            windows.zip
+            macos.zip
+            android.zip
+            headers.zip
