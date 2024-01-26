@@ -1,6 +1,7 @@
 #ifndef COLLISIONMESHDEBUG_H
 #define COLLISIONMESHDEBUG_H
 
+#include <Collision/collisionPrimitive.h>
 #include <Collision/collisionMesh.h>
 #include <Object/entityComponentSystem.h>
 #include <Component/cRenderable.h>
@@ -21,8 +22,8 @@ namespace Hop::Debugging
     using Hop::Object::Component::cCollideable;
     using Hop::System::Physics::CollisionPrimitive;
     using Hop::System::Physics::MeshPoint;
-    using Hop::System::Physics::Rectangle;
     using Hop::Object::Component::cRenderable;
+    using Hop::Object::Component::cTransform;
 
     class CollisionMeshDebug
     {

@@ -116,3 +116,4 @@ namespace Hop::Object
 
 #include <Object/LuaBindings/lua_loadObject.cpp>
 #include <Object/LuaBindings/lua_transformIO.cpp>
+#include <Object/LuaBindings/lua_meshIO.cpp>

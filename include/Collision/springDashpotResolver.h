@@ -1,17 +1,19 @@
 #ifndef SPRINGDASHPOTRESOLVER_H
 #define SPRINGDASHPOTRESOLVER_H
 
-#include <Collision/collisionResolver.h>
+#include <set>
+#include <iterator>
 #include <cmath>
+
+#include <Collision/collisionResolver.h>
 #include <Collision/collisionMesh.h>
+#include <Component/cPhysics.h>
 
 #include <World/tileWorld.h>
 #include <World/marchingWorld.h>
 
 #include <Maths/topology.h>
 #include <Maths/distance.h>
-#include <set>
-#include <iterator>
 
 namespace Hop::System::Physics
 {

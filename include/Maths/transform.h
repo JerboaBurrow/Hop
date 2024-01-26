@@ -1,15 +1,6 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include <Collision/collisionMesh.h>
-
-namespace Hop::System::Physics
-{
-    struct Rectangle;
-}
-
-using Hop::System::Physics::Rectangle;
-
 namespace Hop::Maths
 {
     template <class T>
