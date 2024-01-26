@@ -68,13 +68,13 @@ jobs:
         ls headers-mingw
 
     - name: build header artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: headers
         path: headers
         
     - name: build header-mingw artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: headers-mingw
         path: headers-mingw
@@ -110,13 +110,13 @@ jobs:
       run: ctest
 
     - name: buildArtifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: linuxbuild
         path: linuxbuild
 
     - name: demoArtifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: demoLinux
         path: demos.zip
@@ -155,13 +155,13 @@ jobs:
       run: MESA_GL_VERSION_OVERRIDE=3.3 ctest --exclude-regex Vulkan
     
     - name: buildArtifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windowsbuild
         path: windowsbuild
 
     - name: demoArtifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: demoWindows
         path: demos.zip
@@ -205,13 +205,13 @@ jobs:
       run: MESA_GL_VERSION_OVERRIDE=3.3 ctest --exclude-regex Vulkan
     
     - name: buildArtifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: macosbuild
         path: macosbuild
 
     - name: demoArtifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: demomacos
         path: demos.zip
@@ -250,13 +250,13 @@ jobs:
           
           
       - name: upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshot
           path: PerlinWorld/screenshot.png
 
       - name: upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshot-map
           path: PerlinWorld/screenshot-map.png
@@ -296,7 +296,7 @@ jobs:
         cp LICENSE* androidbuild/
 
     - name: buildArtifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: androidbuild
         path: androidbuild
@@ -331,13 +331,13 @@ jobs:
 #        sleep 5 && kill $PID
 
     - name: demoAndroid
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: demoAndroid
         path: demo/android/perlinWorld/app/release/*.aab
 
     # - name: upload artifact
-    #   uses: actions/upload-artifact@v3
+    #   uses: actions/upload-artifact@v4
     #   with:
     #     name: screenshot-android
     #     path: screenshot-android.png
