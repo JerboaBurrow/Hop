@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
 
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
     
@@ -125,7 +125,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
     
@@ -170,7 +170,7 @@ jobs:
     runs-on: macos-11
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
 
@@ -225,7 +225,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb x11-apps imagemagick
 
       - name: get linux demos
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: demoLinux
 
@@ -266,7 +266,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
     
@@ -302,7 +302,7 @@ jobs:
         path: androidbuild
 
     - name: get headers
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: headers
         path: headers/
@@ -348,18 +348,18 @@ jobs:
 
     steps:
     
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'true'
 
       - name: get headers
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: headers
           path: headers/
 
       - name: get linux build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: linuxbuild
 
@@ -385,18 +385,18 @@ jobs:
 
     steps:
     
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'true'
 
       - name: get headers
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: headers-mingw
           path: headers/
 
       - name: get windows build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: windowsbuild
 
@@ -420,18 +420,18 @@ jobs:
 
     steps:
     
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'true'
 
       - name: get headers
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: headers
           path: headers/
 
       - name: get macos build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: macosbuild
 
@@ -465,31 +465,31 @@ jobs:
     
     steps:
       - name: get linux build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: linuxbuild
           path: linux
           
       - name: get windows build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: windowsbuild
           path: windows
 
       - name: get macos build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: macosbuild
           path: macos
                 
       - name: get android build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: androidbuild
           path: android
 
       - name: get headers
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: headers
           path: headers/
