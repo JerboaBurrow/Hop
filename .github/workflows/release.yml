@@ -95,9 +95,10 @@ jobs:
         git submodule update --recursive
         ./build.sh -t -d -r
         mkdir linuxbuild 
-        cp build/libHop.a linuxbuild/
-        cp build/libjGL.a linuxbuild/
-        cd linuxbuild && zip -r ../linuxbuild.zip * && cd ..
+        cp build/libHop.a linuxbuild/libHop-linux-x86_64.a
+        cp build/libjGL.a linuxbuild/libjGL-linux-x86_64.a
+        cp LICENSE* linuxbuild/
+
         mkdir demos
         cp -r build/PerlinWorld demos/
         cd demos && zip -r ../demos.zip * && cd ..
@@ -112,7 +113,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: linuxbuild
-        path: linuxbuild.zip
+        path: linuxbuild
 
     - name: demoArtifact
       uses: actions/upload-artifact@v3
@@ -136,10 +137,11 @@ jobs:
         git submodule update --recursive
         ./build.sh -w -d -r -t
         mkdir windowsbuild
-        cp build/libHop.a windowsbuild/
-        cp build/libjGL.a windowsbuild/
+        cp build/libHop.a windowsbuild/libHop-windows.a
+        cp build/libjGL.a windowsbuild/libjGL-windows.a
         cp build/*.dll windowsbuild/
-        cd windowsbuild && zip -r ../windowsbuild.zip * && cd ..
+        cp LICENSE* windowsbuild/
+
         mkdir demos
         cp -r build/PerlinWorld demos/
         cp build/*.dll demos/PerlinWorld/
@@ -156,7 +158,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: windowsbuild
-        path: windowsbuild.zip
+        path: windowsbuild
 
     - name: demoArtifact
       uses: actions/upload-artifact@v3
@@ -188,9 +190,10 @@ jobs:
         git submodule update --recursive
         ./build.sh -o -d -r -t
         mkdir macosbuild
-        cp build/libHop.a macosbuild/
-        cp build/libjGL.a macosbuild/
-        cd macosbuild && zip -r ../macosbuild.zip * && cd ..
+        cp build/libHop.a macosbuild/libHop-macos.a
+        cp build/libjGL.a macosbuild/libjGL-macos.a
+        cp LICENSE* macosbuild/
+        
         mkdir demos
         cp -r build/PerlinWorld demos/
         cd demos && zip -r ../demos.zip * && cd ..
@@ -205,7 +208,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: macosbuild
-        path: macosbuild.zip
+        path: macosbuild
 
     - name: demoArtifact
       uses: actions/upload-artifact@v3
@@ -289,13 +292,14 @@ jobs:
         ./build.sh -r --android android-ndk-r25c
         mkdir androidbuild 
         cp build/libHop* androidbuild/
-        cd androidbuild  && zip -r ../androidbuild.zip * && cd ..
+        cp build/libjGL* androidbuild/
+        cp LICENSE* androidbuild/
 
     - name: buildArtifact
       uses: actions/upload-artifact@v3
       with:
         name: androidbuild
-        path: androidbuild.zip
+        path: androidbuild
 
     - name: get headers
       uses: actions/download-artifact@v3
@@ -364,7 +368,6 @@ jobs:
 
       - name: linux lib test
         run: |
-          unzip linuxbuild.zip
           ls
           mkdir tests/regression/user/include/
           cp *.a tests/regression/user/
@@ -400,7 +403,6 @@ jobs:
 
       - name: mingw lib test
         run: |
-          unzip windowsbuild.zip
           ls
           mkdir tests/regression/user-mingw/include/
           cp *.a tests/regression/user-mingw/
@@ -442,7 +444,6 @@ jobs:
 
       - name: macos lib test
         run: |
-          unzip macosbuild.zip
           ls
           mkdir tests/regression/user-macos/include/
           cp *.a tests/regression/user-macos/
@@ -461,17 +462,19 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: linuxbuild
-          path: linux-x86_64
+          path: linux
           
-      # - name: get windows build
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: windowsbuild
+      - name: get windows build
+        uses: actions/download-artifact@v3
+        with:
+          name: windowsbuild
+          path: windows
 
-      # - name: get macos build
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: macosbuild
+      - name: get macos build
+        uses: actions/download-artifact@v3
+        with:
+          name: macosbuild
+          path: macos
                 
       - name: get android build
         uses: actions/download-artifact@v3
@@ -493,6 +496,8 @@ jobs:
           name: "release-${{ github.ref_name }}"
           tag_name: ${{ github.ref }}
           files: |
-            linux-x86_64
+            linux
+            windows
+            macos
             android
             headers
