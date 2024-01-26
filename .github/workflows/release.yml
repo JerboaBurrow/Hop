@@ -369,6 +369,8 @@ jobs:
       - name: linux lib test
         run: |
           ls
+          mv libHop-linux-x86_64.a libHop.a
+          mv libjGL-linux-x86_64.a libjGL.a
           mkdir tests/regression/user/include/
           cp *.a tests/regression/user/
           cp -r headers/* tests/regression/user/include/
@@ -404,6 +406,8 @@ jobs:
       - name: mingw lib test
         run: |
           ls
+          mv libHop-windows.a libHop.a
+          mv libjGL-windows.a libjGL.a
           mkdir tests/regression/user-mingw/include/
           cp *.a tests/regression/user-mingw/
           cp -r headers/* tests/regression/user-mingw/include/
@@ -445,6 +449,8 @@ jobs:
       - name: macos lib test
         run: |
           ls
+          mv libHop-macos.a libHop.a
+          mv libjGL-macos.a libjGL.a
           mkdir tests/regression/user-macos/include/
           cp *.a tests/regression/user-macos/
           cp -r headers/* tests/regression/user-macos/include/
