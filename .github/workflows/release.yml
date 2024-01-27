@@ -523,3 +523,4 @@ jobs:
             macos.zip
             android.zip
             headers.zip
+            headers-mingw.zip
