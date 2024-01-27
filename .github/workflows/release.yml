@@ -494,6 +494,12 @@ jobs:
           name: headers
           path: headers/
 
+      - name: get headers-mingw
+        uses: actions/download-artifact@v4
+        with:
+          name: headers-mingw
+          path: headers-mingw/
+
       - name: pack
         run: |
           ls
@@ -502,6 +508,7 @@ jobs:
           zip -r windows.zip windows
           zip -r android.zip android
           zip -r headers.zip headers
+          zip -r headers-mingw.zip headers-mingw
 
       - name: release
         uses: softprops/action-gh-release@v1
