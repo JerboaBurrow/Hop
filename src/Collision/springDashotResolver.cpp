@@ -739,6 +739,20 @@ namespace Hop::System::Physics
 
             std::shared_ptr<CollisionPrimitive> c = dataC.mesh[p];
 
+            if (world->getBoundary()->isHard())
+            {
+                Hop::World::FiniteBoundary * fb = dynamic_cast<Hop::World::FiniteBoundary*>(world->getBoundary());
+                if (fb != nullptr)
+                {
+                    hardBoundariesCollisionForce
+                    (
+                        c,
+                        dataP,
+                        *fb
+                    );
+                }
+            }
+
             if (world->pointOutOfBounds(c->x, c->y))
             {
                 continue;
@@ -832,6 +846,20 @@ namespace Hop::System::Physics
         {
 
             std::shared_ptr<CollisionPrimitive> c = dataC.mesh[p];
+
+            if (world->getBoundary()->isHard())
+            {
+                Hop::World::FiniteBoundary * fb = dynamic_cast<Hop::World::FiniteBoundary*>(world->getBoundary());
+                if (fb != nullptr)
+                {
+                    hardBoundariesCollisionForce
+                    (
+                        c,
+                        dataP,
+                        *fb
+                    );
+                }
+            }
 
             if (world->pointOutOfBounds(c->x, c->y))
             {
@@ -2206,6 +2234,82 @@ namespace Hop::System::Physics
         {
             cPhysics dataTmp(0.,0.,0.);
             collisionForce(dataP, dataTmp, li, &r, true);
+        }
+    }
+
+    void SpringDashpot::hardBoundariesCollisionForce
+    (
+        std::shared_ptr<CollisionPrimitive> c,
+        cPhysics & dataP,
+        Hop::World::FiniteBoundary bounds
+    )
+    {
+        double fx = 0.0;
+        double fy = 0.0;
+        double r2 = c->r*c->r;
+
+        if(c->x - bounds.getMinX() < c->r)
+        {
+            double d2 = pointLineSegmentDistanceSquared<double>
+            (
+                c->x,c->y,
+                bounds.getMinX(), bounds.getMinY(),
+                bounds.getMinX(), bounds.getMaxY()
+            );
+
+            if (d2 < r2)
+            {
+                springDashpotWallForceCircle(1.0,0.0,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
+                c->applyForce(fx, fy);
+            }
+        }
+
+        if(c->x - bounds.getMaxX() < c->r)
+        {
+            double d2 = pointLineSegmentDistanceSquared<double>
+            (
+                c->x,c->y,
+                bounds.getMaxX(), bounds.getMinY(),
+                bounds.getMaxX(), bounds.getMaxY()
+            );
+
+            if (d2 < r2)
+            {
+                springDashpotWallForceCircle(-1.0,0.0,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
+                c->applyForce(fx, fy);
+            }
+        }
+
+        if(c->y - bounds.getMinY() < c->r)
+        {
+            double d2 = pointLineSegmentDistanceSquared<double>
+            (
+                c->x,c->y,
+                bounds.getMinX(), bounds.getMinY(),
+                bounds.getMaxX(), bounds.getMinY()
+            );
+
+            if (d2 < r2)
+            {
+                springDashpotWallForceCircle(0.0,1.0,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
+                c->applyForce(fx, fy);
+            }
+        }
+        
+        if(c->y - bounds.getMaxY() < c->r)
+        {
+            double d2 = pointLineSegmentDistanceSquared<double>
+            (
+                c->x,c->y,
+                bounds.getMinX(), bounds.getMaxY(),
+                bounds.getMaxX(), bounds.getMaxY()
+            );
+
+            if (d2 < r2)
+            {
+                springDashpotWallForceCircle(0.0,-1.0,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
+                c->applyForce(fx, fy);
+            }
         }
     }
 }

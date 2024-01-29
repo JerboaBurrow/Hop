@@ -224,6 +224,8 @@ namespace Hop::World
             return 1;
         }
 
+        Boundary * getBoundary() { return boundary; }
+
     protected:
 
         uint64_t seed;

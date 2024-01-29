@@ -30,9 +30,8 @@ int main(int argc, char ** argv)
     float posX = 0.0;
     float posY = 0.0;
 
-    Hop::World::FiniteBoundary mapBounds(0,0,16,16);
+    Hop::World::FiniteBoundary mapBounds(0,0,16,16,true);
     Hop::World::FixedSource mapSource;
-    mapSource.load("bordered",false);
 
     world = std::make_unique<TileWorld>
     (
