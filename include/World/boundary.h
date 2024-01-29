@@ -35,9 +35,9 @@ namespace Hop::World
             int my, 
             int Mx, 
             int My,
+            bool hard = false,
             int px = 0,
-            int py = 0,
-            bool hard = false
+            int py = 0
         )
         :   minX(mx), 
             minY(my), 
@@ -65,6 +65,11 @@ namespace Hop::World
         }
 
         const bool isHard() const { return hardOutOfBounds; }
+
+        double getMinX() const { return minX; }
+        double getMinY() const { return minY; }
+        double getMaxX() const { return maxX; }
+        double getMaxY() const { return maxY; }
 
     private:
 

@@ -192,6 +192,13 @@ namespace Hop::System::Physics
             double ny
         );
 
+        void hardBoundariesCollisionForce
+        (
+            std::shared_ptr<CollisionPrimitive> c,
+            cPhysics & dataP,
+            Hop::World::FiniteBoundary bounds
+        );
+
     private:
 
         double collisionTime, coefficientOfRestitution;
