@@ -32,7 +32,6 @@ int main(int argc, char ** argv)
 
     Hop::World::FiniteBoundary mapBounds(0,0,16,16,true);
     Hop::World::FixedSource mapSource;
-    //mapSource.load("bordered",false);
 
     world = std::make_unique<TileWorld>
     (
