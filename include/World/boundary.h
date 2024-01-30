@@ -35,7 +35,10 @@ namespace Hop::World
             int my, 
             int Mx, 
             int My,
-            bool hard = false,
+            bool hardBottom = false,
+            bool hardTop = false,
+            bool hardLeft = false,
+            bool hardRight = false,
             int px = 0,
             int py = 0
         )
@@ -44,9 +47,13 @@ namespace Hop::World
             maxX(Mx), 
             maxY(My), 
             periodicX(px), 
-            periodicY(py)
+            periodicY(py),
+            hardTop(hardTop),
+            hardBottom(hardBottom),
+            hardLeft(hardLeft),
+            hardRight(hardRight)
         {
-            hardOutOfBounds = hard;
+            hardOutOfBounds = hardBottom || hardTop || hardLeft || hardRight;
         }
 
 
@@ -65,6 +72,10 @@ namespace Hop::World
         }
 
         const bool isHard() const { return hardOutOfBounds; }
+        const bool isHardTop() const { return hardTop; }
+        const bool isHardBottom() const { return hardBottom; }
+        const bool isHardLeft() const { return hardLeft; }
+        const bool isHardRight() const { return hardRight; }
 
         double getMinX() const { return minX; }
         double getMinY() const { return minY; }
@@ -75,6 +86,7 @@ namespace Hop::World
 
         int minX, minY, maxX, maxY;
         bool periodicX, periodicY;
+        bool hardTop, hardBottom, hardLeft, hardRight;
         
     };
 

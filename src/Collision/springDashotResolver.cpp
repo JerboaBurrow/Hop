@@ -2248,7 +2248,7 @@ namespace Hop::System::Physics
         double fy = 0.0;
         double r2 = c->r*c->r;
 
-        if(c->x - bounds.getMinX() < c->r)
+        if(bounds.isHardLeft() && c->x - bounds.getMinX() < c->r)
         {
             double d2 = pointLineSegmentDistanceSquared<double>
             (
@@ -2264,7 +2264,7 @@ namespace Hop::System::Physics
             }
         }
 
-        if(c->x - bounds.getMaxX() < c->r)
+        if(bounds.isHardRight() && c->x - bounds.getMaxX() < c->r)
         {
             double d2 = pointLineSegmentDistanceSquared<double>
             (
@@ -2280,7 +2280,7 @@ namespace Hop::System::Physics
             }
         }
 
-        if(c->y - bounds.getMinY() < c->r)
+        if(bounds.isHardBottom() && c->y - bounds.getMinY() < c->r)
         {
             double d2 = pointLineSegmentDistanceSquared<double>
             (
@@ -2296,7 +2296,7 @@ namespace Hop::System::Physics
             }
         }
         
-        if(c->y - bounds.getMaxY() < c->r)
+        if(bounds.isHardTop() && c->y - bounds.getMaxY() < c->r)
         {
             double d2 = pointLineSegmentDistanceSquared<double>
             (

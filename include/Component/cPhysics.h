@@ -37,6 +37,7 @@ namespace Hop::Object::Component
       double friction;
 
       bool isMoveable;
+      bool isGhost;
 
       cPhysics(double x, double y, double t)
       : x(x), y(y), lastX(x), lastY(y), lastTheta(t),
@@ -60,7 +61,8 @@ namespace Hop::Object::Component
         fx(0.0),fy(0.0), omega(0.0), tau(0.0),
         translationalDrag(td), rotationalDrag(rd),
         friction(f),
-        isMoveable(true)
+        isMoveable(true),
+        isGhost(false)
       {}
 
       cPhysics() = default;

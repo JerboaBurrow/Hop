@@ -1,5 +1,9 @@
 s = (1.0-hop.maxCollisionPrimitiveSize()*4.0)/(3*9)
 
+if objects == nil then
+    objects = {}
+end
+
 if lastTime == nil then
     lastTime = hop.timeMillis()
 
@@ -27,12 +31,15 @@ if lastTime == nil then
 
     }
 
-    hop.loadObject(o)
+    id = hop.loadObject(o)
+    table.insert(objects, id)
 end
 
 time = hop.timeMillis()
 
 if time-lastTime > 1000*5 then
+
+    hop.setColour(objects[1], 1.0,0.0,0.0,1.0)
 
     if (hop.kineticEnergy() > 0.1) then
         lastTime = hop.timeMillis()
@@ -61,7 +68,8 @@ if time-lastTime > 1000*5 then
     
         }
 
-        hop.loadObject(o)
+        id = hop.loadObject(o)
+        table.insert(objects, id)
         lastTime = hop.timeMillis()
     end
 end
