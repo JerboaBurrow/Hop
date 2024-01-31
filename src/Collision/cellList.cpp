@@ -141,6 +141,13 @@ namespace Hop::System::Physics
         for (auto it = objects.begin(); it != objects.cend(); it++)
         {
 
+            cPhysics & pData = dataP.get(*it);
+
+            if (pData.isGhost)
+            {
+                continue;
+            }
+
             cCollideable & data = dataC.get(*it);
 
             uint64_t meshSize = data.mesh.size();
@@ -553,6 +560,12 @@ namespace Hop::System::Physics
             {
                 cCollideable & c = dataC.get(*it);
                 cPhysics & p = dataP.get(*it);
+
+                if (p.isGhost)
+                {
+                    continue;
+                }
+
                 resolver->handleObjectWorldCollision(
                     *it,
                     c,

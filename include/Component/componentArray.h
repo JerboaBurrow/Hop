@@ -44,6 +44,7 @@ namespace Hop::Object::Component
 
         virtual ~AbstractComponentArray() = default;
         virtual void objectFreed(Id i) = 0;
+        virtual void remove(Id & i) = 0;
 
     };
 

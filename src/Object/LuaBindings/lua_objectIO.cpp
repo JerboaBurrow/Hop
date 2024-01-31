@@ -38,6 +38,27 @@ namespace Hop::Object
     using Hop::System::Physics::CollisionPrimitive;
     using Hop::System::Physics::RectanglePrimitive;
 
+    int EntityComponentSystem::lua_deleteObject(lua_State * lua)
+    {
+        LuaString sid;
+
+        int n = lua_gettop(lua);
+
+        if (n != 1)
+        {
+            lua_pushliteral(lua,"expected id as argument");
+            return lua_error(lua);
+        }
+
+        sid.read(lua, 1);
+
+        Id id(sid.characters);
+
+        remove(id);
+
+        return 0;
+    }
+
     int EntityComponentSystem::lua_loadObject(lua_State * lua)
     {
         LuaArray<4> colour, transform, util;
@@ -47,7 +68,7 @@ namespace Hop::Object
 
         LuaString shader, name;
 
-        LuaBool isMoveable;
+        LuaBool isMoveable, isGhost;
 
         LuaTable<LuaVec> collisionMesh;
 
@@ -60,6 +81,7 @@ namespace Hop::Object
 
         meshParameters.elements = {CollisionPrimitive::RIGID, 1.0, 1.0};
         isMoveable.bit = true;
+        isGhost.bit = false;
 
         transDrag.n = DEFAULT_TRANSLATIONAL_DRAG;
         rotDrag.n = DEFAULT_ROTATIONAL_DRAG;
@@ -89,6 +111,7 @@ namespace Hop::Object
         shader.read(lua, "shader");
 
         isMoveable.read(lua, "moveable");
+        isGhost.read(lua, "ghost");
 
         isPhysics = collisionMesh.read(lua, "collisionMesh");
 
@@ -190,11 +213,10 @@ namespace Hop::Object
                 cPhysics(x,y,theta, transDrag.n, rotDrag.n, bodyInertia.n, bodyMass.n, bodyFriction.n)
             );
 
-            if (!isMoveable.bit)
-            {
-                cPhysics & data = getComponent<cPhysics>(pid);
-                data.isMoveable = false;
-            }
+            cPhysics & data = getComponent<cPhysics>(pid);
+            data.isMoveable = isMoveable.bit;
+            data.isGhost = isGhost.bit;
+            
 
             if (collisionMesh.size() > 0)
             {

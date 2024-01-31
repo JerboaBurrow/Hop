@@ -176,7 +176,7 @@ namespace Hop::System::Physics
             }
         }
 
-        if (!needsInit)
+        if (!needsInit && physics.isMoveable)
         {
             // should be vectorisable, split with prior and next loop
             //  to make branchless. Indeed we got down to O(1e-7) from O(1e-6)
@@ -236,29 +236,32 @@ namespace Hop::System::Physics
 
         centerOfMassWorld(transform.x, transform.y);
 
-        double dx = 0.0; 
-        double dy = 0.0;
-        for (unsigned i = 0; i < vertices.size(); i++)
+        if (physics.isMoveable)
         {
-            worldVertices[i]->stepGlobal
-            (
-                dt, dtdt, physics, gx, gy, dx, dy
-            );
+            double dx = 0.0; 
+            double dy = 0.0;
+            
+            for (unsigned i = 0; i < vertices.size(); i++)
+            {
+                worldVertices[i]->stepGlobal
+                (
+                    dt, dtdt, physics, gx, gy, dx, dy
+                );
+            }
+
+            gx = 0.0;
+            gy = 0.0;
+
+            transform.x += dx;
+            transform.y += dy;
+
+            physics.vx += transform.x;
+            physics.vy += transform.y;
+
+            physics.vx /= dt;
+            physics.vy /= dt;
+            kineticEnergy += (dx*dx+dy*dy)/(dt*dt);
         }
-
-        gx = 0.0;
-        gy = 0.0;
-
-        transform.x += dx;
-        transform.y += dy;
-
-        physics.vx += transform.x;
-        physics.vy += transform.y;
-
-        physics.vx /= dt;
-        physics.vy /= dt;
-
-        kineticEnergy += (dx*dx+dy*dy)/(dt*dt);
 
         for (auto p : worldVertices)
         {

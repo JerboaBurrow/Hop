@@ -243,6 +243,7 @@ namespace Hop::Object
         // Lua bindings
 
         int lua_loadObject(lua_State * lua);
+        int lua_deleteObject(lua_State * lua);
         
         int lua_getTransform(lua_State * lua);
         int lua_setTransform(lua_State * lua);
@@ -250,6 +251,9 @@ namespace Hop::Object
         int lua_removeFromMeshByTag(lua_State * lua);
         int lua_meshBoundingBox(lua_State * lua);
         int lua_meshBoundingBoxByTag(lua_State * lua);
+
+        int lua_getColour(lua_State * lua);
+        int lua_setColour(lua_State * lua);
 
 
     private:

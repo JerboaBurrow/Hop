@@ -24,7 +24,27 @@ namespace Hop::Object
         return o->id;
     }
 
-    void EntityComponentSystem::remove(Id id){}
+    void EntityComponentSystem::remove(Id id)
+    {
+        for (auto & component : componentData)
+        {
+            component.second->remove(id);
+        }
+        idToSignature[id] = Signature(0);
+        systemManager.objectSignatureChanged(id,idToSignature[id]);
+        idToSignature.erase(id);
+        objects.erase(id);
+
+        for (auto handle : handleToId)
+        {
+            if (handle.second == id)
+            {
+                handleToId.erase(handle.first);
+                break;
+            }
+        }
+
+    }
 
     void EntityComponentSystem::remove(std::string handle){}
 
@@ -114,6 +134,7 @@ namespace Hop::Object
 
 // Lua bindings
 
-#include <Object/LuaBindings/lua_loadObject.cpp>
+#include <Object/LuaBindings/lua_objectIO.cpp>
 #include <Object/LuaBindings/lua_transformIO.cpp>
 #include <Object/LuaBindings/lua_meshIO.cpp>
+#include <Object/LuaBindings/lua_renderableIO.cpp>

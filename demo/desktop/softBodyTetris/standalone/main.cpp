@@ -10,6 +10,8 @@ int main(int argc, char ** argv)
 
     jGL::DesktopDisplay display(glm::ivec2(resX,resY),"Soft Body Tetris", conf);
 
+    display.setFrameLimit(60);
+
     glewInit();
 
     jGLInstance = std::move(std::make_shared<jGL::GL::OpenGLInstance>(display.getRes()));
@@ -30,7 +32,7 @@ int main(int argc, char ** argv)
     float posX = 0.0;
     float posY = 0.0;
 
-    Hop::World::FiniteBoundary mapBounds(0,0,16,16,true);
+    Hop::World::FiniteBoundary mapBounds(0,0,16,16,true,false,true,true);
     Hop::World::FixedSource mapSource;
 
     world = std::make_unique<TileWorld>
