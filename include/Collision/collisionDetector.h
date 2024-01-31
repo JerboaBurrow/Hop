@@ -73,13 +73,21 @@ namespace Hop::System::Physics
             );
         }
 
+        enum class CollisionType {NONE, OBJECT, WORLD, OBJECT_WORLD};
+
+        virtual CollisionType objectHasCollided(Id & id) { return collided[id]; }
+
     protected:
 
         tupled limX, limY;
         double lX, lY;
 
-    };
+        std::unordered_map<Id, CollisionType> collided;
 
+    };
 }
+
+std::ostream & operator<<(std::ostream & o, Hop::System::Physics::CollisionDetector::CollisionType t);
+
 
 #endif /* COLLISIONDETECTOR_H */

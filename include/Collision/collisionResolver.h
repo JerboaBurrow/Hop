@@ -36,7 +36,7 @@ namespace Hop::System::Physics
 
         virtual ~CollisionResolver() = default;
         
-        virtual void handleObjectObjectCollision
+        virtual bool handleObjectObjectCollision
         (
             Id & objectI, uint64_t particleI,
             Id & objectJ, uint64_t particleJ,
@@ -44,7 +44,7 @@ namespace Hop::System::Physics
             cPhysics & pI, cPhysics & pJ
         ) = 0;
 
-        virtual void handleObjectWorldCollision
+        virtual bool handleObjectWorldCollision
         (
             Id id,
             cCollideable & dataC,

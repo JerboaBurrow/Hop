@@ -241,12 +241,18 @@ namespace Hop::System::Physics
                 cCollideable & collidableJ = dataC.get(idj.first);
                 cPhysics & physicsJ = dataP.get(idj.first);
                 
-                resolver->handleObjectObjectCollision(
+                bool c = resolver->handleObjectObjectCollision(
                     idi.first,idi.second,
                     idj.first,idj.second,
                     collidableI, collidableJ,
                     physicsI, physicsJ
                 );
+
+                if (c)
+                {
+                    collided[idi.first] = CollisionType::OBJECT;
+                    collided[idj.first] = CollisionType::OBJECT;
+                }
                 p2++;
             }
             p1++;
@@ -313,12 +319,18 @@ namespace Hop::System::Physics
                 cCollideable & collidableJ = dataC[idToIndexC.at(idj.first)];
                 cPhysics & physicsJ = dataP[idToIndexP.at(idj.first)];
 
-                resolver->handleObjectObjectCollision(
+                bool c = resolver->handleObjectObjectCollision(
                     idi.first,idi.second,
                     idj.first,idj.second,
                     collidableI, collidableJ,
                     physicsI, physicsJ
                 );
+
+                if (c)
+                {
+                    collided[idi.first] = CollisionType::OBJECT;
+                    collided[idj.first] = CollisionType::OBJECT;
+                }
                 p2++;
             }
             p1++;
@@ -364,6 +376,8 @@ namespace Hop::System::Physics
         ThreadPool * workers
     )
     {
+        for (auto c : collided) { collided[c.first] = CollisionType::NONE; }
+
         populate(dataC, dataP ,objects);
    
         int a1, b1;
@@ -500,80 +514,34 @@ namespace Hop::System::Physics
         ThreadPool * workers
     )
     {
-
-        unsigned nThreads = 0;
-        SpringDashpot * res = static_cast<SpringDashpot*>(resolver);
-
-        if (workers != nullptr)
+        for (auto it = objects.begin(); it != objects.end(); it++)
         {
-            nThreads = workers->size();
-        }
+            cCollideable & c = dataC.get(*it);
+            cPhysics & p = dataP.get(*it);
 
-        if (nThreads > 1 && res != nullptr)
-        {
-
-            unsigned step = std::floor(float(objects.size())/float(nThreads));
-
-            for (unsigned t = 0; t < nThreads; t++)
+            if (p.isGhost)
             {
-
-                std::set<Id>::iterator start = objects.begin();
-                std::advance(start, t*step);
-                std::set<Id>::iterator end = objects.begin();
-                std::advance(end, (t+1)*step);
-
-                workers->queueJob
-                (
-                    std::bind
-                    (
-                        &SpringDashpot::handleObjectWorldCollisions,
-                        res,
-                        std::ref(dataC),
-                        std::ref(dataP),
-                        start,
-                        end,
-                        world
-                    )
-                );
-            }
-            workers->wait();
-
-            for (unsigned t = 0; t < nThreads; t++)
-            {
-                workers->queueJob
-                (
-                    std::bind
-                    (
-                        &ComponentArray<cPhysics>::reduce,
-                        &dataP,
-                        t,
-                        REDUCTION_TYPE::SUM_EQUALS
-                    )
-                );
+                continue;
             }
 
-            workers->wait();
-        }
-        else
-        {
-            for (auto it = objects.begin(); it != objects.end(); it++)
-            {
-                cCollideable & c = dataC.get(*it);
-                cPhysics & p = dataP.get(*it);
+            bool col = resolver->handleObjectWorldCollision(
+                *it,
+                c,
+                p,
+                world
+            );
 
-                if (p.isGhost)
+            if (col)
+            {
+                if (collided[*it] == CollisionType::OBJECT)
                 {
-                    continue;
+                    collided[*it] = CollisionType::OBJECT_WORLD;
                 }
-
-                resolver->handleObjectWorldCollision(
-                    *it,
-                    c,
-                    p,
-                    world
-                );
+                else
+                {
+                    collided[*it] = CollisionType::WORLD;
+                }
             }
         }
-
     }
 }

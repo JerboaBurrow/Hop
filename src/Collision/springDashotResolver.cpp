@@ -460,6 +460,7 @@ namespace Hop::System::Physics
             lj->applyForce(fx, fy);
             li->applyForce(-fx, -fy);
         }
+
     }
 
     void SpringDashpot::collisionForce
@@ -534,7 +535,7 @@ namespace Hop::System::Physics
 
     }
 
-    void SpringDashpot::handleObjectObjectCollision(
+    bool SpringDashpot::handleObjectObjectCollision(
         Id & objectI, uint64_t particleI,
         Id & objectJ, uint64_t particleJ,
         cCollideable & cI, cCollideable & cJ,
@@ -553,7 +554,7 @@ namespace Hop::System::Physics
         { 
             if (cI.mesh.getIsRigid() || particleI == particleJ) 
             { 
-                return; 
+                return false; 
             }
         }
 
@@ -578,10 +579,12 @@ namespace Hop::System::Physics
 
         if (dd == 0.0)
         {
-            return;
+            return true;
         }
 
-        if (dd < rc*rc)
+        bool collided = dd < rc*rc;
+
+        if (collided)
         {
             li = dynamic_cast<RectanglePrimitive*>(ci.get());
             lj = dynamic_cast<RectanglePrimitive*>(cj.get());
@@ -618,6 +621,15 @@ namespace Hop::System::Physics
             pJ.fx = fjx;
             pJ.fy = fjy;
             pJ.tau = tauj;
+        }
+
+        if (objectI == objectJ)
+        {
+            return false;
+        }
+        else
+        {
+            return collided;
         }
     }
 
@@ -669,13 +681,15 @@ namespace Hop::System::Physics
         }
     }
 
-    void SpringDashpot::handleObjectWorldCollision(
+    bool SpringDashpot::handleObjectWorldCollision(
         Id id,
         cCollideable & dataC,
         cPhysics & dataP,
         AbstractWorld * world
     )
     {
+
+        bool collided = false;
 
         double fx = dataP.fx;
         double fy = dataP.fy;
@@ -685,7 +699,7 @@ namespace Hop::System::Physics
 
         if (tw != nullptr)
         {
-            handleObjectWorldCollision(
+            collided = handleObjectWorldCollision(
                 id,
                 dataC,
                 dataP,
@@ -698,14 +712,15 @@ namespace Hop::System::Physics
                 dataP.fy = fy;
                 dataP.tau = tau;
             }
-            return;
+            
+            return collided;
         }
         
         MarchingWorld * mw = dynamic_cast<MarchingWorld*>(world);
 
         if (mw != nullptr)
         {
-            handleObjectWorldCollision(
+            collided = handleObjectWorldCollision(
                 id,
                 dataC,
                 dataP,
@@ -718,17 +733,20 @@ namespace Hop::System::Physics
                 dataP.fy = fy;
                 dataP.tau = tau;
             }
-            return;
+            return collided;
         }
+
+        return collided;
     }
 
-    void SpringDashpot::handleObjectWorldCollision(
+    bool SpringDashpot::handleObjectWorldCollision(
         Id id,
         cCollideable & dataC,
         cPhysics & dataP,
         TileWorld * world
     )
     {
+        bool collided = false;
         double x0, y0, s;
         Tile h;
         double halfS, S, hx, hy, lx, ly;
@@ -749,7 +767,8 @@ namespace Hop::System::Physics
                         c,
                         dataP,
                         *fb,
-                        world->worldUnitLength()
+                        world->worldUnitLength(),
+                        collided
                     );
                 }
             }
@@ -778,7 +797,8 @@ namespace Hop::System::Physics
                 (
                     c,
                     dataP,
-                    tileBounds
+                    tileBounds,
+                    collided
                 );
             }
 
@@ -814,7 +834,8 @@ namespace Hop::System::Physics
                 lx,
                 ly,
                 s,
-                inside
+                inside,
+                collided
             );
 
             if (!inside && !c->recentlyInside())
@@ -824,20 +845,24 @@ namespace Hop::System::Physics
                 (
                     c,
                     dataP,
-                    neighbours
+                    neighbours,
+                    collided
                 );
             }
 
         }
+
+        return collided;
     }
 
-    void SpringDashpot::handleObjectWorldCollision(
+    bool SpringDashpot::handleObjectWorldCollision(
         Id id,
         cCollideable & dataC,
         cPhysics & dataP,
         MarchingWorld * world
     )
     {
+        bool collided = true;
         double x0, y0, s;
         Tile h;
         double halfS, S, hx, hy, lx, ly;
@@ -858,7 +883,8 @@ namespace Hop::System::Physics
                         c,
                         dataP,
                         *fb,
-                        world->worldUnitLength()
+                        world->worldUnitLength(),
+                        collided
                     );
                 }
             }
@@ -900,7 +926,8 @@ namespace Hop::System::Physics
                 lx,
                 ly,
                 s,
-                inside
+                inside,
+                collided
             );
             
             if (!inside && !c->recentlyInside())
@@ -910,18 +937,21 @@ namespace Hop::System::Physics
                 (
                     c,
                     dataP,
-                    neighbours
+                    neighbours,
+                    collided
                 );
             }
         }
 
+        return collided;
     }
 
     void SpringDashpot::neighbourTilesCollision
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
-        TileNeighbourData & tileNeighbours
+        TileNeighbourData & tileNeighbours,
+        bool & collided
     )
     {
         double hy, hx, lx, ly, x, y;
@@ -958,6 +988,7 @@ namespace Hop::System::Physics
                 ly,
                 s,
                 inside,
+                collided,
                 true
             );
         }
@@ -989,6 +1020,7 @@ namespace Hop::System::Physics
                 ly,
                 s,
                 inside,
+                collided,
                 true
             );
         }
@@ -1019,6 +1051,7 @@ namespace Hop::System::Physics
                 ly,
                 s,
                 inside,
+                collided,
                 true
             );
         }
@@ -1050,6 +1083,7 @@ namespace Hop::System::Physics
                 ly,
                 s,
                 inside,
+                collided,
                 true
             );
         }
@@ -1080,6 +1114,7 @@ namespace Hop::System::Physics
                 ly,
                 s,
                 inside,
+                collided,
                 true
             );
         }
@@ -1111,6 +1146,7 @@ namespace Hop::System::Physics
                 ly,
                 s,
                 inside,
+                collided,
                 true
             );
         }
@@ -1141,6 +1177,7 @@ namespace Hop::System::Physics
                 ly,
                 s,
                 inside,
+                collided,
                 true
             );
         }
@@ -1172,6 +1209,7 @@ namespace Hop::System::Physics
                 ly,
                 s,
                 inside,
+                collided,
                 true
             );
         }
@@ -1211,6 +1249,7 @@ namespace Hop::System::Physics
         double & ly,
         double s,
         bool & inside,
+        bool & collided,
         bool neighbour
     )
     {
@@ -1975,6 +2014,7 @@ namespace Hop::System::Physics
                 }
                 else
                 {
+                    collided = true;
                     return;
                 }
             }
@@ -1987,6 +2027,7 @@ namespace Hop::System::Physics
                 }
                 else
                 {
+                    collided = true;
                     return;
                 }
             }
@@ -2004,12 +2045,14 @@ namespace Hop::System::Physics
         {
             if (f1)
             {
+                collided = true;
                 springDashpotWallForceCircle(nx,ny,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
 
             if (f2)
             {
+                collided = true;
                 springDashpotWallForceCircle(-nx,-ny,d2p,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
@@ -2027,14 +2070,14 @@ namespace Hop::System::Physics
 
             if (f1)
             {
-
+                collided = true;
                 collisionForce(dataP, dataA, li, &r1a, true);
 
             }
 
             if ((f1 || f2) && bc)
             {
-
+                collided = true;
                 collisionForce(dataP, dataB, li, &r1b, true);
                 collisionForce(dataP, dataC, li, &r1c, true);
 
@@ -2047,7 +2090,8 @@ namespace Hop::System::Physics
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
-        TileBoundsData & tileBounds
+        TileBoundsData & tileBounds,
+        bool & collided
     )
     {
         double nx, ny;
@@ -2199,7 +2243,7 @@ namespace Hop::System::Physics
         }
     }
 
-    void SpringDashpot::tileBoundariesCollisionForce
+    bool SpringDashpot::tileBoundariesCollisionForce
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
@@ -2230,6 +2274,7 @@ namespace Hop::System::Physics
             {
                 springDashpotWallForceCircle(nx,ny,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
+                return true;
             }
         }
         else
@@ -2237,6 +2282,7 @@ namespace Hop::System::Physics
             cPhysics dataTmp(0.,0.,0.);
             collisionForce(dataP, dataTmp, li, &r, true);
         }
+        return false;
     }
 
     void SpringDashpot::hardBoundariesCollisionForce
@@ -2244,7 +2290,8 @@ namespace Hop::System::Physics
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
         Hop::World::FiniteBoundary bounds,
-        float lengthScale
+        float lengthScale,
+        bool & collided
     )
     {
         double fx = 0.0;
@@ -2267,6 +2314,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
+                collided = true;
                 springDashpotWallForceCircle(1.0,0.0,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
@@ -2283,6 +2331,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
+                collided = true;
                 springDashpotWallForceCircle(-1.0,0.0,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
@@ -2299,6 +2348,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
+                collided = true;
                 springDashpotWallForceCircle(0.0,1.0,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }
@@ -2315,6 +2365,7 @@ namespace Hop::System::Physics
 
             if (d2 < r2)
             {
+                collided = true;
                 springDashpotWallForceCircle(0.0,-1.0,d2,c->r,c->effectiveMass,c->x,c->y,dataP,fx,fy);
                 c->applyForce(fx, fy);
             }

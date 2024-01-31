@@ -12,7 +12,7 @@
 
 #include <chrono>
 using namespace std::chrono;
-
+#include <unordered_map>
 
 namespace Hop::System::Physics
 {
@@ -50,6 +50,8 @@ namespace Hop::System::Physics
         {
             resolver = std::move(r);
         }
+
+        CollisionDetector::CollisionType objectHasCollided(Id & id) { return detector->objectHasCollided(id); }
 
         void centreOn(std::pair<float,float> p){centreOn(p.first,p.second);}
 
