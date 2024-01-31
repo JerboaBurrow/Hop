@@ -748,7 +748,8 @@ namespace Hop::System::Physics
                     (
                         c,
                         dataP,
-                        *fb
+                        *fb,
+                        world->worldUnitLength()
                     );
                 }
             }
@@ -856,7 +857,8 @@ namespace Hop::System::Physics
                     (
                         c,
                         dataP,
-                        *fb
+                        *fb,
+                        world->worldUnitLength()
                     );
                 }
             }
@@ -2241,20 +2243,26 @@ namespace Hop::System::Physics
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
-        Hop::World::FiniteBoundary bounds
+        Hop::World::FiniteBoundary bounds,
+        float lengthScale
     )
     {
         double fx = 0.0;
         double fy = 0.0;
         double r2 = c->r*c->r;
 
-        if(bounds.isHardLeft() && c->x - bounds.getMinX() < c->r)
+        double mx = bounds.getMinX()*lengthScale;
+        double Mx = bounds.getMaxX()*lengthScale;
+        double my = bounds.getMinY()*lengthScale;
+        double My = bounds.getMaxY()*lengthScale;
+
+        if(bounds.isHardLeft() && std::abs(c->x - mx) < c->r)
         {
             double d2 = pointLineSegmentDistanceSquared<double>
             (
                 c->x,c->y,
-                bounds.getMinX(), bounds.getMinY(),
-                bounds.getMinX(), bounds.getMaxY()
+                mx, my,
+                mx, My
             );
 
             if (d2 < r2)
@@ -2264,13 +2272,13 @@ namespace Hop::System::Physics
             }
         }
 
-        if(bounds.isHardRight() && c->x - bounds.getMaxX() < c->r)
+        if(bounds.isHardRight() && std::abs(c->x - Mx) < c->r)
         {
             double d2 = pointLineSegmentDistanceSquared<double>
             (
                 c->x,c->y,
-                bounds.getMaxX(), bounds.getMinY(),
-                bounds.getMaxX(), bounds.getMaxY()
+                Mx, my,
+                Mx, My
             );
 
             if (d2 < r2)
@@ -2280,13 +2288,13 @@ namespace Hop::System::Physics
             }
         }
 
-        if(bounds.isHardBottom() && c->y - bounds.getMinY() < c->r)
+        if(bounds.isHardBottom() && std::abs(c->y - my) < c->r)
         {
             double d2 = pointLineSegmentDistanceSquared<double>
             (
                 c->x,c->y,
-                bounds.getMinX(), bounds.getMinY(),
-                bounds.getMaxX(), bounds.getMinY()
+                mx, my,
+                Mx, bounds.getMinY()
             );
 
             if (d2 < r2)
@@ -2296,13 +2304,13 @@ namespace Hop::System::Physics
             }
         }
         
-        if(bounds.isHardTop() && c->y - bounds.getMaxY() < c->r)
+        if(bounds.isHardTop() && std::abs(c->y - My) < c->r)
         {
             double d2 = pointLineSegmentDistanceSquared<double>
             (
                 c->x,c->y,
-                bounds.getMinX(), bounds.getMaxY(),
-                bounds.getMaxX(), bounds.getMaxY()
+                mx, My,
+                Mx, My
             );
 
             if (d2 < r2)

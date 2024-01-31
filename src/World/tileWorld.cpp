@@ -184,7 +184,6 @@ namespace Hop::World
         Tile w = toTile<uint64_t>(map->getAtCoordinate(i-1,j));
         if 
         (
-            (hardOutOfBounds && boundary->outOfBounds(ix-1,iy))  || 
             w == Tile::FULL                 ||
             w == Tile::RIGHT_HALF
         )
@@ -219,7 +218,6 @@ namespace Hop::World
         Tile nw = toTile<uint64_t>(map->getAtCoordinate(i-1,j+1));
         if 
         (
-            (hardOutOfBounds && boundary->outOfBounds(ix-1,iy+1)) ||
             nw == Tile::FULL                    ||
             nw == Tile::BOTTOM_HALF             ||
             nw == Tile::RIGHT_HALF              ||
@@ -235,8 +233,7 @@ namespace Hop::World
         // NORTH
         Tile n = toTile<uint64_t>(map->getAtCoordinate(i,j+1));
         if 
-        (
-            (hardOutOfBounds && boundary->outOfBounds(ix,iy+1))  || 
+        ( 
             n == Tile::FULL                 ||
             n == Tile::BOTTOM_HALF
         )
@@ -271,7 +268,6 @@ namespace Hop::World
         Tile ne = toTile<uint64_t>(map->getAtCoordinate(i+1,j+1));
         if 
         (
-            (hardOutOfBounds && boundary->outOfBounds(ix-1,iy-1))    ||
             ne == Tile::FULL                    ||
             ne == Tile::BOTTOM_HALF             ||
             ne == Tile::LEFT_HALF               ||
@@ -287,7 +283,6 @@ namespace Hop::World
         Tile e = toTile<uint64_t>(map->getAtCoordinate(i+1,j));
         if 
         (
-            (hardOutOfBounds && boundary->outOfBounds(ix+1,iy))  || 
             e == Tile::FULL                 ||
             e == Tile::LEFT_HALF
         )
@@ -323,7 +318,6 @@ namespace Hop::World
         Tile se = toTile<uint64_t>(map->getAtCoordinate(i-1,j+1));
         if 
         (
-            (hardOutOfBounds && boundary->outOfBounds(ix-1,iy+1))   ||
             se == Tile::FULL                    ||
             se == Tile::TOP_HALF                ||
             se == Tile::LEFT_HALF               ||
@@ -339,7 +333,6 @@ namespace Hop::World
         Tile S = toTile<uint64_t>(map->getAtCoordinate(i,j-1));
         if 
         (
-            (hardOutOfBounds && boundary->outOfBounds(ix,iy-1))  || 
             S == Tile::FULL                 ||
             S == Tile::TOP_HALF
         )
@@ -374,7 +367,6 @@ namespace Hop::World
         Tile sw = toTile<uint64_t>(map->getAtCoordinate(i-1,j-1));
         if 
         (
-            (hardOutOfBounds && boundary->outOfBounds(ix-1,iy-1))    ||
             sw == Tile::FULL                    ||
             sw == Tile::TOP_HALF                ||
             sw == Tile::RIGHT_HALF              ||

@@ -27,7 +27,7 @@ if lastTime == nil then
         ["rotationalDrag"] = 100.0,
         ["mass"] = 1.0,
         ["inertia"] = 0.01,
-        ["name"] = ""
+        ["name"] = "current"
 
     }
 
@@ -64,7 +64,7 @@ if time-lastTime > 1000*5 then
             ["rotationalDrag"] = 0.01,
             ["mass"] = 1.0,
             ["inertia"] = 0.01,
-            ["name"] = ""
+            ["name"] = "current"
     
         }
 

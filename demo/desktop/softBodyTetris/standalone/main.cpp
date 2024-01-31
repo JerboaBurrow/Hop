@@ -84,6 +84,44 @@ int main(int argc, char ** argv)
     while (display.isOpen())
     {
 
+        double fx = 0.0;
+        double fy = 0.0;
+        double impulse = 9.81*0.9*150.0;
+
+        Id id = manager.idFromHandle("current");
+
+        if (display.keyHasEvent(GLFW_KEY_W, jGL::EventType::PRESS))
+        {
+            fy += impulse;
+        }
+
+        if (display.keyHasEvent(GLFW_KEY_S, jGL::EventType::PRESS))
+        {
+            fy -= impulse;
+        }
+
+        if (display.keyHasEvent(GLFW_KEY_A, jGL::EventType::PRESS))
+        {
+            fx -= impulse;
+        }
+
+        if (display.keyHasEvent(GLFW_KEY_D, jGL::EventType::PRESS))
+        {
+            fx += impulse;
+        }
+
+        if (fx != 0.0 || fy != 0.0)
+        {
+            physics.applyForce
+            (
+                &manager,
+                id,
+                fx,
+                fy,
+                true
+            );
+        }
+
         if (display.getEvent(GLFW_KEY_SPACE).type == jGL::EventType::PRESS) { paused = !paused; }
 
         if (!paused)
