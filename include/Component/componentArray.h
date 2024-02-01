@@ -3,10 +3,11 @@
 
 #include <Object/id.h>
 #include <exception>
-#include <unordered_map>
+#include <sparsehash/dense_hash_map>
 #include <Component/cPhysics.h>
 #include <Component/cCollideable.h>
 
+using google::dense_hash_map;
 
 namespace Hop::Object
 {
@@ -59,6 +60,8 @@ namespace Hop::Object::Component
         {
             componentData = std::make_unique<T[]>(maxObjects);
             backBuffered = false;
+            idToIndex.set_empty_key(-1);
+            indexToId.set_empty_key(Id(-1));
         }
 
         ComponentArray(const ComponentArray<T> & a)
@@ -111,7 +114,7 @@ namespace Hop::Object::Component
         size_t allocatedWorkerData(){ return workerData.size(); }
 
         inline T * getWorkerData(size_t worker) { return workerData[worker].get(); }
-        inline const std::unordered_map<Id,size_t> & getIdToIndex() const { return idToIndex; }
+        inline dense_hash_map<Id,size_t> & getIdToIndex() { return idToIndex; }
 
         inline void allocateWorkerData(size_t workers)
         {
@@ -156,8 +159,8 @@ namespace Hop::Object::Component
 
         std::vector<std::unique_ptr<T[]>> workerData;
 
-        std::unordered_map<Id,size_t> idToIndex;
-        std::unordered_map<size_t,Id> indexToId;
+        dense_hash_map<Id,size_t> idToIndex;
+        dense_hash_map<size_t,Id> indexToId;
 
         uint32_t maxObjects;
         size_t nextIndex;

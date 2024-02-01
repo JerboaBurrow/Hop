@@ -266,9 +266,9 @@ namespace Hop::System::Physics
         uint64_t a2,
         uint64_t b2,
         cCollideable * dataC,
-        const std::unordered_map<Id,size_t> & idToIndexC,
+        dense_hash_map<Id,size_t> & idToIndexC,
         cPhysics * dataP,
-        const std::unordered_map<Id,size_t> & idToIndexP,
+        dense_hash_map<Id,size_t> & idToIndexP,
         CollisionResolver * resolver
     )
     {
@@ -309,15 +309,15 @@ namespace Hop::System::Physics
             p2 = 0;
             i = cells[c1+p1]; 
             auto idi = id[i];
-            cCollideable & collidableI = dataC[idToIndexC.at(idi.first)];
-            cPhysics & physicsI = dataP[idToIndexP.at(idi.first)];
+            cCollideable & collidableI = dataC[idToIndexC[idi.first]];
+            cPhysics & physicsI = dataP[idToIndexP[idi.first]];
 
             while (p2 < n2)
             {
                 j = cells[c2+p2];
                 auto idj = id[j];
-                cCollideable & collidableJ = dataC[idToIndexC.at(idj.first)];
-                cPhysics & physicsJ = dataP[idToIndexP.at(idj.first)];
+                cCollideable & collidableJ = dataC[idToIndexC[idj.first]];
+                cPhysics & physicsJ = dataP[idToIndexP[idj.first]];
 
                 bool c = resolver->handleObjectObjectCollision(
                     idi.first,idi.second,
@@ -339,9 +339,9 @@ namespace Hop::System::Physics
 
     void CellList::handleObjectObjectCollisionsThreaded(
         cCollideable * dataC,
-        const std::unordered_map<Id,size_t> & idToIndexC,
+        dense_hash_map<Id,size_t> & idToIndexC,
         cPhysics * dataP,
-        const std::unordered_map<Id,size_t> & idToIndexP,
+        dense_hash_map<Id,size_t> & idToIndexP,
         CollisionResolver * resolver,
         std::pair<unsigned,unsigned> * jobs,
         unsigned njobs

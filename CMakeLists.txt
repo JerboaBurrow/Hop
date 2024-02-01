@@ -106,6 +106,8 @@ include_directories(include/jLog)
 add_subdirectory(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
 include_directories(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build)
 
+set(${SPARSEHASH_INCLUDE_DIRS} include/vendored/sparsehash)
+
 file(GLOB SRC 
     "src/*.cpp"
     "src/Text/*.cpp"
