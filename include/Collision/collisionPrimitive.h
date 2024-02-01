@@ -207,13 +207,8 @@ namespace Hop::System::Physics
     struct RectanglePrimitive : public CollisionPrimitive 
     {
         RectanglePrimitive()
-        : RectanglePrimitive(0.0, 0.0,
-                    0.0, 0.0,
-                    0.0, 0.0,
-                    0.0, 0.0)
-        {
-            stiffness = CollisionPrimitive::RIGID;
-        }
+        : CollisionPrimitive(0.0,0.0,0.0,0,CollisionPrimitive::RIGID,0.0,0.0)
+        {}
 
         RectanglePrimitive
         (        
