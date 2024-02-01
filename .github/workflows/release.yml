@@ -52,7 +52,8 @@ jobs:
           include/vendored/json.hpp \
           include/*.h \
           include/vendored/vorbis/include/vorbis \
-          include/vendored/ogg/include/ogg;
+          include/vendored/ogg/include/ogg \
+          include/vendored/sparsehash;
           do cp -r $inc headers; done
         
         ls headers
