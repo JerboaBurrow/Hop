@@ -185,7 +185,9 @@ namespace Hop::System::Physics
             {
                 inside[i] = worldVertices[i]->lastInside;
 
-                worldVertices[i]->rotationalDamping(-physics.omega, physics.rotationalDrag, transform.x, transform.y);
+                worldVertices[i]->applyTorque(physics.tau, transform.x, transform.y);
+
+                worldVertices[i]->applyTorque(-physics.omega*physics.rotationalDrag, transform.x, transform.y);
 
                 worldVertices[i]->step
                 (

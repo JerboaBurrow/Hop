@@ -87,6 +87,7 @@ int main(int argc, char ** argv)
         double fx = 0.0;
         double fy = 0.0;
         double impulse = 9.81*0.9*150.0;
+        double tau = 0.0;
 
         Id id = manager.idFromHandle("current");
 
@@ -110,6 +111,16 @@ int main(int argc, char ** argv)
             fx += impulse;
         }
 
+        if (display.keyHasEvent(GLFW_KEY_LEFT, jGL::EventType::PRESS))
+        {
+            tau += 3.14*100000;
+        }
+
+        if (display.keyHasEvent(GLFW_KEY_RIGHT, jGL::EventType::PRESS))
+        {
+            tau -= 3.14*100000;
+        }
+
         if (fx != 0.0 || fy != 0.0)
         {
             physics.applyForce
@@ -119,6 +130,16 @@ int main(int argc, char ** argv)
                 fx,
                 fy,
                 true
+            );
+        }
+
+        if (tau != 0.0)
+        {
+            physics.applyTorque
+            (
+                &manager,
+                id,
+                tau
             );
         }
 

@@ -88,10 +88,9 @@ namespace Hop::System::Physics
             yp = oy;
         }
 
-        void rotationalDamping
+        void applyTorque
         (
             double omega,
-            double damp,
             double cx,
             double cy
         )
@@ -123,8 +122,8 @@ namespace Hop::System::Physics
             
             applyForce
             (
-                -damp * tau * rcy,
-                 damp * tau * rcx
+                - tau * rcy,
+                  tau * rcx
             );
         }
 

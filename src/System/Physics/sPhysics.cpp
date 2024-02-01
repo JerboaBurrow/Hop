@@ -123,11 +123,6 @@ namespace Hop::System::Physics
                 dataT.y = ny;
                 dataT.theta = ntheta;
 
-                dataP.fx = 0.0;
-                dataP.fy = 0.0;
-                dataP.tau = 0.0;
-                dataP.omega = 0.0;
-
             }
 
             if (collideables.hasComponent(*it))
@@ -141,6 +136,11 @@ namespace Hop::System::Physics
                 dataP.momentOfInertia = data.mesh.momentOfInertia(dataT.x, dataT.y, dataP.mass);
                 energy += data.mesh.energy();
             }
+
+            dataP.fx = 0.0;
+            dataP.fy = 0.0;
+            dataP.tau = 0.0;
+            dataP.omega = 0.0;
         }
     }
 
@@ -204,6 +204,34 @@ namespace Hop::System::Physics
         {
             dataP.fx += fx;
             dataP.fy += fy;
+        }
+
+    }
+
+    void sPhysics::applyTorque(
+        EntityComponentSystem * m,
+        Id & i,
+        double tau
+    )
+    {
+        cPhysics & dataP = m->getComponent<cPhysics>(i);
+
+        if (m->hasComponent<cCollideable>(i))
+        {
+            cCollideable & c = m->getComponent<cCollideable>(i);
+
+            if (c.mesh.getIsRigid())
+            {
+                dataP.tau += tau * dataP.momentOfInertia;
+            }
+            else
+            {
+                dataP.tau += tau;
+            }
+        }
+        else
+        {
+            dataP.tau += tau;
         }
 
     }

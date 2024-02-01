@@ -54,6 +54,8 @@ namespace Hop::Object
         uint64_t id;
 
         bool operator==( Id const & rhs ) const {return this->id == rhs.id;}
+
+        bool operator!=(Id const & rhs) const { return !(this->id == rhs.id);}
         
         bool operator<(const Id & rhs) const {return this->id < rhs.id;}
 

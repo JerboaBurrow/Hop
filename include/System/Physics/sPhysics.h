@@ -72,6 +72,12 @@ namespace Hop::System::Physics
             bool global = false
         );
 
+        void applyTorque(
+            EntityComponentSystem * m,
+            Id & i,
+            double tau
+        );
+
         void applyForce(
             EntityComponentSystem * m,
             double fx,
