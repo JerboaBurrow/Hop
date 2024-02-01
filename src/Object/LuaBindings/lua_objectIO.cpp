@@ -103,27 +103,27 @@ namespace Hop::Object
             return lua_error(lua);
         }
 
-        hasColour = colour.read(lua, "colour");
-        hasTransform = transform.read(lua, "transform");
+        hasColour = colour.readField(lua, "colour");
+        hasTransform = transform.readField(lua, "transform");
 
         if (hasTransform && hasColour) { isRenderable = true; }
 
-        shader.read(lua, "shader");
+        shader.readField(lua, "shader");
 
-        isMoveable.read(lua, "moveable");
-        isGhost.read(lua, "ghost");
+        isMoveable.readField(lua, "moveable");
+        isGhost.readField(lua, "ghost");
 
-        isPhysics = collisionMesh.read(lua, "collisionMesh");
+        isPhysics = collisionMesh.readField(lua, "collisionMesh");
 
-        meshParameters.read(lua, "meshParameters");
+        meshParameters.readField(lua, "meshParameters");
 
-        name.read(lua, "name");
+        name.readField(lua, "name");
 
-        transDrag.read(lua, "translationalDrag");
-        rotDrag.read(lua, "rotationalDrag");
-        bodyMass.read(lua, "mass");
-        bodyInertia.read(lua, "inertia");
-        bodyFriction.read(lua, "bodyFriction");
+        transDrag.readField(lua, "translationalDrag");
+        rotDrag.readField(lua, "rotationalDrag");
+        bodyMass.readField(lua, "mass");
+        bodyInertia.readField(lua, "inertia");
+        bodyFriction.readField(lua, "bodyFriction");
 
         // now create the object
 

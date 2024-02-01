@@ -26,22 +26,22 @@ namespace Hop
             return lua_error(lua);
         }
 
-        if (dt.read(lua, "timeStep"))
+        if (dt.readField(lua, "timeStep"))
         {
             phys->setTimeStep(dt.n);
         }
 
-        if (subSample.read(lua, "subSample"))
+        if (subSample.readField(lua, "subSample"))
         {
             phys->setSubSamples(subSample.n);
         }
 
-        if (cor.read(lua, "cofr"))
+        if (cor.readField(lua, "cofr"))
         {
             col->setCoefRestitution(cor.n);
         }
 
-        if (sf.read(lua, "surfaceFriction"))
+        if (sf.readField(lua, "surfaceFriction"))
         {
             col->setSurfaceFriction(sf.n);
         }

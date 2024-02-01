@@ -27,7 +27,7 @@ namespace Hop
             }
         }
 
-        bool read(lua_State * lua, const char * name)
+        bool readField(lua_State * lua, const char * name)
         {
             int returnType = lua_getfield(lua, 1, name);
 
@@ -43,6 +43,24 @@ namespace Hop
                 return false;
             }
         }
+
+        bool readGlobal(lua_State * lua, const char * name)
+        {
+            int returnType = lua_getglobal(lua, name);
+
+            if (returnType == LUA_TTABLE)
+            {
+                read(lua, -1);
+                lua_pop(lua,1);
+                return true;
+            }
+            else
+            {   
+                lua_pop(lua,1);
+                return false;
+            }
+        }
+
 
         size_t size() const { return data.size(); }
 

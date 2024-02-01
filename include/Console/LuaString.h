@@ -19,7 +19,7 @@ namespace Hop
             characters = lua_tostring(lua, index);
         }
 
-        bool read(lua_State * lua, const char * name)
+        bool readField(lua_State * lua, const char * name)
         {
             int returnType = lua_getfield(lua, 1, name);
 
@@ -35,6 +35,24 @@ namespace Hop
                 return false;
             }
         }
+
+        bool readGlobal(lua_State * lua, const char * name)
+        {
+            int returnType = lua_getglobal(lua, name);
+
+            if (returnType == LUA_TSTRING)
+            {
+                read(lua, -1);
+                lua_pop(lua,1);
+                return true;
+            }
+            else
+            {   
+                lua_pop(lua,1);
+                return false;
+            }
+        }
+
 
         bool operator ==(const std::string & rhs){ return characters == rhs; }
         operator std::string() { return characters; }
