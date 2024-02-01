@@ -79,17 +79,17 @@ namespace Hop::System::Physics
             uint64_t a2,
             uint64_t b2,
             cCollideable * dataC,
-            const std::unordered_map<Id,size_t> & idToIndexC,
+            dense_hash_map<Id,size_t> & idToIndexC,
             cPhysics * dataP,
-            const std::unordered_map<Id,size_t> & idToIndexP,
+            dense_hash_map<Id,size_t> & idToIndexP,
             CollisionResolver * resolver
         );
 
         void handleObjectObjectCollisionsThreaded(
             cCollideable * dataC,
-            const std::unordered_map<Id,size_t> & idToIndexC,
+            dense_hash_map<Id,size_t> & idToIndexC,
             cPhysics * dataP,
-            const std::unordered_map<Id,size_t> & idToIndexP,
+            dense_hash_map<Id,size_t> & idToIndexP,
             CollisionResolver * resolver,
             std::pair<unsigned,unsigned> * jobs,
             unsigned njobs

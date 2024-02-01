@@ -65,6 +65,11 @@ namespace Hop::Object
             return *this;
         }
 
+        operator long unsigned int()
+        {
+            return id;
+        } 
+
         static const uint64_t NULL_ID_CODE = 0;
 
     private:
