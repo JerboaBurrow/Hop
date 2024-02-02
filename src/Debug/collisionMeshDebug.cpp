@@ -55,7 +55,8 @@ namespace Hop::Debugging
                                     jGL::Transform(cp->x, cp->y, theta, scale*2.0*cpmodel->r),
                                     glm::vec4(ren.r, ren.g, ren.b, ren.a)
                                 ),
-                                sid
+                                sid,
+                                ren.priority
                             );
                         }
                     }
