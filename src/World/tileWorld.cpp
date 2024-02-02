@@ -82,7 +82,8 @@ namespace Hop::World
         double & y0,
         double & s,
         int & i,
-        int & j
+        int & j,
+        bool fillTypes
     )
     {
 
@@ -135,6 +136,18 @@ namespace Hop::World
         nData.southWest.length = s;
         nData.southWest.x = (ix-1)*s;
         nData.southWest.y = (iy-1)*s;
+
+        if (fillTypes)
+        {
+            nData.west.tileType = tileType(i-1,j);
+            nData.northWest.tileType = tileType(i-1,j+1);
+            nData.north.tileType = tileType(i,j+1);
+            nData.northEast.tileType = tileType(i+1,j+1);
+            nData.east.tileType = tileType(i+1,j);
+            nData.southEast.tileType = tileType(i+1,j-1);
+            nData.south.tileType = tileType(i,j-1);
+            nData.southWest.tileType = tileType(i-1,j-1);
+        }
     }
 
     bool TileWorld::westBounds

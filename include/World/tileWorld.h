@@ -24,8 +24,20 @@ namespace Hop::World
         
         void worldToTileData(double x, double y, Tile & h, double & x0, double & y0, double & s, int & i, int & j);
         void boundsTileData(double x, double y, Tile & h, TileBoundsData & bounds, double & x0, double & y0, double & s);
-        void neighourTileData(double x, double y, TileNeighbourData & nData, Tile & h, double & x0, double & y0, double & s, int & i, int & j);
-        
+        void neighourTileData
+        (
+            double x, 
+            double y, 
+            TileNeighbourData & nData, 
+            Tile & h, 
+            double & x0, 
+            double & y0, 
+            double & s, 
+            int & i, 
+            int & j,
+            bool fillTypes = false
+        );
+
         bool westBounds
         (
             double x, 

@@ -2092,7 +2092,7 @@ namespace Hop::System::Physics
 
         RectanglePrimitive * li = dynamic_cast<RectanglePrimitive*>(c.get());
 
-        double rc = c->r*2.0;
+        double rc = c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER;
 
         TileBoundsData tileBounds;
 

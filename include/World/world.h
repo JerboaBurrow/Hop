@@ -178,7 +178,19 @@ namespace Hop::World
 
         virtual void worldToTileData(double x, double y, Tile & h, double & x0, double & y0, double & s, int & i, int & j) = 0;
 
-        virtual void neighourTileData(double x, double y, TileNeighbourData & nData, Tile & h, double & x0, double & y0, double & s, int & i, int & j) = 0;
+        virtual void neighourTileData
+        (
+            double x, 
+            double y, 
+            TileNeighbourData & nData, 
+            Tile & h, 
+            double & x0, 
+            double & y0, 
+            double & s, 
+            int & i, 
+            int & j,
+            bool fillTypes = false
+        ) = 0;
         
         virtual Tile tileType(int i, int j) = 0;
 

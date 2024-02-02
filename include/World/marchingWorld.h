@@ -26,7 +26,19 @@ namespace Hop::World
         void load(std::string filename){}
 
         void worldToTileData(double x, double y, Tile & h, double & x0, double & y0, double & s, int & i, int & j);
-        void neighourTileData(double x, double y, TileNeighbourData & nData, Tile & h, double & x0, double & y0, double & s, int & i, int & j);
+        void neighourTileData
+        (
+            double x, 
+            double y, 
+            TileNeighbourData & nData, 
+            Tile & h, 
+            double & x0, 
+            double & y0, 
+            double & s, 
+            int & i, 
+            int & j,
+            bool fillTypes = false
+        );
         
         Tile tileType(int i, int j);
 
