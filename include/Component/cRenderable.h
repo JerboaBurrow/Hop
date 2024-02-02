@@ -29,6 +29,8 @@ namespace Hop::Object::Component
       float uC;
       float uD;
 
+      uint64_t priority;
+
       std::string shaderHandle;
 
       bool stale;
@@ -37,6 +39,7 @@ namespace Hop::Object::Component
       : r(1.0),g(0.0),b(0.0),a(1.0),
         ux(0.0),uy(0.0),vx(0.0),vy(0.0),
         uA(0.0f),uB(0.0f),uC(0.0f),uD(0.0f),
+        priority(0),
         shaderHandle(shader),stale(true)
       {}
 
@@ -45,26 +48,31 @@ namespace Hop::Object::Component
       : r(1.0),g(0.0),b(0.0),a(1.0),
         ux(0.0),uy(0.0),vx(0.0),vy(0.0),
         uA(0.0f),uB(0.0f),uC(0.0f),uD(0.0f),
+        priority(0),
         shaderHandle(""),stale(true)
       {}
 
       cRenderable(
         std::string shader, 
         float r, float g, float b, float a,
-        float ua, float ub, float uc, float ud
+        float ua, float ub, float uc, float ud,
+        uint64_t p = 0
       )
       : r(r),g(g),b(b),a(a),
         ux(0.0),uy(0.0),vx(0.0),vy(0.0),
         uA(ua),uB(ub),uC(uc),uD(ud),
+        priority(p),
         shaderHandle(shader),stale(true)
       {}
 
       cRenderable(
-        float r, float g, float b, float a
+        float r, float g, float b, float a,
+        uint64_t p = 0
       )
       : r(r),g(g),b(b),a(a),
         ux(0.0),uy(0.0),vx(0.0),vy(0.0),
         uA(0.0f),uB(0.0f),uC(0.0f),uD(0.0f),
+        priority(p),
         shaderHandle(""),stale(true)
       {}
       

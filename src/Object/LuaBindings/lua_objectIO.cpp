@@ -64,7 +64,7 @@ namespace Hop::Object
         LuaArray<4> colour, transform, util;
         LuaArray<3> meshParameters;
 
-        LuaNumber transDrag, rotDrag, bodyMass, bodyInertia, bodyFriction;
+        LuaNumber transDrag, rotDrag, bodyMass, bodyInertia, bodyFriction, priority;
 
         LuaString shader, name;
 
@@ -89,6 +89,8 @@ namespace Hop::Object
         bodyInertia.n = DEFAULT_INTERTIA;
         bodyFriction.n = 0.0;
 
+        priority.n = 0;
+
         // elements on stack
         int n = lua_gettop(lua);
         
@@ -109,6 +111,8 @@ namespace Hop::Object
         if (hasTransform && hasColour) { isRenderable = true; }
 
         shader.readField(lua, "shader");
+
+        priority.readField(lua, "renderPriority");
 
         isMoveable.readField(lua, "moveable");
         isGhost.readField(lua, "ghost");
@@ -201,7 +205,7 @@ namespace Hop::Object
             addComponent<cRenderable>
             (
                 pid,
-                cRenderable(shader.characters,r,g,b,a,ua,ub,uc,ud)
+                cRenderable(shader.characters,r,g,b,a,ua,ub,uc,ud,priority.n)
             );
         }
 
