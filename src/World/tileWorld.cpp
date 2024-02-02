@@ -49,15 +49,16 @@ namespace Hop::World
         j = iy;
     }
 
-    void TileWorld::worldToTileData(float x, float y, Tile & h, float & x0, float & y0, float & s)
+    void TileWorld::worldToTileData(double x, double y, Tile & h, double & x0, double & y0, double & s, int & i, int & j) 
     {
 
-        int ix,iy,i,j;
+        int ix,iy;
         worldToTile(x,y,ix,iy);
         if (boundary->outOfBounds(ix,iy))
         {
             h = Tile::EMPTY;
             s = 0.0; x0 = 0.0; y0 = 0.0;
+            i = 0; j = 0;
             return;
         }
         tileToIdCoord(ix,iy,i,j);
@@ -79,104 +80,83 @@ namespace Hop::World
         Tile & h,
         double & x0,
         double & y0,
-        double & s
+        double & s,
+        int & i,
+        int & j
     )
-{
+    {
 
-        int ix,iy,i,j;
+        int ix,iy;
 
         worldToTile(x,y,ix,iy);
 
         if (boundary->outOfBounds(ix,iy))
         {
-            h = Tile::EMPTY;
             s = 0.0; x0 = 0.0; y0 = 0.0;
+            h = Tile::EMPTY;
         }
 
-        tileToIdCoord(ix,iy,i,j);
-
         h = tileType(i,j);
+
+        tileToIdCoord(ix,iy,i,j);
 
         s =  1.0 / RENDER_REGION_SIZE;
         x0 = ix*s;
         y0 = iy*s;
 
-        nData.west.tileType = tileType(i-1,j);
-
         nData.west.length = s;
         nData.west.x = (ix-1)*s;
         nData.west.y = iy*s;
-
-        nData.northWest.tileType = tileType(i-1,j+1);
 
         nData.northWest.length = s;
         nData.northWest.x = (ix-1)*s;
         nData.northWest.y = (iy+1)*s;
 
-        nData.north.tileType = tileType(i,j+1);
-
         nData.north.length = s;
         nData.north.x = ix*s;
         nData.north.y = (iy+1)*s;
-
-        nData.northEast.tileType = tileType(i+1,j+1);
 
         nData.northEast.length = s;
         nData.northEast.x = (ix+1)*s;
         nData.northEast.y = (iy+1)*s;
 
-
-        nData.east.tileType = tileType(i+1,j);
-
         nData.east.length = s;
         nData.east.x = (ix+1)*s;
         nData.east.y = iy*s;
 
-        nData.southEast.tileType = tileType(i+1,j-1);
-
         nData.southEast.length = s;
         nData.southEast.x = (ix+1)*s;
         nData.southEast.y = (iy-1)*s;
-        
-        nData.south.tileType = tileType(i,j-1);
 
         nData.south.length = s;
         nData.south.x = ix*s;
         nData.south.y = (iy-1)*s;
-
-        nData.southWest.tileType = tileType(i-1,j-1);
 
         nData.southWest.length = s;
         nData.southWest.x = (ix-1)*s;
         nData.southWest.y = (iy-1)*s;
     }
 
-    void TileWorld::boundsTileData(
+    bool TileWorld::westBounds
+    (
         double x, 
         double y, 
-        Tile & h, 
-        TileBoundsData & bounds, 
-        double & x0, 
-        double & y0, 
-        double & s
+        double rc, 
+        TileBoundsData & bounds,
+        double x0,
+        double y0,
+        double s,
+        int i,
+        int j
     )
     {
-        
-        int ix,iy,i,j;
-        worldToTile(x,y,ix,iy);
-        if (boundary->outOfBounds(ix,iy))
+
+        double dd = (x0-x);
+        dd *= dd;
+        if (dd > rc*rc)
         {
-            h = Tile::EMPTY;
-            s = 0.0; x0 = 0.0; y0 = 0.0;
-            return;
+            return false;
         }
-        tileToIdCoord(ix,iy,i,j);
-
-        h = toTile<uint64_t>(map->getAtCoordinate(i,j));
-
-        s = 1.0/float(RENDER_REGION_SIZE);
-        x0 = ix*s;
-        y0 = iy*s;
 
         // now get the bounding lines data
         
@@ -214,23 +194,30 @@ namespace Hop::World
             bounds.wx0 = x0; bounds.wy0 = y0;
             bounds.wx1 = x0; bounds.wy1 = y0+s/2.0;
         }
+        return true;
+    }
 
-        Tile nw = toTile<uint64_t>(map->getAtCoordinate(i-1,j+1));
-        if 
-        (
-            nw == Tile::FULL                    ||
-            nw == Tile::BOTTOM_HALF             ||
-            nw == Tile::RIGHT_HALF              ||
-            nw == Tile::BOTTOM_RIGHT            ||
-            nw == Tile::TOP_LEFT_AND_BOTTOM_RIGHT
-        )
+    bool TileWorld::northBounds
+    (
+        double x, 
+        double y, 
+        double rc, 
+        TileBoundsData & bounds,
+        double x0,
+        double y0,
+        double s,
+        int i,
+        int j
+    )
+    {
+
+        double dd = ((y0+s)-y);
+        dd *= dd;
+        if (dd > rc*rc)
         {
-            // nw corner
-            bounds.nw = true;
+            return false;
         }
 
-
-        // NORTH
         Tile n = toTile<uint64_t>(map->getAtCoordinate(i,j+1));
         if 
         ( 
@@ -264,22 +251,30 @@ namespace Hop::World
             bounds.nx0 = x0+s/2.0; bounds.ny0 = y0+s;
             bounds.nx1 = x0+s; bounds.ny1 = y0+s;
         }
+        return true;
+    }
 
-        Tile ne = toTile<uint64_t>(map->getAtCoordinate(i+1,j+1));
-        if 
-        (
-            ne == Tile::FULL                    ||
-            ne == Tile::BOTTOM_HALF             ||
-            ne == Tile::LEFT_HALF               ||
-            ne == Tile::BOTTOM_LEFT             ||
-            ne == Tile::BOTTOM_LEFT_AND_TOP_RIGHT
-        )
+    bool TileWorld::eastBounds
+    (
+        double x, 
+        double y, 
+        double rc, 
+        TileBoundsData & bounds,
+        double x0,
+        double y0,
+        double s,
+        int i,
+        int j
+    )
+    {
+
+        double dd = ((x0+s)-x);
+        dd *= dd;
+        if (dd > rc*rc)
         {
-            // ne corner
-            bounds.ne = true;
+            return false;
         }
 
-        // EAST
         Tile e = toTile<uint64_t>(map->getAtCoordinate(i+1,j));
         if 
         (
@@ -315,21 +310,31 @@ namespace Hop::World
             bounds.ex1 = x0+s; bounds.ey1 = y0+s/2.0;
         }
 
-        Tile se = toTile<uint64_t>(map->getAtCoordinate(i-1,j+1));
-        if 
-        (
-            se == Tile::FULL                    ||
-            se == Tile::TOP_HALF                ||
-            se == Tile::LEFT_HALF               ||
-            se == Tile::TOP_LEFT                ||
-            se == Tile::TOP_LEFT_AND_BOTTOM_RIGHT
-        )
+        return true;
+
+    }
+
+    bool TileWorld::southBounds
+    (
+        double x, 
+        double y, 
+        double rc, 
+        TileBoundsData & bounds,
+        double x0,
+        double y0,
+        double s,
+        int i,
+        int j
+    )
+    {
+
+        double dd = (y0-y);
+        dd *= dd;
+        if (dd > rc*rc)
         {
-            // se corner
-            bounds.se = true;
+            return false;
         }
 
-        // SOUTH
         Tile S = toTile<uint64_t>(map->getAtCoordinate(i,j-1));
         if 
         (
@@ -354,15 +359,97 @@ namespace Hop::World
         }
         else if 
         (
-            e == Tile::RIGHT_HALF   ||
-            e == Tile::TOP_RIGHT    ||
-            e == Tile::BOTTOM_LEFT_AND_TOP_RIGHT
+            S == Tile::RIGHT_HALF   ||
+            S == Tile::TOP_RIGHT    ||
+            S == Tile::BOTTOM_LEFT_AND_TOP_RIGHT
         )
         {
             // right blocked
             bounds.sx0 = x0+s/2.0; bounds.sy0 = y0;
             bounds.sx1 = x0+s; bounds.sy1 = y0;
         }
+
+        return true;
+
+    }
+
+    void TileWorld::boundsTileData(
+        double x, 
+        double y, 
+        Tile & h, 
+        TileBoundsData & bounds, 
+        double & x0, 
+        double & y0, 
+        double & s
+    )
+    {
+        
+        int ix,iy,i,j;
+        worldToTile(x,y,ix,iy);
+        if (boundary->outOfBounds(ix,iy))
+        {
+            h = Tile::EMPTY;
+            s = 0.0; x0 = 0.0; y0 = 0.0;
+            return;
+        }
+        tileToIdCoord(ix,iy,i,j);
+
+        h = toTile<uint64_t>(map->getAtCoordinate(i,j));
+
+        s = 1.0/float(RENDER_REGION_SIZE);
+        x0 = ix*s;
+        y0 = iy*s;
+
+        westBounds(x,y,s*2.0,bounds,x0,y0,s,i,j);
+
+        Tile nw = toTile<uint64_t>(map->getAtCoordinate(i-1,j+1));
+        if 
+        (
+            nw == Tile::FULL                    ||
+            nw == Tile::BOTTOM_HALF             ||
+            nw == Tile::RIGHT_HALF              ||
+            nw == Tile::BOTTOM_RIGHT            ||
+            nw == Tile::TOP_LEFT_AND_BOTTOM_RIGHT
+        )
+        {
+            // nw corner
+            bounds.nw = true;
+        }
+
+
+        northBounds(x,y,s*2.0,bounds,x0,y0,s,i,j);
+
+        Tile ne = toTile<uint64_t>(map->getAtCoordinate(i+1,j+1));
+        if 
+        (
+            ne == Tile::FULL                    ||
+            ne == Tile::BOTTOM_HALF             ||
+            ne == Tile::LEFT_HALF               ||
+            ne == Tile::BOTTOM_LEFT             ||
+            ne == Tile::BOTTOM_LEFT_AND_TOP_RIGHT
+        )
+        {
+            // ne corner
+            bounds.ne = true;
+        }
+
+        eastBounds(x,y,s*2.0,bounds,x0,y0,s,i,j);
+
+        Tile se = toTile<uint64_t>(map->getAtCoordinate(i-1,j+1));
+        if 
+        (
+            se == Tile::FULL                    ||
+            se == Tile::TOP_HALF                ||
+            se == Tile::LEFT_HALF               ||
+            se == Tile::TOP_LEFT                ||
+            se == Tile::TOP_LEFT_AND_BOTTOM_RIGHT
+        )
+        {
+            // se corner
+            bounds.se = true;
+        }
+
+        southBounds(x,y,s*2.0,bounds,x0,y0,s,i,j);
 
         Tile sw = toTile<uint64_t>(map->getAtCoordinate(i-1,j-1));
         if 

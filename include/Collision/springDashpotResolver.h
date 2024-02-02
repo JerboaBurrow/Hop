@@ -169,7 +169,7 @@ namespace Hop::System::Physics
         (
             std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
-            TileNeighbourData & tileNieghbours,
+            AbstractWorld * world,
             bool & collided
         );
 
@@ -177,7 +177,7 @@ namespace Hop::System::Physics
         (
             std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
-            TileBoundsData & tileBounds,
+            TileWorld * world,
             bool & collided
         );
 

@@ -748,6 +748,7 @@ namespace Hop::System::Physics
     {
         bool collided = false;
         double x0, y0, s;
+        int i,j;
         Tile h;
         double halfS, S, hx, hy, lx, ly;
         bool inside;
@@ -778,41 +779,15 @@ namespace Hop::System::Physics
                 continue;
             }
 
-            TileBoundsData tileBounds;
-
-            world->boundsTileData
+            tileBoundariesCollision
             (
-                c->x,
-                c->y,
-                h,
-                tileBounds,
-                x0,
-                y0,
-                s
-            );  
-
-            if (tileBounds != TileBoundsData())
-            {
-                tileBoundariesCollision
-                (
-                    c,
-                    dataP,
-                    tileBounds,
-                    collided
-                );
-            }
-
-            TileNeighbourData neighbours;
-
-            world->neighourTileData(
-                c->x,
-                c->y,
-                neighbours,
-                h,
-                x0,
-                y0,
-                s
+                c,
+                dataP,
+                world,
+                collided
             );
+
+            world->worldToTileData(c->x,c->y,h,x0,y0,s,i,j);
 
             halfS = double(s)*0.5;
             S = double(s);
@@ -845,7 +820,7 @@ namespace Hop::System::Physics
                 (
                     c,
                     dataP,
-                    neighbours,
+                    world,
                     collided
                 );
             }
@@ -864,6 +839,7 @@ namespace Hop::System::Physics
     {
         bool collided = true;
         double x0, y0, s;
+        int i,j;
         Tile h;
         double halfS, S, hx, hy, lx, ly;
         bool inside;
@@ -893,18 +869,8 @@ namespace Hop::System::Physics
             {
                 continue;
             }
-            
-            TileNeighbourData neighbours;
 
-            world->neighourTileData(
-                c->x,
-                c->y,
-                neighbours,
-                h,
-                x0,
-                y0,
-                s
-            );
+            world->worldToTileData(c->x,c->y,h,x0,y0,s,i,j);
 
             halfS = double(s)*0.5;
             S = double(s);
@@ -937,7 +903,7 @@ namespace Hop::System::Physics
                 (
                     c,
                     dataP,
-                    neighbours,
+                    world,
                     collided
                 );
             }
@@ -950,18 +916,33 @@ namespace Hop::System::Physics
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
-        TileNeighbourData & tileNeighbours,
+        AbstractWorld * world,
         bool & collided
     )
     {
-        double hy, hx, lx, ly, x, y;
+        double hy, hx, lx, ly, x, y, x0, y0, s;
+        int i, j;
         bool inside;
-        float s = tileNeighbours.west.length;
-        double halfS = double(s)*0.5;
-        double S = double(s);
         float ccrit = c->r*NEIGHBOUR_TILE_CHECK_ZONE_MULTIPLIER;
         float ccrit2 = ccrit*ccrit;
 
+        TileNeighbourData tileNeighbours;
+        Tile h;
+
+        world->neighourTileData(
+            c->x,
+            c->y,
+            tileNeighbours,
+            h,
+            x0,
+            y0,
+            s,
+            i,
+            j
+        );
+
+        double halfS = double(s)*0.5;
+        double S = double(s);
         // WEST
 
         float d = c->x - (tileNeighbours.west.x+s);
@@ -975,9 +956,11 @@ namespace Hop::System::Physics
             ly = tileNeighbours.west.y+S;
             x = tileNeighbours.west.x;
             y = tileNeighbours.west.y;
+
+            Tile h = world->tileType(i-1,j);
     
             tileCollision(
-                tileNeighbours.west.tileType,
+                h,
                 x,
                 y,
                 c,
@@ -1001,6 +984,7 @@ namespace Hop::System::Physics
 
         if (d < ccrit2)
         {
+            Tile h = world->tileType(i-1,j+1);
             inside = false;
             hx = tileNeighbours.northWest.x+halfS;
             hy = tileNeighbours.northWest.y+halfS;
@@ -1009,7 +993,7 @@ namespace Hop::System::Physics
             x = tileNeighbours.northWest.x;
             y = tileNeighbours.northWest.y;
             tileCollision(
-                tileNeighbours.northWest.tileType,
+                h,
                 x,
                 y,
                 c,
@@ -1031,6 +1015,7 @@ namespace Hop::System::Physics
 
         if (d < ccrit)
         {
+            Tile h = world->tileType(i,j+1);
             inside = false;
             hx = tileNeighbours.north.x+halfS;
             hy = tileNeighbours.north.y+halfS;
@@ -1040,7 +1025,7 @@ namespace Hop::System::Physics
             y = tileNeighbours.north.y;
     
            tileCollision(
-                tileNeighbours.north.tileType,
+                h,
                 x,
                 y,
                 c,
@@ -1064,6 +1049,7 @@ namespace Hop::System::Physics
 
         if (d < ccrit2)
         {
+            Tile h = world->tileType(i+1,j+1);
             inside = false;
             hx = tileNeighbours.northEast.x+halfS;
             hy = tileNeighbours.northEast.y+halfS;
@@ -1072,7 +1058,7 @@ namespace Hop::System::Physics
             x = tileNeighbours.northEast.x;
             y = tileNeighbours.northEast.y;
             tileCollision(
-                tileNeighbours.northEast.tileType,
+                h,
                 x,
                 y,
                 c,
@@ -1094,6 +1080,7 @@ namespace Hop::System::Physics
 
         if (d < ccrit)
         {
+            Tile h = world->tileType(i+1,j);
             inside = false;
             hx = tileNeighbours.east.x+halfS;
             hy = tileNeighbours.east.y+halfS;
@@ -1103,7 +1090,7 @@ namespace Hop::System::Physics
             y = tileNeighbours.east.y;
     
            tileCollision(
-                tileNeighbours.east.tileType,
+                h,
                 x,
                 y,
                 c,
@@ -1127,6 +1114,7 @@ namespace Hop::System::Physics
 
         if (d < ccrit2)
         {
+            Tile h = world->tileType(i+1,j-1);
             inside = false;
             hx = tileNeighbours.southEast.x+halfS;
             hy = tileNeighbours.southEast.y+halfS;
@@ -1135,7 +1123,7 @@ namespace Hop::System::Physics
             x = tileNeighbours.southEast.x;
             y = tileNeighbours.southEast.y;
             tileCollision(
-                tileNeighbours.southEast.tileType,
+                h,
                 x,
                 y,
                 c,
@@ -1157,6 +1145,7 @@ namespace Hop::System::Physics
 
         if (d < ccrit)
         {
+            Tile h = world->tileType(i,j-1);
             inside = false;
             hx = tileNeighbours.south.x+halfS;
             hy = tileNeighbours.south.y+halfS;
@@ -1166,7 +1155,7 @@ namespace Hop::System::Physics
             y = tileNeighbours.south.y;
     
            tileCollision(
-                tileNeighbours.south.tileType,
+                h,
                 x,
                 y,
                 c,
@@ -1190,6 +1179,7 @@ namespace Hop::System::Physics
 
         if (d < ccrit2)
         {
+            Tile h = world->tileType(i-1,j-1);
             inside = false;
             hx = tileNeighbours.southWest.x+halfS;
             hy = tileNeighbours.southWest.y+halfS;
@@ -1198,7 +1188,7 @@ namespace Hop::System::Physics
             x = tileNeighbours.southWest.x;
             y = tileNeighbours.southWest.y;
             tileCollision(
-                tileNeighbours.southWest.tileType,
+                h,
                 x,
                 y,
                 c,
@@ -2090,7 +2080,7 @@ namespace Hop::System::Physics
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
-        TileBoundsData & tileBounds,
+        TileWorld * world,
         bool & collided
     )
     {
@@ -2102,144 +2092,161 @@ namespace Hop::System::Physics
 
         RectanglePrimitive * li = dynamic_cast<RectanglePrimitive*>(c.get());
 
-        // WEST
+        double rc = c->r*2.0;
 
-        if 
-        (
-            tileBounds.wx0 != 0 &&
-            tileBounds.wx1 != 0 &&
-            tileBounds.wy0 != 0 &&
-            tileBounds.wy1 != 0
-        )
+        TileBoundsData tileBounds;
+
+        double x0,y0,s;
+        int i,j;
+        Tile h;
+
+        world->worldToTileData(c->x,c->y,h,x0,y0,s,i,j);
+
+        if (world->westBounds(c->x,c->y,rc,tileBounds,x0,y0,s,i,j))
         {
-            nx = 1.0; ny = 0.0;
-            lx0 = tileBounds.wx0; ly0 = tileBounds.wy0;
-            lx1 = tileBounds.wx1; ly1 = tileBounds.wy1;
-
-            r.llx = lx0-1.0; r.lly = ly0;
-            r.ulx = r.llx;   r.uly = ly1;
-            r.urx = lx0;     r.ury = ly1;
-            r.lrx = lx0;     r.lry = ly0;
-            r.resetAxes();
-
-            tileBoundariesCollisionForce
+            if 
             (
-                c,
-                dataP,
-                li,
-                r,
-                lx0,
-                ly0,
-                lx1,
-                ly1,
-                nx,
-                ny
-            );
+                tileBounds.wx0 != 0 &&
+                tileBounds.wx1 != 0 &&
+                tileBounds.wy0 != 0 &&
+                tileBounds.wy1 != 0
+            )
+            {
+                nx = 1.0; ny = 0.0;
+                lx0 = tileBounds.wx0; ly0 = tileBounds.wy0;
+                lx1 = tileBounds.wx1; ly1 = tileBounds.wy1;
+
+                r.llx = lx0-1.0; r.lly = ly0;
+                r.ulx = r.llx;   r.uly = ly1;
+                r.urx = lx0;     r.ury = ly1;
+                r.lrx = lx0;     r.lry = ly0;
+                r.resetAxes();
+
+                tileBoundariesCollisionForce
+                (
+                    c,
+                    dataP,
+                    li,
+                    r,
+                    lx0,
+                    ly0,
+                    lx1,
+                    ly1,
+                    nx,
+                    ny
+                );
+            }
         }
 
-        // NORTH
-
-        if 
-        (
-            tileBounds.nx0 != 0 &&
-            tileBounds.nx1 != 0 &&
-            tileBounds.ny0 != 0 &&
-            tileBounds.ny1 != 0
-        )
+        if (world->northBounds(c->x,c->y,rc,tileBounds,x0,y0,s,i,j))
         {
-            nx = 0.0; ny = -1.0;
-            lx0 = tileBounds.nx0; ly0 = tileBounds.ny0;
-            lx1 = tileBounds.nx1; ly1 = tileBounds.ny1;
-
-            r.llx = lx0;     r.lly = ly0;
-            r.ulx = lx0;     r.uly = ly0+1.0;
-            r.urx = lx1;     r.ury = ly0+1.0;
-            r.lrx = lx1;     r.lry = ly0;
-            r.resetAxes();
-
-            tileBoundariesCollisionForce
+            if 
             (
-                c,
-                dataP,
-                li,
-                r,
-                lx0,
-                ly0,
-                lx1,
-                ly1,
-                nx,
-                ny
-            );
+                tileBounds.nx0 != 0 &&
+                tileBounds.nx1 != 0 &&
+                tileBounds.ny0 != 0 &&
+                tileBounds.ny1 != 0
+            )
+            {
+                nx = 0.0; ny = -1.0;
+                lx0 = tileBounds.nx0; ly0 = tileBounds.ny0;
+                lx1 = tileBounds.nx1; ly1 = tileBounds.ny1;
+
+                r.llx = lx0;     r.lly = ly0;
+                r.ulx = lx0;     r.uly = ly0+1.0;
+                r.urx = lx1;     r.ury = ly0+1.0;
+                r.lrx = lx1;     r.lry = ly0;
+                r.resetAxes();
+
+                tileBoundariesCollisionForce
+                (
+                    c,
+                    dataP,
+                    li,
+                    r,
+                    lx0,
+                    ly0,
+                    lx1,
+                    ly1,
+                    nx,
+                    ny
+                );
+            }
         }
 
         // EAST
-
-        if 
-        (
-            tileBounds.ex0 != 0 &&
-            tileBounds.ex1 != 0 &&
-            tileBounds.ey0 != 0 &&
-            tileBounds.ey1 != 0
-        )
+        if (world->eastBounds(c->x,c->y,rc,tileBounds,x0,y0,s,i,j))
         {
-            nx = -1.0; ny = 0.0;
-            lx0 = tileBounds.ex0; ly0 = tileBounds.ey0;
-            lx1 = tileBounds.ex1; ly1 = tileBounds.ey1;
-
-            r.llx = lx0;     r.lly = ly0;
-            r.ulx = lx0;     r.uly = ly0+1.0;
-            r.urx = lx0+1.0; r.ury = ly0+1.0;
-            r.lrx = lx0+1.0; r.lry = ly0;
-            r.resetAxes();
-
-            tileBoundariesCollisionForce
+            if 
             (
-                c,
-                dataP,
-                li,
-                r,
-                lx0,
-                ly0,
-                lx1,
-                ly1,
-                nx,
-                ny
-            );
+                tileBounds.ex0 != 0 &&
+                tileBounds.ex1 != 0 &&
+                tileBounds.ey0 != 0 &&
+                tileBounds.ey1 != 0
+            )
+            {
+                nx = -1.0; ny = 0.0;
+                lx0 = tileBounds.ex0; ly0 = tileBounds.ey0;
+                lx1 = tileBounds.ex1; ly1 = tileBounds.ey1;
+
+                r.llx = lx0;     r.lly = ly0;
+                r.ulx = lx0;     r.uly = ly0+1.0;
+                r.urx = lx0+1.0; r.ury = ly0+1.0;
+                r.lrx = lx0+1.0; r.lry = ly0;
+                r.resetAxes();
+
+                tileBoundariesCollisionForce
+                (
+                    c,
+                    dataP,
+                    li,
+                    r,
+                    lx0,
+                    ly0,
+                    lx1,
+                    ly1,
+                    nx,
+                    ny
+                );
+            }
         }
 
         // SOUTH
 
-        if 
-        (
-            tileBounds.sx0 != 0 &&
-            tileBounds.sx1 != 0 &&
-            tileBounds.sy0 != 0 &&
-            tileBounds.sy1 != 0
-        )
+        if (world->southBounds(c->x,c->y,rc,tileBounds,x0,y0,s,i,j))
         {
-            nx = 0.0; ny = 1.0;
-            lx0 = tileBounds.sx0; ly0 = tileBounds.sy0;
-            lx1 = tileBounds.sx1; ly1 = tileBounds.sy1;
-
-            r.llx = lx0;     r.lly = ly0;
-            r.ulx = lx1;     r.uly = ly0;
-            r.urx = lx1;     r.ury = ly0-1.0;
-            r.lrx = lx0;     r.lry = ly0-1.0;
-            r.resetAxes();
-
-            tileBoundariesCollisionForce
+            if 
             (
-                c,
-                dataP,
-                li,
-                r,
-                lx0,
-                ly0,
-                lx1,
-                ly1,
-                nx,
-                ny
-            );
+                tileBounds.sx0 != 0 &&
+                tileBounds.sx1 != 0 &&
+                tileBounds.sy0 != 0 &&
+                tileBounds.sy1 != 0
+            )
+            {
+                nx = 0.0; ny = 1.0;
+                lx0 = tileBounds.sx0; ly0 = tileBounds.sy0;
+                lx1 = tileBounds.sx1; ly1 = tileBounds.sy1;
+
+                r.llx = lx0;     r.lly = ly0;
+                r.ulx = lx1;     r.uly = ly0;
+                r.urx = lx1;     r.ury = ly0-1.0;
+                r.lrx = lx0;     r.lry = ly0-1.0;
+                r.resetAxes();
+
+                tileBoundariesCollisionForce
+                (
+                    c,
+                    dataP,
+                    li,
+                    r,
+                    lx0,
+                    ly0,
+                    lx1,
+                    ly1,
+                    nx,
+                    ny
+                );
+            }
         }
     }
 

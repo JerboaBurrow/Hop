@@ -194,9 +194,10 @@ namespace Hop::World
     TileData AbstractWorld::getTileData(float x, float y)
     {
         Tile h;
-        float x0, y0, s;
+        double x0, y0, s;
+        int i,j;
 
-        worldToTileData(x,y,h,x0,y0,s);
+        worldToTileData(x,y,h,x0,y0,s,i,j);
 
         return TileData(h,x0,y0,s);
     }
