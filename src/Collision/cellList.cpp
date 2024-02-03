@@ -266,9 +266,9 @@ namespace Hop::System::Physics
         uint64_t a2,
         uint64_t b2,
         cCollideable * dataC,
-        dense_hash_map<Id,size_t> & idToIndexC,
+        dense_hash_map<Id,uint64_t> & idToIndexC,
         cPhysics * dataP,
-        dense_hash_map<Id,size_t> & idToIndexP,
+        dense_hash_map<Id,uint64_t> & idToIndexP,
         CollisionResolver * resolver
     )
     {
@@ -339,9 +339,9 @@ namespace Hop::System::Physics
 
     void CellList::handleObjectObjectCollisionsThreaded(
         cCollideable * dataC,
-        dense_hash_map<Id,size_t> & idToIndexC,
+        dense_hash_map<Id,uint64_t> & idToIndexC,
         cPhysics * dataP,
-        dense_hash_map<Id,size_t> & idToIndexP,
+        dense_hash_map<Id,uint64_t> & idToIndexP,
         CollisionResolver * resolver,
         std::pair<unsigned,unsigned> * jobs,
         unsigned njobs

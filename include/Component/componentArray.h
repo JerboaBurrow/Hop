@@ -7,6 +7,8 @@
 #include <Component/cPhysics.h>
 #include <Component/cCollideable.h>
 
+#include <limits>
+
 using google::dense_hash_map;
 
 namespace Hop::Object
@@ -47,6 +49,9 @@ namespace Hop::Object::Component
         virtual void objectFreed(Id i) = 0;
         virtual void remove(Id & i) = 0;
 
+        const uint64_t EMPTY_KEY = std::numeric_limits<uint64_t>::max();
+        const uint64_t DELETED_KEY = EMPTY_KEY-1; 
+
     };
 
     template <class T>
@@ -55,13 +60,15 @@ namespace Hop::Object::Component
 
     public:
 
-        ComponentArray(uint32_t m)
+        ComponentArray(uint64_t m)
         : maxObjects(m), nextIndex(0)
         {
             componentData = std::make_unique<T[]>(maxObjects);
             backBuffered = false;
-            idToIndex.set_empty_key(-1);
-            indexToId.set_empty_key(Id(-1));
+            idToIndex.set_empty_key(EMPTY_KEY);
+            idToIndex.set_deleted_key(DELETED_KEY);
+            indexToId.set_empty_key(Id(EMPTY_KEY));
+            indexToId.set_deleted_key(Id(DELETED_KEY));
         }
 
         ComponentArray(const ComponentArray<T> & a)
@@ -114,7 +121,7 @@ namespace Hop::Object::Component
         size_t allocatedWorkerData(){ return workerData.size(); }
 
         inline T * getWorkerData(size_t worker) { return workerData[worker].get(); }
-        inline dense_hash_map<Id,size_t> & getIdToIndex() { return idToIndex; }
+        inline dense_hash_map<Id,uint64_t> & getIdToIndex() { return idToIndex; }
 
         inline void allocateWorkerData(size_t workers)
         {
@@ -159,11 +166,11 @@ namespace Hop::Object::Component
 
         std::vector<std::unique_ptr<T[]>> workerData;
 
-        dense_hash_map<Id,size_t> idToIndex;
-        dense_hash_map<size_t,Id> indexToId;
+        dense_hash_map<Id,uint64_t> idToIndex;
+        dense_hash_map<uint64_t,Id> indexToId;
 
         uint32_t maxObjects;
-        size_t nextIndex;
+        uint64_t nextIndex;
 
     };
 
@@ -189,7 +196,7 @@ namespace Hop::Object::Component
             return;
         }
 
-        size_t index = idToIndex[i];
+        uint64_t index = idToIndex[i];
         
         if (index != nextIndex-1)
         {
