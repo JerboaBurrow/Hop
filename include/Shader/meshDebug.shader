@@ -33,7 +33,7 @@ namespace Hop::System::Rendering
         "   if (d2 > t2) {discard;}\n"
         "   float alpha = 1.0-smoothstep(t1, t2, d2);"
         "   float mixer = 1.0-smoothstep(t0, t1, d2);"
-        "   colour = vec4( mix(vec3(0.0,0.0,0.0),oColour.rgb, mixer), alpha );"
+        "   colour = vec4( mix(vec3(0.0,0.0,0.0),oColour.rgb, mixer), alpha*oColour.a );"
         "}";
 
     static const char * rectangleVertexShader = "#version " GLSL_VERSION "\n"
@@ -79,7 +79,7 @@ namespace Hop::System::Rendering
             "float alpha = 1.0;"
             "if (sd <= 0.0) { colour = vec4(oColour.rgb,0.5); }"
             //"if (sd <= 0.1){ alpha = 1.0-smoothstep(0.0,0.1,sd); colour = vec4(oColour.rgb,alpha); }"
-            "else { colour = vec4(oColour.rgb,alpha); }"
+            "else { colour = vec4(oColour.rgb,alpha*oColour.a); }"
         "}";
 }
 
