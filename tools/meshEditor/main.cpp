@@ -1,4 +1,4 @@
-#include <main.h>
+#include "main.h"
 
 int main(int argc, char ** argv)
 {
@@ -148,6 +148,7 @@ int main(int argc, char ** argv)
                 file << "    {" << object.mesh.getModelVertex(i)->x - x
                      << ", " << object.mesh.getModelVertex(i)->y - y
                      << ", " << object.mesh.getModelVertex(i)->r
+                     << ", " << object.mesh.getMeshVertex(i)->tag
                      << "}";
 
                 if (i < object.mesh.size()-1)
@@ -196,6 +197,31 @@ int main(int argc, char ** argv)
         {
             glm::vec2 pos = camera.worldToScreen(activeSite.first, activeSite.second);
             display.setMousePosition(pos.x, pos.y);
+        }
+
+        if (display.keyHasEvent(GLFW_KEY_DOWN, jGL::EventType::PRESS))
+        {
+            int clicked = object.mesh.clicked(activeSite.first, activeSite.second);
+            if (clicked != -1)
+            {
+                auto c = object.mesh.getMeshVertex(clicked);
+
+                if (c->tag >= 1)
+                {
+                    c->tag -= 1;
+                }
+            }
+        }
+
+        if (display.keyHasEvent(GLFW_KEY_UP, jGL::EventType::PRESS))
+        {
+            int clicked = object.mesh.clicked(activeSite.first, activeSite.second);
+            if (clicked != -1)
+            {
+                auto c = object.mesh.getMeshVertex(clicked);
+
+                c->tag += 1;
+            }
         }
 
         if (display.keyHasEvent(GLFW_KEY_ENTER, jGL::EventType::PRESS))
@@ -263,6 +289,21 @@ int main(int argc, char ** argv)
             rendering.draw(jGLInstance, &manager, world.get()); 
 
             tr1 = high_resolution_clock::now();
+
+            int clicked = object.mesh.clicked(activeSite.first, activeSite.second);
+            if (clicked != -1)
+            {
+                auto c = object.mesh.getMeshVertex(clicked);
+
+                jGLInstance->text
+                (
+                    "tag: " + std::to_string(c->tag),
+                    glm::vec2(resX*0.5f,resY-64.0f),
+                    0.5f,
+                    glm::vec4(0.0f,0.0f,0.0f, 1.0f),
+                    glm::bvec2(true,false)
+                );
+            }
 
             if (debug)
             {

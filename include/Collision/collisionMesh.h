@@ -253,6 +253,11 @@ namespace Hop::System::Physics
             return vertices[i];
         }
 
+        std::shared_ptr<CollisionPrimitive> getMeshVertex(size_t i)
+        {
+            return worldVertices[i];
+        }
+
         std::shared_ptr<CollisionPrimitive> operator[](size_t i) 
         {
             return worldVertices[i];
