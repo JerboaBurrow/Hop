@@ -2,7 +2,7 @@
 
 namespace Hop::Util::Z
 {
-    std::vector<uint8_t> inflate(std::vector<uint8_t> & cdata, uint64_t decompressedSize)
+    std::vector<uint8_t> inflate(std::vector<uint8_t> & cdata, long unsigned int decompressedSize)
     {
         std::vector<uint8_t> rawData;
 

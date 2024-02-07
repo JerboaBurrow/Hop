@@ -28,7 +28,7 @@ namespace Hop::Util::Z
         std::string msg;
     };
 
-    std::vector<uint8_t> inflate(std::vector<uint8_t> & cdata, uint64_t decompressedSize);
+    std::vector<uint8_t> inflate(std::vector<uint8_t> & cdata, long unsigned int decompressedSize);
 
     std::vector<uint8_t> deflate(std::vector<uint8_t> & data);
 
