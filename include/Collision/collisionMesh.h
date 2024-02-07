@@ -145,6 +145,32 @@ namespace Hop::System::Physics
             someRectangles = m.someRectangles;
         }
 
+        CollisionMesh
+        (
+            std::vector<std::shared_ptr<MeshPoint>> model,
+            std::vector<std::shared_ptr<CollisionPrimitive>> world,
+            std::set<uint64_t> tags
+        )
+        : vertices(model), worldVertices(world), tags(tags),
+          totalEffectiveMass(0.0), radius(0.0), gx(0.0), gy(0.0),
+          kineticEnergy(0.0), isRigid(true), needsInit(true),
+          someRectangles(false)
+        {
+            calculateIsRigid();
+            calculateTotalEffectiveMass();
+            updateTags();
+        }
+
+        CollisionMesh getSubMesh(uint64_t t)
+        {
+            auto model = getModelByTag(t);
+            auto world = getByTag(t);
+            std::set<uint64_t> tags = {t};
+            return CollisionMesh(model, world, tags);
+        }
+
+        void reinitialise() { needsInit = true; }
+
         void transform(cTransform t)
         {
             needsInit = true;
@@ -273,11 +299,6 @@ namespace Hop::System::Physics
             return vertices[i];
         }
 
-        std::shared_ptr<CollisionPrimitive> getMeshVertex(size_t i)
-        {
-            return worldVertices[i];
-        }
-
         std::shared_ptr<CollisionPrimitive> operator[](size_t i) 
         {
             return worldVertices[i];
@@ -396,6 +417,25 @@ namespace Hop::System::Physics
                 if (c->tag == t)
                 {
                     v.push_back(c);
+                }
+            }
+
+            return v;
+        }
+
+        std::vector<std::shared_ptr<MeshPoint>> getModelByTag(uint64_t t)
+        {
+            std::vector<std::shared_ptr<MeshPoint>> v;
+            if (tags.find(t) == tags.cend())
+            {
+                return v;
+            }
+
+            for (unsigned i = 0; i < size(); i++)
+            {
+                if (worldVertices[i]->tag == t)
+                {
+                    v.push_back(vertices[i]);
                 }
             }
 
