@@ -1,3 +1,5 @@
+# e.g for a png, pngtopnm bitmap.png
+
 FILE=""
 HEADER=1
 while [ $# -gt 0 ]; do
@@ -32,9 +34,10 @@ echo $NAME
 
 if [[ $HEADER -eq 0 ]]
 then
-    echo -e "static const unsigned char\n$NAME={" > $NAME.byte
+    echo -e "static const unsigned char\n$NAME[]={" > $NAME.byte
     hexdump -ve '1/1 "0x%.2x, "' $FILE >> $NAME.byte
     echo -e "\n};" >> $NAME.byte
 else
     hexdump -ve '1/1 "0x%.2x, "' $FILE > $NAME.byte
 fi
+

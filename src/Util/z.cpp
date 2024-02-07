@@ -2,6 +2,39 @@
 
 namespace Hop::Util::Z
 {
+    std::vector<uint8_t> inflate(std::vector<uint8_t> & cdata, uint64_t decompressedSize)
+    {
+        std::vector<uint8_t> rawData;
+
+        rawData.reserve(decompressedSize);
+        for (unsigned i = 0; i < decompressedSize; i++)
+        {
+            rawData.push_back(0);
+        }
+
+        int result = uncompress(
+
+            &rawData[0],
+            &decompressedSize,
+            &cdata[0],
+            cdata.size()
+        );
+
+        switch (result)
+        {
+            case Z_OK:
+                break;
+            case Z_MEM_ERROR:
+                throw CompressionIOError("Z_MEM_ERROR decompressing");
+                break;
+            case Z_BUF_ERROR:
+                throw CompressionIOError("Z_BUF_ERROR while decompressing");
+                break;
+        }
+
+        return rawData;
+    }
+
     std::vector<uint8_t> load(std::string file)
     {
 
@@ -25,48 +58,16 @@ namespace Hop::Util::Z
 
         long unsigned int uncompressedSize = std::stoull(size);
 
-        rawData.reserve(uncompressedSize);
-        for (unsigned i = 0; i < uncompressedSize; i++)
-        {
-            rawData.push_back(0);
-        }
-
         while (in.get(c))
         {
             compressedData.push_back(c);
         }
 
-        int result = uncompress(
-
-            &rawData[0],
-            &uncompressedSize,
-            &compressedData[0],
-            compressedData.size()
-
-        );
-
-        switch (result)
-        {
-            case Z_OK:
-                break;
-            case Z_MEM_ERROR:
-                throw CompressionIOError("Z_MEM_ERROR while loading "+file);
-                break;
-            case Z_BUF_ERROR:
-                throw CompressionIOError("Z_BUF_ERROR while loading "+file);
-                break;
-        }
-
-        return rawData;
+        return inflate(compressedData, uncompressedSize);
 
     }
 
-    void save
-    (
-        std::string file, 
-        std::vector<uint8_t> data,
-        std::string header
-    )
+    std::vector<uint8_t> deflate(std::vector<uint8_t> & data)
     {
         std::vector<uint8_t> compressedData(data.size()*1.1+12);
 
@@ -88,12 +89,26 @@ namespace Hop::Util::Z
             case Z_OK:
                 break;
             case Z_MEM_ERROR:
-                throw CompressionIOError("Z_MEM_ERROR while saving "+file);
+                throw CompressionIOError("Z_MEM_ERROR while compressing");
                 break;
             case Z_BUF_ERROR:
-                throw CompressionIOError("Z_BUF_ERROR while saving "+file);
+                throw CompressionIOError("Z_BUF_ERROR while compressing");
                 break;
         }
+
+        return compressedData;
+    }
+
+    void save
+    (
+        std::string file, 
+        std::vector<uint8_t> data,
+        std::string header
+    )
+    {
+        uint64_t dataSize = data.size();
+
+        std::vector<uint8_t> compressedData = deflate(data);
 
         std::ofstream out(file,std::ios::binary);
         if (out.is_open())
@@ -101,7 +116,7 @@ namespace Hop::Util::Z
             out << header << "\n";
             out << dataSize << "\n";
 
-            for (unsigned c = 0; c < bufferSize; c++/*ayy lmao*/)
+            for (unsigned c = 0; c < compressedData.size(); c++/*ayy lmao*/)
             {
                 out << compressedData[c];
             }
