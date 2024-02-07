@@ -8,11 +8,11 @@
 
 const uint8_t width = 80;
 
-std::string byteToHex(char c)
+std::string byteToHex(uint8_t c)
 {
     std::stringstream ss;
 
-    ss << std::hex << std::setw(2) << std::setfill('0') << c;
+    ss << std::hex << std::setw(2) << std::setfill('0') << int(c);
 
     std::string s = ss.str();
 
@@ -21,7 +21,7 @@ std::string byteToHex(char c)
 
 int main(int argc, char ** argv)
 {
-    if (argc == 2)
+    if (argc >= 2)
     {
         // read in a file
         std::string file = argv[1];
@@ -75,9 +75,10 @@ int main(int argc, char ** argv)
             {
                 out << "static const unsigned char bytes[] __attribute__((unused)) = {\n";
                 unsigned w = 0;
+                unsigned n = 0;
                 for (uint8_t c : zd)
                 {
-                    out << c;
+                    out << byteToHex(c);
                     w += 5;
 
                     if (w >= width)
@@ -85,10 +86,11 @@ int main(int argc, char ** argv)
                         out << "\n";
                         w = 0;
                     }
-                    else
+                    else if (n < zd.size()-1)
                     {
                         out << ",";
                     }
+                    n+=1;
                 }
                 out << "}";
             }
