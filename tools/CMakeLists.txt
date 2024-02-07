@@ -1,2 +1,3 @@
 add_subdirectory(meshEditor)
 add_subdirectory(scriptzPacker)
+add_subdirectory(z)

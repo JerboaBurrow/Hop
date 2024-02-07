@@ -96,7 +96,7 @@ namespace Hop::Util::Z
                 break;
         }
 
-        return compressedData;
+        return std::vector<uint8_t>(compressedData.begin(),compressedData.begin()+bufferSize);
     }
 
     void save
