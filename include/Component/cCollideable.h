@@ -23,6 +23,10 @@ namespace Hop::Object::Component
         : mesh(CollisionMesh(v,x,y,theta,scale))
         {}
 
+        cCollideable(CollisionMesh & m)
+        : mesh(m)
+        {}
+
         cCollideable(){}
 
         void updateMesh(

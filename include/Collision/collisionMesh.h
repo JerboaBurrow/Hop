@@ -125,6 +125,26 @@ namespace Hop::System::Physics
             computeRadius();
         }
 
+        CollisionMesh
+        (
+            CollisionMesh & m
+        )
+        {
+            vertices = m.vertices;
+            worldVertices = m.worldVertices;
+            tags = m.tags;
+
+            totalEffectiveMass = m.totalEffectiveMass;
+
+            radius = m.radius;
+            gx = m.gx;
+            gy = m.gy;
+            kineticEnergy = m.kineticEnergy;
+            isRigid = m.isRigid;
+            needsInit = m.needsInit;
+            someRectangles = m.someRectangles;
+        }
+
         void transform(cTransform t)
         {
             needsInit = true;
@@ -442,6 +462,8 @@ namespace Hop::System::Physics
             std::vector<std::shared_ptr<CollisionPrimitive>> c = getByTag(tag);
             return getBoundingBox(c);
         }
+
+        std::set<uint64_t> getTags() const { return tags; }
         
     private:
 
