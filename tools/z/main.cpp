@@ -37,14 +37,19 @@ int main(int argc, char ** argv)
             bytes.push_back(c);
         }
 
-        std::vector<uint8_t> zd = Hop::Util::Z::deflate(bytes);
+        uint8_t level = Z_DEFAULT_COMPRESSION;
+        if (argc >= 4)
+        {
+            level = std::stoul(argv[3]);
+        }
+
+        std::vector<uint8_t> zd = Hop::Util::Z::deflate(bytes, level);
 
         std::ofstream out(file+".z",std::ios::binary);
 
-        if (argc == 3)
+        if (argc >= 3)
         {
             std::string option = argv[2];
-
             if (option == "-dump")
             {
                 for (uint8_t c : zd)

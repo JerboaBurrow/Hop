@@ -12,12 +12,14 @@ namespace Hop::Util::Z
             rawData.push_back(0);
         }
 
-        int result = uncompress(
+        std::unique_ptr<uLong> n = std::make_unique<uLong>(cdata.size());
+
+        int result = uncompress2(
 
             &rawData[0],
             &decompressedSize,
             &cdata[0],
-            cdata.size()
+            n.get()
         );
 
         switch (result)
@@ -67,21 +69,27 @@ namespace Hop::Util::Z
 
     }
 
-    std::vector<uint8_t> deflate(std::vector<uint8_t> & data)
+    std::vector<uint8_t> deflate(std::vector<uint8_t> & data, uint8_t level)
     {
+
+        if (level > Z_BEST_COMPRESSION)
+        {
+            level = Z_BEST_COMPRESSION;
+        }
+
         std::vector<uint8_t> compressedData(data.size()*1.1+12);
 
         uint64_t dataSize = data.size();
         // long unsigned int for windows rather than uint64_t
         long unsigned int bufferSize = compressedData.size();
 
-        int result = compress(
+        int result = compress2(
 
             &compressedData[0],
             &bufferSize,
             &data[0],
-            dataSize
-            
+            dataSize,
+            level
         );
 
         switch (result)
@@ -103,12 +111,13 @@ namespace Hop::Util::Z
     (
         std::string file, 
         std::vector<uint8_t> data,
-        std::string header
+        std::string header,
+        uint8_t level
     )
     {
         uint64_t dataSize = data.size();
 
-        std::vector<uint8_t> compressedData = deflate(data);
+        std::vector<uint8_t> compressedData = deflate(data, level);
 
         std::ofstream out(file,std::ios::binary);
         if (out.is_open())
