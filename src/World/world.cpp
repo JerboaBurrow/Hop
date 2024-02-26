@@ -23,7 +23,7 @@ namespace Hop::World
         uint64_t renderRegion, 
         uint64_t dynamicsShell,
         MapSource * f,
-        Boundary * b
+        Boundary<double> * b
     )
     : seed(s), camera(c),
     RENDER_REGION_SIZE(renderRegion), 
@@ -179,16 +179,12 @@ namespace Hop::World
 
     bool AbstractWorld::pointOutOfBounds(float x, float y)
     {
-        int ix, iy;
-        worldToTile(x,y,ix,iy);
-        return boundary->outOfBounds(ix,iy);
+        return boundary->outOfBounds(x,y);
     }
 
     bool AbstractWorld::cameraOutOfBounds(float x, float y)
     {
-        int ix, iy;
-        worldToTile(x,y,ix,iy);
-        return boundary->outOfBounds(ix,iy) || boundary->outOfBounds(ix+int(RENDER_REGION_SIZE)-1,iy+int(RENDER_REGION_SIZE)-1);
+        return boundary->outOfBounds(x,y) || boundary->outOfBounds(x+int(RENDER_REGION_SIZE)-1,y+int(RENDER_REGION_SIZE)-1);
     }
 
     TileData AbstractWorld::getTileData(float x, float y)

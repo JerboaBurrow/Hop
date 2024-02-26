@@ -760,7 +760,7 @@ namespace Hop::System::Physics
 
             if (world->getBoundary()->isHard())
             {
-                Hop::World::FiniteBoundary * fb = dynamic_cast<Hop::World::FiniteBoundary*>(world->getBoundary());
+                Hop::World::FiniteBoundary<double> * fb = dynamic_cast<Hop::World::FiniteBoundary<double>*>(world->getBoundary());
                 if (fb != nullptr)
                 {
                     hardBoundariesCollisionForce
@@ -851,7 +851,7 @@ namespace Hop::System::Physics
 
             if (world->getBoundary()->isHard())
             {
-                Hop::World::FiniteBoundary * fb = dynamic_cast<Hop::World::FiniteBoundary*>(world->getBoundary());
+                Hop::World::FiniteBoundary<double> * fb = dynamic_cast<Hop::World::FiniteBoundary<double>*>(world->getBoundary());
                 if (fb != nullptr)
                 {
                     hardBoundariesCollisionForce
@@ -2296,7 +2296,7 @@ namespace Hop::System::Physics
     (
         std::shared_ptr<CollisionPrimitive> c,
         cPhysics & dataP,
-        Hop::World::FiniteBoundary bounds,
+        Hop::World::FiniteBoundary<double> bounds,
         float lengthScale,
         bool & collided
     )

@@ -3,22 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-//def propsFile = rootProject.file('/media/harvey/ExtraFiles/Jerboa/Games/Android/keys/glskeleton.prop')
-//def props = new Properties()
-//props.load(new FileInputStream(propsFile))
-
-
 android {
     compileSdk 33
-
-//    signingConfigs {
-//        release {
-//            storeFile = file(props['storeFile'])
-//            storePassword = props['storePassword']
-//            keyAlias = props['keyAlias']
-//            keyPassword = props['keyPassword']
-//        }
-//    }
 
     defaultConfig {
         applicationId "app.jerboa.glskeleton"

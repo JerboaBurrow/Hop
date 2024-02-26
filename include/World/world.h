@@ -161,7 +161,7 @@ namespace Hop::World
             uint64_t renderRegion, 
             uint64_t dynamicsShell,
             MapSource * f,
-            Boundary * b
+            Boundary<double> * b
         );
 
         virtual void draw();
@@ -236,7 +236,7 @@ namespace Hop::World
             return 1;
         }
 
-        Boundary * getBoundary() { return boundary; }
+        Boundary<double> * getBoundary() { return boundary; }
 
     protected:
 
@@ -269,7 +269,7 @@ namespace Hop::World
 
         GLuint VBOquad, VBOoffset, VBOid, VAO;
 
-        Boundary * boundary;
+        Boundary<double> * boundary;
 
         MapSource * map;
 

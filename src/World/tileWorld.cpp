@@ -9,7 +9,7 @@ namespace Hop::World
         uint64_t renderRegion, 
         uint64_t dynamicsShell,
         MapSource * f,
-        Boundary * b    
+        Boundary<double> * b    
     )
     :   AbstractWorld(s,c,renderRegion,dynamicsShell,f,b)
     {
@@ -51,16 +51,15 @@ namespace Hop::World
 
     void TileWorld::worldToTileData(double x, double y, Tile & h, double & x0, double & y0, double & s, int & i, int & j) 
     {
-
-        int ix,iy;
-        worldToTile(x,y,ix,iy);
-        if (boundary->outOfBounds(ix,iy))
+        if (boundary->outOfBounds(x,y))
         {
             h = Tile::EMPTY;
             s = 0.0; x0 = 0.0; y0 = 0.0;
             i = 0; j = 0;
             return;
         }
+        int ix,iy;
+        worldToTile(x,y,ix,iy);
         tileToIdCoord(ix,iy,i,j);
 
         h = toTile<uint64_t>(map->getAtCoordinate(i,j));
@@ -86,16 +85,15 @@ namespace Hop::World
         bool fillTypes
     )
     {
-
-        int ix,iy;
-
-        worldToTile(x,y,ix,iy);
-
-        if (boundary->outOfBounds(ix,iy))
+        if (boundary->outOfBounds(x,y))
         {
             s = 0.0; x0 = 0.0; y0 = 0.0;
             h = Tile::EMPTY;
         }
+
+        int ix,iy;
+        worldToTile(x,y,ix,iy);
+
 
         h = tileType(i,j);
 
@@ -396,15 +394,15 @@ namespace Hop::World
         double & s
     )
     {
-        
-        int ix,iy,i,j;
-        worldToTile(x,y,ix,iy);
-        if (boundary->outOfBounds(ix,iy))
+        if (boundary->outOfBounds(x,y))
         {
             h = Tile::EMPTY;
             s = 0.0; x0 = 0.0; y0 = 0.0;
             return;
         }
+
+        int ix,iy,i,j;
+        worldToTile(x,y,ix,iy);
         tileToIdCoord(ix,iy,i,j);
 
         h = toTile<uint64_t>(map->getAtCoordinate(i,j));

@@ -4,6 +4,7 @@
 namespace Hop::World 
 {
 
+    template <class D>
     class Boundary 
     {
 
@@ -11,7 +12,7 @@ namespace Hop::World
 
         Boundary() = default;
 
-        virtual bool outOfBounds(int ix, int iy){return false;}
+        virtual bool outOfBounds(D x, D y){return false;}
         virtual const bool isHard() const { return false; }
 
     protected:
@@ -20,34 +21,32 @@ namespace Hop::World
 
     };
 
-    class InfiniteBoundary : public Boundary 
+    template <class D>
+    class InfiniteBoundary : public Boundary<D> 
     {
-        bool outOfBounds(int ix, int iy){return false;}
+        bool outOfBounds(D x, D y){return false;}
     };
 
-    class FiniteBoundary : public Boundary 
+    template <class D>
+    class FiniteBoundary : public Boundary<D> 
     {
 
     public:
 
         FiniteBoundary(
-            int mx, 
-            int my, 
-            int Mx, 
-            int My,
+            D mx, 
+            D my, 
+            D Mx, 
+            D My,
             bool hardBottom = false,
             bool hardTop = false,
             bool hardLeft = false,
-            bool hardRight = false,
-            int px = 0,
-            int py = 0
+            bool hardRight = false
         )
         :   minX(mx), 
             minY(my), 
             maxX(Mx), 
             maxY(My), 
-            periodicX(px), 
-            periodicY(py),
             hardTop(hardTop),
             hardBottom(hardBottom),
             hardLeft(hardLeft),
@@ -77,16 +76,16 @@ namespace Hop::World
         const bool isHardLeft() const { return hardLeft; }
         const bool isHardRight() const { return hardRight; }
 
-        double getMinX() const { return minX; }
-        double getMinY() const { return minY; }
-        double getMaxX() const { return maxX; }
-        double getMaxY() const { return maxY; }
+        D getMinX() const { return minX; }
+        D getMinY() const { return minY; }
+        D getMaxX() const { return maxX; }
+        D getMaxY() const { return maxY; }
 
     private:
 
-        int minX, minY, maxX, maxY;
-        bool periodicX, periodicY;
+        D minX, minY, maxX, maxY;
         bool hardTop, hardBottom, hardLeft, hardRight;
+        bool hardOutOfBounds;
         
     };
 
