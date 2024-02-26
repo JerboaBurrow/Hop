@@ -40,6 +40,12 @@ else()
 string(TIMESTAMP TODAY "%Y-%m-%d:%H:%M:%S")
 add_compile_definitions(TIMESTAMP="${TODAY}")
 
+if (ANDROID)
+    add_compile_definitions(ANDROID)
+elseif (WINDOWS)
+    add_compile_definitions(WINDOWS)
+endif()
+
 if (RELEASE)
     if (ANDROID)
         message("ANDROID MinSizeRel!")

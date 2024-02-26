@@ -26,24 +26,32 @@ namespace Hop::Object
 
         Id(std::string sid)
         {
-            size_t delim = sid.find("-");
-            
-            if (delim == sid.npos || delim == sid.size())
+
+            if (sid == "")
             {
-                throw std::runtime_error("Cannot construct id from string: "+sid);
+                id = Id::NULL_ID_CODE;
             }
-
-            std::string index, code;
-
-            index = sid.substr(0, delim);
-            code = sid.substr(delim+1, sid.size());
-
-            if (code != uuids::to_string(getRunUUID()))
+            else
             {
-                throw std::runtime_error("Cannot construct id from string, invalid run uuid: "+sid);
-            }
+                size_t delim = sid.find("-");
+                
+                if (delim == sid.npos || delim == sid.size())
+                {
+                    throw std::runtime_error("Cannot construct id from string: "+sid);
+                }
 
-            id = uint64_t(std::stoull(index));
+                std::string index, code;
+
+                index = sid.substr(0, delim);
+                code = sid.substr(delim+1, sid.size());
+
+                if (code != uuids::to_string(getRunUUID()))
+                {
+                    throw std::runtime_error("Cannot construct id from string, invalid run uuid: "+sid);
+                }
+
+                id = uint64_t(std::stoull(index));
+            }
         }
 
         static uint64_t next(){uint64_t thisId = nextId; nextId++; return thisId;}

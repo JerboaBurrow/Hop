@@ -20,6 +20,11 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+#ifdef ANDROID
+  #include <android/log.h>
+#endif
+
+
 #if !defined(ANDROID) && !defined(WINDOWS)
   const char * LUA_PRINT_ENTRY = "\033[1;34m[LUA] \033[0m\0";
   const size_t LUA_ENTRY_LENGTH = 23;
@@ -41,6 +46,9 @@ static int luaB_print (lua_State *L) {
     if (i > 1)  /* not the first element? */
       lua_writestring("\t", 1);  /* add a tab before it */
     lua_writestring(s, l);  /* print it */
+    #if defined(ANDROID)
+        __android_log_print(ANDROID_LOG_INFO,"LUA","%s",s);
+    #endif
     lua_pop(L, 1);  /* pop result */
   }
   lua_writeline();
