@@ -14,7 +14,7 @@ namespace Hop::World
         uint64_t renderRegion, 
         uint64_t dynamicsShell,
         MapSource * f,
-        Boundary * b
+        Boundary<double> * b
     )
     : AbstractWorld(s,c,renderRegion,dynamicsShell,f,b),
     RENDER_REGION_BUFFER_SIZE(renderRegion+1),
@@ -176,16 +176,15 @@ namespace Hop::World
 
     void MarchingWorld::worldToTileData(double x, double y, Tile & h, double & x0, double & y0, double & s, int & i, int & j) 
     {
-
-        int ix,iy;
-        worldToTile(x,y,ix,iy);
-        if (boundary->outOfBounds(ix,iy))
+        if (boundary->outOfBounds(x,y))
         {
             h = Tile::EMPTY;
             s = 0.0; x0 = 0.0; y0 = 0.0;
             i = 0; j = 0;
             return;
         }
+        int ix,iy;
+        worldToTile(x,y,ix,iy);
         tileToIdCoord(ix,iy,i,j);
     
         if (i >= 0 && unsigned(i) < DYNAMICS_REGION_SIZE && j >= 0 && unsigned(j) < DYNAMICS_REGION_SIZE)
@@ -259,18 +258,16 @@ namespace Hop::World
         bool fillTypes
     )
     {
-
-        int ix,iy;
-
-        worldToTile(x,y,ix,iy);
-
-        if (boundary->outOfBounds(ix,iy))
+        if (boundary->outOfBounds(x,y))
         {
             h = Tile::EMPTY;
             s = 0.0; x0 = 0.0; y0 = 0.0;
             i = 0;
             j = 0;
         }
+        int ix,iy;
+        worldToTile(x,y,ix,iy);
+
 
         tileToIdCoord(ix,iy,i,j);
 

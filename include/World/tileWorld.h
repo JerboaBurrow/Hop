@@ -17,7 +17,7 @@ namespace Hop::World
             uint64_t renderRegion, 
             uint64_t dynamicsShell,
             MapSource * f,
-            Boundary * b
+            Boundary<double> * b
         );
 
         bool updateRegion(float x, float y);

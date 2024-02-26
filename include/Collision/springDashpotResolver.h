@@ -199,7 +199,7 @@ namespace Hop::System::Physics
         (
             std::shared_ptr<CollisionPrimitive> c,
             cPhysics & dataP,
-            Hop::World::FiniteBoundary bounds,
+            Hop::World::FiniteBoundary<double> bounds,
             float lengthScale,
             bool & collided
         );
