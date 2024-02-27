@@ -3,6 +3,7 @@ name: Hop release
 on:
   push:
     branches: [ "main" ]
+    pull_request:
     tags:     'v*'
     paths-ignore:
       - 'doc/**'
