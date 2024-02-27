@@ -30,14 +30,14 @@ int main(int argc, char ** argv)
     float posX = 0.0;
     float posY = 0.0;
 
-    Hop::World::Boundary * bounds;
+    Hop::World::Boundary<double> * bounds;
     Hop::World::MapSource * source;
 
-    Hop::World::FiniteBoundary mapBounds(0,0,16,16);
+    Hop::World::FiniteBoundary<double> mapBounds(0,0,16,16);
     Hop::World::FixedSource mapSource;
     mapSource.load("tile",false);
 
-    Hop::World::InfiniteBoundary pBounds;
+    Hop::World::InfiniteBoundary<double> pBounds;
     Hop::World::PerlinSource perlin(2,0.07,5.0,5.0,256);
     perlin.setThreshold(0.2);
     perlin.setSize(64*3+1);

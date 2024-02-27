@@ -62,7 +62,7 @@ using Hop::World::MarchingWorld;
 using jLog::INFO;
 using jLog::WARN;
 
-static std::unique_ptr<Boundary> boundary = nullptr;
+static std::unique_ptr<Boundary<double>> boundary = nullptr;
 static std::unique_ptr<PerlinSource> perlin = nullptr;
 static std::unique_ptr<AbstractWorld> world = nullptr;
 
@@ -115,7 +115,7 @@ extern "C"
 
             camera = std::make_unique<jGL::OrthoCam>(resX, resY);
 
-            boundary = std::make_unique<Hop::World::InfiniteBoundary>();
+            boundary = std::make_unique<Hop::World::InfiniteBoundary<double>>();
 
             jgl = std::make_shared<jGL::GL::OpenGLInstance>(glm::ivec2(resX, resY), 0);
 
