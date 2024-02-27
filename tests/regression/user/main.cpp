@@ -33,7 +33,7 @@ int main(int argc, char ** argv)
     Hop::World::Boundary<double> * bounds;
     Hop::World::MapSource * source;
 
-    Hop::World::FiniteBoundary mapBounds(0,0,16,16);
+    Hop::World::FiniteBoundary<double> mapBounds(0,0,16,16);
     Hop::World::FixedSource mapSource;
     mapSource.load("tile",false);
 
