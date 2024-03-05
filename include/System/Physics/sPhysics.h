@@ -145,8 +145,14 @@ namespace Hop::System::Physics
         }
         
         void setTimeStep(double delta){dt = delta; dtdt = dt*dt;}
+        double getTimeStep() const { return dt; }
+
         void setSubSamples(unsigned s){subSamples = s;}
+        unsigned getSubSamples() const { return subSamples; }
+
         void setGravity(double g, double nx, double ny){gravity = g; ngx = nx; ngy = ny;}
+        double getGravity() const { return gravity; }
+        glm::vec2 getGravityDirection() const { return glm::vec2(ngx, ngy); }
 
         // Lua 
 
