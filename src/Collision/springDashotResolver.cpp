@@ -2350,7 +2350,7 @@ namespace Hop::System::Physics
             (
                 c->x,c->y,
                 mx, my,
-                Mx, bounds.getMinY()
+                Mx, my
             );
 
             if (d2 < r2)
