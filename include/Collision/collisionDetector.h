@@ -73,16 +73,23 @@ namespace Hop::System::Physics
             );
         }
 
-        enum class CollisionType {NONE, OBJECT, WORLD, OBJECT_WORLD};
+        struct CollisionType 
+        { 
+            CollisionType(Id i, bool w)
+            : with(i), world(w)
+            {}
+            Id with;
+            bool world;
+        };
 
-        virtual CollisionType objectHasCollided(Id & id) { return collided[id]; }
+        virtual std::pair<std::multimap<Id, CollisionType>::iterator, std::multimap<Id, CollisionType>::iterator> objectHasCollided(Id & id) { return collided.equal_range(id); }
 
     protected:
 
         tupled limX, limY;
         double lX, lY;
 
-        std::unordered_map<Id, CollisionType> collided;
+        std::multimap<Id, CollisionType> collided;
 
     };
 }

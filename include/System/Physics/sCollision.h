@@ -51,7 +51,7 @@ namespace Hop::System::Physics
             resolver = std::move(r);
         }
 
-        CollisionDetector::CollisionType objectHasCollided(Id & id) { return detector->objectHasCollided(id); }
+        std::pair<std::multimap<Id, CollisionDetector::CollisionType>::iterator, std::multimap<Id, CollisionDetector::CollisionType>::iterator> objectHasCollided(Id & id) { return detector->objectHasCollided(id); }
 
         void centreOn(std::pair<float,float> p){centreOn(p.first,p.second);}
 
