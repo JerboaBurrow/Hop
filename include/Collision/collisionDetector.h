@@ -83,7 +83,7 @@ namespace Hop::System::Physics
         };
 
         virtual std::pair<std::multimap<Id, CollisionType>::iterator, std::multimap<Id, CollisionType>::iterator> objectCollisions(Id & id) { return collided.equal_range(id); }
-        virtual bool objectHasCollided(Id & id) { collided.find(id) != collided.end(); }
+        virtual bool objectHasCollided(Id & id) { return collided.find(id) != collided.end(); }
 
     protected:
 
