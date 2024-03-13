@@ -250,8 +250,8 @@ namespace Hop::System::Physics
 
                 if (c)
                 {
-                    collided[idi.first] = CollisionType::OBJECT;
-                    collided[idj.first] = CollisionType::OBJECT;
+                    collided.insert(std::pair(idi.first,CollisionType(idj.first,false)));
+                    collided.insert(std::pair(idj.first,CollisionType(idi.first,false)));
                 }
                 p2++;
             }
@@ -328,8 +328,8 @@ namespace Hop::System::Physics
 
                 if (c)
                 {
-                    collided[idi.first] = CollisionType::OBJECT;
-                    collided[idj.first] = CollisionType::OBJECT;
+                    collided.insert(std::pair(idi.first,CollisionType(idj.first,false)));
+                    collided.insert(std::pair(idj.first,CollisionType(idi.first,false)));
                 }
                 p2++;
             }
@@ -376,8 +376,7 @@ namespace Hop::System::Physics
         ThreadPool * workers
     )
     {
-        for (auto c : collided) { collided[c.first] = CollisionType::NONE; }
-
+        collided.clear();
         populate(dataC, dataP ,objects);
    
         int a1, b1;
@@ -533,14 +532,7 @@ namespace Hop::System::Physics
 
             if (col)
             {
-                if (collided[*it] == CollisionType::OBJECT)
-                {
-                    collided[*it] = CollisionType::OBJECT_WORLD;
-                }
-                else
-                {
-                    collided[*it] = CollisionType::WORLD;
-                }
+                collided.insert(std::pair(*it,CollisionType(NULL_ID,true)));
             }
         }
     }
