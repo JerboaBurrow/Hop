@@ -47,6 +47,8 @@ int main(int argc, char ** argv)
 
         std::ofstream out(file+".z",std::ios::binary);
 
+        std::cout << "Input/Compressed length: " << bytes.size() << " / " << zd.size() << "\n";
+
         if (argc >= 3)
         {
             std::string option = argv[2];
