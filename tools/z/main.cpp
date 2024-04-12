@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
 
                     if (w >= width)
                     {
-                        out << "\n";
+                        out << ",\n";
                         w = 0;
                     }
                     else if (n < zd.size()-1)
@@ -99,7 +99,7 @@ int main(int argc, char ** argv)
                     }
                     n+=1;
                 }
-                out << "}";
+                out << "};";
             }
             else
             {
