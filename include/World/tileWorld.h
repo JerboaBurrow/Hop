@@ -20,6 +20,8 @@ namespace Hop::World
             Boundary<double> * b
         );
 
+        ~TileWorld() = default;
+
         bool updateRegion(float x, float y);
         
         void worldToTileData(double x, double y, Tile & h, double & x0, double & y0, double & s, int & i, int & j);
@@ -92,11 +94,6 @@ namespace Hop::World
 
         Tile tileType(int i, int j);
         void tileToIdCoord(int ix, int iy, int & i, int & j);
-
-    private:
-
-        bool hardOutOfBounds = false;
-
     };
 
 }

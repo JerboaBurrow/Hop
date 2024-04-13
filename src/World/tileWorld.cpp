@@ -14,8 +14,6 @@ namespace Hop::World
     :   AbstractWorld(s,c,renderRegion,dynamicsShell,f,b)
     {
 
-        hardOutOfBounds = b->isHard();
-
         forceUpdate = true;
 
         float w = 1.0 / RENDER_REGION_SIZE;
