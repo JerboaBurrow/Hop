@@ -29,7 +29,7 @@ namespace Hop
 
     using jLog::INFO;
     using jLog::WARN;
-    using jLog::ERROR;
+    using jLog::ERR;
     using jLog::Log;
     using jLog::ERRORCODE;
 
@@ -192,7 +192,7 @@ namespace Hop
             {
                 std::string msg = "Exited with error running "+lastCommandOrProgram+"\n";
                 msg += stackTrace;
-                ERROR(ERRORCODE::LUA_ERROR, msg) >> log;
+                ERR(ERRORCODE::LUA_ERROR, msg) >> log;
                 return true;
             }
             else
