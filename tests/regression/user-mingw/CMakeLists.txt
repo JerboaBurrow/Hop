@@ -25,11 +25,12 @@ add_executable(${OUTPUT_NAME} ${SRC})
 
 target_link_libraries(
 	${OUTPUT_NAME}
+	"winmm"
 	${CMAKE_SOURCE_DIR}/libjGL.a
 	${X11_LIBRARIES}
 	${OPENGL_LIBRARIES} 
     ${Vulkan_LIBRARIES}
-    	${ZLIB_LIBRARIES}
+    ${ZLIB_LIBRARIES}
     ${CMAKE_SOURCE_DIR}/libHop.a
 )
 
