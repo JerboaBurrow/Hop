@@ -86,7 +86,7 @@ namespace Hop::System::Sound
                     jLog::Log log;
                     std::stringstream ss;
                     ss << "Could not decode audio file: " << filename << ", got error: " << to_string(result);
-                    jLog::ERROR(ss.str()) >> log;
+                    jLog::ERR(ss.str()) >> log;
                 }
 
                 if (decoderInUse == DECODER::MA)

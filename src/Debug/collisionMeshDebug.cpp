@@ -95,11 +95,8 @@ namespace Hop::Debugging
                 // }
 
                 std::string sid = to_string(citer->first)+"-"+std::to_string(i);
-                shapes->getShape(sid)->update
-                (
-                    jGL::Transform(cp->x, cp->y, theta, scale*2.0*cpmodel->r),
-                    glm::vec4(ren.r, ren.g, ren.b, ren.a)
-                );
+                shapes->getShape(sid)->transform = jGL::Transform(cp->x, cp->y, theta, scale*2.0*cpmodel->r);
+                shapes->getShape(sid)->colour = glm::vec4(ren.r, ren.g, ren.b, ren.a);
 
             }
 

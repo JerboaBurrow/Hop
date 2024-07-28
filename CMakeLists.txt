@@ -146,7 +146,11 @@ if(BENCHMARK)
     target_compile_definitions(Hop PUBLIC BENCHMARK)
 endif()
 
-target_link_libraries(Hop PUBLIC jGL ${GLEW_LIBRARIES} zlibstatic stduuid Lua Miniaudio)
+if (WINDOWS)
+    target_link_libraries(Hop PUBLIC jGL ${GLEW_LIBRARIES} zlibstatic stduuid Lua Miniaudio "winmm")
+else()
+    target_link_libraries(Hop PUBLIC jGL ${GLEW_LIBRARIES} zlibstatic stduuid Lua Miniaudio)
+endif()
 
 if (NOT ANDROID)
     add_subdirectory(tools/)

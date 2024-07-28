@@ -1,22 +1,11 @@
 #ifndef CTRANSFORM_H
 #define CTRANSFORM_H
 
+#include <jGL/primitive.h>
+
 namespace Hop::Object::Component
 {
-    struct cTransform {
-        double x, y, scale, theta;
-
-        cTransform() = default;
-
-        cTransform(
-            double x,
-            double y,
-            double t,
-            double s
-        )
-        : x(x), y(y), scale(s), theta(t)
-        {}
-    };
+    using cTransform = jGL::Transform;
 }
 
 #endif /* CTRANSFORM_H */

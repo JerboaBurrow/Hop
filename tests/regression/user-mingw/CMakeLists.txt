@@ -29,8 +29,9 @@ target_link_libraries(
 	${X11_LIBRARIES}
 	${OPENGL_LIBRARIES} 
     ${Vulkan_LIBRARIES}
-    	${ZLIB_LIBRARIES}
+    ${ZLIB_LIBRARIES}
     ${CMAKE_SOURCE_DIR}/libHop.a
+	"winmm"
 )
 
 target_include_directories(
