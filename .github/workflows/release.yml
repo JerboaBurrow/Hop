@@ -169,7 +169,7 @@ jobs:
         path: demos.zip
 
   macosNative:
-    runs-on: macos-11
+    runs-on: macos-12
 
     steps:
     - uses: actions/checkout@v4
@@ -284,10 +284,11 @@ jobs:
         mkdir cmdline-tools
         mv latest cmdline-tools
         yes | ./cmdline-tools/latest/bin/sdkmanager --licenses
-        ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-33;google_apis;x86_64"
-        ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33"
-        echo no | ./cmdline-tools/latest/bin/avdmanager create avd --name android33 --package "system-images;android-33;google_apis;x86_64"
-
+        ./cmdline-tools/latest/bin/sdkmanager --channel=3 emulator
+        ./cmdline-tools/latest/bin/sdkmanager --install "system-images;android-34;google_apis;x86_64"
+        ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34"
+        echo no | ./cmdline-tools/latest/bin/avdmanager create avd --name android34 --package "system-images;android-34;google_apis;x86_64"
+    
     - name: build hop
       run: |
         git submodule update --recursive
@@ -418,7 +419,7 @@ jobs:
 
   test-release-macos:
     needs: [macosNative, headers]
-    runs-on: macos-11
+    runs-on: macos-12
 
     steps:
     
