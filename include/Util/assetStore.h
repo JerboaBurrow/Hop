@@ -70,7 +70,7 @@ namespace Hop::Util::Assets
             std::filesystem::path relative = std::filesystem::relative(assetPath, root);
             assets[relative] = instance->createTexture
             (
-                assetPath,
+                assetPath.generic_string(),
                 jGL::Texture::Type::RGBA
             );
         };
@@ -81,7 +81,7 @@ namespace Hop::Util::Assets
         bool matchesAssetType(std::filesystem::path file) 
         { 
             static std::vector<std::string> extensions = {".png"};
-            return std::find(extensions.begin(), extensions.end(), file.extension()) != extensions.end();
+            return std::find(extensions.begin(), extensions.end(), file.extension().generic_string()) != extensions.end();
         }
     };
 }
