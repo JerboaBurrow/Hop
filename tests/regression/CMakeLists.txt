@@ -1,1 +1,2 @@
 add_subdirectory(scriptPack)
+add_subdirectory(assets)
