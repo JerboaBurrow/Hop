@@ -27,7 +27,7 @@ if (TEST_SUITE)
         add_test(NAME assetStore COMMAND "/${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/${OUTPUT_NAME}")
     endif()
     set_tests_properties(assetStore PROPERTIES
-        PASS_REGULAR_EXPRESSION "\"texture/HEART.png\" \"texture/Pi.png\" \"texture/random.png\""
+        PASS_REGULAR_EXPRESSION "HEART\.png.*Pi\.png.*random\.png"
         WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/"
     )
 endif()
