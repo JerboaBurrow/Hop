@@ -109,7 +109,11 @@ jobs:
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --output-on-failure --verbose
+      run: |
+        export DISPLAY=:99
+        sudo Xvfb :99 -screen 0 800x600x24 &
+        sleep 5
+        MESA_GL_VERSION_OVERRIDE=3.3 ctest --output-on-failure --verbose
 
     - name: buildArtifact
       uses: actions/upload-artifact@v4
