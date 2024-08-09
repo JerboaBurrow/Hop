@@ -1,7 +1,7 @@
 var searchData=
 [
   ['begin_898',['begin',['../classHop_1_1Util_1_1Assets_1_1AssetStore.html#aa68e65d62945f5bf314b8dbb76efaf17',1,'Hop::Util::Assets::AssetStore']]],
-  ['bestangle_899',['bestAngle',['../structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a319f3613bee319f8466a7d9bef1dc61a',1,'Hop::System::Physics::CollisionMesh']]],
+  ['bestangle_899',['bestAngle',['../structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a49d6227de703b440525b4ad2b0d2f517',1,'Hop::System::Physics::CollisionMesh']]],
   ['boundary_900',['Boundary',['../classHop_1_1World_1_1Boundary.html#adea87818bc8472b9b8fed4822c7e20af',1,'Hop::World::Boundary']]],
   ['boundingbox_901',['BoundingBox',['../structHop_1_1Maths_1_1BoundingBox.html#a774b03e7ac6da0b23d663e181b2343ab',1,'Hop::Maths::BoundingBox::BoundingBox()=default'],['../structHop_1_1Maths_1_1BoundingBox.html#afc36f7cef0fc72b254d89e582ef1e1ad',1,'Hop::Maths::BoundingBox::BoundingBox(Vertex ll, Vertex ul, Vertex ur, Vertex lr, Vertex c)']]],
   ['boundingbox_902',['boundingBox',['../namespaceHop_1_1Maths.html#ab149b205d92644d8092b0c083708f296',1,'Hop::Maths']]],
