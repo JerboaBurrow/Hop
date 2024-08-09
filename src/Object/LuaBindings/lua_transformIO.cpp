@@ -29,9 +29,10 @@ namespace Hop::Object
         lua_pushnumber(lua, t.x);
         lua_pushnumber(lua, t.y);
         lua_pushnumber(lua, t.theta);
-        lua_pushnumber(lua, t.scale);
+        lua_pushnumber(lua, t.scaleX);
+        lua_pushnumber(lua, t.scaleY);
 
-        return 4;
+        return 5;
 
     }
 
@@ -39,13 +40,13 @@ namespace Hop::Object
     {
 
         LuaString sid;
-        LuaNumber x, y, theta, scale;
+        LuaNumber x, y, theta, scaleX, scaleY;
 
         int n = lua_gettop(lua);
 
         if (n < 2)
         {
-            lua_pushliteral(lua,"expected id and up to x, y, theta, scale as argument");
+            lua_pushliteral(lua,"expected id and up to x, y, theta, scale (optionally as x and y) as argument");
             return lua_error(lua);
         }
 
@@ -60,7 +61,7 @@ namespace Hop::Object
             x.read(lua, 2);
             t.x = x;
         }
-    
+
         if (n >= 3)
         {
             y.read(lua, 3);
@@ -75,18 +76,28 @@ namespace Hop::Object
 
         if (n == 5)
         {
-            scale.read(lua, 5);
-            t.scale = scale;
+            scaleX.read(lua, 5);
+            t.scaleX = scaleX;
+            t.scaleY = scaleX;
+        }
+
+        if (n == 6)
+        {
+            scaleX.read(lua, 5);
+            t.scaleX = scaleX;
+
+            scaleY.read(lua, 6);
+            t.scaleY = scaleY;
         }
 
         if (hasComponent<cPhysics>(id))
         {
-            cPhysics & p = getComponent<cPhysics>(id); 
+            cPhysics & p = getComponent<cPhysics>(id);
             if (n >= 2)
             {
                 p.lastX = x;
             }
-        
+
             if (n >= 3)
             {
                 p.lastY = y;

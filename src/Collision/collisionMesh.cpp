@@ -18,12 +18,12 @@ namespace Hop::System::Physics
             inside[i] = worldVertices[i]->lastInside;
             worldVertices[i]->setOrigin
             (
-                (vertices[i]->x*c + vertices[i]->y*s)*transform.scale + transform.x,
-                (vertices[i]->y*c - vertices[i]->x*s)*transform.scale + transform.y
+                (vertices[i]->x*c + vertices[i]->y*s)*transform.scaleX + transform.x,
+                (vertices[i]->y*c - vertices[i]->x*s)*transform.scaleY + transform.y
             );
 
-            worldVertices[i]->r = vertices[i]->r*transform.scale;
-            worldVertices[i]->lastInside = inside[i]; 
+            worldVertices[i]->r = vertices[i]->r*std::max(transform.scaleX, transform.scaleY);
+            worldVertices[i]->lastInside = inside[i];
         }
 
         // break of into second loop to allow for vectorisation of the above loop
@@ -52,9 +52,9 @@ namespace Hop::System::Physics
                     lw->x = lv->x;
                     lw->y = lv->y;
                     lw->r = lv->r;
-                    
+
                     lw->rotateClockWise(c, s);
-                    lw->scale(transform.scale*2.0);
+                    lw->scale(std::max(transform.scaleX, transform.scaleY)*2.0);
                     lw->translate(transform.x, transform.y);
 
                 }
@@ -97,7 +97,7 @@ namespace Hop::System::Physics
         }
     }
 
-    double CollisionMesh::bestAngle(double x, double y, double scale)
+    double CollisionMesh::bestAngle(double x, double y, double scaleX, double scaleY)
     {
         double cx = 0.0;
         double cy = 0.0;
@@ -109,8 +109,8 @@ namespace Hop::System::Physics
 
         for (unsigned i = 0; i < worldVertices.size(); i++)
         {
-            refx = vertices[i]->x*scale + x;
-            refy = vertices[i]->y*scale + y;
+            refx = vertices[i]->x*scaleX + x;
+            refy = vertices[i]->y*scaleY + y;
             rx = worldVertices[i]->x-cx;
             ry = worldVertices[i]->y-cy;
 
@@ -140,13 +140,13 @@ namespace Hop::System::Physics
             {
                 worldVertices[i]->setOrigin
                 (
-                    (vertices[i]->x*c + vertices[i]->y*s)*transform.scale + transform.x,
-                    (vertices[i]->y*c - vertices[i]->x*s)*transform.scale + transform.y
+                    (vertices[i]->x*c + vertices[i]->y*s)*transform.scaleX + transform.x,
+                    (vertices[i]->y*c - vertices[i]->x*s)*transform.scaleY + transform.y
                 );
             }
         }
 
-        double phi = bestAngle(transform.x, transform.y, transform.scale);
+        double phi = bestAngle(transform.x, transform.y, transform.scaleX, transform.scaleY);
 
         physics.omega = Hop::Maths::angleDistanceAtan2<double>(transform.theta, phi);
 
@@ -168,11 +168,11 @@ namespace Hop::System::Physics
             {
                 worldVertices[i]->setOrigin
                 (
-                    (vertices[i]->x*c + vertices[i]->y*s)*transform.scale + transform.x,
-                    (vertices[i]->y*c - vertices[i]->x*s)*transform.scale + transform.y
+                    (vertices[i]->x*c + vertices[i]->y*s)*transform.scaleX + transform.x,
+                    (vertices[i]->y*c - vertices[i]->x*s)*transform.scaleY + transform.y
                 );
-                worldVertices[i]->r = vertices[i]->r*transform.scale;
-                worldVertices[i]->lastInside = inside[i]; 
+                worldVertices[i]->r = vertices[i]->r*std::max(transform.scaleX, transform.scaleY);
+                worldVertices[i]->lastInside = inside[i];
             }
         }
 
@@ -180,7 +180,7 @@ namespace Hop::System::Physics
         {
             // should be vectorisable, split with prior and next loop
             //  to make branchless. Indeed we got down to O(1e-7) from O(1e-6)
-            //  on pure circles 
+            //  on pure circles
             for (unsigned i = 0; i < vertices.size(); i++)
             {
                 inside[i] = worldVertices[i]->lastInside;
@@ -194,12 +194,12 @@ namespace Hop::System::Physics
                     dt,
                     dtdt,
                     physics.translationalDrag,
-                    (vertices[i]->x*co + vertices[i]->y*so)*transform.scale + transform.x,
-                    (vertices[i]->y*co - vertices[i]->x*so)*transform.scale + transform.y
+                    (vertices[i]->x*co + vertices[i]->y*so)*transform.scaleX + transform.x,
+                    (vertices[i]->y*co - vertices[i]->x*so)*transform.scaleY + transform.y
                 );
 
-                worldVertices[i]->r = vertices[i]->r*transform.scale;
-                worldVertices[i]->lastInside = inside[i]; 
+                worldVertices[i]->r = vertices[i]->r*std::max(transform.scaleX, transform.scaleY);
+                worldVertices[i]->lastInside = inside[i];
             }
         }
 
@@ -227,9 +227,9 @@ namespace Hop::System::Physics
                     lw->x = lv->x;
                     lw->y = lv->y;
                     lw->r = lv->r;
-                    
+
                     lw->rotateClockWise(c, s);
-                    lw->scale(transform.scale*2.0);
+                    lw->scale(std::max(transform.scaleX, transform.scaleY)*2.0);
                     lw->translate(transform.x, transform.y);
 
                 }
@@ -240,9 +240,9 @@ namespace Hop::System::Physics
 
         if (physics.isMoveable)
         {
-            double dx = 0.0; 
+            double dx = 0.0;
             double dy = 0.0;
-            
+
             for (unsigned i = 0; i < vertices.size(); i++)
             {
                 worldVertices[i]->stepGlobal
@@ -278,8 +278,8 @@ namespace Hop::System::Physics
             {
                 worldVertices[i]->setOrigin
                 (
-                    (vertices[i]->x*c + vertices[i]->y*s)*transform.scale + transform.x,
-                    (vertices[i]->y*c - vertices[i]->x*s)*transform.scale + transform.y
+                    (vertices[i]->x*c + vertices[i]->y*s)*transform.scaleX + transform.x,
+                    (vertices[i]->y*c - vertices[i]->x*s)*transform.scaleY + transform.y
                 );
             }
         }
@@ -335,16 +335,16 @@ namespace Hop::System::Physics
             {
                 // an overestimate, ignore holes
                 dx = c->x - x;
-                dy = c->y - y; 
+                dy = c->y - y;
                 m += me*0.5*c->r*c->r + me*(dx*dx+dy*dy);
             }
             else
-            {  
+            {
                 double h = r->height();
                 double w = r->width();
                 // an overestimate, ignore holes
                 dx = c->x - x;
-                dy = c->y - y; 
+                dy = c->y - y;
                 m += me*0.08333333333333333 * (h*h+w*w) + me*(dx*dx+dy*dy);
             }
         }
@@ -361,6 +361,5 @@ namespace Hop::System::Physics
 
         return o;
     }
-    
 
 }

@@ -2,13 +2,13 @@
 
 #include <chrono>
 using namespace std::chrono;
-        
+
 namespace Hop::System::Physics
 {
 
     void sPhysics::step
     (
-        EntityComponentSystem * m, 
+        EntityComponentSystem * m,
         sCollision * collisions,
         AbstractWorld * world
     )
@@ -26,18 +26,18 @@ namespace Hop::System::Physics
     {
 
         /*
-        
+
             The algorithm we employ - https://www.tandfonline.com/doi/abs/10.1080/00268976.2012.760055
-                
+
                 It is verlet integration (velocity free) that correctly handles drag and noise (Langevin dynamics)
-                
+
                 Noise is currently unapplied, translation/rotational drag is which can both be 0 without issue,
                 where the algorithm becomes verlet as we know it.
-                
+
                 This models an object moving within a fluid.
 
                 Soft bodies perform their own integration due to the nature of their movable mesh points.
-        
+
         */
 
         ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
@@ -71,7 +71,6 @@ namespace Hop::System::Physics
             }
             else if (rigid)
             {
-                
                 ct = dataP.translationalDrag*dt/(2.0*dataP.mass);
                 bt = 1.0/(1.0+ct);
                 at = (1.0-ct)*bt;
@@ -115,7 +114,7 @@ namespace Hop::System::Physics
                 dataP.phi = (ntheta-dataP.lastTheta)/(2.0*dt);
 
                 dataP.lastTheta = dataT.theta;
-                
+
                 dataP.x = nx;
                 dataP.y = ny;
 
@@ -161,7 +160,7 @@ namespace Hop::System::Physics
             {
                 cCollideable & data = collideables.get(*it);
                 if (!data.mesh.getIsRigid())
-                {   
+                {
                     data.mesh.applyForce(fx, fy, true);
                     continue;
                 }
@@ -170,7 +169,6 @@ namespace Hop::System::Physics
 
             dataP.fx += fx;
             dataP.fy += fy;
-            
         }
 
     }
@@ -191,7 +189,7 @@ namespace Hop::System::Physics
         {
             cCollideable & data = collideables.get(i);
             if (!data.mesh.getIsRigid())
-            {   
+            {
                 data.mesh.applyForce(fx, fy, global);
             }
             else
@@ -253,7 +251,7 @@ namespace Hop::System::Physics
             {
                 cCollideable & data = collideables.get(*it);
                 if (!data.mesh.getIsRigid())
-                {   
+                {
                     data.mesh.applyForce(fx, fy, global);
                     continue;
                 }
@@ -276,25 +274,25 @@ namespace Hop::System::Physics
             dataP.translationalDrag = 1.1*stableDragUnderdampedLangevinWithGravityUnitMass(
                 dt,
                 gravity,
-                dataT.scale
+                std::max(dataT.scaleX, dataT.scaleY)
             );
         }
     }
 
     /*
 
-        Given particle of unit mass, under gravity, with a given simulation 
+        Given particle of unit mass, under gravity, with a given simulation
         timestep, what drag coefficient is the minimum that is numerically stable?
 
         I.e EQ of M for y(t), (Underdamped Langevin equation)
-        
+
         mass*a(t) = -drag*v(t) + mass*gravity.
 
         Solve with integration factor to get
 
         v(t) = exp(-drag/mass * t) * (Const. + mass*gravity/drag) - mass*gravity/drag.
 
-        A simulation (with collisions) is stable if the change in position is 
+        A simulation (with collisions) is stable if the change in position is
         in one timestep less than or equal to the object size.
 
         The max speed under free fall is |v(t)| as t -> infinity, which is
@@ -306,7 +304,7 @@ namespace Hop::System::Physics
         dt*(mass*gravity/drag) ~ r,
 
         and for a unit mass
-        
+
         drag ~ dt*gravity/r.
 
     */

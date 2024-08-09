@@ -10,6 +10,7 @@
 
 #include <jGL/jGL.h>
 #include <jLog/jLog.h>
+#include <jGL/OpenGL/glShapeRenderer.h>
 
 namespace Hop::Object
 {
@@ -35,14 +36,14 @@ namespace Hop::Debugging
           shapes(jgl->createShapeRenderer(256)),
           circleShader(std::make_shared<jGL::GL::glShader>
            (
-              Hop::System::Rendering::collisionPrimitiveVertexShader, 
+              jGL::GL::glShapeRenderer::shapeVertexShader,
               Hop::System::Rendering::collisionPrimitiveFragmentShader
            )
           ),
           rectangleShader(std::make_shared<jGL::GL::glShader>
             (
-                Hop::System::Rendering::rectangleVertexShader, 
-                Hop::System::Rendering::rectangleFragmentShader
+                jGL::GL::glShapeRenderer::shapeVertexShader,
+                jGL::GL::glShapeRenderer::rectangleFragmentShader
             )
           )
         {}
@@ -62,6 +63,8 @@ namespace Hop::Debugging
         std::shared_ptr<jGL::ShapeRenderer> shapes;
 
         std::shared_ptr<jGL::Shader> circleShader, rectangleShader;
+
+        std::map<std::string, cTransform> circlePos;
 
     };
 

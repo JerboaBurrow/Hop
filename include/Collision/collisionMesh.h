@@ -51,7 +51,7 @@ namespace Hop::System::Physics
         {}
 
         MeshRectangle
-        (        
+        (
             double llx, double lly,
             double ulx, double uly,
             double urx, double ury,
@@ -73,7 +73,7 @@ namespace Hop::System::Physics
 
         bool operator==(const MeshRectangle & rhs)
         {
-            return llx == rhs.llx && 
+            return llx == rhs.llx &&
                    lly == rhs.lly &&
                    ulx == rhs.ulx &&
                    uly == rhs.uly &&
@@ -86,12 +86,12 @@ namespace Hop::System::Physics
         double llx, lly, ulx, uly, urx, ury, lrx, lry;
     };
 
-    struct CollisionMesh 
+    struct CollisionMesh
     {
         CollisionMesh()
         {}
-        // construct a mesh around a model space polygon 
-        //   with vertices v with each mesh vertex having 
+        // construct a mesh around a model space polygon
+        //   with vertices v with each mesh vertex having
         //   radius r in model space
         //CollisionMesh(std::vector<Vertex> v, double r = 0.01);
 
@@ -100,8 +100,8 @@ namespace Hop::System::Physics
         (
             std::vector<std::shared_ptr<CollisionPrimitive>> v,
             double x,
-            double y, 
-            double theta, 
+            double y,
+            double theta,
             double scale
         )
         : CollisionMesh(std::move(v))
@@ -177,7 +177,7 @@ namespace Hop::System::Physics
             cPhysics phys(t.x,t.y,t.theta);
             updateWorldMesh(t, phys, 0.0);
         }
-        
+
         void add(std::shared_ptr<CollisionPrimitive> c)
         {
 
@@ -245,10 +245,10 @@ namespace Hop::System::Physics
                     (
                         c->x,
                         c->y,
-                        c->r, 
+                        c->r,
                         c->tag,
-                        c->stiffness, 
-                        c->damping, 
+                        c->stiffness,
+                        c->damping,
                         c->effectiveMass
                     )
                 );
@@ -304,7 +304,7 @@ namespace Hop::System::Physics
             return worldVertices[i];
         }
 
-        std::shared_ptr<CollisionPrimitive> operator[](size_t i) 
+        std::shared_ptr<CollisionPrimitive> operator[](size_t i)
         {
             return worldVertices[i];
         }
@@ -320,7 +320,7 @@ namespace Hop::System::Physics
             {
                 return updateWorldMeshRigid(transform, dt);
             }
-            else 
+            else
             {
                 return updateWorldMeshSoft(transform, physics, dt);
             }
@@ -337,7 +337,7 @@ namespace Hop::System::Physics
             double dt
         );
 
-        double bestAngle(double x, double y, double scale);
+        double bestAngle(double x, double y, double scaleX, double scaleY);
         void centerOfMassWorld(double & cx, double & cy);
         void modelToCenterOfMassFrame();
 
@@ -347,7 +347,7 @@ namespace Hop::System::Physics
 
         bool getIsRigid(){ return isRigid; }
 
-        void calculateIsRigid() 
+        void calculateIsRigid()
         {
             for (auto v : worldVertices)
             {
@@ -367,7 +367,7 @@ namespace Hop::System::Physics
                 gx += fx;
                 gy += fy;
             }
-            else 
+            else
             {
                 for (auto w : worldVertices)
                 {
@@ -379,7 +379,7 @@ namespace Hop::System::Physics
 
         double getEffectiveMass() const { return totalEffectiveMass; }
 
-        void calculateTotalEffectiveMass() 
+        void calculateTotalEffectiveMass()
         {
             totalEffectiveMass = 0.0;
             for (auto v : worldVertices)
@@ -397,7 +397,7 @@ namespace Hop::System::Physics
         {
             return kineticEnergy;
         }
-        
+
         bool areSomeRectangles() const { return someRectangles; }
 
         void updateTags()
@@ -483,8 +483,8 @@ namespace Hop::System::Physics
             std::vector<Vertex> v(c.size());
             std::transform
             (
-                c.begin(), 
-                c.end(), 
+                c.begin(),
+                c.end(),
                 v.begin(),
                 [](std::shared_ptr<CollisionPrimitive> c)
                 {
@@ -498,7 +498,7 @@ namespace Hop::System::Physics
             {
                 r = std::max(r, c->r);
             }
-            
+
             return Hop::Maths::boundingBox(v, r);
         }
 
@@ -509,7 +509,7 @@ namespace Hop::System::Physics
         }
 
         std::set<uint64_t> getTags() const { return tags; }
-        
+
     private:
 
         std::vector<std::shared_ptr<MeshPoint>> vertices;

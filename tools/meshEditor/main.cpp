@@ -239,8 +239,8 @@ int main(int argc, char ** argv)
                 double c = std::cos(-trans.theta);
                 double s = std::sin(-trans.theta);
 
-                double x = (activeSite.first-trans.x)/trans.scale;
-                double y = (activeSite.second-trans.y)/trans.scale;
+                double x = (activeSite.first-trans.x)/trans.scaleX;
+                double y = (activeSite.second-trans.y)/trans.scaleY;
 
                 double xm = x*c + y*s;
                 double ym = y*c - x*s;
