@@ -43,3 +43,4 @@ target_include_directories(
 target_link_libraries(${OUTPUT_NAME} "-framework Cocoa -framework IOKit -framework CoreVideo")
 
 target_compile_definitions(${OUTPUT_NAME} PUBLIC GLSL_VERSION="330")
+target_compile_definitions(${OUTPUT_NAME} PUBLIC MAX_SPRITE_BATCH_BOUND_TEXTURES=4)
