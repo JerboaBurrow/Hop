@@ -26,3 +26,4 @@ tests/regression/user-mingw/*.a
 tests/regression/user-macos/build
 tests/regression/user-macos/include/*
 tests/regression/user-macos/*.a
+docs/html
