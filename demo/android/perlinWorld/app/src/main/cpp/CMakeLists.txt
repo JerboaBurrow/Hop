@@ -17,6 +17,7 @@ add_library(
         hopAndroid.cpp)
 
 target_compile_definitions(HopAndroid PUBLIC GLSL_VERSION="300 es")
+target_compile_definitions(HopAndroid PUBLIC MAX_SPRITE_BATCH_BOUND_TEXTURES=4)
 
 include_directories(include)
 include_directories(.)

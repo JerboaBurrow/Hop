@@ -3,26 +3,11 @@
 
 namespace Hop::System::Rendering
 {
-    static const char * collisionPrimitiveVertexShader = "#version " GLSL_VERSION "\n"
-        "precision lowp float;\n precision lowp int;\n"
-        "layout(location=0) in vec4 a_position;\n"
-        "layout(location=1) in vec4 a_offset;\n"
-        "layout(location=2) in vec4 a_colour;\n"
-        "uniform mat4 proj;\n"
-        "out vec2 texCoord;\n"
-        "out vec4 oColour;\n"
-        "void main()\n"
-        "{\n"
-            "gl_Position = proj*vec4(a_offset.w*a_position.xy+a_offset.xy,0.0,1.0);\n"
-            "texCoord = a_position.zw;\n"
-            "oColour = a_colour;\n"
-        "}";
-
     static const char * collisionPrimitiveFragmentShader = "#version " GLSL_VERSION "\n"
         "precision lowp float;\n precision lowp int;\n"
-        "in vec4 oColour;\n"
         "in vec2 texCoord;\n"
-        "out vec4 colour;\n"
+        "in vec4 colour;\n"
+        "layout(location=0) out vec4 fragment;\n"
         "float t0 = 0.12;\n"
         "float t1 = 0.2025;\n"
         "float t2 = 0.25;\n"
@@ -33,10 +18,10 @@ namespace Hop::System::Rendering
         "   if (d2 > t2) {discard;}\n"
         "   float alpha = 1.0-smoothstep(t1, t2, d2);"
         "   float mixer = 1.0-smoothstep(t0, t1, d2);"
-        "   colour = vec4( mix(vec3(0.0,0.0,0.0),oColour.rgb, mixer), alpha*oColour.a );"
+        "   fragment = vec4( mix(vec3(0.0,0.0,0.0),colour.rgb, mixer), alpha*colour.a );"
         "}";
 
-    static const char * rectangleVertexShader = "#version " GLSL_VERSION "\n"
+    static const char * rectangleVertexShader __attribute__((unused)) = "#version " GLSL_VERSION "\n"
         "precision lowp float;\n precision lowp int;\n"
         "layout(location=0) in vec4 a_position;\n"
         "layout(location=1) in vec4 a_offset;\n"
@@ -60,7 +45,7 @@ namespace Hop::System::Rendering
             "th = a_thickness;\n"
         "}";
 
-    static const char * rectangleFragmentShader = "#version " GLSL_VERSION "\n"
+    static const char * rectangleFragmentShader __attribute__((unused)) = "#version " GLSL_VERSION "\n"
         "precision lowp float;\n precision lowp int;\n"
         "in vec4 oColour;\n"
         "in vec2 texCoord;\n"

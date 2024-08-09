@@ -44,3 +44,4 @@ target_link_libraries(
 )
 
 target_compile_definitions(${OUTPUT_NAME} PUBLIC GLSL_VERSION="330")
+target_compile_definitions(${OUTPUT_NAME} PUBLIC MAX_SPRITE_BATCH_BOUND_TEXTURES=4)
