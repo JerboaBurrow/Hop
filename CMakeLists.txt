@@ -25,10 +25,10 @@ if (SYNTAX_ONLY)
 #     find_package(OpenGL REQUIRED)
 #     set(GLEW_INCLUDE include/vendored/glew/include/)
 #     include_directories(
-#         include 
-#         ${OPENGL_INCLUDE_DIRS} 
-#         ${GLEW_INCLUDE} 
-#         include/vendored/freetype/include 
+#         include
+#         ${OPENGL_INCLUDE_DIRS}
+#         ${GLEW_INCLUDE}
+#         include/vendored/freetype/include
 #         include/vendored/glm
 #     )
 #     file(GLOB SRC "src/*.cpp")
@@ -102,7 +102,7 @@ set(${VORBIS_INCLUDE_DIRS} include/vendored/vorbis/include)
 file(GLOB MINIAUDIO_SRC "include/vendored/miniaudio/*.c")
 include_directories(include/vendored/miniaudio ${VORBIS_INCLUDE_DIRS})
 add_library(Miniaudio STATIC ${MINIAUDIO_SRC})
-target_link_libraries(Miniaudio vorbisfile ogg ${CMAKE_DL_LIBS}) 
+target_link_libraries(Miniaudio vorbisfile ogg ${CMAKE_DL_LIBS})
 
 include_directories(include include/vendored include/jGL/include)
 
@@ -114,7 +114,7 @@ include_directories(include/vendored/zlib ${CMAKE_CURRENT_BINARY_DIR}/zlib_build
 
 set(${SPARSEHASH_INCLUDE_DIRS} include/vendored/sparsehash)
 
-file(GLOB SRC 
+file(GLOB SRC
     "src/*.cpp"
     "src/Text/*.cpp"
     "src/Object/*.cpp"
@@ -122,8 +122,8 @@ file(GLOB SRC
     "src/System/*.cpp"
     "src/Component/*.cpp"
     "src/Collision/*.cpp"
-    "src/World/*.cpp" 
-    "src/Maths/*.cpp" 
+    "src/World/*.cpp"
+    "src/Maths/*.cpp"
     "src/Util/*.cpp"
     "src/Debug/*.cpp"
     "src/Console/*.cpp"
@@ -136,11 +136,12 @@ if (NOT ANDROID)
     file(GLOB STANDALONE_SRC "src/Display/*.cpp")
     add_library(Hop STATIC ${SRC} ${STANDALONE_SRC})
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="330")
-    
 else()
     add_library(Hop STATIC ${SRC})
     target_compile_definitions(Hop PUBLIC GLSL_VERSION="300 es")
 endif()
+
+target_compile_definitions(Hop PUBLIC MAX_SPRITE_BATCH_BOUND_TEXTURES=4)
 
 if(BENCHMARK)
     target_compile_definitions(Hop PUBLIC BENCHMARK)
