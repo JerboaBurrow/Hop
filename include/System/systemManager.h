@@ -1,7 +1,9 @@
 #ifndef SYSTEMMANAGER_H
 #define SYSTEMMANAGER_H
 
+#include <constants.h>
 #include <System/system.h>
+
 #include <exception>
 #include <bitset>
 #include <algorithm>
@@ -9,11 +11,9 @@
 
 namespace Hop::System
 {
-
-    const uint32_t MAX_COMPONENTS = 64;
     typedef std::bitset<MAX_COMPONENTS> Signature;
 
-    class SystemNotRegistered: public std::exception 
+    class SystemNotRegistered: public std::exception
     {
 
     public:
@@ -33,14 +33,23 @@ namespace Hop::System
 
     };
 
-
-    class SystemManager 
+    /**
+     * @brief Registers and manages systems signatures.
+     *
+     */
+    class SystemManager
     {
 
     public:
 
         SystemManager(){}
 
+        /**
+         * @brief Register T as a system.
+         *
+         * @tparam T the system class.
+         * @remark Gives T the catch all Signature.
+         */
         template<typename T>
         void registerSystem()
         {
@@ -55,6 +64,12 @@ namespace Hop::System
             systems[handle] = s;
         }
 
+        /**
+         * @brief Set the Signature for system T.
+         *
+         * @tparam T the registered System class.
+         * @param signature object Signature.
+         */
         template <class T>
         void setSignature(Signature signature)
         {
@@ -67,6 +82,12 @@ namespace Hop::System
             signatures[handle] = signature;
         }
 
+        /**
+         * @brief Return the given system T.
+         *
+         * @tparam T the registered system class.
+         * @return T& the system object.
+         */
         template <class T>
         T & getSystem()
         {
@@ -79,11 +100,15 @@ namespace Hop::System
             return *(std::static_pointer_cast<T>(systems[handle]).get());
         }
 
-        void objectFreed(Id i);
-
+        /**
+         * @brief Refresh object i's Signature.
+         *
+         * @param i Id of the changed object.
+         * @param s the new Signature.
+         */
         void objectSignatureChanged(Id i, Signature s);
 
-        
+
     private:
 
         bool isRegistered(const char * s){return systems.find(s) != systems.end();}

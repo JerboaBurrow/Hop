@@ -7,8 +7,6 @@ namespace Hop::Object
         std::shared_ptr<Object> o = std::make_shared<Object>();
         objects[o->id] = o;
         idToSignature[o->id] = Signature();
-        //handleToId[Hop::Object::to_string(o->id)] = o->id;
-
         return o->id;
     }
 
@@ -18,9 +16,7 @@ namespace Hop::Object
 
         objects[o->id] = o;
         idToSignature[o->id] = Signature();
-
         handleToId[handle] = o->id;
-
         return o->id;
     }
 
@@ -48,14 +44,12 @@ namespace Hop::Object
 
     void EntityComponentSystem::remove(std::string handle){}
 
-    // do nothing callback
-    void identityCallback(Id & i, Id & j){return;}
-
     void EntityComponentSystem::initialiseBaseECS()
     {
 
         registerComponent<cTransform>();
         registerComponent<cRenderable>();
+        registerComponent<cSprite>();
         registerComponent<cPhysics>();
         registerComponent<cCollideable>();
         //registerComponent<cPolygon>();
@@ -74,23 +68,19 @@ namespace Hop::Object
         uint32_t soundId = getComponentId<cSound>();
 
         Signature sRenderSig = Signature();
-
         sRenderSig.set
         (
             rId,
             true
         );
-
         sRenderSig.set
         (
             tId,
             true
         );
-
         systemManager.setSignature<sRender>(sRenderSig);
 
         Signature sPhysicsSig = Signature();
-
         sPhysicsSig.set
         (
             pId,
@@ -101,11 +91,9 @@ namespace Hop::Object
             tId,
             true
         );
-
         systemManager.setSignature<sPhysics>(sPhysicsSig);
-        
-        Signature sCollisionSig = Signature();
 
+        Signature sCollisionSig = Signature();
         sCollisionSig.set
         (
             pId,
@@ -116,19 +104,15 @@ namespace Hop::Object
             cId,
             true
         );
-
         systemManager.setSignature<sCollision>(sCollisionSig);
 
         Signature sSoundSig = Signature();
-
         sSoundSig.set
         (
             soundId,
             true
         );
-
         systemManager.setSignature<sSound>(sSoundSig);
-        
     }
 }
 
@@ -138,3 +122,4 @@ namespace Hop::Object
 #include <Object/LuaBindings/lua_transformIO.cpp>
 #include <Object/LuaBindings/lua_meshIO.cpp>
 #include <Object/LuaBindings/lua_renderableIO.cpp>
+#include <Object/LuaBindings/lua_textureIO.cpp>

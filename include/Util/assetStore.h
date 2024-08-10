@@ -11,16 +11,32 @@
 
 namespace Hop::Util::Assets
 {
+    /**
+     * @brief A data store for a general asset T.
+     *
+     * @tparam T type of the asset.
+     * @remark Assets are loading from relative paths to a supplied root, seet AssetStore::AssetStore.
+     */
     template <class T>
-    class AssetStore 
+    class AssetStore
     {
     public:
 
+        /**
+         * @brief Construct a new AssetStore.
+         *
+         * @param root the relative path for all assets.
+         */
         AssetStore(std::filesystem::path root)
-        : root(root) 
+        : root(root)
         {}
 
-        void scan() 
+        /**
+         * @brief Caches all matching asset paths relative to root.
+         * @remark Specialised AssetStores overloads a method to check if a path is an asset of type T.
+         * This is done by file extensions (.png, .mp3, ...).
+         */
+        void scan()
         {
             if (std::filesystem::is_directory(root))
             {
@@ -28,9 +44,40 @@ namespace Hop::Util::Assets
             }
         };
 
+        /**
+         * @brief Loads the asset at this relative path.
+         *
+         * @param assetPath relative path to an asset.
+         */
         virtual void load(std::filesystem::path assetPath) = 0;
 
-        std::shared_ptr<T> get(std::filesystem::path relative_path) { return assets[relative_path]; }
+        /**
+         * @brief Loads all assets in the asset store.
+         * @remark Use with scan.
+         */
+        void loadAll()
+        {
+            for (const auto & p : assets)
+            {
+                load(p);
+            }
+        }
+
+        /**
+         * @brief Return the asset.
+         *
+         * @param relative_path path to asset.
+         * @return std::shared_ptr<T> the asset.
+         * @remark Will attempt to load an unloaded asset.
+         */
+        std::shared_ptr<T> get(std::filesystem::path relative_path)
+        {
+            if (assets[relative_path] == nullptr)
+            {
+                load(relative_path);
+            }
+            return assets[relative_path];
+        }
 
         typename std::map<std::filesystem::path, std::shared_ptr<T>>::const_iterator begin() { return assets.cbegin(); }
         typename std::map<std::filesystem::path, std::shared_ptr<T>>::const_iterator end() { return assets.cend(); }
@@ -47,7 +94,7 @@ namespace Hop::Util::Assets
             {
                 if (entry.is_regular_file())
                 {
-                    if (matchesAssetType(entry)) { load(entry); }
+                    if (matchesAssetType(entry) && assets.find(entry) == assets.end()) { assets[entry] = nullptr; }
                 }
                 else
                 {
@@ -57,30 +104,54 @@ namespace Hop::Util::Assets
         }
     };
 
+    /**
+     * @brief AssetStore specialisation to store texture assets.
+     *
+     */
     class TextureAssetStore : public AssetStore<jGL::Texture>
     {
     public:
 
-        TextureAssetStore(std::filesystem::path root, std::unique_ptr<jGL::jGLInstance> & instance)
+        /**
+         * @brief Construct a new TextureAssetStore
+         *
+         * @param root relative path for textures.
+         * @param instance jGLInstance for creating textures.
+         * @remark Currently supports .png, .jpg files.
+         */
+        TextureAssetStore(std::filesystem::path root, std::shared_ptr<jGL::jGLInstance> & instance)
         : AssetStore<jGL::Texture>(root), instance(instance)
         {}
 
-        void load(std::filesystem::path assetPath) 
+        /**
+         * @brief Load a texture.
+         *
+         * @param assetPath path relative to root.
+         */
+        void load(std::filesystem::path assetPath)
         {
-            std::filesystem::path relative = std::filesystem::relative(assetPath, root);
-            assets[relative] = instance->createTexture
-            (
-                assetPath.generic_string(),
-                jGL::Texture::Type::RGBA
-            );
+            if (matchesAssetType(assetPath))
+            {
+                std::filesystem::path relative = std::filesystem::relative(assetPath, root);
+                assets[relative] = instance->createTexture
+                (
+                    assetPath.generic_string(),
+                    jGL::Texture::Type::RGBA
+                );
+            }
         };
 
-    protected:
-        std::unique_ptr<jGL::jGLInstance> & instance;
+        /**
+         * @brief Supported texture extension.
+         * @remark These will be loaded as RGBA textures.
+         */
+        const std::vector<std::string> extensions = {".png, .jpg"};
 
-        bool matchesAssetType(std::filesystem::path file) 
-        { 
-            static std::vector<std::string> extensions = {".png"};
+    protected:
+        std::shared_ptr<jGL::jGLInstance> & instance;
+
+        bool matchesAssetType(std::filesystem::path file)
+        {
             return std::find(extensions.begin(), extensions.end(), file.extension().generic_string()) != extensions.end();
         }
     };
