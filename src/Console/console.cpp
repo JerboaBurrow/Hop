@@ -6,25 +6,19 @@ namespace Hop
 
     int configure(lua_State * lua)
     {
-        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
-        
-        sPhysics * phys = store->physics;
-        sCollision * col = store->resolver;
-
-        LuaNumber dt, subSample, cor, sf;
-   
-        int n = lua_gettop(lua);
-
+        int status = lua_checkArgumentCount(lua, 1, "expected table as argument");
+        if (status != LUA_OK) { return status; }
         if (!lua_istable(lua, 1))
         {
             lua_pushliteral(lua, "non table argument");
             return lua_error(lua);
         }
-        else if (n != 1)
-        {
-            lua_pushliteral(lua, "more than one argument");
-            return lua_error(lua);
-        }
+        LuaExtraSpace * store = *static_cast<LuaExtraSpace**>(lua_getextraspace(lua));
+
+        sPhysics * phys = store->physics;
+        sCollision * col = store->resolver;
+
+        LuaNumber dt, subSample, cor, sf;
 
         if (dt.readField(lua, "timeStep"))
         {
@@ -58,16 +52,10 @@ namespace Hop
 
     int lua_applyForce(lua_State * lua)
     {
+        int status = lua_checkArgumentCount(lua, 3, "expected id and force vector, fx, fy as argument");
+        if (status != LUA_OK) { return status; }
         LuaNumber fx, fy;
         LuaString sid;
-
-        int n = lua_gettop(lua);
-
-        if (n != 3)
-        {
-            lua_pushliteral(lua,"expected id and force vector, fx, fy as argument");
-            return lua_error(lua);
-        }
 
         sid.read(lua, 1);
         Hop::Object::Id id(sid.characters);

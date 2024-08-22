@@ -38,6 +38,7 @@ namespace Hop::System::Rendering
     using Hop::Object::Component::ComponentArray;
     using Hop::Object::Component::cSprite;
     using Hop::Object::Component::cRenderable;
+    using Hop::Object::Component::cTransform;
     /**
      * @brief System to handle rendering.
      *

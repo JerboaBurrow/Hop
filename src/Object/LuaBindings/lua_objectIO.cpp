@@ -42,15 +42,9 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_deleteObject(lua_State * lua)
     {
+        int status = lua_checkArgumentCount(lua, 1, "expected id as argument");
+        if (status != LUA_OK) { return status; }
         LuaString sid;
-
-        int n = lua_gettop(lua);
-
-        if (n != 1)
-        {
-            lua_pushliteral(lua,"expected id as argument");
-            return lua_error(lua);
-        }
 
         sid.read(lua, 1);
 
@@ -63,6 +57,15 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_loadObject(lua_State * lua)
     {
+        int status = lua_checkArgumentCount(lua, 1, "expected table as argument");
+        if (status != LUA_OK) { return status; }
+
+        if (!lua_istable(lua,1))
+        {
+            lua_pushliteral(lua,"non table argument");
+            return lua_error(lua);
+        }
+
         LuaArray<4> colour, transform, util, textureRegion;
         LuaArray<3> meshParameters;
 
@@ -94,20 +97,6 @@ namespace Hop::Object
         bodyFriction.n = 0.0;
 
         priority.n = 0;
-
-        // elements on stack
-        int n = lua_gettop(lua);
-
-        if (!lua_istable(lua,1))
-        {
-            lua_pushliteral(lua,"non table argument");
-            return lua_error(lua);
-        }
-        else if (n != 1)
-        {
-            lua_pushliteral(lua,"requires single argument");
-            return lua_error(lua);
-        }
 
         hasColour = colour.readField(lua, "colour");
         hasTransform = transform.readField(lua, "transform");
@@ -220,7 +209,6 @@ namespace Hop::Object
                     region.lx = textureRegion.elements[2];
                     region.ly = textureRegion.elements[3];
                 }
-
                 addComponent<cSprite>
                 (
                     pid,

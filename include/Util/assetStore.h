@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <memory>
 #include <iterator>
+#include <array>
 
 namespace Hop::Util::Assets
 {
@@ -47,9 +48,9 @@ namespace Hop::Util::Assets
         /**
          * @brief Loads the asset at this relative path.
          *
-         * @param assetPath relative path to an asset.
+         * @param relativePath relative path to an asset.
          */
-        virtual void load(std::filesystem::path assetPath) = 0;
+        virtual void load(std::filesystem::path relativePath) = 0;
 
         /**
          * @brief Loads all assets in the asset store.
@@ -66,17 +67,17 @@ namespace Hop::Util::Assets
         /**
          * @brief Return the asset.
          *
-         * @param relative_path path to asset.
+         * @param relativePath path to asset.
          * @return std::shared_ptr<T> the asset.
          * @remark Will attempt to load an unloaded asset.
          */
-        std::shared_ptr<T> get(std::filesystem::path relative_path)
+        std::shared_ptr<T> get(std::filesystem::path relativePath)
         {
-            if (assets[relative_path] == nullptr)
+            if (assets[relativePath] == nullptr)
             {
-                load(relative_path);
+                load(relativePath);
             }
-            return assets[relative_path];
+            return assets[relativePath];
         }
 
         typename std::map<std::filesystem::path, std::shared_ptr<T>>::const_iterator begin() { return assets.cbegin(); }
@@ -94,7 +95,8 @@ namespace Hop::Util::Assets
             {
                 if (entry.is_regular_file())
                 {
-                    if (matchesAssetType(entry) && assets.find(entry) == assets.end()) { assets[entry] = nullptr; }
+                    std::filesystem::path relative = std::filesystem::relative(entry, root);
+                    if (matchesAssetType(relative) && assets.find(relative) == assets.end()) { assets[relative] = nullptr; }
                 }
                 else
                 {
@@ -121,21 +123,23 @@ namespace Hop::Util::Assets
          */
         TextureAssetStore(std::filesystem::path root, std::shared_ptr<jGL::jGLInstance> & instance)
         : AssetStore<jGL::Texture>(root), instance(instance)
-        {}
+        {
+            scan();
+        }
 
         /**
          * @brief Load a texture.
          *
-         * @param assetPath path relative to root.
+         * @param relativePath path relative to root.
          */
-        void load(std::filesystem::path assetPath)
+        void load(std::filesystem::path relativePath)
         {
-            if (matchesAssetType(assetPath))
+            if (matchesAssetType(relativePath))
             {
-                std::filesystem::path relative = std::filesystem::relative(assetPath, root);
-                assets[relative] = instance->createTexture
+                std::filesystem::path path = root / relativePath;
+                assets[relativePath] = instance->createTexture
                 (
-                    assetPath.generic_string(),
+                    path.generic_string(),
                     jGL::Texture::Type::RGBA
                 );
             }
@@ -145,7 +149,7 @@ namespace Hop::Util::Assets
          * @brief Supported texture extension.
          * @remark These will be loaded as RGBA textures.
          */
-        const std::vector<std::string> extensions = {".png, .jpg"};
+        const std::array<std::string, 2> extensions = {".png", ".jpg"};
 
     protected:
         std::shared_ptr<jGL::jGLInstance> & instance;

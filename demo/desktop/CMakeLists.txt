@@ -1,2 +1,3 @@
 add_subdirectory(perlinWorld)
 add_subdirectory(softBodyTetris)
+add_subdirectory(sprites)

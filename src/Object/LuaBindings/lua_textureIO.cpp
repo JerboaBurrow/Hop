@@ -9,15 +9,10 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_setTextureRegion(lua_State * lua)
     {
+        int status = lua_checkArgumentCount(lua, 5, "expected id, tx, ty, lx, ly as argument");
+        if (status != LUA_OK) { return status; }
         LuaString sid;
         LuaNumber tx, ty, lx, ly;
-
-        int n = lua_gettop(lua);
-        if (n != 5)
-        {
-            lua_pushliteral(lua,"expected id, tx, ty, lx, ly as argument");
-            return lua_error(lua);
-        }
 
         sid.read(lua, 1);
 
@@ -38,14 +33,9 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_getTextureRegion(lua_State * lua)
     {
+        int status = lua_checkArgumentCount(lua, 1, "expected id as argument");
+        if (status != LUA_OK) { return status; }
         LuaString sid;
-
-        int n = lua_gettop(lua);
-        if (n != 1)
-        {
-            lua_pushliteral(lua,"expected id as argument");
-            return lua_error(lua);
-        }
 
         sid.read(lua, 1);
 
@@ -60,14 +50,9 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_setTexturePath(lua_State * lua)
     {
+        int status = lua_checkArgumentCount(lua, 2, "expected id and path as argument");
+        if (status != LUA_OK) { return status; }
         LuaString sid, path;
-
-        int n = lua_gettop(lua);
-        if (n != 2)
-        {
-            lua_pushliteral(lua,"expected id and path as argument");
-            return lua_error(lua);
-        }
 
         sid.read(lua, 1);
         path.read(lua, 2);
@@ -80,14 +65,9 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_getTexturePath(lua_State * lua)
     {
+        int status = lua_checkArgumentCount(lua, 1, "expected id as argument");
+        if (status != LUA_OK) { return status; }
         LuaString sid;
-
-        int n = lua_gettop(lua);
-        if (n != 1)
-        {
-            lua_pushliteral(lua,"expected id as argument");
-            return lua_error(lua);
-        }
 
         sid.read(lua, 1);
 

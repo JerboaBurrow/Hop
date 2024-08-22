@@ -178,7 +178,7 @@ IF (TEST_SUITE)
         file(GLOB TEST_SRC "tests/*.cpp" "src/Maths/*.cpp")
         include_directories(include "tests/")
 
-        add_executable(testSuite 
+        add_executable(testSuite
             ${TEST_SRC}
             "src/World/mapFile.cpp"
             "src/Util/z.cpp"
@@ -187,7 +187,7 @@ IF (TEST_SUITE)
         target_compile_definitions(testSuite PUBLIC GLSL_VERSION="330")
 
         target_link_libraries(testSuite zlibstatic stduuid glm)
-        
+
         include(CTest)
         set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/tests/cmake/)
         include(Catch)
@@ -195,7 +195,7 @@ IF (TEST_SUITE)
 
         add_subdirectory("${PROJECT_SOURCE_DIR}/tests/regression")
     endif()
-  
+
 ENDIF(TEST_SUITE)
 
 endif()

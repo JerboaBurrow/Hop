@@ -10,14 +10,8 @@ namespace Hop::Object
     int EntityComponentSystem::lua_getColour(lua_State * lua)
     {
         LuaString sid;
-
-        int n = lua_gettop(lua);
-
-        if (n != 1)
-        {
-            lua_pushliteral(lua,"expected id as argument");
-            return lua_error(lua);
-        }
+        int status = lua_checkArgumentCount(lua, 1, "expected id as argument");
+        if (status != LUA_OK) { return status; }
 
         sid.read(lua, 1);
 
@@ -37,14 +31,8 @@ namespace Hop::Object
     {
         LuaString sid;
         LuaNumber r, g, b, a;
-
-        int n = lua_gettop(lua);
-
-        if (n != 5)
-        {
-            lua_pushliteral(lua,"expected id, and r, g, b, a as argument");
-            return lua_error(lua);
-        }
+        int status = lua_checkArgumentCount(lua, 5, "expected id, and r, g, b, a as argument");
+        if (status != LUA_OK) { return status; }
 
         sid.read(lua, 1);
 

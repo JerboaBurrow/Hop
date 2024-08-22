@@ -9,6 +9,7 @@ namespace Hop::System::Rendering
             AbstractWorld * world
         )
         {
+            sprites->setProjection(projection);
 
             if (world != nullptr)
             {
@@ -38,33 +39,58 @@ namespace Hop::System::Rendering
         {
             ComponentArray<cSprite> & spriteComponents = ecs->getComponentArray<cSprite>();
             ComponentArray<cRenderable> & renderables = ecs->getComponentArray<cRenderable>();
+            ComponentArray<cTransform> & transforms = ecs->getComponentArray<cTransform>();
             for (const auto & object : objects)
             {
-                if (renderables.hasComponent(object) && spriteComponents.hasComponent(object))
+                if (renderables.hasComponent(object) && spriteComponents.hasComponent(object) && transforms.hasComponent(object))
                 {
                     const cSprite & oSprite = spriteComponents.get(object);
                     const cRenderable & oRenderable = renderables.get(object);
+                    const cTransform & oTransform = transforms.get(object);
                     std::string sid = to_string(object);
+                    auto tex = textures->get(oSprite.texturePath);
+                    auto region = jGL::TextureRegion
+                    (
+                        oSprite.tx,
+                        oSprite.ty,
+                        oSprite.lx,
+                        oSprite.ly
+                    );
+
                     if (sprites->hasId(sid))
                     {
                         auto & sprite = sprites->getSprite(sid);
-                        auto tex = textures->get(oSprite.texturePath);
                         if (!(tex->getId() == sprite.texture->getId()))
                         {
                             sprites->remove(sid);
-                            sprites->add(sprite, sid, oRenderable.priority);
+                            sprites->add(
+                                jGL::Sprite(oTransform, region, tex, oRenderable.a),
+                                sid,
+                                oRenderable.priority
+                            );
                         }
-                        sprites->updatePriority(sid, oRenderable.priority);
-                        sprite.setAlpha(oRenderable.a);
-                        sprite.setTextureRegion
-                        (
-                            jGL::TextureRegion
+                        else
+                        {
+                            sprites->updatePriority(sid, oRenderable.priority);
+                            sprite.setAlpha(oRenderable.a);
+                            sprite.setTextureRegion
                             (
-                                oSprite.tx,
-                                oSprite.ty,
-                                oSprite.lx,
-                                oSprite.ly
-                            )
+                                jGL::TextureRegion
+                                (
+                                    oSprite.tx,
+                                    oSprite.ty,
+                                    oSprite.lx,
+                                    oSprite.ly
+                                )
+                            );
+                        }
+                    }
+                    else
+                    {
+                        sprites->add(
+                            jGL::Sprite(oTransform, region, tex, oRenderable.a),
+                            sid,
+                            oRenderable.priority
                         );
                     }
                 }
