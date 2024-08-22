@@ -21,10 +21,10 @@ namespace Hop::Object::Component
         cSprite
         (
             std::string path,
-            u_int16_t tx,
-            u_int16_t ty,
-            u_int16_t lx,
-            u_int16_t ly
+            uint16_t tx,
+            uint16_t ty,
+            uint16_t lx,
+            uint16_t ly
         )
         : texturePath(path), tx(tx), ty(ty), lx(lx), ly(ly)
         {}
