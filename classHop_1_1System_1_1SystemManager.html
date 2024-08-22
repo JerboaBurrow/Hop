@@ -73,6 +73,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Registers and manages systems signatures.  
+ <a href="classHop_1_1System_1_1SystemManager.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="systemManager_8h_source.html">systemManager.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -81,19 +84,23 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a75c596119a719b91f11f4d446b035d16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2c4c756db4847233bd59568e04e79d6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ac2c4c756db4847233bd59568e04e79d6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1SystemManager.html#ac2c4c756db4847233bd59568e04e79d6">registerSystem</a> ()</td></tr>
+<tr class="memdesc:ac2c4c756db4847233bd59568e04e79d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register T as a system.  <a href="classHop_1_1System_1_1SystemManager.html#ac2c4c756db4847233bd59568e04e79d6">More...</a><br /></td></tr>
 <tr class="separator:ac2c4c756db4847233bd59568e04e79d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7661dc5d6f6171a3aa5dac20f42af13"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:ab7661dc5d6f6171a3aa5dac20f42af13"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1SystemManager.html#ab7661dc5d6f6171a3aa5dac20f42af13">setSignature</a> (<a class="el" href="namespaceHop_1_1System.html#acaa0193a03a36b99dcb6700f7ec59947">Signature</a> signature)</td></tr>
+<tr class="memdesc:ab7661dc5d6f6171a3aa5dac20f42af13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the Signature for system T.  <a href="classHop_1_1System_1_1SystemManager.html#ab7661dc5d6f6171a3aa5dac20f42af13">More...</a><br /></td></tr>
 <tr class="separator:ab7661dc5d6f6171a3aa5dac20f42af13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac01efbf689cb24b5992eebe47c2609df"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:ac01efbf689cb24b5992eebe47c2609df"><td class="memTemplItemLeft" align="right" valign="top">T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1SystemManager.html#ac01efbf689cb24b5992eebe47c2609df">getSystem</a> ()</td></tr>
+<tr class="memdesc:ac01efbf689cb24b5992eebe47c2609df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the given system T.  <a href="classHop_1_1System_1_1SystemManager.html#ac01efbf689cb24b5992eebe47c2609df">More...</a><br /></td></tr>
 <tr class="separator:ac01efbf689cb24b5992eebe47c2609df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af80347ec2d7d7e425241863d13a2c460"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1SystemManager.html#af80347ec2d7d7e425241863d13a2c460">objectFreed</a> (<a class="el" href="structHop_1_1Object_1_1Id.html">Id</a> i)</td></tr>
-<tr class="separator:af80347ec2d7d7e425241863d13a2c460"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3785ca8c814cbea8f0b9ce4534d5f970"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1SystemManager.html#a3785ca8c814cbea8f0b9ce4534d5f970">objectSignatureChanged</a> (<a class="el" href="structHop_1_1Object_1_1Id.html">Id</a> i, <a class="el" href="namespaceHop_1_1System.html#acaa0193a03a36b99dcb6700f7ec59947">Signature</a> s)</td></tr>
+<tr class="memdesc:a3785ca8c814cbea8f0b9ce4534d5f970"><td class="mdescLeft">&#160;</td><td class="mdescRight">Refresh object i's Signature.  <a href="classHop_1_1System_1_1SystemManager.html#a3785ca8c814cbea8f0b9ce4534d5f970">More...</a><br /></td></tr>
 <tr class="separator:a3785ca8c814cbea8f0b9ce4534d5f970"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Registers and manages systems signatures. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a75c596119a719b91f11f4d446b035d16"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a75c596119a719b91f11f4d446b035d16">&#9670;&nbsp;</a></span>SystemManager()</h2>
 
@@ -145,23 +152,14 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="af80347ec2d7d7e425241863d13a2c460"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af80347ec2d7d7e425241863d13a2c460">&#9670;&nbsp;</a></span>objectFreed()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Hop::System::SystemManager::objectFreed </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structHop_1_1Object_1_1Id.html">Id</a>&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p>Return the given system T. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the registered system class. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>T&amp; the system object. </dd></dl>
 
 </div>
 </div>
@@ -191,6 +189,15 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
+<p>Refresh object i's Signature. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>Id of the changed object. </td></tr>
+    <tr><td class="paramname">s</td><td>the new Signature. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="ac2c4c756db4847233bd59568e04e79d6"></a>
@@ -217,6 +224,15 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Register T as a system. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the system class. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section remark"><dt>Remarks</dt><dd>Gives T the catch all Signature. </dd></dl>
 
 </div>
 </div>
@@ -245,6 +261,20 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the Signature for system T. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>the registered <a class="el" href="classHop_1_1System_1_1System.html">System</a> class. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">signature</td><td>object Signature. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

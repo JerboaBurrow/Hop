@@ -73,27 +73,34 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Lua console.  
+ <a href="classHop_1_1Console.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="console_8h_source.html">console.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8339b39c1c802a06b67c538356966630"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#a8339b39c1c802a06b67c538356966630">Console</a> (Log &amp;l)</td></tr>
+<tr class="memdesc:a8339b39c1c802a06b67c538356966630"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="classHop_1_1Console.html" title="Lua console.">Console</a> with a logger.  <a href="classHop_1_1Console.html#a8339b39c1c802a06b67c538356966630">More...</a><br /></td></tr>
 <tr class="separator:a8339b39c1c802a06b67c538356966630"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6f832f84bc872edf7d7775b0edc1fa5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#ac6f832f84bc872edf7d7775b0edc1fa5">~Console</a> ()</td></tr>
 <tr class="separator:ac6f832f84bc872edf7d7775b0edc1fa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb67cfa7d084e06df7682b0c95da5256"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#adb67cfa7d084e06df7682b0c95da5256">runFile</a> (std::string file)</td></tr>
+<tr class="memdesc:adb67cfa7d084e06df7682b0c95da5256"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempt to run a Lua script from a file on disc.  <a href="classHop_1_1Console.html#adb67cfa7d084e06df7682b0c95da5256">More...</a><br /></td></tr>
 <tr class="separator:adb67cfa7d084e06df7682b0c95da5256"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c840fe1b4baf5128708474ab605ff99"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#a7c840fe1b4baf5128708474ab605ff99">runString</a> (std::string program)</td></tr>
+<tr class="memdesc:a7c840fe1b4baf5128708474ab605ff99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempt to run a Lua script from std::string.  <a href="classHop_1_1Console.html#a7c840fe1b4baf5128708474ab605ff99">More...</a><br /></td></tr>
 <tr class="separator:a7c840fe1b4baf5128708474ab605ff99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1df870fa2384fb9f685e624c5f365f7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#ab1df870fa2384fb9f685e624c5f365f7">luaIsOk</a> ()</td></tr>
 <tr class="separator:ab1df870fa2384fb9f685e624c5f365f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fbe203a78351c4149fc608bcb569122"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#a0fbe203a78351c4149fc608bcb569122">luaStatus</a> ()</td></tr>
+<tr class="memdesc:a0fbe203a78351c4149fc608bcb569122"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert Lua's status to a std::string.  <a href="classHop_1_1Console.html#a0fbe203a78351c4149fc608bcb569122">More...</a><br /></td></tr>
 <tr class="separator:a0fbe203a78351c4149fc608bcb569122"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18b3c5ba200b96a29c57e6d398f1f06b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#a18b3c5ba200b96a29c57e6d398f1f06b">handleErrors</a> ()</td></tr>
-<tr class="separator:a18b3c5ba200b96a29c57e6d398f1f06b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f67ef6efbaf361e0d724acacacd8a7a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#a7f67ef6efbaf361e0d724acacacd8a7a">luaStore</a> (<a class="el" href="structHop_1_1LuaExtraSpace.html">LuaExtraSpace</a> *ptr)</td></tr>
+<tr class="memdesc:a7f67ef6efbaf361e0d724acacacd8a7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the <a class="el" href="structHop_1_1LuaExtraSpace.html" title="Store for lua global state. For the console to have access to these classes they must be set into Lua...">LuaExtraSpace</a> holding <a class="el" href="namespaceHop.html">Hop</a> classes.  <a href="classHop_1_1Console.html#a7f67ef6efbaf361e0d724acacacd8a7a">More...</a><br /></td></tr>
 <tr class="separator:a7f67ef6efbaf361e0d724acacacd8a7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7226aad5626d4064b2520ba22fb1ff11"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#a7226aad5626d4064b2520ba22fb1ff11">runScript</a> (std::string name)</td></tr>
+<tr class="memdesc:a7226aad5626d4064b2520ba22fb1ff11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Run a packed script from <a class="el" href="classHop_1_1Scriptz.html">Scriptz</a> in <a class="el" href="structHop_1_1LuaExtraSpace.html" title="Store for lua global state. For the console to have access to these classes they must be set into Lua...">LuaExtraSpace</a>.  <a href="classHop_1_1Console.html#a7226aad5626d4064b2520ba22fb1ff11">More...</a><br /></td></tr>
 <tr class="separator:a7226aad5626d4064b2520ba22fb1ff11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab09b5751d0a5c91dff1a56d0786e9b24"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#ab09b5751d0a5c91dff1a56d0786e9b24">getNumber</a> (const char *n)</td></tr>
 <tr class="separator:ab09b5751d0a5c91dff1a56d0786e9b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -102,7 +109,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab984f40634d3e971c14ea2b35c612934"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Console.html#ab984f40634d3e971c14ea2b35c612934">getBool</a> (const char *n)</td></tr>
 <tr class="separator:ab984f40634d3e971c14ea2b35c612934"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Lua console. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>Access to <a class="el" href="namespaceHop.html">Hop</a> classes is via <a class="el" href="structHop_1_1LuaExtraSpace.html" title="Store for lua global state. For the console to have access to these classes they must be set into Lua...">LuaExtraSpace</a> set by <a class="el" href="classHop_1_1Console.html#a7f67ef6efbaf361e0d724acacacd8a7a" title="Set the LuaExtraSpace holding Hop classes.">Console::luaStore</a>. </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8339b39c1c802a06b67c538356966630"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8339b39c1c802a06b67c538356966630">&#9670;&nbsp;</a></span>Console()</h2>
 
@@ -126,6 +136,14 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct a new <a class="el" href="classHop_1_1Console.html" title="Lua console.">Console</a> with a logger. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">l</td><td>Log outputting Lua's messages. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -233,31 +251,6 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a18b3c5ba200b96a29c57e6d398f1f06b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18b3c5ba200b96a29c57e6d398f1f06b">&#9670;&nbsp;</a></span>handleErrors()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Hop::Console::handleErrors </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ab1df870fa2384fb9f685e624c5f365f7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab1df870fa2384fb9f685e624c5f365f7">&#9670;&nbsp;</a></span>luaIsOk()</h2>
 
@@ -306,6 +299,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Convert Lua's status to a std::string. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::string Lua status name. </dd></dl>
+
 </div>
 </div>
 <a id="a7f67ef6efbaf361e0d724acacacd8a7a"></a>
@@ -331,6 +327,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the <a class="el" href="structHop_1_1LuaExtraSpace.html" title="Store for lua global state. For the console to have access to these classes they must be set into Lua...">LuaExtraSpace</a> holding <a class="el" href="namespaceHop.html">Hop</a> classes. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>This gives <a class="el" href="classHop_1_1Console.html" title="Lua console.">Console</a> access to <a class="el" href="namespaceHop.html">Hop</a>. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td><a class="el" href="structHop_1_1LuaExtraSpace.html" title="Store for lua global state. For the console to have access to these classes they must be set into Lua...">LuaExtraSpace</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -358,6 +363,17 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Attempt to run a Lua script from a file on disc. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>Lua script location. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true Error occured. </dd>
+<dd>
+false OK. </dd></dl>
+
 </div>
 </div>
 <a id="a7226aad5626d4064b2520ba22fb1ff11"></a>
@@ -384,6 +400,14 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Run a packed script from <a class="el" href="classHop_1_1Scriptz.html">Scriptz</a> in <a class="el" href="structHop_1_1LuaExtraSpace.html" title="Store for lua global state. For the console to have access to these classes they must be set into Lua...">LuaExtraSpace</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The script name. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a7c840fe1b4baf5128708474ab605ff99"></a>
@@ -409,6 +433,17 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Attempt to run a Lua script from std::string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file</td><td>Lua script. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true Error occured. </dd>
+<dd>
+false OK. </dd></dl>
 
 </div>
 </div>

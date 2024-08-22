@@ -75,18 +75,28 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>A data store for a general asset T.  
+ <a href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="assetStore_8h_source.html">assetStore.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a945a0ecc31efada152940c42d2dc0577"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a945a0ecc31efada152940c42d2dc0577">AssetStore</a> (std::filesystem::path <a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#ae890eb8f81547565ce289aaf34a26a3f">root</a>)</td></tr>
+<tr class="memdesc:a945a0ecc31efada152940c42d2dc0577"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html" title="A data store for a general asset T.">AssetStore</a>.  <a href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a945a0ecc31efada152940c42d2dc0577">More...</a><br /></td></tr>
 <tr class="separator:a945a0ecc31efada152940c42d2dc0577"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a215d7ced230b89354f4d10f82ea56e1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a215d7ced230b89354f4d10f82ea56e1e">scan</a> ()</td></tr>
+<tr class="memdesc:a215d7ced230b89354f4d10f82ea56e1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Caches all matching asset paths relative to root.  <a href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a215d7ced230b89354f4d10f82ea56e1e">More...</a><br /></td></tr>
 <tr class="separator:a215d7ced230b89354f4d10f82ea56e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26b325fce6fa3a92b2138b5a4b65a069"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a26b325fce6fa3a92b2138b5a4b65a069">load</a> (std::filesystem::path assetPath)=0</td></tr>
-<tr class="separator:a26b325fce6fa3a92b2138b5a4b65a069"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a854301dbfb2817c91ac3f122643e41e0"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a854301dbfb2817c91ac3f122643e41e0">get</a> (std::filesystem::path relative_path)</td></tr>
-<tr class="separator:a854301dbfb2817c91ac3f122643e41e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f3f97f1117df63e007f9db1dd07eb8e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a0f3f97f1117df63e007f9db1dd07eb8e">load</a> (std::filesystem::path relativePath)=0</td></tr>
+<tr class="memdesc:a0f3f97f1117df63e007f9db1dd07eb8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the asset at this relative path.  <a href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a0f3f97f1117df63e007f9db1dd07eb8e">More...</a><br /></td></tr>
+<tr class="separator:a0f3f97f1117df63e007f9db1dd07eb8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1dc00d27fa35e936bb81bb9fd0d07e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#af1dc00d27fa35e936bb81bb9fd0d07e1">loadAll</a> ()</td></tr>
+<tr class="memdesc:af1dc00d27fa35e936bb81bb9fd0d07e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads all assets in the asset store.  <a href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#af1dc00d27fa35e936bb81bb9fd0d07e1">More...</a><br /></td></tr>
+<tr class="separator:af1dc00d27fa35e936bb81bb9fd0d07e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbc487a88a2c8fd0d30852f8e17288dc"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#abbc487a88a2c8fd0d30852f8e17288dc">get</a> (std::filesystem::path relativePath)</td></tr>
+<tr class="memdesc:abbc487a88a2c8fd0d30852f8e17288dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the asset.  <a href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#abbc487a88a2c8fd0d30852f8e17288dc">More...</a><br /></td></tr>
+<tr class="separator:abbc487a88a2c8fd0d30852f8e17288dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa68e65d62945f5bf314b8dbb76efaf17"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::filesystem::path, std::shared_ptr&lt; T &gt; &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#aa68e65d62945f5bf314b8dbb76efaf17">begin</a> ()</td></tr>
 <tr class="separator:aa68e65d62945f5bf314b8dbb76efaf17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb5667370cdc3e2f045a25b19eafceb9"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::filesystem::path, std::shared_ptr&lt; T &gt; &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#aeb5667370cdc3e2f045a25b19eafceb9">end</a> ()</td></tr>
@@ -106,7 +116,19 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:af4ef816d15805cc177ff5da7d8d61d1c"><td class="memItemLeft" align="right" valign="top">std::map&lt; std::filesystem::path, std::shared_ptr&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#af4ef816d15805cc177ff5da7d8d61d1c">assets</a></td></tr>
 <tr class="separator:af4ef816d15805cc177ff5da7d8d61d1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class T&gt;<br />
+class Hop::Util::Assets::AssetStore&lt; T &gt;</h3>
+
+<p>A data store for a general asset T. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>type of the asset. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section remark"><dt>Remarks</dt><dd><a class="el" href="namespaceHop_1_1Util_1_1Assets.html">Assets</a> are loading from relative paths to a supplied root, seet <a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html#a945a0ecc31efada152940c42d2dc0577" title="Construct a new AssetStore.">AssetStore::AssetStore</a>. </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a945a0ecc31efada152940c42d2dc0577"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a945a0ecc31efada152940c42d2dc0577">&#9670;&nbsp;</a></span>AssetStore()</h2>
 
@@ -132,6 +154,14 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct a new <a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html" title="A data store for a general asset T.">AssetStore</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>the relative path for all assets. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -190,8 +220,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a854301dbfb2817c91ac3f122643e41e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a854301dbfb2817c91ac3f122643e41e0">&#9670;&nbsp;</a></span>get()</h2>
+<a id="abbc487a88a2c8fd0d30852f8e17288dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbc487a88a2c8fd0d30852f8e17288dc">&#9670;&nbsp;</a></span>get()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -205,7 +235,7 @@ template&lt;class T &gt; </div>
           <td class="memname">std::shared_ptr&lt;T&gt; <a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html">Hop::Util::Assets::AssetStore</a>&lt; T &gt;::get </td>
           <td>(</td>
           <td class="paramtype">std::filesystem::path&#160;</td>
-          <td class="paramname"><em>relative_path</em></td><td>)</td>
+          <td class="paramname"><em>relativePath</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -216,10 +246,20 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Return the asset. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">relativePath</td><td>path to asset. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::shared_ptr&lt;T&gt; the asset. </dd></dl>
+<dl class="section remark"><dt>Remarks</dt><dd>Will attempt to load an unloaded asset. </dd></dl>
+
 </div>
 </div>
-<a id="a26b325fce6fa3a92b2138b5a4b65a069"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26b325fce6fa3a92b2138b5a4b65a069">&#9670;&nbsp;</a></span>load()</h2>
+<a id="a0f3f97f1117df63e007f9db1dd07eb8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f3f97f1117df63e007f9db1dd07eb8e">&#9670;&nbsp;</a></span>load()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -233,7 +273,7 @@ template&lt;class T &gt; </div>
           <td class="memname">virtual void <a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html">Hop::Util::Assets::AssetStore</a>&lt; T &gt;::load </td>
           <td>(</td>
           <td class="paramtype">std::filesystem::path&#160;</td>
-          <td class="paramname"><em>assetPath</em></td><td>)</td>
+          <td class="paramname"><em>relativePath</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -244,7 +284,45 @@ template&lt;class T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="classHop_1_1Util_1_1Assets_1_1TextureAssetStore.html#ad7ceaeeeb2a3d3d9082c4a60d24c27db">Hop::Util::Assets::TextureAssetStore</a>.</p>
+<p>Loads the asset at this relative path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">relativePath</td><td>relative path to an asset. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classHop_1_1Util_1_1Assets_1_1TextureAssetStore.html#a67645e39cdd31db049ecbdbf741b48a0">Hop::Util::Assets::TextureAssetStore</a>.</p>
+
+</div>
+</div>
+<a id="af1dc00d27fa35e936bb81bb9fd0d07e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1dc00d27fa35e936bb81bb9fd0d07e1">&#9670;&nbsp;</a></span>loadAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classHop_1_1Util_1_1Assets_1_1AssetStore.html">Hop::Util::Assets::AssetStore</a>&lt; T &gt;::loadAll </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Loads all assets in the asset store. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>Use with scan. </dd></dl>
 
 </div>
 </div>
@@ -302,6 +380,9 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Caches all matching asset paths relative to root. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>Specialised AssetStores overloads a method to check if a path is an asset of type T. This is done by file extensions (.png, .mp3, ...). </dd></dl>
 
 </div>
 </div>
