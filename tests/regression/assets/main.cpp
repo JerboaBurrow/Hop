@@ -10,7 +10,7 @@ int main(int argc, char ** argv)
 
     jGL::DesktopDisplay display(glm::ivec2(1,1),"Test TextureAssetStore", conf);
     glewInit();
-    std::unique_ptr<jGL::jGLInstance> jGLInstance = std::move(std::make_unique<jGL::GL::OpenGLInstance>(display.getRes()));
+    std::shared_ptr<jGL::jGLInstance> jGLInstance = std::move(std::make_shared<jGL::GL::OpenGLInstance>(display.getRes()));
     Hop::Util::Assets::TextureAssetStore textureStore(std::filesystem::path("resource"), jGLInstance);
     textureStore.scan();
     for (auto tex : textureStore)

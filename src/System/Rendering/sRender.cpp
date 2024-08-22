@@ -2,40 +2,44 @@
 
 namespace Hop::System::Rendering
 {
-        double sRender::draw
-        (
-            std::shared_ptr<jGL::jGLInstance> jgl,
-            EntityComponentSystem * ecs,
-            AbstractWorld * world
-        )
+    double sRender::draw
+    (
+        std::shared_ptr<jGL::jGLInstance> jgl,
+        EntityComponentSystem * ecs,
+        AbstractWorld * world
+    )
+    {
+        if (world != nullptr)
         {
-            sprites->setProjection(projection);
-
-            if (world != nullptr)
-            {
-                world->draw();
-            }
-
-            if (drawCollisionMeshPoints)
-            {
-                if (collisionMeshDebug == nullptr)
-                {
-                    collisionMeshDebug = std::move(std::make_unique<CollisionMeshDebug>(jgl));
-                }
-                collisionMeshDebug->refreshMeshes();
-                collisionMeshDebug->drawMeshes(ecs, projection);
-            }
-
-            sprites->draw();
-
-            auto t = std::chrono::high_resolution_clock::now();
-            accumulatedTime += std::chrono::duration_cast<duration<double>>(t-clock).count();
-            clock = t;
-
-            return accumulatedTime;
+            world->draw();
         }
 
-        void sRender::update(EntityComponentSystem * ecs)
+        if (drawCollisionMeshPoints)
+        {
+            if (collisionMeshDebug == nullptr)
+            {
+                collisionMeshDebug = std::move(std::make_unique<CollisionMeshDebug>(jgl));
+            }
+            collisionMeshDebug->refreshMeshes();
+            collisionMeshDebug->drawMeshes(ecs, projection);
+        }
+
+        if (sprites != nullptr)
+        {
+            sprites->setProjection(projection);
+            sprites->draw();
+        }
+
+        auto t = std::chrono::high_resolution_clock::now();
+        accumulatedTime += std::chrono::duration_cast<duration<double>>(t-clock).count();
+        clock = t;
+
+        return accumulatedTime;
+    }
+
+    void sRender::update(EntityComponentSystem * ecs)
+    {
+        if (sprites != nullptr)
         {
             ComponentArray<cSprite> & spriteComponents = ecs->getComponentArray<cSprite>();
             ComponentArray<cRenderable> & renderables = ecs->getComponentArray<cRenderable>();
@@ -96,4 +100,5 @@ namespace Hop::System::Rendering
                 }
             }
         }
+    }
 }
