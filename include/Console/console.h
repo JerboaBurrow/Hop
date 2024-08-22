@@ -33,6 +33,11 @@ namespace Hop
     using jLog::Log;
     using jLog::ERRORCODE;
 
+    /**
+     * @brief Store for lua global state.
+     *  For the console to have access to these classes they must
+     *  be set into LuaExtraSpace and set via Console::luaStore.
+     */
     struct LuaExtraSpace
     {
         EntityComponentSystem * ecs;
@@ -43,7 +48,7 @@ namespace Hop
         Scriptz * scripts;
     };
 
-    // ECS 
+    // ECS
 
     typedef int (EntityComponentSystem::*EntityComponentSystemMember)(lua_State * lua);
 
@@ -68,7 +73,7 @@ namespace Hop
     }
 
     // Physics
-    
+
     typedef int (sPhysics::*sPhysicsMember)(lua_State * lua);
 
     template <sPhysicsMember function>
@@ -80,7 +85,7 @@ namespace Hop
     }
 
     // sCollision
-    
+
     typedef int (sCollision::*sCollisionMember)(lua_State * lua);
 
     template <sCollisionMember function>
@@ -92,7 +97,7 @@ namespace Hop
     }
 
     // Scriptz
-    
+
     typedef int (Scriptz::*ScriptzMember)(lua_State * lua);
 
     template <ScriptzMember function>
@@ -103,17 +108,49 @@ namespace Hop
         return ((*ptr).*function)(lua);
     }
 
-
+    /**
+     * @brief Configure physics.
+     * @remark Takes a lua table:
+{
+    ["timeStep"]  = 1.0/1800.0,
+    ["subSample"] = 5,
+    ["cofr"]      = 0.9,
+    ["surfaceFriction"] = 0.5
+}
+     * @param lua lua_State.
+     * @return int lua return code.
+     */
     int configure(lua_State * lua);
 
+    /**
+     * @brief Returns the current system clock time in lua.
+     *
+     * @param lua lua_State.
+     * @return int return code.
+     */
     int timeMillis(lua_State * lua);
 
+    /**
+     * @brief Apply a force to an object.
+     * @remark Takes the string id, and forces in x and y.
+     * @param lua lua_State.
+     * @return int return code.
+     */
     int lua_applyForce(lua_State * lua);
 
-    class Console 
+    /**
+     * @brief Lua console.
+     * @remark Access to Hop classes is via LuaExtraSpace set by Console::luaStore.
+     */
+    class Console
     {
     public:
 
+        /**
+         * @brief Construct a new Console with a logger.
+         *
+         * @param l Log outputting Lua's messages.
+         */
         Console(Log & l)
         : lastCommandOrProgram(""), lastStatus(false), log(l)
         {
@@ -125,6 +162,13 @@ namespace Hop
 
         ~Console(){ lua_close(lua); }
 
+        /**
+         * @brief Attempt to run a Lua script from a file on disc.
+         *
+         * @param file Lua script location.
+         * @return true Error occured.
+         * @return false OK.
+         */
         bool runFile(std::string file)
         {
             if (luaIsOk())
@@ -141,6 +185,13 @@ namespace Hop
             return false;
         }
 
+        /**
+         * @brief Attempt to run a Lua script from std::string.
+         *
+         * @param file Lua script.
+         * @return true Error occured.
+         * @return false OK.
+         */
         bool runString(std::string program)
         {
             if (luaIsOk())
@@ -153,6 +204,11 @@ namespace Hop
 
         bool luaIsOk(){ return lua_status(lua) == LUA_OK ? true : false; }
 
+        /**
+         * @brief Convert Lua's status to a std::string
+         *
+         * @return std::string Lua status name.
+         */
         std::string luaStatus()
         {
             int s = lua_status(lua);
@@ -186,26 +242,21 @@ namespace Hop
             return status;
         }
 
-        bool handleErrors()
-        {
-            if (lastStatus)
-            {
-                std::string msg = "Exited with error running "+lastCommandOrProgram+"\n";
-                msg += stackTrace;
-                ERR(ERRORCODE::LUA_ERROR, msg) >> log;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+        /**
+         * @brief Set the LuaExtraSpace holding Hop classes.
+         * @remark This gives Console access to Hop.
+         * @param ptr LuaExtraSpace.
+         */
         void luaStore(LuaExtraSpace * ptr)
         {
             *static_cast<LuaExtraSpace**>(lua_getextraspace(lua)) = ptr;
         }
 
+        /**
+         * @brief Run a packed script from Scriptz in LuaExtraSpace.
+         *
+         * @param name The script name.
+         */
         void runScript(std::string name)
         {
 
@@ -221,14 +272,12 @@ namespace Hop
             }
 
             lastCommandOrProgram = name;
-            lastStatus = 
+            lastStatus =
             (
                 luaL_loadstring(lua, body.c_str()) ||
                 lua_pcall(lua, 0, LUA_MULTRET, 0)
             );
-            
             handleErrors();
-            
         }
 
         double getNumber(const char * n)
@@ -294,6 +343,22 @@ namespace Hop
             lua_pop(lua, 1);
             return 0;
         }
+
+        bool handleErrors()
+        {
+            if (lastStatus)
+            {
+                std::string msg = "Exited with error running "+lastCommandOrProgram+"\n";
+                msg += stackTrace;
+                ERR(ERRORCODE::LUA_ERROR, msg) >> log;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         // register lib
 

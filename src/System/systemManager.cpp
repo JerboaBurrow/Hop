@@ -4,16 +4,6 @@
 
 namespace Hop::System
 {
-
-    void SystemManager::objectFreed(Id i)
-    {
-        for (auto const& pair : systems)
-        {
-            auto const& system = pair.second;
-            system->objects.erase(i);
-        }
-    }
-
     void SystemManager::objectSignatureChanged(Id i, Signature es)
     {
         for (auto const& pair : systems)

@@ -1,6 +1,8 @@
 #ifndef ENTITYCOMPONENTSYSTEM_H
 #define ENTITYCOMPONENTSYSTEM_H
 
+#include <constants.h>
+
 #include <World/world.h>
 #include <Object/object.h>
 
@@ -33,7 +35,7 @@
 #include <chrono>
 using namespace std::chrono;
 
-namespace Hop 
+namespace Hop
 {
     class Console;
 }
@@ -58,7 +60,7 @@ namespace Hop::Object
 {
 
     using namespace Hop::Object::Component;
-    
+
     using namespace Hop::System;
     using Hop::System::Physics::sPhysics;
     using Hop::System::Physics::sCollision;
@@ -66,48 +68,45 @@ namespace Hop::Object
     using Hop::System::Sound::sSound;
     using Hop::Console;
 
-
-    /*
-        Stores an unordered map of objects that can be added to
-        and removed from
-
-        Objects are associated with a string identity, which can be
-        the string form of Object/id.h or a user provided handle
-        subject to a uniqueness check
-
-        Object dynamics is step by step(delta), and drawing
-        is dispatched with draw(debug)
-
-        Callback is calle on collisions, can be user specified with
-        user logic, e.g:
-        "if collision between player and power up call player.collectPowerUp() and powerUp.delete()"
-    */
-
-    // define CollisionCallback as this func ptr
-    typedef void (*CollisionCallback)(Id & i, Id & j);
-    void identityCallback(Id & i, Id & j);
-
-    const uint32_t MAX_OBJECTS = 100000;
-
-    class EntityComponentSystem 
+    /**
+     * @brief Stores objects (identity) dynamic components and systems.
+     * @remark An object is associated with a unique Id.
+     * @remark Components can be dynamically added, removed, and modified.
+     */
+    class EntityComponentSystem
     {
 
     public:
 
-        EntityComponentSystem(
-            void (*callback)(Id & i, Id & j) = &identityCallback
-        )
-        : collisionCallback(callback), 
-        nextComponentIndex(0)
+        /**
+         * @brief Construct a new EntityComponentSystem
+         *
+         * @remark Constructs an default ECS with all Hop components and systems.
+         */
+        EntityComponentSystem()
+        : nextComponentIndex(0)
         {
             initialiseBaseECS();
             objects.clear();
         }
 
         Id createObject();
+
+        /**
+         * @brief Create a Object returning its id and associating a user defined string name.
+         *
+         * @param handle user defined alias.
+         * @return Id the objects unique id.
+         */
         Id createObject(std::string handle);
 
         void remove(Id id);
+
+        /**
+         * @brief Remove an object by the users alias.
+         *
+         * @param handle user defined alias.
+         */
         void remove(std::string handle);
 
         bool handleExists(std::string handle) const { return handleToId.find(handle) != handleToId.cend(); }
@@ -119,10 +118,13 @@ namespace Hop::Object
 
         const std::unordered_map<Id,std::shared_ptr<Object>> & getObjects() { return objects; }
 
-        CollisionCallback collisionCallback;
-
         // component interface
 
+        /**
+         * @brief Register a new component.
+         *
+         * @tparam T the component class to register.
+         */
         template <class T>
         void registerComponent()
         {
@@ -141,9 +143,15 @@ namespace Hop::Object
             registeredComponents[handle] = nextComponentIndex;
             nextComponentIndex++;
             componentData[handle] = std::make_shared<ComponentArray<T>>(MAX_OBJECTS);
-            
         }
 
+        /**
+         * @brief Add a component to an object.
+         *
+         * @tparam T the registered component.
+         * @param i the object Id.
+         * @param component the component value.
+         */
         template <class T>
         void addComponent(Id i, T component)
         {
@@ -162,6 +170,12 @@ namespace Hop::Object
             systemManager.objectSignatureChanged(i,idToSignature[i]);
         }
 
+        /**
+         * @brief Remove a component from an object.
+         *
+         * @tparam T the registered component class.
+         * @param i the object Id to remove from.
+         */
         template <class T>
         void removeComponent(Id i)
         {
@@ -180,54 +194,78 @@ namespace Hop::Object
             systemManager.objectSignatureChanged(i,idToSignature[i]);
         }
 
+        /**
+         * @brief Get a Component for an object.
+         *
+         * @tparam T the component class.
+         * @param i the object Id to get the component T from.
+         * @return T& the component values for the object Id;
+         */
         template <class T>
         inline T & getComponent(const Id & i)
         {
             const char * handle = typeid(T).name();
-
-            // if (!componentRegistered(handle)){
-            //     throw ComponentNotRegistered(" Attempt to getComponent<"+i.idStr+")");
-            // }
             return (std::static_pointer_cast<ComponentArray<T>>(componentData[handle]))->get(i);
         }
 
-        void objectFreed(Id i)
-        {
-            for (auto const& pair : componentData)
-            {
-                pair.second.get()->objectFreed(i);
-            }
-        }
-
-        template <class T>
-        uint32_t getComponentId()
-        {
-            const char * handle = typeid(T).name();
-            return registeredComponents[handle];
-        }
-
         // system interface
+
+        /**
+         * @brief Register a class T as a new system.
+         *
+         * @tparam T the class to register.
+         */
         template<class T>
         void registerSystem(){systemManager.registerSystem<T>();}
 
+        /**
+         * @brief Set the Signature for the system T
+         *
+         * @tparam T the registered system class.
+         * @param signature the new Signature.
+         */
         template<class T>
         void setSystemSignature(Signature signature){systemManager.setSignature<T>(signature);}
 
+        /**
+         * @brief Get the System T
+         *
+         * @tparam T the registered system T to get..
+         * @return T& the system.
+         */
         template <class T>
         T & getSystem(){return systemManager.getSystem<T>();}
 
+        /**
+         * @brief Check if the object has the given component.
+         *
+         * @tparam T the registered component class.
+         * @param i the object Id to check.
+         * @return true i has the component.
+         * @return false i does not have the component.
+         */
         template<class T>
         bool hasComponent(const Id & i){return idToSignature[i][getComponentId<T>()];}
 
+        /**
+         * @brief Get the full array of component T, as a copy;
+         *
+         * @tparam T the registered component
+         * @return ComponentArray<T> all values of component T.
+         */
         template <class T>
         ComponentArray<T> getComponentArrayCopy()
         {
             const char * handle = typeid(T).name();
-
             return *(std::static_pointer_cast<ComponentArray<T>>(componentData[handle]));
-
         }
 
+        /**
+         * @brief Get the full array of component T, as a copy;
+         *
+         * @tparam T the registered component
+         * @return ComponentArray<T> & all values of component T.
+         */
         template <class T>
         ComponentArray<T> & getComponentArray()
         {
@@ -237,14 +275,11 @@ namespace Hop::Object
 
         }
 
-        template <class T>
-        void updateMainComponents();
-
         // Lua bindings
 
         int lua_loadObject(lua_State * lua);
         int lua_deleteObject(lua_State * lua);
-        
+
         int lua_getTransform(lua_State * lua);
         int lua_setTransform(lua_State * lua);
 
@@ -254,6 +289,12 @@ namespace Hop::Object
 
         int lua_getColour(lua_State * lua);
         int lua_setColour(lua_State * lua);
+
+        int lua_setTextureRegion(lua_State * lua);
+        int lua_getTextureRegion(lua_State * lua);
+
+        int lua_setTexturePath(lua_State * lua);
+        int lua_getTexturePath(lua_State * lua);
 
 
     private:
@@ -266,8 +307,6 @@ namespace Hop::Object
 
         void initialiseBaseECS();
 
-        // components
-
         bool componentRegistered(const char * h){return registeredComponents.find(h)!=registeredComponents.end();}
 
         uint32_t nextComponentIndex;
@@ -276,6 +315,12 @@ namespace Hop::Object
 
         std::unordered_map<const char *, std::shared_ptr<AbstractComponentArray>> componentData;
 
+        template <class T>
+        uint32_t getComponentId()
+        {
+            const char * handle = typeid(T).name();
+            return registeredComponents[handle];
+        }
     };
 }
 

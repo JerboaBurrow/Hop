@@ -6,7 +6,7 @@
 namespace Hop::Object::Component
 {
 
-  struct cRenderable 
+  struct cRenderable
   {
       // offset in transform
 
@@ -19,7 +19,7 @@ namespace Hop::Object::Component
       // atlas coord
       float ux;
       float uy;
-      
+
       // extra?
       float vx;
       float vy;
@@ -53,7 +53,7 @@ namespace Hop::Object::Component
       {}
 
       cRenderable(
-        std::string shader, 
+        std::string shader,
         float r, float g, float b, float a,
         float ua, float ub, float uc, float ud,
         uint64_t p = 0
@@ -75,7 +75,6 @@ namespace Hop::Object::Component
         priority(p),
         shaderHandle(""),stale(true)
       {}
-      
   };
 
 }

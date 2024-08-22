@@ -7,6 +7,8 @@
 
     ["transform"] = {x,y,0.0,1.0},
     ["colour"] = {200/255,200/255,250/255,1.0},
+    ["texturePath"] = "some/relative/path/to.png",
+    ["textureRegion"] = {0, 0, 16, 16},
     ["shader"] = "circleObjectShader",
     ["moveable"] = false,
     ["collisionMesh"] =
@@ -40,15 +42,9 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_deleteObject(lua_State * lua)
     {
+        int status = lua_checkArgumentCount(lua, 1, "expected id as argument");
+        if (status != LUA_OK) { return status; }
         LuaString sid;
-
-        int n = lua_gettop(lua);
-
-        if (n != 1)
-        {
-            lua_pushliteral(lua,"expected id as argument");
-            return lua_error(lua);
-        }
 
         sid.read(lua, 1);
 
@@ -61,12 +57,21 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_loadObject(lua_State * lua)
     {
-        LuaArray<4> colour, transform, util;
+        int status = lua_checkArgumentCount(lua, 1, "expected table as argument");
+        if (status != LUA_OK) { return status; }
+
+        if (!lua_istable(lua,1))
+        {
+            lua_pushliteral(lua,"non table argument");
+            return lua_error(lua);
+        }
+
+        LuaArray<4> colour, transform, util, textureRegion;
         LuaArray<3> meshParameters;
 
         LuaNumber transDrag, rotDrag, bodyMass, bodyInertia, bodyFriction, priority;
 
-        LuaString shader, name;
+        LuaString shader, name, texturePath;
 
         LuaBool isMoveable, isGhost;
 
@@ -74,6 +79,8 @@ namespace Hop::Object
 
         bool hasColour = false;
         bool hasTransform = false;
+        bool hasTexture = false;
+        bool hasTextureRegion = false;
         bool isRenderable = false;
         bool isPhysics = false;
 
@@ -91,34 +98,19 @@ namespace Hop::Object
 
         priority.n = 0;
 
-        // elements on stack
-        int n = lua_gettop(lua);
-        
-        if (!lua_istable(lua,1))
-        {
-            lua_pushliteral(lua,"non table argument");
-            return lua_error(lua);
-        }
-        else if (n != 1)
-        {
-            lua_pushliteral(lua,"requires single argument");
-            return lua_error(lua);
-        }
-
         hasColour = colour.readField(lua, "colour");
         hasTransform = transform.readField(lua, "transform");
 
         if (hasTransform && hasColour) { isRenderable = true; }
 
         shader.readField(lua, "shader");
-
+        hasTextureRegion = textureRegion.readField(lua, "textureRegion");
+        hasTexture = texturePath.readField(lua, "texturePath");
         priority.readField(lua, "renderPriority");
 
         isMoveable.readField(lua, "moveable");
         isGhost.readField(lua, "ghost");
-
         isPhysics = collisionMesh.readField(lua, "collisionMesh");
-
         meshParameters.readField(lua, "meshParameters");
 
         name.readField(lua, "name");
@@ -132,7 +124,7 @@ namespace Hop::Object
         // now create the object
 
         Id pid;
-        
+
         if (name.characters != "")
         {
             pid = createObject(name.characters);
@@ -191,7 +183,7 @@ namespace Hop::Object
                     ub = param[1];
                     uc = param[2];
                     ud = param[3];
-                
+
                 }
                 else if (returnType == LUA_TNONE || returnType == LUA_TNIL)
                 {
@@ -199,7 +191,6 @@ namespace Hop::Object
                 }
 
                 lua_pop(lua,1);
-                
             }
 
             addComponent<cRenderable>
@@ -207,6 +198,29 @@ namespace Hop::Object
                 pid,
                 cRenderable(shader.characters,r,g,b,a,ua,ub,uc,ud,priority.n)
             );
+
+            if (hasTexture)
+            {
+                jGL::TextureRegion region;
+                if (hasTextureRegion)
+                {
+                    region.tx = textureRegion.elements[0];
+                    region.ty = textureRegion.elements[1];
+                    region.lx = textureRegion.elements[2];
+                    region.ly = textureRegion.elements[3];
+                }
+                addComponent<cSprite>
+                (
+                    pid,
+                    cSprite(
+                        texturePath.characters,
+                        region.tx,
+                        region.ty,
+                        region.lx,
+                        region.ty
+                    )
+                );
+            }
         }
 
         if (isPhysics)
@@ -220,7 +234,6 @@ namespace Hop::Object
             cPhysics & data = getComponent<cPhysics>(pid);
             data.isMoveable = isMoveable.bit;
             data.isGhost = isGhost.bit;
-            
 
             if (collisionMesh.size() > 0)
             {

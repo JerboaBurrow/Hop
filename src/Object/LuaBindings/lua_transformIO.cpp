@@ -9,16 +9,9 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_getTransform(lua_State * lua)
     {
-
+        int status = lua_checkArgumentCount(lua, 1, "expected id as argument");
+        if (status != LUA_OK) { return status; }
         LuaString sid;
-
-        int n = lua_gettop(lua);
-
-        if (n != 1)
-        {
-            lua_pushliteral(lua,"expected id as argument");
-            return lua_error(lua);
-        }
 
         sid.read(lua, 1);
 

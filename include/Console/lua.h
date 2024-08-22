@@ -21,6 +21,15 @@ namespace Hop
 
     std::vector< std::vector<double> > getLuaTableOfNumericLuaTable(lua_State * lua, int index);
 
+    /**
+     * @brief Check the argument count to the lua call.
+     * @param lua lua_State.
+     * @param expected argument count expected.
+     * @param msg Error string pushed if not LUA_OK.
+     * @return int return code. LUA_OK if the argument count matches.
+     */
+    int lua_checkArgumentCount(lua_State * lua, int expected, std::string msg);
+
 }
 
 #endif /* LUA */

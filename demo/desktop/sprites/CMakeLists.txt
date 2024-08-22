@@ -1,4 +1,4 @@
-set(OUTPUT_NAME PerlinWorld)
+set(OUTPUT_NAME Sprites)
 
 if (WINDOWS)
     add_compile_definitions(WINDOWS)
@@ -17,8 +17,7 @@ target_link_libraries(${OUTPUT_NAME} Hop)
 
 set_target_properties(${OUTPUT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")
 
-file(GLOB LUA "../*.lua")
-file(GLOB MAP "../*.hmap")
+file(GLOB LUA "*.lua")
 
 file(COPY ${LUA} DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")
-file(COPY ${MAP} DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")
+file(COPY "assets" DESTINATION "${CMAKE_BINARY_DIR}/${OUTPUT_NAME}/")

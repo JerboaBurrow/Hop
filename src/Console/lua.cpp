@@ -2,7 +2,7 @@
 
 namespace Hop
 {
-   
+
     std::vector<double> getNumericLuaTable(lua_State * lua, int index)
     {
         unsigned length = lua_rawlen(lua,index);
@@ -42,4 +42,14 @@ namespace Hop
         return values;
     }
 
+    int lua_checkArgumentCount(lua_State * lua, int expected, std::string msg)
+    {
+        int n = lua_gettop(lua);
+        if (n != expected)
+        {
+            lua_pushlstring(lua, msg.c_str(), msg.length());
+            return lua_error(lua);
+        }
+        return LUA_OK;
+    }
 }

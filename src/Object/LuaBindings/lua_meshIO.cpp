@@ -9,13 +9,8 @@ namespace Hop::Object
 {
     int EntityComponentSystem::lua_removeFromMeshByTag(lua_State * lua)
     {
-        int n = lua_gettop(lua);
-
-        if (n != 2)
-        {
-            lua_pushliteral(lua, "expected id and tag as argument");
-            return lua_error(lua);
-        }
+        int status = lua_checkArgumentCount(lua, 2, "expected id and tag as argument");
+        if (status != LUA_OK) { return status; }
 
         LuaString sid;
         LuaNumber ltag;
@@ -37,13 +32,8 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_meshBoundingBox(lua_State * lua)
     {
-        int n = lua_gettop(lua);
-
-        if (n != 1)
-        {
-            lua_pushliteral(lua, "expected id as argument");
-            return lua_error(lua);
-        }
+        int status = lua_checkArgumentCount(lua, 1, "expected id as argument");
+        if (status != LUA_OK) { return status; }
 
         LuaString sid;
 
@@ -96,13 +86,8 @@ namespace Hop::Object
 
     int EntityComponentSystem::lua_meshBoundingBoxByTag(lua_State * lua)
     {
-        int n = lua_gettop(lua);
-
-        if (n != 2)
-        {
-            lua_pushliteral(lua, "expected id and tag as argument");
-            return lua_error(lua);
-        }
+        int status = lua_checkArgumentCount(lua, 2, "expected id and tag as argument");
+        if (status != LUA_OK) { return status; }
 
         LuaString sid;
         LuaNumber ltag;
@@ -149,7 +134,6 @@ namespace Hop::Object
                     lua_pushnumber(lua, bb.centre.y);
                     lua_setfield(lua, -2, "y");
                 lua_setfield(lua, -2, "centre");
-                
             return 1;
         }
 
