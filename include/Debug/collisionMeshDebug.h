@@ -64,7 +64,7 @@ namespace Hop::Debugging
 
         std::shared_ptr<jGL::Shader> circleShader, rectangleShader;
 
-        std::map<std::string, cTransform> circlePos;
+        std::vector<cTransform> circlePos;
 
     };
 

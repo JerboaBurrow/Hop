@@ -19,10 +19,10 @@ namespace Hop::Object
 
         const cRenderable & t = getComponent<cRenderable>(id);
 
-        lua_pushnumber(lua, t.r);
-        lua_pushnumber(lua, t.g);
-        lua_pushnumber(lua, t.b);
-        lua_pushnumber(lua, t.a);
+        lua_pushnumber(lua, t.colour.r);
+        lua_pushnumber(lua, t.colour.g);
+        lua_pushnumber(lua, t.colour.b);
+        lua_pushnumber(lua, t.colour.a);
 
         return 4;
     }
@@ -45,10 +45,10 @@ namespace Hop::Object
         b.read(lua, 4);
         a.read(lua, 5);
 
-        t.r = r.n;
-        t.g = g.n;
-        t.b = b.n;
-        t.a = a.n;
+        t.colour.r = r.n;
+        t.colour.g = g.n;
+        t.colour.b = b.n;
+        t.colour.a = a.n;
 
         return 0;
     }

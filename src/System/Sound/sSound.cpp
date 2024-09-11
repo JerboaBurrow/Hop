@@ -35,7 +35,7 @@ namespace Hop::System::Sound
             code *= "        default:\n            return \"UNKNOWN\";\n    }\n}"
             write("switch.cpp", code)
         ```
-        
+
 
     */
     std::string to_string(ma_result code)
@@ -157,7 +157,7 @@ namespace Hop::System::Sound
             case -202:
                 return "MA_SHARE_MODE_NOT_SUPPORTED";
             case -203:
-                return "MA_NO_BACKEND"; 
+                return "MA_NO_BACKEND";
             case -204:
                 return "MA_NO_DEVICE";
             case -205:

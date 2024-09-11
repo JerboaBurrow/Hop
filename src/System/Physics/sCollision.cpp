@@ -5,12 +5,12 @@ namespace Hop::System::Physics
 
     void sCollision::update
     (
-        EntityComponentSystem * m, 
+        EntityComponentSystem * m,
         AbstractWorld * w,
         ThreadPool * workers
     )
     {
-
+        updateObjects();
         ComponentArray<cCollideable> & dataC = m->getComponentArray<cCollideable>();
         ComponentArray<cPhysics> & dataP = m->getComponentArray<cPhysics>();
 

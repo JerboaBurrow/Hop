@@ -27,7 +27,7 @@ namespace Hop::System::Physics
         System to detect collisions and apply forces
     */
 
-    class sCollision : public System 
+    class sCollision : public System
     {
 
     public:
@@ -36,7 +36,7 @@ namespace Hop::System::Physics
 
         void update
         (
-            EntityComponentSystem * m, 
+            EntityComponentSystem * m,
             AbstractWorld * w,
             ThreadPool * workers = nullptr
         );
@@ -62,9 +62,9 @@ namespace Hop::System::Physics
         void setSurfaceFriction(double f) { resolver->setSurfaceFriction(f); }
 
         int lua_setCOR(lua_State * lua)
-        {  
+        {
             int n = lua_gettop(lua);
-            
+
             if (n != 1)
             {
                 lua_pushliteral(lua, "requires 1 argument, cor");
@@ -84,9 +84,9 @@ namespace Hop::System::Physics
         }
 
         int lua_setFriction(lua_State * lua)
-        {  
+        {
             int n = lua_gettop(lua);
-            
+
             if (n != 1)
             {
                 lua_pushliteral(lua, "requires 1 argument, friction");
@@ -109,7 +109,7 @@ namespace Hop::System::Physics
 
         std::unique_ptr<CollisionDetector> detector;
         std::unique_ptr<CollisionResolver> resolver;
-        
+
     };
 
 }

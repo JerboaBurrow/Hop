@@ -15,11 +15,11 @@ namespace Hop::System
 
             if ((es & ss) == ss)
             {
-                system->objects.insert(i);
+                system->queueAdd(i);
             }
             else
             {
-                system->objects.erase(i);
+                system->queueAdd(i);
             }
         }
     }

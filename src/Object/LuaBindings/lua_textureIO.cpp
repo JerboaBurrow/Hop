@@ -23,10 +23,7 @@ namespace Hop::Object
         lx.read(lua, 4);
         ly.read(lua, 5);
 
-        s.tx = tx;
-        s.ty = ty;
-        s.lx = lx;
-        s.ly = ly;
+        s.textureRegion = jGL::TextureRegion(tx, ty, lx, ly);
 
         return 0;
     }
@@ -41,10 +38,10 @@ namespace Hop::Object
 
         Id id(sid.characters);
         const cSprite & s = getComponent<cSprite>(id);
-        lua_pushnumber(lua, s.tx);
-        lua_pushnumber(lua, s.ty);
-        lua_pushnumber(lua, s.lx);
-        lua_pushnumber(lua, s.ly);
+        lua_pushnumber(lua, s.textureRegion.tx);
+        lua_pushnumber(lua, s.textureRegion.ty);
+        lua_pushnumber(lua, s.textureRegion.lx);
+        lua_pushnumber(lua, s.textureRegion.ly);
         return 4;
     }
 

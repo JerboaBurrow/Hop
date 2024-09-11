@@ -31,13 +31,13 @@ namespace Hop::System::Physics
     /*
         System to update cPhysics components given forces
     */
-    class sPhysics : public System 
+    class sPhysics : public System
     {
-        
+
     public:
 
         sPhysics()
-        : dt(1.0/900.0), 
+        : dt(1.0/900.0),
           dtdt(dt*dt),
           gravity(9.81),
           ngx(0.0),
@@ -47,7 +47,7 @@ namespace Hop::System::Physics
 
         void step
         (
-            EntityComponentSystem * m, 
+            EntityComponentSystem * m,
             sCollision * collisions,
             AbstractWorld * world
         );
@@ -63,7 +63,7 @@ namespace Hop::System::Physics
             ngx = nx;
             ngy = ny;
         }
-        
+
         void applyForce(
             EntityComponentSystem * m,
             Id & i,
@@ -88,11 +88,11 @@ namespace Hop::System::Physics
         // automatically compute stable simulation parameters
         // updating all objects
         void stabaliseObjectParameters(Hop::Object::EntityComponentSystem * m);
-        
+
         int lua_setTimeStep(lua_State * lua)
-        {   
+        {
             int n = lua_gettop(lua);
-            
+
             if (n != 1)
             {
                 lua_pushliteral(lua, "requires 1 argument, delta");
@@ -112,9 +112,9 @@ namespace Hop::System::Physics
         }
 
         int lua_setSubSamples(lua_State * lua)
-        {   
+        {
             int n = lua_gettop(lua);
-            
+
             if (n != 1)
             {
                 lua_pushliteral(lua, "requires 1 argument, subsamples");
@@ -143,7 +143,7 @@ namespace Hop::System::Physics
             lua_pushnumber(lua, energy);
             return 1;
         }
-        
+
         void setTimeStep(double delta){dt = delta; dtdt = dt*dt;}
         double getTimeStep() const { return dt; }
 
@@ -154,10 +154,10 @@ namespace Hop::System::Physics
         double getGravity() const { return gravity; }
         glm::vec2 getGravityDirection() const { return glm::vec2(ngx, ngy); }
 
-        // Lua 
+        // Lua
 
         int lua_setGravity(lua_State * lua);
-        
+
     private:
 
         void update(EntityComponentSystem * m, ThreadPool * workers = nullptr);

@@ -37,9 +37,18 @@ end
 
 time = hop.timeMillis()
 
+if deleted == nil then
+    deleted = false
+end
+
 if time-lastTime > 1000*5 then
 
     hop.setColour(objects[1], 1.0,0.0,0.0,1.0)
+
+    if (not deleted) and #objects > 2 then
+        hop.deleteObject(objects[2])
+        deleted = true
+    end
 
     if (hop.kineticEnergy() > 0.1) then
         lastTime = hop.timeMillis()
@@ -48,7 +57,7 @@ if time-lastTime > 1000*5 then
 
         x = 0.5 + math.random()*0.5 -0.25
         y = 1.25
-        
+
         r = math.random(255)
         g = math.random(255)
         b = math.random(255)
@@ -65,7 +74,7 @@ if time-lastTime > 1000*5 then
             ["mass"] = 1.0,
             ["inertia"] = 0.01,
             ["name"] = "current"
-    
+
         }
 
         id = hop.loadObject(o)
