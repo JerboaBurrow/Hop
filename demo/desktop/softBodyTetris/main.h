@@ -45,7 +45,7 @@ uint8_t frameId = 0;
 double deltas[60];
 
 bool debug = true;
-bool paused = true;
+bool paused = false;
 
 const double deltaPhysics = 1.0/900.0;
 
