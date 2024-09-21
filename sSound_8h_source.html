@@ -72,7 +72,7 @@ $(function() {
 <a href="sSound_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SSOUND_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define SSOUND_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno"><a class="line" href="sSound_8h.html#a43e52756c3c83d270d7839e14469e683">    4</a></span>&#160;<span class="preprocessor">#define MA_NO_VORBIS </span></div>
+<div class="line"><a name="l00004"></a><span class="lineno"><a class="line" href="sSound_8h.html#a43e52756c3c83d270d7839e14469e683">    4</a></span>&#160;<span class="preprocessor">#define MA_NO_VORBIS</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno"><a class="line" href="sSound_8h.html#abf77f70dc931f91a9f09e7b54d8278f5">    5</a></span>&#160;<span class="preprocessor">#define MINIAUDIO_IMPLEMENTATION</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;miniaudio/miniaudio.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="vorbis_8h.html">System/Sound/vorbis.h</a>&gt;</span></div>
@@ -91,14 +91,14 @@ $(function() {
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespaceHop_1_1System_1_1Sound.html#a51195cc2df493d8e8271ab0d64dcfdbd">data_callback</a>(ma_device* pDevice, <span class="keywordtype">void</span>* pOutput, <span class="keyword">const</span> <span class="keywordtype">void</span>* pInput, ma_uint32 frameCount);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;   </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    std::string <a class="code" href="namespaceHop_1_1System_1_1Sound.html#afa8613e37584e1a35e4f0757041e19e6">to_string</a>(ma_result code);</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="namespaceHop_1_1System_1_1Sound.html#a7b3fb6e61d8c54234c7dd782ddc85c92">   26</a></span>&#160;    <span class="keyword">enum class</span> <a class="code" href="namespaceHop_1_1System_1_1Sound.html#a7b3fb6e61d8c54234c7dd782ddc85c92">DECODER</a> {<a class="code" href="namespaceHop_1_1System_1_1Sound.html#a7b3fb6e61d8c54234c7dd782ddc85c92a2a6039655313bf5dab1e43523b62c374">MA</a>, <a class="code" href="namespaceHop_1_1System_1_1Sound.html#a7b3fb6e61d8c54234c7dd782ddc85c92a8ee0c89f143e719235a4bb57406f6455">VORBIS</a>, <a class="code" href="namespaceHop_1_1System_1_1Sound.html#a7b3fb6e61d8c54234c7dd782ddc85c92ab50339a10e1de285ac99d4c3990b8693">NONE</a>};</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
 <div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Sound_1_1sSound.html">   28</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classHop_1_1System_1_1Sound_1_1sSound.html">sSound</a> : <span class="keyword">public</span> <a class="code" href="classHop_1_1System_1_1System.html">System</a></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Sound_1_1sSound.html#a208f2fba49f347b59f9788f8f98bf3f9">   33</a></span>&#160;        <a class="code" href="classHop_1_1System_1_1Sound_1_1sSound.html#a208f2fba49f347b59f9788f8f98bf3f9">sSound</a>()</div>
@@ -125,7 +125,7 @@ $(function() {
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <span class="keywordflow">if</span> (result != MA_SUCCESS)</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            {</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                vorbisConfig = ma_decoder_config_init_default();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                vorbisConfig.pCustomBackendUserData = NULL; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                vorbisConfig.pCustomBackendUserData = NULL;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                vorbisConfig.ppCustomBackendVTables = pCustomBackendVTables;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                vorbisConfig.customBackendCount     = <span class="keyword">sizeof</span>(pCustomBackendVTables) / <span class="keyword">sizeof</span>(pCustomBackendVTables[0]);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
@@ -149,7 +149,7 @@ $(function() {
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keywordflow">if</span> (loopingFile == <span class="stringliteral">&quot;&quot;</span>)</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            {</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                loopingFile = filename;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                ma_result result = <a class="code" href="classHop_1_1System_1_1Sound_1_1sSound.html#aa9cbec868cdfa37381f023811a5832e8">decode</a>(filename);</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                <span class="keywordflow">if</span> (result != MA_SUCCESS)</div>
@@ -165,7 +165,7 @@ $(function() {
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                    ma_data_source_set_looping(&amp;decoder, MA_TRUE);</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                    config = ma_device_config_init(ma_device_type_playback);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                    </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                    config.playback.format = decoder.outputFormat;</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                    config.playback.channels = decoder.outputChannels;</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                    config.sampleRate = decoder.outputSampleRate;</div>
@@ -177,7 +177,7 @@ $(function() {
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                    ma_data_source_set_looping(&amp;vorbisDecoder, MA_TRUE);</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                    config = ma_device_config_init(ma_device_type_playback);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                    </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                    config.playback.format = vorbisDecoder.outputFormat;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                    config.playback.channels = vorbisDecoder.outputChannels;</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                    config.sampleRate = vorbisDecoder.outputSampleRate;</div>
