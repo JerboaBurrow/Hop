@@ -40,6 +40,8 @@ namespace Hop::System::Physics
 
         */
 
+       updateObjects();
+
         ComponentArray<cCollideable> & collideables = m->getComponentArray<cCollideable>();
         ComponentArray<cPhysics> & physics = m->getComponentArray<cPhysics>();
         ComponentArray<cTransform> & transforms = m->getComponentArray<cTransform>();

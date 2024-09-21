@@ -15,7 +15,7 @@ namespace Hop::Object::Component
     {
 
         cSprite()
-        : texturePath(""), tx(0), ty(0), lx(0), ly(0)
+        : texturePath(""), textureRegion()
         {}
 
         cSprite
@@ -26,14 +26,11 @@ namespace Hop::Object::Component
             uint16_t lx,
             uint16_t ly
         )
-        : texturePath(path), tx(tx), ty(ty), lx(lx), ly(ly)
+        : texturePath(path), textureRegion(tx, ty, lx, ly)
         {}
 
         std::string texturePath;
-        uint16_t tx;
-        uint16_t ty;
-        uint16_t lx;
-        uint16_t ly;
+        jGL::TextureRegion textureRegion;
     };
 }
 #endif /* CSPRITE_H */

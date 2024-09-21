@@ -112,6 +112,8 @@ namespace Hop::System::Rendering
         std::shared_ptr<jGL::SpriteRenderer> sprites = nullptr;
         std::unique_ptr<CollisionMeshDebug> collisionMeshDebug = nullptr;
         std::shared_ptr<TextureAssetStore> textures = nullptr;
+
+        void updateObjects();
     };
 }
 

@@ -37,6 +37,8 @@ namespace Hop::System::Rendering
         return accumulatedTime;
     }
 
+    void sRender::updateObjects() {}
+
     void sRender::update(EntityComponentSystem * ecs)
     {
         if (sprites != nullptr)
@@ -44,61 +46,46 @@ namespace Hop::System::Rendering
             ComponentArray<cSprite> & spriteComponents = ecs->getComponentArray<cSprite>();
             ComponentArray<cRenderable> & renderables = ecs->getComponentArray<cRenderable>();
             ComponentArray<cTransform> & transforms = ecs->getComponentArray<cTransform>();
-            for (const auto & object : objects)
-            {
-                if (renderables.hasComponent(object) && spriteComponents.hasComponent(object) && transforms.hasComponent(object))
-                {
-                    const cSprite & oSprite = spriteComponents.get(object);
-                    const cRenderable & oRenderable = renderables.get(object);
-                    const cTransform & oTransform = transforms.get(object);
-                    std::string sid = to_string(object);
-                    auto tex = textures->get(oSprite.texturePath);
-                    auto region = jGL::TextureRegion
-                    (
-                        oSprite.tx,
-                        oSprite.ty,
-                        oSprite.lx,
-                        oSprite.ly
-                    );
 
-                    if (sprites->hasId(sid))
-                    {
-                        auto & sprite = sprites->getSprite(sid);
-                        if (!(tex->getId() == sprite.texture->getId()))
-                        {
-                            sprites->remove(sid);
-                            sprites->add(
-                                jGL::Sprite(oTransform, region, tex, oRenderable.a),
-                                sid,
-                                oRenderable.priority
-                            );
-                        }
-                        else
-                        {
-                            sprites->updatePriority(sid, oRenderable.priority);
-                            sprite.setAlpha(oRenderable.a);
-                            sprite.setTextureRegion
-                            (
-                                jGL::TextureRegion
-                                (
-                                    oSprite.tx,
-                                    oSprite.ty,
-                                    oSprite.lx,
-                                    oSprite.ly
-                                )
-                            );
-                        }
-                    }
-                    else
-                    {
-                        sprites->add(
-                            jGL::Sprite(oTransform, region, tex, oRenderable.a),
-                            sid,
-                            oRenderable.priority
-                        );
-                    }
+            for (auto & id : toRemove)
+            {
+                if
+                (
+                    renderables.hasComponent(id) &&
+                    spriteComponents.hasComponent(id) &&
+                    transforms.hasComponent(id)
+                )
+                {
+                    sprites->remove(to_string(id));
                 }
+                objects.erase(id);
             }
+            toRemove.clear();
+
+            for (auto & id : toAdd)
+            {
+                if (renderables.hasComponent(id) && spriteComponents.hasComponent(id) && transforms.hasComponent(id))
+                {
+                    cSprite & oSprite = spriteComponents.get(id);
+                    cRenderable & oRenderable = renderables.get(id);
+                    cTransform & oTransform = transforms.get(id);
+                    std::string sid = to_string(id);
+                    sprites->add
+                    (
+                        jGL::Sprite
+                        (
+                            &oTransform,
+                            &oSprite.textureRegion,
+                            textures->get(oSprite.texturePath).get(),
+                            &oRenderable.colour
+                        ),
+                        sid,
+                        oRenderable.priority
+                    );
+                }
+                objects.insert(id);
+            }
+            toAdd.clear();
         }
     }
 }

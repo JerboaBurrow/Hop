@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
         16,
         1,
         &mapSource,
-        &mapBounds  
+        &mapBounds
     );
 
     sRender & rendering = manager.getSystem<sRender>();
@@ -164,7 +164,7 @@ int main(int argc, char ** argv)
             tp0 = high_resolution_clock::now();
 
             collisions.centreOn(world.get()->getMapCenter());
-            
+
             if (!paused)
             {
                 physics.step(&manager, &collisions, world.get());
@@ -175,7 +175,7 @@ int main(int argc, char ** argv)
             tr0 = high_resolution_clock::now();
 
             rendering.setProjection(camera.getVP());
-            rendering.draw(jGLInstance, &manager, world.get()); 
+            rendering.draw(jGLInstance, &manager, world.get());
 
             tr1 = high_resolution_clock::now();
 
@@ -212,7 +212,7 @@ int main(int argc, char ** argv)
                     "Mouse cell (" << fixedLengthNumber(tile.x,4) << ", " << fixedLengthNumber(tile.y,4) << ", " << tile.tileType <<
                     "\n" <<
                     "Camera [world] (" << fixedLengthNumber(cameraX,4) << ", " << fixedLengthNumber(cameraY,4) << ")" <<
-                    "\n" << 
+                    "\n" <<
                     "update time: " << fixedLengthNumber(pdt+rdt,6) <<
                     "\n" <<
                     "Phys update / draw time: " << fixedLengthNumber(pdt,6) << "/" << fixedLengthNumber(rdt,6) <<
@@ -245,7 +245,7 @@ int main(int argc, char ** argv)
 
         deltas[frameId] = duration_cast<duration<double>>(t1 - t0).count();
         frameId = (frameId+1) % 60;
-        
+
     }
 
     jGLInstance->finish();
