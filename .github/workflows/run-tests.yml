@@ -13,7 +13,7 @@ jobs:
         example: [PerlinWorld, SoftBodyTetris, Sprites, MeshEditor]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
 
@@ -38,7 +38,7 @@ jobs:
         sleep 5 && kill $PID
 
     - name: upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.example }}.png
         path: build/${{ matrix.example }}/screenshot.png
@@ -52,7 +52,7 @@ jobs:
         example: [PerlinWorld, SoftBodyTetris, Sprites, MeshEditor]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
 
@@ -76,7 +76,7 @@ jobs:
         sleep 5 && kill $PID
 
     - name: upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.example }}-wine.png
         path: build/${{ matrix.example }}/screenshot.png
