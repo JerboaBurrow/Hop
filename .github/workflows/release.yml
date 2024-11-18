@@ -178,7 +178,7 @@ jobs:
         path: demos.zip
 
   macosNative:
-    runs-on: macos-12
+    runs-on: macos-13
 
     steps:
     - uses: actions/checkout@v4
@@ -187,10 +187,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-          wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.dmg
-          hdiutil attach vulkan-sdk.dmg -mountpoint /Volumes/vulkan-sdk
-          mkdir ~/vulkan
-          cd /Volumes/vulkan-sdk/
+          wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip -O vulkan-sdk.zip
+          unzip vulkan-sdk.zip
           sudo ./InstallVulkan.app/Contents/macOS/InstallVulkan --root ~/vulkan --accept-licenses --default-answer --confirm-command install
           ls ~/vulkan
           cd ~/vulkan/
@@ -425,7 +423,7 @@ jobs:
 
   test-release-macos:
     needs: [macosNative, headers]
-    runs-on: macos-12
+    runs-on: macos-13
 
     steps:
       - uses: actions/checkout@v4
@@ -443,12 +441,10 @@ jobs:
         with:
           name: macosbuild
 
-      - name: Install dependencies
-        run: |
-          wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.dmg
-          hdiutil attach vulkan-sdk.dmg -mountpoint /Volumes/vulkan-sdk
-          mkdir ~/vulkan
-          cd /Volumes/vulkan-sdk/
+    - name: Install dependencies
+      run: |
+          wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip -O vulkan-sdk.zip
+          unzip vulkan-sdk.zip
           sudo ./InstallVulkan.app/Contents/macOS/InstallVulkan --root ~/vulkan --accept-licenses --default-answer --confirm-command install
           ls ~/vulkan
           cd ~/vulkan/
