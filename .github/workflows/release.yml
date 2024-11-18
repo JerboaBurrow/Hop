@@ -441,14 +441,14 @@ jobs:
         with:
           name: macosbuild
 
-    - name: Install dependencies
-      run: |
-          wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip -O vulkan-sdk.zip
-          unzip vulkan-sdk.zip
-          sudo ./InstallVulkan.app/Contents/macOS/InstallVulkan --root ~/vulkan --accept-licenses --default-answer --confirm-command install
-          ls ~/vulkan
-          cd ~/vulkan/
-          python install_vulkan.py
+      - name: Install dependencies
+        run: |
+            wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip -O vulkan-sdk.zip
+            unzip vulkan-sdk.zip
+            sudo ./InstallVulkan.app/Contents/macOS/InstallVulkan --root ~/vulkan --accept-licenses --default-answer --confirm-command install
+            ls ~/vulkan
+            cd ~/vulkan/
+            python install_vulkan.py
 
       - name: macos lib test
         run: |
