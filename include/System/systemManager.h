@@ -11,8 +11,12 @@
 
 namespace Hop::System
 {
-    typedef std::bitset<MAX_COMPONENTS> Signature;
 
+    /**
+     * @brief Components required for this System
+     * @typedef Signature
+     */
+    typedef std::bitset<MAX_COMPONENTS> Signature;
     class SystemNotRegistered: public std::exception
     {
 
