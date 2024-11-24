@@ -127,6 +127,42 @@ jobs:
         name: demoLinux
         path: demos.zip
 
+  linuxBuildAndRun:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        example: [PerlinWorld, SoftBodyTetris, Sprites, MeshEditor]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev xvfb x11-apps vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
+
+    - name: build
+      run: |
+        ./build.sh -t -r -d
+    - name: run ${{ matrix.example }}
+      run: |
+        cd build/${{ matrix.example }}
+        chmod +x ${{ matrix.example }}
+        export DISPLAY=:99
+        sudo Xvfb :99 -screen 0 800x600x24 &
+        sleep 5
+        MESA_GL_VERSION_OVERRIDE=3.3 ./${{ matrix.example }} &
+        export PID=$!
+        sleep 10
+        xwd -root -silent | convert xwd:- png:screenshot.png
+        sleep 5 && kill $PID
+    - name: upload screenshot
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.example }}.png
+        path: build/${{ matrix.example }}/screenshot.png
+
   windows:
     runs-on: ubuntu-22.04
 
@@ -177,6 +213,42 @@ jobs:
         name: demoWindows
         path: demos.zip
 
+  windowsBuildAndRun:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      matrix:
+        example: [PerlinWorld, SoftBodyTetris, Sprites, MeshEditor]
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: install dependencies
+      run: sudo apt-get update && sudo apt-get install -y xorg-dev build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix libxinerama-dev libxcursor-dev xvfb x11-apps vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools wine64
+    
+    - name: build
+      run: |
+        ./build.sh -r -w -d
+    - name: run ${{ matrix.example }}
+      run: |
+        cd build/${{ matrix.example }}
+        chmod +x ${{ matrix.example }}.exe
+        export DISPLAY=:99
+        sudo Xvfb :99 -screen 0 800x600x24 &
+        sleep 5
+        MESA_GL_VERSION_OVERRIDE=3.3 wine64 ${{ matrix.example }}.exe &
+        export PID=$!
+        sleep 10
+        xwd -root -silent | convert xwd:- png:screenshot.png
+        sleep 5 && kill $PID
+    - name: upload screenshots
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.example }}-wine.png
+        path: build/${{ matrix.example }}/screenshot.png
+
   macos:
     runs-on: macos-13
 
@@ -224,50 +296,6 @@ jobs:
       with:
         name: demomacos
         path: demos.zip
-
-  linuxRun:
-    needs: linuxNative
-    runs-on: ubuntu-20.04
-
-    steps:
-      - name: install dependencies
-        run: sudo apt-get update && sudo apt-get install -y xvfb x11-apps imagemagick
-
-      - name: get linux demos
-        uses: actions/download-artifact@v4
-        with:
-          name: demoLinux
-
-      - name: launch and screenshot
-        run: |
-          unzip demos.zip
-          cd PerlinWorld
-          chmod +x PerlinWorld
-          export DISPLAY=:99
-          sudo Xvfb :99 -screen 0 800x600x24 &
-          sleep 5
-          MESA_GL_VERSION_OVERRIDE=3.3 ./PerlinWorld &
-          export PID=$!
-          sleep 10
-          xwd -root -silent | convert xwd:- png:screenshot.png
-          sleep 5 && kill $PID
-          MESA_GL_VERSION_OVERRIDE=3.3 ./PerlinWorld map &
-          export PID=$!
-          sleep 10
-          xwd -root -silent | convert xwd:- png:screenshot-map.png
-          sleep 5 && kill $PID
-
-      - name: upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshot
-          path: PerlinWorld/screenshot.png
-
-      - name: upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshot-map
-          path: PerlinWorld/screenshot-map.png
 
   android:
     needs: [headers]
@@ -352,7 +380,7 @@ jobs:
     #     path: screenshot-android.png
 
   test-release:
-    needs: [linuxNative, headers]
+    needs: [linux, headers]
     runs-on: ubuntu-22.04
 
     steps:
@@ -388,7 +416,7 @@ jobs:
           cmake .. && make
 
   test-release-mingw:
-    needs: [linuxXwindows, headers]
+    needs: [windows, headers]
     runs-on: ubuntu-22.04
 
     steps:
@@ -422,7 +450,7 @@ jobs:
           ./build.sh
 
   test-release-macos:
-    needs: [macosNative, headers]
+    needs: [macos, headers]
     runs-on: macos-13
 
     steps:
@@ -463,7 +491,7 @@ jobs:
           cmake .. -DCMAKE_TOOLCHAIN_FILE=../osx.cmake && make
 
   release:
-    needs: [linuxNative, linuxXwindows, linuxXandroid, macosNative, headers]
+    needs: [linux, windows, android, macos, headers]
     if: github.ref_type == 'tag'
     runs-on: ubuntu-20.04
 
