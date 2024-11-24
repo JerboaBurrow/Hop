@@ -1,4 +1,4 @@
-name: Hop release
+name: Hop CI
 
 on:
   push:
@@ -80,7 +80,7 @@ jobs:
         name: headers-mingw
         path: headers-mingw
 
-  linuxNative:
+  linux:
     runs-on: ubuntu-20.04
 
     steps:
@@ -126,7 +126,7 @@ jobs:
         name: demoLinux
         path: demos.zip
 
-  linuxXwindows:
+  windows:
     runs-on: ubuntu-22.04
 
     steps:
@@ -176,7 +176,7 @@ jobs:
         name: demoWindows
         path: demos.zip
 
-  macosNative:
+  macos:
     runs-on: macos-13
 
     steps:
@@ -268,7 +268,7 @@ jobs:
           name: screenshot-map
           path: PerlinWorld/screenshot-map.png
 
-  linuxXandroid:
+  android:
     needs: [headers]
     runs-on: ubuntu-20.04
 
