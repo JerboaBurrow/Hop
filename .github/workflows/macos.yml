@@ -1,4 +1,4 @@
-name: Hop macOS tests
+name: Hop macOS
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Install dependencies
+    - name: install dependencies
       run: |
           wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip -O vulkan-sdk.zip
           unzip vulkan-sdk.zip
@@ -58,7 +58,7 @@ jobs:
           include/vendored/sparsehash;
           do cp -r $inc headers; done
 
-    - name: macos build
+    - name: build
       run: |
         git submodule update --recursive
         ./build.sh -o -d -r -t
@@ -71,7 +71,7 @@ jobs:
         cp -r build/PerlinWorld demos/
         cd demos && zip -r ../demos.zip * && cd ..
 
-    - name: Tests
+    - name: unit tests
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail

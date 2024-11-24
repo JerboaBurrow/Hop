@@ -8,7 +8,6 @@ on:
       - 'doc/**'
       - '.github/**'
   workflow_dispatch:
-  pull_request:
 
 jobs:
 
@@ -89,10 +88,10 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Install dependencies
+    - name: install dependencies
       run: sudo apt-get update && sudo apt-get install -y build-essential xorg-dev mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
 
-    - name: linux-linux
+    - name: build
       run: |
         git submodule update --recursive
         ./build.sh -t -d -r
@@ -105,7 +104,7 @@ jobs:
         cp -r build/PerlinWorld demos/
         cd demos && zip -r ../demos.zip * && cd ..
 
-    - name: Tests
+    - name: unit tests
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
@@ -135,10 +134,10 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Install dependencies
+    - name: install dependencies
       run: sudo apt-get update && sudo apt-get install -y xorg-dev build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools wine64
 
-    - name: linux-X-windows
+    - name: build
       run: |
         git submodule update --recursive
         ./build.sh -w -d -r -t
@@ -154,7 +153,7 @@ jobs:
         cd demos && zip -r ../demos.zip * && cd ..
         cp build/*.dll build/TestScriptPack/
 
-    - name: Tests (wine64)
+    - name: unit tests
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
@@ -185,7 +184,7 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Install dependencies
+    - name: install dependencies
       run: |
           wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip -O vulkan-sdk.zip
           unzip vulkan-sdk.zip
@@ -194,7 +193,7 @@ jobs:
           cd ~/vulkan/
           python install_vulkan.py
 
-    - name: macos build
+    - name: build
       run: |
         git submodule update --recursive
         ./build.sh -o -d -r -t
@@ -207,7 +206,7 @@ jobs:
         cp -r build/PerlinWorld demos/
         cd demos && zip -r ../demos.zip * && cd ..
 
-    - name: Tests
+    - name: unit tests
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
@@ -230,7 +229,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Install dependencies
+      - name: install dependencies
         run: sudo apt-get update && sudo apt-get install -y xvfb x11-apps imagemagick
 
       - name: get linux demos
@@ -278,7 +277,7 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Install dependencies
+    - name: install dependencies
       run: |
         sudo apt-get update && sudo apt-get install -y build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools
         wget https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
@@ -295,7 +294,7 @@ jobs:
         ./cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34"
         echo no | ./cmdline-tools/latest/bin/avdmanager create avd --name android34 --package "system-images;android-34;google_apis;x86_64"
 
-    - name: build hop
+    - name: build
       run: |
         git submodule update --recursive
         ./build.sh -r --android android-ndk-r25c
@@ -371,10 +370,10 @@ jobs:
         with:
           name: linuxbuild
 
-      - name: Install dependencies
+      - name: install dependencies
         run: sudo apt-get update && sudo apt-get install -y xorg-dev build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools xvfb x11-apps imagemagick
 
-      - name: linux lib test
+      - name: regression
         run: |
           ls
           mv libHop-linux-x86_64.a libHop.a
@@ -407,10 +406,10 @@ jobs:
         with:
           name: windowsbuild
 
-      - name: Install dependencies
+      - name: install dependencies
         run: sudo apt-get update && sudo apt-get install -y xorg-dev build-essential mesa-common-dev libx11-dev libxrandr-dev libgl1-mesa-dev libglu1-mesa-dev libfreetype6-dev libopenal-dev libsndfile1-dev libudev-dev g++-mingw-w64-x86-64-posix gcc-mingw-w64-x86-64-posix libz-mingw-w64-dev libxinerama-dev libxcursor-dev vulkan-tools libvulkan-dev vulkan-validationlayers-dev spirv-tools xvfb x11-apps imagemagick
 
-      - name: mingw lib test
+      - name: regression
         run: |
           ls
           mv libHop-windows.a libHop.a
@@ -441,7 +440,7 @@ jobs:
         with:
           name: macosbuild
 
-      - name: Install dependencies
+      - name: install dependencies
         run: |
             wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip -O vulkan-sdk.zip
             unzip vulkan-sdk.zip
@@ -450,7 +449,7 @@ jobs:
             cd ~/vulkan/
             python install_vulkan.py
 
-      - name: macos lib test
+      - name: regression
         run: |
           ls
           mv libHop-macos.a libHop.a
