@@ -1,0 +1,87 @@
+name: Hop macOS tests
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  macosBuild:
+    runs-on: macos-13
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+
+    - name: Install dependencies
+      run: |
+          wget https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip -O vulkan-sdk.zip
+          unzip vulkan-sdk.zip
+          sudo ./InstallVulkan.app/Contents/macOS/InstallVulkan --root ~/vulkan --accept-licenses --default-answer --confirm-command install
+          ls ~/vulkan
+          cd ~/vulkan/
+          python install_vulkan.py
+
+    - name: pack headers
+      run: |
+        mkdir headers
+        for inc in include/jGL/include/jGL \
+          include/jGL/include/*.h \
+          include/jGL/include/vendored/freetype/include/* \
+          include/jGL/include/vendored/glew/include/GL \
+          include/jGL/include/vendored/glfw/include/GLFW \
+          include/jGL/include/vendored/glm/glm \
+          include/jGL/include/vendored/stduuid/include/uuid.h \
+          include/jGL/include/vendored/stduuid/gsl \
+          include/jGL/include/vendored/stb_image.h \
+          include/jLog \
+          include/jThread \
+          include/Collision \
+          include/Component \
+          include/Console \
+          include/Debug \
+          include/Maths \
+          include/Object \
+          include/Shader \
+          include/System \
+          include/Util \
+          include/World \
+          include/vendored/lua/src/lauxlib.h \
+          include/vendored/lua/src/lua.h \
+          include/vendored/lua/src/luaconf.h \
+          include/vendored/lua/src/lualib.h \
+          include/vendored/miniaudio \
+          include/vendored/json.hpp \
+          include/*.h \
+          include/vendored/vorbis/include/vorbis \
+          include/vendored/ogg/include/ogg \
+          include/vendored/sparsehash;
+          do cp -r $inc headers; done
+
+    - name: macos build
+      run: |
+        git submodule update --recursive
+        ./build.sh -o -d -r -t
+        mkdir macosbuild
+        cp build/libHop.a macosbuild/libHop-macos.a
+        cp build/libjGL.a macosbuild/libjGL-macos.a
+        cp LICENSE* macosbuild/
+
+        mkdir demos
+        cp -r build/PerlinWorld demos/
+        cd demos && zip -r ../demos.zip * && cd ..
+
+    - name: Tests
+      working-directory: ${{github.workspace}}/build
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: MESA_GL_VERSION_OVERRIDE=3.3 ctest --output-on-failure --verbose --exclude-regex Vulkan --exclude-regex assetStore
+
+    - name: regression
+      run: |
+        mkdir tests/regression/user-macos/include/
+        cp build/*.a tests/regression/user-macos/
+        cp -r headers/* tests/regression/user-macos/include/
+        cd tests/regression/user-macos
+        mkdir build && cd build
+        cmake .. -DCMAKE_TOOLCHAIN_FILE=../osx.cmake && make
