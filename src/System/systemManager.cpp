@@ -19,7 +19,7 @@ namespace Hop::System
             }
             else
             {
-                system->queueAdd(i);
+                system->queueRemove(i);
             }
         }
     }
