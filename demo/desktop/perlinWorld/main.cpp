@@ -99,7 +99,6 @@ int main(int argc, char ** argv)
 
     console.luaStore(&luaStore);
 
-    console.runFile("mix.lua");
     console.runFile("config.lua");
     std::string status = console.luaStatus();
     if (status != "LUA_OK") { WARN(status) >> log; }
@@ -108,6 +107,9 @@ int main(int argc, char ** argv)
 
     std::vector<int> moveKeys = {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D};
     std::vector<bool> moving = {false, false, false, false};
+
+    auto & trans = manager.getComponent<cTransform>(manager.idFromHandle("object"));
+    auto & mesh = manager.getComponent<cCollideable>(manager.idFromHandle("object")).mesh;
 
     while (display.isOpen())
     {        
@@ -129,7 +131,7 @@ int main(int argc, char ** argv)
                 moving[i] = false;
             }
         }
-        
+
         if (moving[0]) { posY += MAX_SPEED / camera.getZoomLevel(); }
         if (moving[1]) { posY -= MAX_SPEED / camera.getZoomLevel(); }
         if (moving[2]) { posX -= MAX_SPEED / camera.getZoomLevel(); }

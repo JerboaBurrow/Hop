@@ -1,4 +1,4 @@
-s = 3.0*hop.maxCollisionPrimitiveSize()
+s = 1.9*hop.maxCollisionPrimitiveSize()
 
 math.randomseed(os.time())
 
@@ -9,9 +9,9 @@ xw = 1.0
 x = xs;
 y = ys;
 
-for i = 1,100 do
+for i = 1,128 do
 
-    selection = math.random(6)
+    selection = math.random(7)
 
     theta = 2.0*3.14159 * math.random(10000) / 10000.0;
 
@@ -145,6 +145,18 @@ for i = 1,100 do
     
         }
 
+    elseif selection == 7 then
+        object = {
+            ["transform"] = {x,y,0.0,s},
+            ["colour"] = {200/255,200/255,250/255,1.0},
+            --["shader"] = "lineSegmentObjectShader",
+            ["moveable"] = true,
+            ["collisionMesh"] =
+            {
+                {-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5} -- model space
+            },
+            ["name"] = "object"
+        }
     end
 
 
