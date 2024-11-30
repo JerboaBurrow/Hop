@@ -18,6 +18,10 @@ namespace Hop::System::Physics
 
     const uint64_t LAST_INSIDE_COUNTER_MAX = 60;
 
+    /**
+     * @brief A primitive shape (circle) for collisions.
+     * 
+     */
     struct CollisionPrimitive 
     {
 
@@ -25,6 +29,17 @@ namespace Hop::System::Physics
 
         CollisionPrimitive() = default;
 
+        /**
+         * @brief Construct a new Collision Primitive (circle)
+         * 
+         * @param x centre x coordinate
+         * @param y centre y coordinate
+         * @param r radius
+         * @param t tag (for sub meshing)
+         * @param k stiffness (default is rigid)
+         * @param d damping (only for soft meshes)
+         * @param m mass (only for soft meshes)
+         */
         CollisionPrimitive
         (
             double x, 
@@ -88,6 +103,13 @@ namespace Hop::System::Physics
             yp = oy;
         }
 
+        /**
+         * @brief Applied a force generating the require torque.
+         * 
+         * @param omega torque.
+         * @param cx reference point x.
+         * @param cy reference point y.
+         */
         void applyTorque
         (
             double omega,
@@ -127,6 +149,15 @@ namespace Hop::System::Physics
             );
         }
 
+        /**
+         * @brief Apply internal (spring/drag) forces to this primitive in a soft meshes.
+         * 
+         * @param dt timestep.
+         * @param dtdt timestep^2.
+         * @param translationalDrag translational drag coefficient.
+         * @param nox new x coordinate.
+         * @param noy new y coordinate.
+         */
         void step
         (
             double dt,
@@ -171,6 +202,17 @@ namespace Hop::System::Physics
 
         }
 
+        /**
+         * @brief Apply external forces to this mesh point in a soft mesh.
+         * 
+         * @param dt timestep.
+         * @param dtdt timestep^2.
+         * @param physics physics component.
+         * @param gx global force in x.
+         * @param gy global force in y.
+         * @param dx resultant change in x.
+         * @param dy resultant change in y.
+         */
         void stepGlobal
         (
             double dt,
@@ -204,12 +246,30 @@ namespace Hop::System::Physics
 
     };
 
+    /**
+     * @brief A rectangular primitive collision shape.
+     * 
+     */
     struct RectanglePrimitive : public CollisionPrimitive 
     {
         RectanglePrimitive()
         : CollisionPrimitive(0.0,0.0,0.0,0,CollisionPrimitive::RIGID,0.0,0.0)
         {}
 
+        /**
+         * @brief Construct a new Rectangle Primitive from vertices.
+         * 
+         * @param llx lower left x.
+         * @param lly lower left y.
+         * @param ulx upper left x.
+         * @param uly upper left y.
+         * @param urx upper right x.
+         * @param ury upper right y.
+         * @param lrx lower right x.
+         * @param lry lower right y.
+         * @param t tag (for sub meshing)
+         * @param k stiffness (default is rigid).
+         */
         RectanglePrimitive
         (        
             double llx, double lly,
@@ -256,6 +316,11 @@ namespace Hop::System::Physics
             royp=0.0;
         }
 
+        /**
+         * @brief Convert to a Rectangle.
+         * 
+         * @return Hop::Maths::Rectangle 
+         */
         Hop::Maths::Rectangle getRect()
         {
             return Hop::Maths::Rectangle
@@ -269,6 +334,10 @@ namespace Hop::System::Physics
             );
         }
 
+        /**
+         * @brief Recalculate axes (vector for length and width).
+         * 
+         */
         void resetAxes()
         {
             axis1x = llx-lrx;
@@ -316,6 +385,12 @@ namespace Hop::System::Physics
 
         }
 
+        /**
+         * @brief Rotate clockwise from precomputed cosine and sine.
+         * 
+         * @param cosine cos(\theta)
+         * @param sine sin(\theta)
+         */
         void rotateClockWise(double cosine, double sine)
         {
             Hop::Maths::rotateClockWise<double>(llx, lly, cosine, sine);
@@ -348,22 +423,22 @@ namespace Hop::System::Physics
             r *= s;
         }
 
-        void translate(double x, double y)
+        void translate(double dx, double dy)
         {
-            llx += x;
-            lly += y;
+            llx += dx;
+            lly += dy;
 
-            ulx += x;
-            uly += y;
+            ulx += dx;
+            uly += dy;
 
-            urx += x;
-            ury += y;
+            urx += dx;
+            ury += dy;
 
-            lrx += x;
-            lry += y;
+            lrx += dx;
+            lry += dy;
 
-            x += x;
-            y += y;
+            x += dx;
+            y += dy;
         }
 
         double llx, lly;

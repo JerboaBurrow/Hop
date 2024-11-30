@@ -99,7 +99,6 @@ int main(int argc, char ** argv)
 
     console.luaStore(&luaStore);
 
-    console.runFile("mix.lua");
     console.runFile("config.lua");
     std::string status = console.luaStatus();
     if (status != "LUA_OK") { WARN(status) >> log; }
@@ -129,7 +128,7 @@ int main(int argc, char ** argv)
                 moving[i] = false;
             }
         }
-        
+
         if (moving[0]) { posY += MAX_SPEED / camera.getZoomLevel(); }
         if (moving[1]) { posY -= MAX_SPEED / camera.getZoomLevel(); }
         if (moving[2]) { posX -= MAX_SPEED / camera.getZoomLevel(); }

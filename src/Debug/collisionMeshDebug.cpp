@@ -24,12 +24,16 @@ namespace Hop::Debugging
 
         double theta, scale;
 
-        shapes->setProjection(proj);
+        circles->setProjection(proj);
+        rectangles->setProjection(proj);
         citer = objects.cbegin();
 
-        shapes->clear();
+        circles->clear();
+        rectangles->clear();
         circlePos.clear();
         circlePos.reserve(s);
+        rectanglePos.clear();
+        rectanglePos.reserve(s);
         while (citer != cend)
         {
             uint64_t p = 0;
@@ -47,34 +51,43 @@ namespace Hop::Debugging
                 {
                     CollisionPrimitive * cp = (c.mesh[i].get());
                     MeshPoint * cpmodel = c.mesh.getModelVertex(i).get();
-                    //Rectangle * r = dynamic_cast<Rectangle*>(cp);
+                    MeshRectangle * r = dynamic_cast<MeshRectangle*>(cpmodel);
 
-                    // if (r != nullptr)
-                    // {
-                    //     // TODO jGL needs to be able to draw rects
-                    // }
-                    // else
-                    // {
-                    //     // TODO jGL needs to be able to draw rects
-                    // }
-
-                    std::string sid = to_string(citer->first)+"-"+std::to_string(i);
-                    circlePos.push_back(jGL::Transform(cp->x, cp->y, theta, scale*2.0*cpmodel->r));
-                    shapes->add(
-                        {
-                            &circlePos.back(),
-                            &ren.colour
-                        },
-                        sid,
-                        ren.priority
-                    );
+                    if (r != nullptr)
+                    {
+                        std::string sid = to_string(citer->first)+"-"+std::to_string(i);
+                        rectanglePos.push_back(jGL::Transform(cp->x, cp->y, theta, r->width()*scale, r->height()*scale));
+                        rectangles->add(
+                            {
+                                &rectanglePos.back(),
+                                &ren.colour
+                            },
+                            sid,
+                            ren.priority
+                        );
+                    }
+                    else
+                    {
+                        std::string sid = to_string(citer->first)+"-"+std::to_string(i);
+                        circlePos.push_back(jGL::Transform(cp->x, cp->y, theta, scale*2.0*cpmodel->r));
+                        circles->add(
+                            {
+                                &circlePos.back(),
+                                &ren.colour
+                            },
+                            sid,
+                            ren.priority
+                        );
+                    }
+                    
                     p++;
                 }
             }
             citer++;
         }
 
-        shapes->draw(circleShader);
+        circles->draw(circleShader);
+        rectangles->draw(rectangleShader);
 
     }
 

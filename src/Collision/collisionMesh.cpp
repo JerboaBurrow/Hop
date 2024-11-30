@@ -54,9 +54,8 @@ namespace Hop::System::Physics
                     lw->r = lv->r;
 
                     lw->rotateClockWise(c, s);
-                    lw->scale(std::max(transform.scaleX, transform.scaleY)*2.0);
+                    lw->scale(std::max(transform.scaleX, transform.scaleY));
                     lw->translate(transform.x, transform.y);
-
                 }
             }
         }
