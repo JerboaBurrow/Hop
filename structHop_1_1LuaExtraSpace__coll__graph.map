@@ -1,0 +1,14 @@
+<map id="Hop::LuaExtraSpace" name="Hop::LuaExtraSpace">
+<area shape="rect" id="node1" title="Store for lua global state. For the console to have access to these classes they must be set into Lua..." alt="" coords="848,156,1000,183"/>
+<area shape="rect" id="node2" href="$classHop_1_1Scriptz.html" title=" " alt="" coords="583,5,683,32"/>
+<area shape="rect" id="node3" href="$classHop_1_1System_1_1Physics_1_1sCollision.html" title=" " alt="" coords="552,57,715,98"/>
+<area shape="rect" id="node4" href="$classHop_1_1System_1_1System.html" title="A System operating on objects." alt="" coords="243,67,405,93"/>
+<area shape="rect" id="node5" href="$classHop_1_1System_1_1Physics_1_1sPhysics.html" title=" " alt="" coords="552,122,715,163"/>
+<area shape="rect" id="node6" href="$classHop_1_1World_1_1AbstractWorld.html" title=" " alt="" coords="537,188,729,215"/>
+<area shape="rect" id="node7" href="$classHop_1_1World_1_1Boundary.html" title=" " alt="" coords="243,123,405,165"/>
+<area shape="rect" id="node8" href="$classHop_1_1World_1_1MapSource.html" title=" " alt="" coords="237,189,411,216"/>
+<area shape="rect" id="node9" href="$classSparseData.html" title=" " alt="" coords="5,182,156,223"/>
+<area shape="rect" id="node10" title=" " alt="" coords="280,240,368,267"/>
+<area shape="rect" id="node11" href="$classHop_1_1Console.html" title="Lua console." alt="" coords="579,239,687,265"/>
+<area shape="rect" id="node12" href="$classHop_1_1Object_1_1EntityComponentSystem.html" title="Stores objects (identity) dynamic components and systems." alt="" coords="524,290,743,331"/>
+</map>

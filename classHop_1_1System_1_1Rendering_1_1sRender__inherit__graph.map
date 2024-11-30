@@ -1,0 +1,4 @@
+<map id="Hop::System::Rendering::sRender" name="Hop::System::Rendering::sRender">
+<area shape="rect" id="node1" title="System to handle rendering." alt="" coords="5,80,184,121"/>
+<area shape="rect" id="node2" href="$classHop_1_1System_1_1System.html" title="A System operating on objects." alt="" coords="13,5,176,32"/>
+</map>

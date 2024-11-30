@@ -1,0 +1,4 @@
+<map id="Hop::System::Physics::RectanglePrimitive" name="Hop::System::Physics::RectanglePrimitive">
+<area shape="rect" id="node1" title="A rectangular primitive collision shape." alt="" coords="5,95,168,136"/>
+<area shape="rect" id="node2" href="$structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html" title="A primitive shape (circle) for collisions." alt="" coords="5,5,168,47"/>
+</map>
