@@ -108,9 +108,6 @@ int main(int argc, char ** argv)
     std::vector<int> moveKeys = {GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D};
     std::vector<bool> moving = {false, false, false, false};
 
-    auto & trans = manager.getComponent<cTransform>(manager.idFromHandle("object"));
-    auto & mesh = manager.getComponent<cCollideable>(manager.idFromHandle("object")).mesh;
-
     while (display.isOpen())
     {        
         for (unsigned i = 0; i < moveKeys.size(); i++)
