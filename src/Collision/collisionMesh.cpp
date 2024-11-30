@@ -46,17 +46,13 @@ namespace Hop::System::Physics
                     lw->urx = lv->urx;
                     lw->ury = lv->ury;
 
-                    lw->lrx = lv->lrx;
-                    lw->lry = lv->lry;
-
                     lw->x = lv->x;
                     lw->y = lv->y;
                     lw->r = lv->r;
 
                     lw->rotateClockWise(c, s);
-                    lw->scale(std::max(transform.scaleX, transform.scaleY)*2.0);
+                    lw->scale(std::max(transform.scaleX, transform.scaleY));
                     lw->translate(transform.x, transform.y);
-
                 }
             }
         }

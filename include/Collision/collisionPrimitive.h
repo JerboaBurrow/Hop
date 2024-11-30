@@ -348,22 +348,22 @@ namespace Hop::System::Physics
             r *= s;
         }
 
-        void translate(double x, double y)
+        void translate(double dx, double dy)
         {
-            llx += x;
-            lly += y;
+            llx += dx;
+            lly += dy;
 
-            ulx += x;
-            uly += y;
+            ulx += dx;
+            uly += dy;
 
-            urx += x;
-            ury += y;
+            urx += dx;
+            ury += dy;
 
-            lrx += x;
-            lry += y;
+            lrx += dx;
+            lry += dy;
 
-            x += x;
-            y += y;
+            x += dx;
+            y += dy;
         }
 
         double llx, lly;

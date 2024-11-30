@@ -23,6 +23,7 @@ namespace Hop::Debugging
     using Hop::Object::Component::cCollideable;
     using Hop::System::Physics::CollisionPrimitive;
     using Hop::System::Physics::MeshPoint;
+    using Hop::System::Physics::MeshRectangle;
     using Hop::Object::Component::cRenderable;
     using Hop::Object::Component::cTransform;
 
@@ -33,7 +34,8 @@ namespace Hop::Debugging
 
         CollisionMeshDebug(std::shared_ptr<jGL::jGLInstance> jgl)
         : refresh(true),
-          shapes(jgl->createShapeRenderer(256)),
+          circles(jgl->createShapeRenderer(256)),
+          rectangles(jgl->createShapeRenderer(256)),
           circleShader(std::make_shared<jGL::GL::glShader>
            (
               jGL::GL::glShapeRenderer::shapeVertexShader,
@@ -60,11 +62,11 @@ namespace Hop::Debugging
 
         bool refresh;
 
-        std::shared_ptr<jGL::ShapeRenderer> shapes;
+        std::shared_ptr<jGL::ShapeRenderer> circles, rectangles;
 
         std::shared_ptr<jGL::Shader> circleShader, rectangleShader;
 
-        std::vector<cTransform> circlePos;
+        std::vector<cTransform> circlePos, rectanglePos;
 
     };
 
