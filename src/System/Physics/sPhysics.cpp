@@ -13,12 +13,23 @@ namespace Hop::System::Physics
         AbstractWorld * world
     )
     {
-        for (unsigned k = 0 ; k < subSamples; k++)
+        if (collisions != nullptr && world != nullptr)
         {
+            for (unsigned k = 0 ; k < subSamples; k++)
+            {
 
-            collisions->update(m, world);
-            gravityForce(m);
-            update(m);
+                collisions->update(m, world);
+                gravityForce(m);
+                update(m);
+            }
+        }
+        else
+        {
+            for (unsigned k = 0 ; k < subSamples; k++)
+            {
+                gravityForce(m);
+                update(m);
+            }
         }
     }
 
