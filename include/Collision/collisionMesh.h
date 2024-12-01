@@ -85,16 +85,16 @@ namespace Hop::System::Physics
 
         double height()
         {
-            double u = llx-lrx;
-            double v = lly-lry;
+            double u = llx-ulx;
+            double v = lly-uly;
 
             return std::sqrt(u*u+v*v);
         }
 
         double width()
         {
-            double u = ulx-llx;
-            double v = uly-lly;
+            double u = llx-lrx;
+            double v = lly-lry;
 
             return std::sqrt(u*u+v*v);
         }
