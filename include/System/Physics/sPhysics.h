@@ -28,14 +28,19 @@ namespace Hop::System::Physics
     using Hop::System::Physics::sCollision;
     using Hop::World::AbstractWorld;
 
-    /*
-        System to update cPhysics components given forces
-    */
+    /**
+     * @brief Physics system.
+     * 
+     */
     class sPhysics : public System
     {
 
     public:
 
+        /**
+         * @brief Construct a default physics system.
+         * 
+         */
         sPhysics()
         : dt(1.0/900.0),
           dtdt(dt*dt),
@@ -45,13 +50,27 @@ namespace Hop::System::Physics
           subSamples(1)
         {}
 
+        /**
+         * @brief Update objects
+         * 
+         * @param m object manager.
+         * @param collisions optional collision system.
+         * @param world optional world.
+         */
         void step
         (
             EntityComponentSystem * m,
-            sCollision * collisions,
-            AbstractWorld * world
+            sCollision * collisions = nullptr,
+            AbstractWorld * world = nullptr
         );
 
+        /**
+         * @brief Set the strength and direction of gravity.
+         * 
+         * @param g magnitude.
+         * @param nx direction in x.
+         * @param ny direction in y.
+         */
         void setGravityForce
         (
             double g,
@@ -64,6 +83,15 @@ namespace Hop::System::Physics
             ngy = ny;
         }
 
+        /**
+         * @brief Apply a force to object i.
+         * 
+         * @param m manager.
+         * @param i object to apply force to.
+         * @param fx force in x.
+         * @param fy force in y.
+         * @param global apply to all mesh components equally.
+         */
         void applyForce(
             EntityComponentSystem * m,
             Id & i,
@@ -72,12 +100,27 @@ namespace Hop::System::Physics
             bool global = false
         );
 
+        /**
+         * @brief Apply a torque to object i.
+         * 
+         * @param m manager.
+         * @param i object to apply torque to.
+         * @param tau torque.
+         */
         void applyTorque(
             EntityComponentSystem * m,
             Id & i,
             double tau
         );
 
+        /**
+         * @brief Apply a force to all objects.
+         * 
+         * @param m manager.
+         * @param fx force in x.
+         * @param fy force in y.
+         * @param global apply to each objects mesh globally.
+         */
         void applyForce(
             EntityComponentSystem * m,
             double fx,
@@ -85,8 +128,11 @@ namespace Hop::System::Physics
             bool global = false
         );
 
-        // automatically compute stable simulation parameters
-        // updating all objects
+        /**
+         * @brief Determine parameters for stable forces (resp. collisions).
+         * 
+         * @param m 
+         */
         void stabaliseObjectParameters(Hop::Object::EntityComponentSystem * m);
 
         int lua_setTimeStep(lua_State * lua)
