@@ -11,7 +11,7 @@ y = ys;
 
 for i = 1,128 do
 
-    selection = math.random(7)
+    selection = math.random(8)
 
     theta = 2.0*3.14159 * math.random(10000) / 10000.0;
 
@@ -149,11 +149,21 @@ for i = 1,128 do
         object = {
             ["transform"] = {x,y,0.0,s},
             ["colour"] = {200/255,200/255,250/255,1.0},
-            --["shader"] = "lineSegmentObjectShader",
             ["moveable"] = true,
             ["collisionMesh"] =
             {
                 {-0.5,-0.5,-0.5,0.5,0.5,0.5,0.5,-0.5} -- model space
+            },
+            ["name"] = "object"
+        }
+    elseif selection == 8 then
+        object = {
+            ["transform"] = {x,y,0.0,s},
+            ["colour"] = {200/255,200/255,250/255,1.0},
+            ["moveable"] = true,
+            ["collisionMesh"] =
+            {
+                {-0.5,-0.25,-0.5,0.25,0.5,0.25,0.5,-0.25} -- model space
             },
             ["name"] = "object"
         }
