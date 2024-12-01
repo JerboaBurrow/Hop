@@ -1,7 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
 <area shape="rect" id="node1" href="$classHop_1_1System_1_1System.html" title="A System operating on objects." alt="" coords="5,111,168,138"/>
 <area shape="rect" id="node2" href="$classHop_1_1System_1_1Physics_1_1sCollision.html" title=" " alt="" coords="224,5,387,47"/>
-<area shape="rect" id="node3" href="$classHop_1_1System_1_1Physics_1_1sPhysics.html" title=" " alt="" coords="224,71,387,112"/>
+<area shape="rect" id="node3" href="$classHop_1_1System_1_1Physics_1_1sPhysics.html" title="Physics system." alt="" coords="224,71,387,112"/>
 <area shape="rect" id="node4" href="$classHop_1_1System_1_1Rendering_1_1sRender.html" title="System to handle rendering." alt="" coords="216,136,395,177"/>
 <area shape="rect" id="node5" href="$classHop_1_1System_1_1Sound_1_1sSound.html" title=" " alt="" coords="229,201,382,243"/>
 </map>

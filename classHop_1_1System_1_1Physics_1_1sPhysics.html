@@ -73,13 +73,16 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p><a class="el" href="namespaceHop_1_1System_1_1Physics.html">Physics</a> system.  
+ <a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="sPhysics_8h_source.html">sPhysics.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for Hop::System::Physics::sPhysics:</div>
 <div class="dyncontent">
 <div class="center"><img src="classHop_1_1System_1_1Physics_1_1sPhysics__inherit__graph.png" border="0" usemap="#aHop_1_1System_1_1Physics_1_1sPhysics_inherit__map" alt="Inheritance graph"/></div>
 <map name="aHop_1_1System_1_1Physics_1_1sPhysics_inherit__map" id="aHop_1_1System_1_1Physics_1_1sPhysics_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,80,168,121"/>
+<area shape="rect" title="Physics system." alt="" coords="5,80,168,121"/>
 <area shape="rect" href="classHop_1_1System_1_1System.html" title="A System operating on objects." alt="" coords="5,5,168,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
@@ -88,7 +91,7 @@ Collaboration diagram for Hop::System::Physics::sPhysics:</div>
 <div class="dyncontent">
 <div class="center"><img src="classHop_1_1System_1_1Physics_1_1sPhysics__coll__graph.png" border="0" usemap="#aHop_1_1System_1_1Physics_1_1sPhysics_coll__map" alt="Collaboration graph"/></div>
 <map name="aHop_1_1System_1_1Physics_1_1sPhysics_coll__map" id="aHop_1_1System_1_1Physics_1_1sPhysics_coll__map">
-<area shape="rect" title=" " alt="" coords="5,80,168,121"/>
+<area shape="rect" title="Physics system." alt="" coords="5,80,168,121"/>
 <area shape="rect" href="classHop_1_1System_1_1System.html" title="A System operating on objects." alt="" coords="5,5,168,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
@@ -96,18 +99,25 @@ Collaboration diagram for Hop::System::Physics::sPhysics:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4986b849539914283b7594fb2b1d0f32"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a4986b849539914283b7594fb2b1d0f32">sPhysics</a> ()</td></tr>
+<tr class="memdesc:a4986b849539914283b7594fb2b1d0f32"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a default physics system.  <a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a4986b849539914283b7594fb2b1d0f32">More...</a><br /></td></tr>
 <tr class="separator:a4986b849539914283b7594fb2b1d0f32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a153dad913973b2e93b6fc576b73d52fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a153dad913973b2e93b6fc576b73d52fc">step</a> (<a class="el" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> *m, <a class="el" href="classHop_1_1System_1_1Physics_1_1sCollision.html">sCollision</a> *collisions, <a class="el" href="classHop_1_1World_1_1AbstractWorld.html">AbstractWorld</a> *world)</td></tr>
-<tr class="separator:a153dad913973b2e93b6fc576b73d52fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee18f2e4d40136cec287e8afa0db9b12"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aee18f2e4d40136cec287e8afa0db9b12">step</a> (<a class="el" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> *m, <a class="el" href="classHop_1_1System_1_1Physics_1_1sCollision.html">sCollision</a> *collisions=nullptr, <a class="el" href="classHop_1_1World_1_1AbstractWorld.html">AbstractWorld</a> *world=nullptr)</td></tr>
+<tr class="memdesc:aee18f2e4d40136cec287e8afa0db9b12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update objects.  <a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aee18f2e4d40136cec287e8afa0db9b12">More...</a><br /></td></tr>
+<tr class="separator:aee18f2e4d40136cec287e8afa0db9b12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a053a729e71d6bf3aa3279c9c2f228e3a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a053a729e71d6bf3aa3279c9c2f228e3a">setGravityForce</a> (double g, double nx, double ny)</td></tr>
+<tr class="memdesc:a053a729e71d6bf3aa3279c9c2f228e3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the strength and direction of gravity.  <a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a053a729e71d6bf3aa3279c9c2f228e3a">More...</a><br /></td></tr>
 <tr class="separator:a053a729e71d6bf3aa3279c9c2f228e3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f6751d0adc2e727f2739b9c1f81b8b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a2f6751d0adc2e727f2739b9c1f81b8b4">applyForce</a> (<a class="el" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> *m, <a class="el" href="structHop_1_1Object_1_1Id.html">Id</a> &amp;i, double fx, double fy, bool global=false)</td></tr>
+<tr class="memdesc:a2f6751d0adc2e727f2739b9c1f81b8b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a force to object i.  <a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a2f6751d0adc2e727f2739b9c1f81b8b4">More...</a><br /></td></tr>
 <tr class="separator:a2f6751d0adc2e727f2739b9c1f81b8b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e987accc1f527f5cefbf7e817ceac93"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a0e987accc1f527f5cefbf7e817ceac93">applyTorque</a> (<a class="el" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> *m, <a class="el" href="structHop_1_1Object_1_1Id.html">Id</a> &amp;i, double tau)</td></tr>
+<tr class="memdesc:a0e987accc1f527f5cefbf7e817ceac93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a torque to object i.  <a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a0e987accc1f527f5cefbf7e817ceac93">More...</a><br /></td></tr>
 <tr class="separator:a0e987accc1f527f5cefbf7e817ceac93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6272e3eddd9d8daca84e9fb11fb3ff8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#ae6272e3eddd9d8daca84e9fb11fb3ff8">applyForce</a> (<a class="el" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> *m, double fx, double fy, bool global=false)</td></tr>
+<tr class="memdesc:ae6272e3eddd9d8daca84e9fb11fb3ff8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a force to all objects.  <a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#ae6272e3eddd9d8daca84e9fb11fb3ff8">More...</a><br /></td></tr>
 <tr class="separator:ae6272e3eddd9d8daca84e9fb11fb3ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3f629343e9f98d6ae918598934ea0de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#ab3f629343e9f98d6ae918598934ea0de">stabaliseObjectParameters</a> (<a class="el" href="classHop_1_1Object_1_1EntityComponentSystem.html">Hop::Object::EntityComponentSystem</a> *m)</td></tr>
+<tr class="memdesc:ab3f629343e9f98d6ae918598934ea0de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine parameters for stable forces (resp. collisions).  <a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#ab3f629343e9f98d6ae918598934ea0de">More...</a><br /></td></tr>
 <tr class="separator:ab3f629343e9f98d6ae918598934ea0de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af115bc9398240aa832c9b62bcd4e1519"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#af115bc9398240aa832c9b62bcd4e1519">lua_setTimeStep</a> (lua_State *lua)</td></tr>
 <tr class="separator:af115bc9398240aa832c9b62bcd4e1519"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -154,7 +164,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a2fd03ef71a634f6f5b7f89039edd199b inherit pro_attribs_classHop_1_1System_1_1System"><td class="memItemLeft" align="right" valign="top">std::set&lt; <a class="el" href="structHop_1_1Object_1_1Id.html">Id</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classHop_1_1System_1_1System.html#a2fd03ef71a634f6f5b7f89039edd199b">toAdd</a></td></tr>
 <tr class="separator:a2fd03ef71a634f6f5b7f89039edd199b inherit pro_attribs_classHop_1_1System_1_1System"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="namespaceHop_1_1System_1_1Physics.html">Physics</a> system. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a4986b849539914283b7594fb2b1d0f32"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4986b849539914283b7594fb2b1d0f32">&#9670;&nbsp;</a></span>sPhysics()</h2>
 
@@ -177,6 +189,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct a default physics system. </p>
 
 </div>
 </div>
@@ -218,6 +232,17 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Apply a force to all objects. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>manager. </td></tr>
+    <tr><td class="paramname">fx</td><td>force in x. </td></tr>
+    <tr><td class="paramname">fy</td><td>force in y. </td></tr>
+    <tr><td class="paramname">global</td><td>apply to each objects mesh globally. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -265,6 +290,18 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Apply a force to object i. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>manager. </td></tr>
+    <tr><td class="paramname">i</td><td>object to apply force to. </td></tr>
+    <tr><td class="paramname">fx</td><td>force in x. </td></tr>
+    <tr><td class="paramname">fy</td><td>force in y. </td></tr>
+    <tr><td class="paramname">global</td><td>apply to all mesh components equally. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a0e987accc1f527f5cefbf7e817ceac93"></a>
@@ -298,6 +335,16 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Apply a torque to object i. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>manager. </td></tr>
+    <tr><td class="paramname">i</td><td>object to apply torque to. </td></tr>
+    <tr><td class="paramname">tau</td><td>torque. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -604,6 +651,16 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Set the strength and direction of gravity. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">g</td><td>magnitude. </td></tr>
+    <tr><td class="paramname">nx</td><td>direction in x. </td></tr>
+    <tr><td class="paramname">ny</td><td>direction in y. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="abb427fc6fc5690447aeb63196d80108a"></a>
@@ -674,10 +731,18 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Determine parameters for stable forces (resp. collisions). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
-<a id="a153dad913973b2e93b6fc576b73d52fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a153dad913973b2e93b6fc576b73d52fc">&#9670;&nbsp;</a></span>step()</h2>
+<a id="aee18f2e4d40136cec287e8afa0db9b12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee18f2e4d40136cec287e8afa0db9b12">&#9670;&nbsp;</a></span>step()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -692,13 +757,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classHop_1_1System_1_1Physics_1_1sCollision.html">sCollision</a> *&#160;</td>
-          <td class="paramname"><em>collisions</em>, </td>
+          <td class="paramname"><em>collisions</em> = <code>nullptr</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classHop_1_1World_1_1AbstractWorld.html">AbstractWorld</a> *&#160;</td>
-          <td class="paramname"><em>world</em>&#160;</td>
+          <td class="paramname"><em>world</em> = <code>nullptr</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -707,6 +772,16 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Update objects. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>object manager. </td></tr>
+    <tr><td class="paramname">collisions</td><td>optional collision system. </td></tr>
+    <tr><td class="paramname">world</td><td>optional world. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

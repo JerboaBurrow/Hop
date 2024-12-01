@@ -99,189 +99,184 @@ $(function() {
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">using</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sCollision.html">Hop::System::Physics::sCollision</a>;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">using</span> <a class="code" href="classHop_1_1World_1_1AbstractWorld.html">Hop::World::AbstractWorld</a>;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="comment">/*</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">        System to update cPhysics components given forces</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">    */</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html">   34</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html">sPhysics</a> : <span class="keyword">public</span> <a class="code" href="classHop_1_1System_1_1System.html">System</a></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a4986b849539914283b7594fb2b1d0f32">   39</a></span>&#160;        <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a4986b849539914283b7594fb2b1d0f32">sPhysics</a>()</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        : dt(1.0/900.0),</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;          dtdt(dt*dt),</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;          gravity(9.81),</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;          ngx(0.0),</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;          ngy(-1.0),</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;          subSamples(1)</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        {}</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a153dad913973b2e93b6fc576b73d52fc">step</a></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        (</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <a class="code" href="classHop_1_1System_1_1Physics_1_1sCollision.html">sCollision</a> * collisions,</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <a class="code" href="classHop_1_1World_1_1AbstractWorld.html">AbstractWorld</a> * world</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        );</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a053a729e71d6bf3aa3279c9c2f228e3a">   55</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a053a729e71d6bf3aa3279c9c2f228e3a">setGravityForce</a></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        (</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keywordtype">double</span> g,</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordtype">double</span> nx,</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keywordtype">double</span> ny</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        )</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            gravity = g;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            ngx = nx;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            ngy = ny;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html">   35</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html">sPhysics</a> : <span class="keyword">public</span> <a class="code" href="classHop_1_1System_1_1System.html">System</a></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a4986b849539914283b7594fb2b1d0f32">   44</a></span>&#160;        <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a4986b849539914283b7594fb2b1d0f32">sPhysics</a>()</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        : dt(1.0/900.0),</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;          dtdt(dt*dt),</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;          gravity(9.81),</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;          ngx(0.0),</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;          ngy(-1.0),</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;          subSamples(1)</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        {}</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aee18f2e4d40136cec287e8afa0db9b12">step</a></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        (</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m,</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <a class="code" href="classHop_1_1System_1_1Physics_1_1sCollision.html">sCollision</a> * collisions = <span class="keyword">nullptr</span>,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <a class="code" href="classHop_1_1World_1_1AbstractWorld.html">AbstractWorld</a> * world = <span class="keyword">nullptr</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        );</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a2f6751d0adc2e727f2739b9c1f81b8b4">applyForce</a>(</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m,</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <a class="code" href="structHop_1_1Object_1_1Id.html">Id</a> &amp; i,</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            <span class="keywordtype">double</span> fx,</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordtype">double</span> fy,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            <span class="keywordtype">bool</span> global = <span class="keyword">false</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        );</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a0e987accc1f527f5cefbf7e817ceac93">applyTorque</a>(</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m,</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <a class="code" href="structHop_1_1Object_1_1Id.html">Id</a> &amp; i,</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keywordtype">double</span> tau</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        );</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a2f6751d0adc2e727f2739b9c1f81b8b4">applyForce</a>(</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m,</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keywordtype">double</span> fx,</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keywordtype">double</span> fy,</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keywordtype">bool</span> global = <span class="keyword">false</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        );</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="comment">// automatically compute stable simulation parameters</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="comment">// updating all objects</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#ab3f629343e9f98d6ae918598934ea0de">stabaliseObjectParameters</a>(<a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">Hop::Object::EntityComponentSystem</a> * m);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#af115bc9398240aa832c9b62bcd4e1519">   92</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#af115bc9398240aa832c9b62bcd4e1519">lua_setTimeStep</a>(lua_State * lua)</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        {</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keywordtype">int</span> n = lua_gettop(lua);</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="keywordflow">if</span> (n != 1)</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            {</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                lua_pushliteral(lua, <span class="stringliteral">&quot;requires 1 argument, delta&quot;</span>);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                <span class="keywordflow">return</span> lua_error(lua);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            }</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="keywordflow">if</span> (!lua_isnumber(lua, 1))</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            {</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                lua_pushliteral(lua, <span class="stringliteral">&quot;requires a numeric argument for delta&quot;</span>);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                <span class="keywordflow">return</span> lua_error(lua);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            }</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="keywordtype">double</span> delta = lua_tonumber(lua, 1);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a1cb5970fea9f99dc2ce1819c24477ccd">setTimeStep</a>(delta);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        }</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aebfbdcb79d4e0656d872fd46f3d02e57">  114</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aebfbdcb79d4e0656d872fd46f3d02e57">lua_setSubSamples</a>(lua_State * lua)</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        {</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            <span class="keywordtype">int</span> n = lua_gettop(lua);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            <span class="keywordflow">if</span> (n != 1)</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            {</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                lua_pushliteral(lua, <span class="stringliteral">&quot;requires 1 argument, subsamples&quot;</span>);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                <span class="keywordflow">return</span> lua_error(lua);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            }</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            <span class="keywordflow">if</span> (!lua_isinteger(lua, 1))</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                lua_pushliteral(lua, <span class="stringliteral">&quot;requires an integer argument for subsamples&quot;</span>);</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                <span class="keywordflow">return</span> lua_error(lua);</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            }</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            <span class="keywordtype">unsigned</span> subSamples = lua_tointeger(lua, 1);</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;            <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abb427fc6fc5690447aeb63196d80108a">setSubSamples</a>(subSamples);</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;            <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        }</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abef7d75685c155662b38d5d3fadc5ce7">  136</a></span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abef7d75685c155662b38d5d3fadc5ce7">kineticEnergy</a>()</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        {</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;            <span class="keywordflow">return</span> energy;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        }</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a58548ae994e790f4dc8cb3c3f0b2b197">  141</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a58548ae994e790f4dc8cb3c3f0b2b197">lua_kineticEnergy</a>(lua_State * lua)</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        {</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;            lua_pushnumber(lua, energy);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;            <span class="keywordflow">return</span> 1;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        }</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a1cb5970fea9f99dc2ce1819c24477ccd">  147</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a1cb5970fea9f99dc2ce1819c24477ccd">setTimeStep</a>(<span class="keywordtype">double</span> delta){dt = delta; dtdt = dt*dt;}</div>
-<div class="line"><a name="l00148"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#afafb93da415748c25762385506f9da13">  148</a></span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#afafb93da415748c25762385506f9da13">getTimeStep</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> dt; }</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abb427fc6fc5690447aeb63196d80108a">  150</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abb427fc6fc5690447aeb63196d80108a">setSubSamples</a>(<span class="keywordtype">unsigned</span> s){subSamples = s;}</div>
-<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a9eaedb9cd0ea469ca9d546a089aac555">  151</a></span>&#160;        <span class="keywordtype">unsigned</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a9eaedb9cd0ea469ca9d546a089aac555">getSubSamples</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> subSamples; }</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aaf7d0023ea59ab4991b0a139ff9b89d3">  153</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aaf7d0023ea59ab4991b0a139ff9b89d3">setGravity</a>(<span class="keywordtype">double</span> g, <span class="keywordtype">double</span> nx, <span class="keywordtype">double</span> ny){gravity = g; ngx = nx; ngy = ny;}</div>
-<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a68684f1328759c78ef5cf190ceef5514">  154</a></span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a68684f1328759c78ef5cf190ceef5514">getGravity</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> gravity; }</div>
-<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a42a14ea7db3c421e9cbe8ca4bf652a02">  155</a></span>&#160;        glm::vec2 <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a42a14ea7db3c421e9cbe8ca4bf652a02">getGravityDirection</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> glm::vec2(ngx, ngy); }</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a053a729e71d6bf3aa3279c9c2f228e3a">   74</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a053a729e71d6bf3aa3279c9c2f228e3a">setGravityForce</a></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        (</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keywordtype">double</span> g,</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="keywordtype">double</span> nx,</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keywordtype">double</span> ny</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        )</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            gravity = g;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            ngx = nx;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            ngy = ny;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        }</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a2f6751d0adc2e727f2739b9c1f81b8b4">applyForce</a>(</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m,</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <a class="code" href="structHop_1_1Object_1_1Id.html">Id</a> &amp; i,</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            <span class="keywordtype">double</span> fx,</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordtype">double</span> fy,</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            <span class="keywordtype">bool</span> global = <span class="keyword">false</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        );</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a0e987accc1f527f5cefbf7e817ceac93">applyTorque</a>(</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m,</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            <a class="code" href="structHop_1_1Object_1_1Id.html">Id</a> &amp; i,</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            <span class="keywordtype">double</span> tau</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        );</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a2f6751d0adc2e727f2739b9c1f81b8b4">applyForce</a>(</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m,</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;            <span class="keywordtype">double</span> fx,</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            <span class="keywordtype">double</span> fy,</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            <span class="keywordtype">bool</span> global = <span class="keyword">false</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        );</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#ab3f629343e9f98d6ae918598934ea0de">stabaliseObjectParameters</a>(<a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">Hop::Object::EntityComponentSystem</a> * m);</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#af115bc9398240aa832c9b62bcd4e1519">  138</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#af115bc9398240aa832c9b62bcd4e1519">lua_setTimeStep</a>(lua_State * lua)</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        {</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="keywordtype">int</span> n = lua_gettop(lua);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            <span class="keywordflow">if</span> (n != 1)</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;            {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                lua_pushliteral(lua, <span class="stringliteral">&quot;requires 1 argument, delta&quot;</span>);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                <span class="keywordflow">return</span> lua_error(lua);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            }</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;            <span class="keywordflow">if</span> (!lua_isnumber(lua, 1))</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            {</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                lua_pushliteral(lua, <span class="stringliteral">&quot;requires a numeric argument for delta&quot;</span>);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                <span class="keywordflow">return</span> lua_error(lua);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            }</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <span class="keywordtype">double</span> delta = lua_tonumber(lua, 1);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a1cb5970fea9f99dc2ce1819c24477ccd">setTimeStep</a>(delta);</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="comment">// Lua</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a7eef94857cdd6fd599619e69a3ef6208">lua_setGravity</a>(lua_State * lua);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="keywordtype">void</span> update(<a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m, ThreadPool * workers = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordtype">void</span> gravityForce</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        (</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        );</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;            <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        }</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
+<div class="line"><a name="l00160"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aebfbdcb79d4e0656d872fd46f3d02e57">  160</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aebfbdcb79d4e0656d872fd46f3d02e57">lua_setSubSamples</a>(lua_State * lua)</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        {</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            <span class="keywordtype">int</span> n = lua_gettop(lua);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;            <span class="keywordflow">if</span> (n != 1)</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            {</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                lua_pushliteral(lua, <span class="stringliteral">&quot;requires 1 argument, subsamples&quot;</span>);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                <span class="keywordflow">return</span> lua_error(lua);</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            }</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        std::default_random_engine e;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        std::normal_distribution&lt;double&gt; normal;</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keywordtype">double</span> dt;</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keywordtype">double</span> dtdt;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="keywordtype">double</span> gravity, ngx, ngy;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        <span class="keywordtype">double</span> movementLimitRadii = 0.33;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keywordtype">unsigned</span> subSamples;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keywordtype">double</span> energy = 0.0;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="comment">// see implementation for details</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keywordtype">double</span> stableDragUnderdampedLangevinWithGravityUnitMass(</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            <span class="keywordtype">double</span> dt,</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            <span class="keywordtype">double</span> gravity,</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            <span class="keywordtype">double</span> radius</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        );</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keywordflow">if</span> (!lua_isinteger(lua, 1))</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                lua_pushliteral(lua, <span class="stringliteral">&quot;requires an integer argument for subsamples&quot;</span>);</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                <span class="keywordflow">return</span> lua_error(lua);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            }</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            <span class="keywordtype">unsigned</span> subSamples = lua_tointeger(lua, 1);</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abb427fc6fc5690447aeb63196d80108a">setSubSamples</a>(subSamples);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160; </div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00182"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abef7d75685c155662b38d5d3fadc5ce7">  182</a></span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abef7d75685c155662b38d5d3fadc5ce7">kineticEnergy</a>()</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            <span class="keywordflow">return</span> energy;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        }</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    };</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;}</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* SPHYSICS_H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a58548ae994e790f4dc8cb3c3f0b2b197">  187</a></span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a58548ae994e790f4dc8cb3c3f0b2b197">lua_kineticEnergy</a>(lua_State * lua)</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        {</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            lua_pushnumber(lua, energy);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;            <span class="keywordflow">return</span> 1;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        }</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a1cb5970fea9f99dc2ce1819c24477ccd">  193</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a1cb5970fea9f99dc2ce1819c24477ccd">setTimeStep</a>(<span class="keywordtype">double</span> delta){dt = delta; dtdt = dt*dt;}</div>
+<div class="line"><a name="l00194"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#afafb93da415748c25762385506f9da13">  194</a></span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#afafb93da415748c25762385506f9da13">getTimeStep</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> dt; }</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abb427fc6fc5690447aeb63196d80108a">  196</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abb427fc6fc5690447aeb63196d80108a">setSubSamples</a>(<span class="keywordtype">unsigned</span> s){subSamples = s;}</div>
+<div class="line"><a name="l00197"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a9eaedb9cd0ea469ca9d546a089aac555">  197</a></span>&#160;        <span class="keywordtype">unsigned</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a9eaedb9cd0ea469ca9d546a089aac555">getSubSamples</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> subSamples; }</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aaf7d0023ea59ab4991b0a139ff9b89d3">  199</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aaf7d0023ea59ab4991b0a139ff9b89d3">setGravity</a>(<span class="keywordtype">double</span> g, <span class="keywordtype">double</span> nx, <span class="keywordtype">double</span> ny){gravity = g; ngx = nx; ngy = ny;}</div>
+<div class="line"><a name="l00200"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a68684f1328759c78ef5cf190ceef5514">  200</a></span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a68684f1328759c78ef5cf190ceef5514">getGravity</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> gravity; }</div>
+<div class="line"><a name="l00201"></a><span class="lineno"><a class="line" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a42a14ea7db3c421e9cbe8ca4bf652a02">  201</a></span>&#160;        glm::vec2 <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a42a14ea7db3c421e9cbe8ca4bf652a02">getGravityDirection</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> glm::vec2(ngx, ngy); }</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="comment">// Lua</span></div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keywordtype">int</span> <a class="code" href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a7eef94857cdd6fd599619e69a3ef6208">lua_setGravity</a>(lua_State * lua);</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        <span class="keywordtype">void</span> update(<a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m, ThreadPool * workers = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <span class="keywordtype">void</span> gravityForce</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        (</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;            <a class="code" href="classHop_1_1Object_1_1EntityComponentSystem.html">EntityComponentSystem</a> * m</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        );</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        std::default_random_engine e;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        std::normal_distribution&lt;double&gt; normal;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        <span class="keywordtype">double</span> dt;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keywordtype">double</span> dtdt;</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        <span class="keywordtype">double</span> gravity, ngx, ngy;</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        <span class="keywordtype">double</span> movementLimitRadii = 0.33;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        <span class="keywordtype">unsigned</span> subSamples;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        <span class="keywordtype">double</span> energy = 0.0;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <span class="comment">// see implementation for details</span></div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        <span class="keywordtype">double</span> stableDragUnderdampedLangevinWithGravityUnitMass(</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            <span class="keywordtype">double</span> dt,</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;            <span class="keywordtype">double</span> gravity,</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;            <span class="keywordtype">double</span> radius</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        );</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    };</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;}</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* SPHYSICS_H */</span><span class="preprocessor"></span></div>
 <div class="ttc" id="acPhysics_8h_html"><div class="ttname"><a href="cPhysics_8h.html">cPhysics.h</a></div></div>
 <div class="ttc" id="aclassHop_1_1Object_1_1Component_1_1ComponentArray_html"><div class="ttname"><a href="classHop_1_1Object_1_1Component_1_1ComponentArray.html">Hop::Object::Component::ComponentArray</a></div><div class="ttdef"><b>Definition:</b> componentArray.h:59</div></div>
 <div class="ttc" id="aclassHop_1_1Object_1_1EntityComponentSystem_html"><div class="ttname"><a href="classHop_1_1Object_1_1EntityComponentSystem.html">Hop::Object::EntityComponentSystem</a></div><div class="ttdoc">Stores objects (identity) dynamic components and systems.</div><div class="ttdef"><b>Definition:</b> entityComponentSystem.h:77</div></div>
 <div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sCollision_html"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sCollision.html">Hop::System::Physics::sCollision</a></div><div class="ttdef"><b>Definition:</b> sCollision.h:31</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html">Hop::System::Physics::sPhysics</a></div><div class="ttdef"><b>Definition:</b> sPhysics.h:35</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a053a729e71d6bf3aa3279c9c2f228e3a"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a053a729e71d6bf3aa3279c9c2f228e3a">Hop::System::Physics::sPhysics::setGravityForce</a></div><div class="ttdeci">void setGravityForce(double g, double nx, double ny)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:56</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a0e987accc1f527f5cefbf7e817ceac93"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a0e987accc1f527f5cefbf7e817ceac93">Hop::System::Physics::sPhysics::applyTorque</a></div><div class="ttdeci">void applyTorque(EntityComponentSystem *m, Id &amp;i, double tau)</div><div class="ttdef"><b>Definition:</b> sPhysics.cpp:211</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a153dad913973b2e93b6fc576b73d52fc"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a153dad913973b2e93b6fc576b73d52fc">Hop::System::Physics::sPhysics::step</a></div><div class="ttdeci">void step(EntityComponentSystem *m, sCollision *collisions, AbstractWorld *world)</div><div class="ttdef"><b>Definition:</b> sPhysics.cpp:10</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a1cb5970fea9f99dc2ce1819c24477ccd"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a1cb5970fea9f99dc2ce1819c24477ccd">Hop::System::Physics::sPhysics::setTimeStep</a></div><div class="ttdeci">void setTimeStep(double delta)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:147</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a2f6751d0adc2e727f2739b9c1f81b8b4"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a2f6751d0adc2e727f2739b9c1f81b8b4">Hop::System::Physics::sPhysics::applyForce</a></div><div class="ttdeci">void applyForce(EntityComponentSystem *m, Id &amp;i, double fx, double fy, bool global=false)</div><div class="ttdef"><b>Definition:</b> sPhysics.cpp:178</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a42a14ea7db3c421e9cbe8ca4bf652a02"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a42a14ea7db3c421e9cbe8ca4bf652a02">Hop::System::Physics::sPhysics::getGravityDirection</a></div><div class="ttdeci">glm::vec2 getGravityDirection() const</div><div class="ttdef"><b>Definition:</b> sPhysics.h:155</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a4986b849539914283b7594fb2b1d0f32"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a4986b849539914283b7594fb2b1d0f32">Hop::System::Physics::sPhysics::sPhysics</a></div><div class="ttdeci">sPhysics()</div><div class="ttdef"><b>Definition:</b> sPhysics.h:39</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a58548ae994e790f4dc8cb3c3f0b2b197"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a58548ae994e790f4dc8cb3c3f0b2b197">Hop::System::Physics::sPhysics::lua_kineticEnergy</a></div><div class="ttdeci">int lua_kineticEnergy(lua_State *lua)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:141</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a68684f1328759c78ef5cf190ceef5514"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a68684f1328759c78ef5cf190ceef5514">Hop::System::Physics::sPhysics::getGravity</a></div><div class="ttdeci">double getGravity() const</div><div class="ttdef"><b>Definition:</b> sPhysics.h:154</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html">Hop::System::Physics::sPhysics</a></div><div class="ttdoc">Physics system.</div><div class="ttdef"><b>Definition:</b> sPhysics.h:36</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a053a729e71d6bf3aa3279c9c2f228e3a"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a053a729e71d6bf3aa3279c9c2f228e3a">Hop::System::Physics::sPhysics::setGravityForce</a></div><div class="ttdeci">void setGravityForce(double g, double nx, double ny)</div><div class="ttdoc">Set the strength and direction of gravity.</div><div class="ttdef"><b>Definition:</b> sPhysics.h:75</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a0e987accc1f527f5cefbf7e817ceac93"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a0e987accc1f527f5cefbf7e817ceac93">Hop::System::Physics::sPhysics::applyTorque</a></div><div class="ttdeci">void applyTorque(EntityComponentSystem *m, Id &amp;i, double tau)</div><div class="ttdoc">Apply a torque to object i.</div><div class="ttdef"><b>Definition:</b> sPhysics.cpp:222</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a1cb5970fea9f99dc2ce1819c24477ccd"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a1cb5970fea9f99dc2ce1819c24477ccd">Hop::System::Physics::sPhysics::setTimeStep</a></div><div class="ttdeci">void setTimeStep(double delta)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:193</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a2f6751d0adc2e727f2739b9c1f81b8b4"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a2f6751d0adc2e727f2739b9c1f81b8b4">Hop::System::Physics::sPhysics::applyForce</a></div><div class="ttdeci">void applyForce(EntityComponentSystem *m, Id &amp;i, double fx, double fy, bool global=false)</div><div class="ttdoc">Apply a force to object i.</div><div class="ttdef"><b>Definition:</b> sPhysics.cpp:189</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a42a14ea7db3c421e9cbe8ca4bf652a02"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a42a14ea7db3c421e9cbe8ca4bf652a02">Hop::System::Physics::sPhysics::getGravityDirection</a></div><div class="ttdeci">glm::vec2 getGravityDirection() const</div><div class="ttdef"><b>Definition:</b> sPhysics.h:201</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a4986b849539914283b7594fb2b1d0f32"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a4986b849539914283b7594fb2b1d0f32">Hop::System::Physics::sPhysics::sPhysics</a></div><div class="ttdeci">sPhysics()</div><div class="ttdoc">Construct a default physics system.</div><div class="ttdef"><b>Definition:</b> sPhysics.h:44</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a58548ae994e790f4dc8cb3c3f0b2b197"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a58548ae994e790f4dc8cb3c3f0b2b197">Hop::System::Physics::sPhysics::lua_kineticEnergy</a></div><div class="ttdeci">int lua_kineticEnergy(lua_State *lua)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:187</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a68684f1328759c78ef5cf190ceef5514"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a68684f1328759c78ef5cf190ceef5514">Hop::System::Physics::sPhysics::getGravity</a></div><div class="ttdeci">double getGravity() const</div><div class="ttdef"><b>Definition:</b> sPhysics.h:200</div></div>
 <div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a7eef94857cdd6fd599619e69a3ef6208"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a7eef94857cdd6fd599619e69a3ef6208">Hop::System::Physics::sPhysics::lua_setGravity</a></div><div class="ttdeci">int lua_setGravity(lua_State *lua)</div><div class="ttdef"><b>Definition:</b> lua_physics.cpp:7</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a9eaedb9cd0ea469ca9d546a089aac555"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a9eaedb9cd0ea469ca9d546a089aac555">Hop::System::Physics::sPhysics::getSubSamples</a></div><div class="ttdeci">unsigned getSubSamples() const</div><div class="ttdef"><b>Definition:</b> sPhysics.h:151</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_aaf7d0023ea59ab4991b0a139ff9b89d3"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aaf7d0023ea59ab4991b0a139ff9b89d3">Hop::System::Physics::sPhysics::setGravity</a></div><div class="ttdeci">void setGravity(double g, double nx, double ny)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:153</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_ab3f629343e9f98d6ae918598934ea0de"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#ab3f629343e9f98d6ae918598934ea0de">Hop::System::Physics::sPhysics::stabaliseObjectParameters</a></div><div class="ttdeci">void stabaliseObjectParameters(Hop::Object::EntityComponentSystem *m)</div><div class="ttdef"><b>Definition:</b> sPhysics.cpp:269</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_abb427fc6fc5690447aeb63196d80108a"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abb427fc6fc5690447aeb63196d80108a">Hop::System::Physics::sPhysics::setSubSamples</a></div><div class="ttdeci">void setSubSamples(unsigned s)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:150</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_abef7d75685c155662b38d5d3fadc5ce7"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abef7d75685c155662b38d5d3fadc5ce7">Hop::System::Physics::sPhysics::kineticEnergy</a></div><div class="ttdeci">double kineticEnergy()</div><div class="ttdef"><b>Definition:</b> sPhysics.h:136</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_aebfbdcb79d4e0656d872fd46f3d02e57"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aebfbdcb79d4e0656d872fd46f3d02e57">Hop::System::Physics::sPhysics::lua_setSubSamples</a></div><div class="ttdeci">int lua_setSubSamples(lua_State *lua)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:114</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_af115bc9398240aa832c9b62bcd4e1519"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#af115bc9398240aa832c9b62bcd4e1519">Hop::System::Physics::sPhysics::lua_setTimeStep</a></div><div class="ttdeci">int lua_setTimeStep(lua_State *lua)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:92</div></div>
-<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_afafb93da415748c25762385506f9da13"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#afafb93da415748c25762385506f9da13">Hop::System::Physics::sPhysics::getTimeStep</a></div><div class="ttdeci">double getTimeStep() const</div><div class="ttdef"><b>Definition:</b> sPhysics.h:148</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_a9eaedb9cd0ea469ca9d546a089aac555"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#a9eaedb9cd0ea469ca9d546a089aac555">Hop::System::Physics::sPhysics::getSubSamples</a></div><div class="ttdeci">unsigned getSubSamples() const</div><div class="ttdef"><b>Definition:</b> sPhysics.h:197</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_aaf7d0023ea59ab4991b0a139ff9b89d3"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aaf7d0023ea59ab4991b0a139ff9b89d3">Hop::System::Physics::sPhysics::setGravity</a></div><div class="ttdeci">void setGravity(double g, double nx, double ny)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:199</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_ab3f629343e9f98d6ae918598934ea0de"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#ab3f629343e9f98d6ae918598934ea0de">Hop::System::Physics::sPhysics::stabaliseObjectParameters</a></div><div class="ttdeci">void stabaliseObjectParameters(Hop::Object::EntityComponentSystem *m)</div><div class="ttdoc">Determine parameters for stable forces (resp. collisions).</div><div class="ttdef"><b>Definition:</b> sPhysics.cpp:280</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_abb427fc6fc5690447aeb63196d80108a"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abb427fc6fc5690447aeb63196d80108a">Hop::System::Physics::sPhysics::setSubSamples</a></div><div class="ttdeci">void setSubSamples(unsigned s)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:196</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_abef7d75685c155662b38d5d3fadc5ce7"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#abef7d75685c155662b38d5d3fadc5ce7">Hop::System::Physics::sPhysics::kineticEnergy</a></div><div class="ttdeci">double kineticEnergy()</div><div class="ttdef"><b>Definition:</b> sPhysics.h:182</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_aebfbdcb79d4e0656d872fd46f3d02e57"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aebfbdcb79d4e0656d872fd46f3d02e57">Hop::System::Physics::sPhysics::lua_setSubSamples</a></div><div class="ttdeci">int lua_setSubSamples(lua_State *lua)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:160</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_aee18f2e4d40136cec287e8afa0db9b12"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#aee18f2e4d40136cec287e8afa0db9b12">Hop::System::Physics::sPhysics::step</a></div><div class="ttdeci">void step(EntityComponentSystem *m, sCollision *collisions=nullptr, AbstractWorld *world=nullptr)</div><div class="ttdoc">Update objects.</div><div class="ttdef"><b>Definition:</b> sPhysics.cpp:10</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_af115bc9398240aa832c9b62bcd4e1519"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#af115bc9398240aa832c9b62bcd4e1519">Hop::System::Physics::sPhysics::lua_setTimeStep</a></div><div class="ttdeci">int lua_setTimeStep(lua_State *lua)</div><div class="ttdef"><b>Definition:</b> sPhysics.h:138</div></div>
+<div class="ttc" id="aclassHop_1_1System_1_1Physics_1_1sPhysics_html_afafb93da415748c25762385506f9da13"><div class="ttname"><a href="classHop_1_1System_1_1Physics_1_1sPhysics.html#afafb93da415748c25762385506f9da13">Hop::System::Physics::sPhysics::getTimeStep</a></div><div class="ttdeci">double getTimeStep() const</div><div class="ttdef"><b>Definition:</b> sPhysics.h:194</div></div>
 <div class="ttc" id="aclassHop_1_1System_1_1System_html"><div class="ttname"><a href="classHop_1_1System_1_1System.html">Hop::System::System</a></div><div class="ttdoc">A System operating on objects.</div><div class="ttdef"><b>Definition:</b> system.h:19</div></div>
 <div class="ttc" id="aclassHop_1_1World_1_1AbstractWorld_html"><div class="ttname"><a href="classHop_1_1World_1_1AbstractWorld.html">Hop::World::AbstractWorld</a></div><div class="ttdef"><b>Definition:</b> world.h:154</div></div>
 <div class="ttc" id="acomponentArray_8h_html"><div class="ttname"><a href="componentArray_8h.html">componentArray.h</a></div></div>
