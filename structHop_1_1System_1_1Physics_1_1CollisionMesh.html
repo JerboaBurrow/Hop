@@ -73,6 +73,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>A mesh of collideable primitives.  
+ <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="collisionMesh_8h_source.html">collisionMesh.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -80,44 +83,62 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0a509694cc18a35065c358b077852b5d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a0a509694cc18a35065c358b077852b5d">CollisionMesh</a> ()</td></tr>
 <tr class="separator:a0a509694cc18a35065c358b077852b5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdbb2284fc9ff3341ded9a2c05bf867c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#afdbb2284fc9ff3341ded9a2c05bf867c">CollisionMesh</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html">CollisionPrimitive</a> &gt;&gt; v, double x, double y, double theta, double scale)</td></tr>
+<tr class="memdesc:afdbb2284fc9ff3341ded9a2c05bf867c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Collision Mesh from primitives.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#afdbb2284fc9ff3341ded9a2c05bf867c">More...</a><br /></td></tr>
 <tr class="separator:afdbb2284fc9ff3341ded9a2c05bf867c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23b87163267420f15b8b4375f75daab4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a23b87163267420f15b8b4375f75daab4">CollisionMesh</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html">CollisionPrimitive</a> &gt;&gt; v)</td></tr>
+<tr class="memdesc:a23b87163267420f15b8b4375f75daab4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Collision Mesh from a primitives list.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a23b87163267420f15b8b4375f75daab4">More...</a><br /></td></tr>
 <tr class="separator:a23b87163267420f15b8b4375f75daab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e8d4d57cd663e28410babd59b6499f4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a7e8d4d57cd663e28410babd59b6499f4">CollisionMesh</a> (<a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html">CollisionMesh</a> &amp;m)</td></tr>
+<tr class="memdesc:a7e8d4d57cd663e28410babd59b6499f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Collision Mesh from another.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a7e8d4d57cd663e28410babd59b6499f4">More...</a><br /></td></tr>
 <tr class="separator:a7e8d4d57cd663e28410babd59b6499f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6cdd49649bf146b8eb9d1ca18e0ca969"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a6cdd49649bf146b8eb9d1ca18e0ca969">CollisionMesh</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1MeshPoint.html">MeshPoint</a> &gt;&gt; model, std::vector&lt; std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html">CollisionPrimitive</a> &gt;&gt; world, std::set&lt; uint64_t &gt; tags)</td></tr>
+<tr class="memdesc:a6cdd49649bf146b8eb9d1ca18e0ca969"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Collision Mesh from model and world vertices.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a6cdd49649bf146b8eb9d1ca18e0ca969">More...</a><br /></td></tr>
 <tr class="separator:a6cdd49649bf146b8eb9d1ca18e0ca969"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a772663af59553eb3ca9730b402daead7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html">CollisionMesh</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a772663af59553eb3ca9730b402daead7">getSubMesh</a> (uint64_t t)</td></tr>
+<tr class="memdesc:a772663af59553eb3ca9730b402daead7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Obtain all primitives with the given tag.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a772663af59553eb3ca9730b402daead7">More...</a><br /></td></tr>
 <tr class="separator:a772663af59553eb3ca9730b402daead7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3fc2024bdbc08045a12cf189868385ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a3fc2024bdbc08045a12cf189868385ca">reinitialise</a> ()</td></tr>
+<tr class="memdesc:a3fc2024bdbc08045a12cf189868385ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag mesh as needing an initial update.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a3fc2024bdbc08045a12cf189868385ca">More...</a><br /></td></tr>
 <tr class="separator:a3fc2024bdbc08045a12cf189868385ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70071ecbac149af245109b021bf355be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a70071ecbac149af245109b021bf355be">transform</a> (<a class="el" href="namespaceHop_1_1Object_1_1Component.html#a87cb9436db3aed346ec51b922a80a445">cTransform</a> t)</td></tr>
+<tr class="memdesc:a70071ecbac149af245109b021bf355be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the transform of the mesh.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a70071ecbac149af245109b021bf355be">More...</a><br /></td></tr>
 <tr class="separator:a70071ecbac149af245109b021bf355be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd2ccf917881d6f9c926419f1d8db2fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#abd2ccf917881d6f9c926419f1d8db2fe">add</a> (std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html">CollisionPrimitive</a> &gt; c)</td></tr>
+<tr class="memdesc:abd2ccf917881d6f9c926419f1d8db2fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a primitive to the mesh.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#abd2ccf917881d6f9c926419f1d8db2fe">More...</a><br /></td></tr>
 <tr class="separator:abd2ccf917881d6f9c926419f1d8db2fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa18e28efe5b6515b240672adbbe71803"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#aa18e28efe5b6515b240672adbbe71803">remove</a> (size_t i)</td></tr>
+<tr class="memdesc:aa18e28efe5b6515b240672adbbe71803"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove primitive at index i.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#aa18e28efe5b6515b240672adbbe71803">More...</a><br /></td></tr>
 <tr class="separator:aa18e28efe5b6515b240672adbbe71803"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c6d96d90be81aa2f3908b26163dd5d2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a3c6d96d90be81aa2f3908b26163dd5d2">clicked</a> (float x, float y)</td></tr>
+<tr class="memdesc:a3c6d96d90be81aa2f3908b26163dd5d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if (x,y) hits a primitive.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a3c6d96d90be81aa2f3908b26163dd5d2">More...</a><br /></td></tr>
 <tr class="separator:a3c6d96d90be81aa2f3908b26163dd5d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69409f9cfe67966d3fe06ff94ee540c6"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a69409f9cfe67966d3fe06ff94ee540c6">size</a> ()</td></tr>
 <tr class="separator:a69409f9cfe67966d3fe06ff94ee540c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade4c9409388698da71f87034d1b4c76e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1MeshPoint.html">MeshPoint</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#ade4c9409388698da71f87034d1b4c76e">getModelVertex</a> (size_t i)</td></tr>
+<tr class="memdesc:ade4c9409388698da71f87034d1b4c76e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a model space primitive.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#ade4c9409388698da71f87034d1b4c76e">More...</a><br /></td></tr>
 <tr class="separator:ade4c9409388698da71f87034d1b4c76e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab416e87e35a44559afabe64c742e2f4e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html">CollisionPrimitive</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#ab416e87e35a44559afabe64c742e2f4e">getMeshVertex</a> (size_t i)</td></tr>
+<tr class="memdesc:ab416e87e35a44559afabe64c742e2f4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a world space primitive.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#ab416e87e35a44559afabe64c742e2f4e">More...</a><br /></td></tr>
 <tr class="separator:ab416e87e35a44559afabe64c742e2f4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade7d7ee3ef7148baa33b655e904476c2"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html">CollisionPrimitive</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#ade7d7ee3ef7148baa33b655e904476c2">operator[]</a> (size_t i)</td></tr>
+<tr class="memdesc:ade7d7ee3ef7148baa33b655e904476c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a world space primitive.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#ade7d7ee3ef7148baa33b655e904476c2">More...</a><br /></td></tr>
 <tr class="separator:ade7d7ee3ef7148baa33b655e904476c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa5e2e2a15dc12cd2fc8701504733caa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#afa5e2e2a15dc12cd2fc8701504733caa">updateWorldMesh</a> (<a class="el" href="namespaceHop_1_1Object_1_1Component.html#a87cb9436db3aed346ec51b922a80a445">cTransform</a> &amp;<a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a70071ecbac149af245109b021bf355be">transform</a>, <a class="el" href="structHop_1_1Object_1_1Component_1_1cPhysics.html">cPhysics</a> &amp;physics, double dt)</td></tr>
+<tr class="memdesc:afa5e2e2a15dc12cd2fc8701504733caa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the mesh to a new transform and physics component.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#afa5e2e2a15dc12cd2fc8701504733caa">More...</a><br /></td></tr>
 <tr class="separator:afa5e2e2a15dc12cd2fc8701504733caa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44d90fa73ef97ab403946a83a694acdc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a44d90fa73ef97ab403946a83a694acdc">updateWorldMeshRigid</a> (const <a class="el" href="namespaceHop_1_1Object_1_1Component.html#a87cb9436db3aed346ec51b922a80a445">cTransform</a> &amp;<a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a70071ecbac149af245109b021bf355be">transform</a>, double dt)</td></tr>
+<tr class="memdesc:a44d90fa73ef97ab403946a83a694acdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the mesh if it is rigid.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a44d90fa73ef97ab403946a83a694acdc">More...</a><br /></td></tr>
 <tr class="separator:a44d90fa73ef97ab403946a83a694acdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42ff38dbff6cdfe4517376af32dc5657"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a42ff38dbff6cdfe4517376af32dc5657">updateWorldMeshSoft</a> (<a class="el" href="namespaceHop_1_1Object_1_1Component.html#a87cb9436db3aed346ec51b922a80a445">cTransform</a> &amp;<a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a70071ecbac149af245109b021bf355be">transform</a>, <a class="el" href="structHop_1_1Object_1_1Component_1_1cPhysics.html">cPhysics</a> &amp;physics, double dt)</td></tr>
+<tr class="memdesc:a42ff38dbff6cdfe4517376af32dc5657"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the world mesh if it is soft.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a42ff38dbff6cdfe4517376af32dc5657">More...</a><br /></td></tr>
 <tr class="separator:a42ff38dbff6cdfe4517376af32dc5657"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49d6227de703b440525b4ad2b0d2f517"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a49d6227de703b440525b4ad2b0d2f517">bestAngle</a> (double x, double y, double scaleX, double scaleY)</td></tr>
+<tr class="memdesc:a49d6227de703b440525b4ad2b0d2f517"><td class="mdescLeft">&#160;</td><td class="mdescRight">The optimal angle to represent the mesh in world space.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a49d6227de703b440525b4ad2b0d2f517">More...</a><br /></td></tr>
 <tr class="separator:a49d6227de703b440525b4ad2b0d2f517"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84d8fdcd9d760ca962069ec309d89fa2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a84d8fdcd9d760ca962069ec309d89fa2">centerOfMassWorld</a> (double &amp;cx, double &amp;cy)</td></tr>
 <tr class="separator:a84d8fdcd9d760ca962069ec309d89fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad140fb6758ecf94f2b9763a481c61167"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#ad140fb6758ecf94f2b9763a481c61167">modelToCenterOfMassFrame</a> ()</td></tr>
+<tr class="memdesc:ad140fb6758ecf94f2b9763a481c61167"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rebase coordinates to centre of mess.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#ad140fb6758ecf94f2b9763a481c61167">More...</a><br /></td></tr>
 <tr class="separator:ad140fb6758ecf94f2b9763a481c61167"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af72e9d756f252fa2a60c777b0ad7f164"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#af72e9d756f252fa2a60c777b0ad7f164">momentOfInertia</a> (double x, double y, double mass)</td></tr>
 <tr class="separator:af72e9d756f252fa2a60c777b0ad7f164"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,6 +149,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4e689aea70e5d107cccb0e953b8b87b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a4e689aea70e5d107cccb0e953b8b87b8">getIsRigid</a> ()</td></tr>
 <tr class="separator:a4e689aea70e5d107cccb0e953b8b87b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd45238eff69d9bc7adb9cdd581a6ff9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#afd45238eff69d9bc7adb9cdd581a6ff9">calculateIsRigid</a> ()</td></tr>
+<tr class="memdesc:afd45238eff69d9bc7adb9cdd581a6ff9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if all mesh points are rigid.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#afd45238eff69d9bc7adb9cdd581a6ff9">More...</a><br /></td></tr>
 <tr class="separator:afd45238eff69d9bc7adb9cdd581a6ff9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89b5f7de410ae359962e2f80e9328dfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a89b5f7de410ae359962e2f80e9328dfc">applyForce</a> (double fx, double fy, bool global=false)</td></tr>
 <tr class="separator:a89b5f7de410ae359962e2f80e9328dfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,21 +164,29 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6984b85361b8f19a65467baf04e7ba57"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a6984b85361b8f19a65467baf04e7ba57">updateTags</a> ()</td></tr>
 <tr class="separator:a6984b85361b8f19a65467baf04e7ba57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1841cd4b58218b679d2b3bb80d6e8099"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html">CollisionPrimitive</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a1841cd4b58218b679d2b3bb80d6e8099">getByTag</a> (uint64_t t)</td></tr>
+<tr class="memdesc:a1841cd4b58218b679d2b3bb80d6e8099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all world space primitives by tag.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a1841cd4b58218b679d2b3bb80d6e8099">More...</a><br /></td></tr>
 <tr class="separator:a1841cd4b58218b679d2b3bb80d6e8099"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a74b1931e2d168e170e8cd6c16c8fd7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1MeshPoint.html">MeshPoint</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a8a74b1931e2d168e170e8cd6c16c8fd7">getModelByTag</a> (uint64_t t)</td></tr>
+<tr class="memdesc:a8a74b1931e2d168e170e8cd6c16c8fd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all model space primitives by tag.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a8a74b1931e2d168e170e8cd6c16c8fd7">More...</a><br /></td></tr>
 <tr class="separator:a8a74b1931e2d168e170e8cd6c16c8fd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa10a60ce64c7392ed66a80d142c61870"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#aa10a60ce64c7392ed66a80d142c61870">removeByTag</a> (uint64_t t)</td></tr>
+<tr class="memdesc:aa10a60ce64c7392ed66a80d142c61870"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove all primitives matching tag.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#aa10a60ce64c7392ed66a80d142c61870">More...</a><br /></td></tr>
 <tr class="separator:aa10a60ce64c7392ed66a80d142c61870"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3734ebc53f96d2410573620b7c83b267"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structHop_1_1Maths_1_1BoundingBox.html">Hop::Maths::BoundingBox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a3734ebc53f96d2410573620b7c83b267">getBoundingBox</a> () const</td></tr>
+<tr class="memdesc:a3734ebc53f96d2410573620b7c83b267"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the world-space bounding box.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a3734ebc53f96d2410573620b7c83b267">More...</a><br /></td></tr>
 <tr class="separator:a3734ebc53f96d2410573620b7c83b267"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4016f20d20d4479473defee4eeb3490"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structHop_1_1Maths_1_1BoundingBox.html">Hop::Maths::BoundingBox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#af4016f20d20d4479473defee4eeb3490">getBoundingBox</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionPrimitive.html">CollisionPrimitive</a> &gt;&gt; &amp;c) const</td></tr>
+<tr class="memdesc:af4016f20d20d4479473defee4eeb3490"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bounding box of a list of primitives.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#af4016f20d20d4479473defee4eeb3490">More...</a><br /></td></tr>
 <tr class="separator:af4016f20d20d4479473defee4eeb3490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fb7d5118ddc90472e7b34b5d22f2b04"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structHop_1_1Maths_1_1BoundingBox.html">Hop::Maths::BoundingBox</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a6fb7d5118ddc90472e7b34b5d22f2b04">getBoundingBox</a> (uint64_t tag)</td></tr>
+<tr class="memdesc:a6fb7d5118ddc90472e7b34b5d22f2b04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the bounding box of all primitives with tag.  <a href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a6fb7d5118ddc90472e7b34b5d22f2b04">More...</a><br /></td></tr>
 <tr class="separator:a6fb7d5118ddc90472e7b34b5d22f2b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e41ff0b4422e7789554768646128aa6"><td class="memItemLeft" align="right" valign="top">std::set&lt; uint64_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html#a0e41ff0b4422e7789554768646128aa6">getTags</a> () const</td></tr>
 <tr class="separator:a0e41ff0b4422e7789554768646128aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A mesh of collideable primitives. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0a509694cc18a35065c358b077852b5d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0a509694cc18a35065c358b077852b5d">&#9670;&nbsp;</a></span>CollisionMesh() <span class="overload">[1/5]</span></h2>
 
@@ -234,6 +264,18 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Construct a new Collision Mesh from primitives. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>list of collideable primitives. </td></tr>
+    <tr><td class="paramname">x</td><td>x world coordinate of mesh. </td></tr>
+    <tr><td class="paramname">y</td><td>y world coordinate of mesh. </td></tr>
+    <tr><td class="paramname">theta</td><td>orientation of mesh. </td></tr>
+    <tr><td class="paramname">scale</td><td>scale of mesh. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a23b87163267420f15b8b4375f75daab4"></a>
@@ -260,6 +302,14 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Construct a new Collision Mesh from a primitives list. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>list of collideable primitives. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a7e8d4d57cd663e28410babd59b6499f4"></a>
@@ -285,6 +335,14 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Construct a new Collision Mesh from another. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">m</td><td>the mesh to copy. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -328,6 +386,16 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Construct a new Collision Mesh from model and world vertices. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>model positions of mesh primitives. </td></tr>
+    <tr><td class="paramname">world</td><td>world positions of mesh primitives. </td></tr>
+    <tr><td class="paramname">tags</td><td>tags of mesh primitives for sub-meshing. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -354,6 +422,14 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Add a primitive to the mesh. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>new primitive. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -462,6 +538,18 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>The optimal angle to represent the mesh in world space. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>x coordinate of the mesh. </td></tr>
+    <tr><td class="paramname">y</td><td>y coordinate of the mesh. </td></tr>
+    <tr><td class="paramname">scaleX</td><td>scale of mesh in x. </td></tr>
+    <tr><td class="paramname">scaleY</td><td>scale of mesh in y. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>double optimal orientation. </dd></dl>
+
 </div>
 </div>
 <a id="afd45238eff69d9bc7adb9cdd581a6ff9"></a>
@@ -486,6 +574,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Determine if all mesh points are rigid. </p>
 
 </div>
 </div>
@@ -576,6 +666,16 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Check if (x,y) hits a primitive. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>x coordinate of test point. </td></tr>
+    <tr><td class="paramname">y</td><td>y coordinate of test point. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>int index of the first primitive click (or -1 if not clicked). </dd></dl>
+
 </div>
 </div>
 <a id="a0aadd3ec25bac3908f0208e33bdc06ef"></a>
@@ -643,6 +743,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get the world-space bounding box. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structHop_1_1Maths_1_1BoundingBox.html">Hop::Maths::BoundingBox</a> </dd></dl>
+
 </div>
 </div>
 <a id="af4016f20d20d4479473defee4eeb3490"></a>
@@ -668,6 +771,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Get the bounding box of a list of primitives. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>primitives to bound. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structHop_1_1Maths_1_1BoundingBox.html">Hop::Maths::BoundingBox</a> </dd></dl>
 
 </div>
 </div>
@@ -695,6 +807,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get the bounding box of all primitives with tag. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tag</td><td>tag to match. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structHop_1_1Maths_1_1BoundingBox.html">Hop::Maths::BoundingBox</a> </dd></dl>
+
 </div>
 </div>
 <a id="a1841cd4b58218b679d2b3bb80d6e8099"></a>
@@ -720,6 +841,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Get all world space primitives by tag. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>tag to match. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;std::shared_ptr&lt;CollisionPrimitive&gt;&gt; world primitives matching the tag. </dd></dl>
 
 </div>
 </div>
@@ -797,6 +927,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get a world space primitive. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>index of primitive. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::shared_ptr&lt;CollisionPrimitive&gt; world space primitive. </dd></dl>
+
 </div>
 </div>
 <a id="a8a74b1931e2d168e170e8cd6c16c8fd7"></a>
@@ -823,6 +962,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get all model space primitives by tag. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>tag to select. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::vector&lt;std::shared_ptr&lt;MeshPoint&gt;&gt; model primitives matching tag. </dd></dl>
+
 </div>
 </div>
 <a id="ade4c9409388698da71f87034d1b4c76e"></a>
@@ -848,6 +996,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Get a model space primitive. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>index of primitive </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::shared_ptr&lt;MeshPoint&gt; model space primitive. </dd></dl>
 
 </div>
 </div>
@@ -900,6 +1057,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Obtain all primitives with the given tag. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>tag to select. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>(sub) <a class="el" href="structHop_1_1System_1_1Physics_1_1CollisionMesh.html" title="A mesh of collideable primitives.">CollisionMesh</a> selected by tag. </dd></dl>
+
 </div>
 </div>
 <a id="a0e41ff0b4422e7789554768646128aa6"></a>
@@ -941,6 +1107,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Rebase coordinates to centre of mess. </p>
 
 </div>
 </div>
@@ -1002,6 +1170,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Get a world space primitive. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>index of primitive. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>std::shared_ptr&lt;CollisionPrimitive&gt; world space primitive. </dd></dl>
+
 </div>
 </div>
 <a id="a3fc2024bdbc08045a12cf189868385ca"></a>
@@ -1026,6 +1203,8 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Flag mesh as needing an initial update. </p>
 
 </div>
 </div>
@@ -1053,6 +1232,14 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Remove primitive at index i. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>index of primitive to remove. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="aa10a60ce64c7392ed66a80d142c61870"></a>
@@ -1078,6 +1265,14 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Remove all primitives matching tag. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>tag to match. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1129,6 +1324,14 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Set the transform of the mesh. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>new transform of the mesh. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1197,6 +1400,17 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Update the mesh to a new transform and physics component. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>Will integrate mesh points (i.e. handle soft meshes). </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">transform</td><td>new transform for the mesh. </td></tr>
+    <tr><td class="paramname">physics</td><td>new physics component for the mesh. </td></tr>
+    <tr><td class="paramname">dt</td><td>timestep. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a44d90fa73ef97ab403946a83a694acdc"></a>
@@ -1224,6 +1438,15 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Updates the mesh if it is rigid. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">transform</td><td>new transform. </td></tr>
+    <tr><td class="paramname">dt</td><td>timestep. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1258,6 +1481,17 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Update the world mesh if it is soft. </p>
+<dl class="section remark"><dt>Remarks</dt><dd>Applies internal soft-body forces. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">transform</td><td>new transform. </td></tr>
+    <tr><td class="paramname">physics</td><td>mesh physics components. </td></tr>
+    <tr><td class="paramname">dt</td><td>timestep. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

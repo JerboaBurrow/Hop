@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structHop_1_1System_1_1Physics_1_1MeshPoint.html" title=" " alt="" coords="5,5,168,47"/>
-<area shape="rect" id="node2" href="$structHop_1_1System_1_1Physics_1_1MeshRectangle.html" title=" " alt="" coords="216,5,379,47"/>
+<area shape="rect" id="node1" href="$structHop_1_1System_1_1Physics_1_1MeshPoint.html" title="A point in a collision mesh." alt="" coords="5,5,168,47"/>
+<area shape="rect" id="node2" href="$structHop_1_1System_1_1Physics_1_1MeshRectangle.html" title="A rectangular mesh point." alt="" coords="216,5,379,47"/>
 </map>

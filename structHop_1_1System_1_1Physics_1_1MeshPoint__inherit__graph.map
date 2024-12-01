@@ -1,4 +1,4 @@
 <map id="Hop::System::Physics::MeshPoint" name="Hop::System::Physics::MeshPoint">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,168,47"/>
-<area shape="rect" id="node2" href="$structHop_1_1System_1_1Physics_1_1MeshRectangle.html" title=" " alt="" coords="5,95,168,136"/>
+<area shape="rect" id="node1" title="A point in a collision mesh." alt="" coords="5,5,168,47"/>
+<area shape="rect" id="node2" href="$structHop_1_1System_1_1Physics_1_1MeshRectangle.html" title="A rectangular mesh point." alt="" coords="5,95,168,136"/>
 </map>
